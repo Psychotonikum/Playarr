@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Playarr.Test.Common\Playarr.Test.Common.csproj" />
+    <ProjectReference Include="..\Playarr.Api.V3\Playarr.Api.V3.csproj" />
+    <ProjectReference Include="..\Playarr.Http\Playarr.Http.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,106 @@
+using System.IO;
+using FluentAssertions;
+using Moq;
+using NUnit.Framework;
+using Playarr.Common.Disk;
+using Playarr.Common.Extensions;
+using Playarr.Core.Configuration;
+using Playarr.Core.DecisionEngine.Specifications;
+using Playarr.Core.Parser.Model;
+using Playarr.Core.Test.Framework;
+using Playarr.Core.Games;
+using Playarr.Test.Common;
+
+namespace Playarr.Core.Test.DecisionEngineTests
+{
+    public class FreeSpaceSpecificationFixture : CoreTest<FreeSpaceSpecification>
+    {
+        private RemoteEpisode _remoteRom;
+
+        [SetUp]
+        public void Setup()
+        {
+            _remoteRom = new RemoteEpisode() { Release = new ReleaseInfo(), Game = new Game { Path = @"C:\Test\TV\Game".AsOsAgnostic() } };
+        }
+
+        private void WithMinimumFreeSpace(int size)
+        {
+            Mocker.GetMock<IConfigService>().SetupGet(c => c.MinimumFreeSpaceWhenImporting).Returns(size);
+        }
+
+        private void WithAvailableSpace(int size)
+        {
+            Mocker.GetMock<IDiskProvider>().Setup(s => s.GetAvailableSpace(It.IsAny<string>())).Returns(size.Megabytes());
+        }
+
+        private void WithSize(int size)
+        {
+            _remoteRom.Release.Size = size.Megabytes();
+        }
+
+        [Test]
+        public void should_return_true_when_available_space_is_more_than_size()
+        {
+            WithMinimumFreeSpace(0);
+            WithAvailableSpace(200);
+            WithSize(100);
+
+            Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
+        }
+
+        [Test]
+        public void should_return_true_when_available_space_minus_size_is_more_than_minimum_free_space()
+        {
+            WithMinimumFreeSpace(50);
+            WithAvailableSpace(200);
+            WithSize(100);
+
+            Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
+        }
+
+        [Test]
+        public void should_return_false_available_space_is_less_than_size()
+        {
+            WithMinimumFreeSpace(0);
+            WithAvailableSpace(200);
+            WithSize(1000);
+
+            Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
+        }
+
+        [Test]
+        public void should_return_false_when_available_space_minus_size_is_less_than_minimum_free_space()
+        {
+            WithMinimumFreeSpace(150);
+            WithAvailableSpace(200);
+            WithSize(100);
+
+            Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
+        }
+
+        [Test]
+        public void should_return_true_if_skip_free_space_check_is_true()
+        {
+            Mocker.GetMock<IConfigService>()
+                .Setup(s => s.SkipFreeSpaceCheckWhenImporting)
+                .Returns(true);
+
+            WithMinimumFreeSpace(150);
+            WithAvailableSpace(200);
+            WithSize(100);
+
+            Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
+        }
+
+        [Test]
+        public void should_return_true_if_root_folder_is_not_available()
+        {
+            WithMinimumFreeSpace(150);
+            WithSize(100);
+
+            Mocker.GetMock<IDiskProvider>().Setup(s => s.GetAvailableSpace(It.IsAny<string>())).Throws<DirectoryNotFoundException>();
+
+            Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
+        }
+    }
+}

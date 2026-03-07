@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+    <RunConfiguration>
+        <EnvironmentVariables>
+            <Gamearr__Postgres__Host>192.168.100.5</Gamearr__Postgres__Host>
+			<Gamearr__Postgres__Port>5432</Gamearr__Postgres__Port>
+			<Gamearr__Postgres__User>abc</Gamearr__Postgres__User>
+			<Gamearr__Postgres__Password>abc</Gamearr__Postgres__Password>
+        </EnvironmentVariables>
+    </RunConfiguration>
+</RunSettings>

@@ -1,0 +1,34 @@
+using NLog;
+using Playarr.Common.Extensions;
+using Playarr.Core.Parser.Model;
+
+namespace Playarr.Core.DecisionEngine.Specifications
+{
+    public class CustomFormatAllowedbyProfileSpecification : IDownloadDecisionEngineSpecification
+    {
+        private readonly Logger _logger;
+
+        public CustomFormatAllowedbyProfileSpecification(Logger logger)
+        {
+            _logger = logger;
+        }
+
+        public SpecificationPriority Priority => SpecificationPriority.Default;
+        public RejectionType Type => RejectionType.Permanent;
+
+        public virtual DownloadSpecDecision IsSatisfiedBy(RemoteEpisode subject, ReleaseDecisionInformation information)
+        {
+            var minScore = subject.Game.QualityProfile.Value.MinFormatScore;
+            var score = subject.CustomFormatScore;
+
+            if (score < minScore)
+            {
+                return DownloadSpecDecision.Reject(DownloadRejectionReason.CustomFormatMinimumScore, "Custom Formats {0} have score {1} below Game profile minimum {2}", subject.CustomFormats.ConcatToString(), score, minScore);
+            }
+
+            _logger.Trace("Custom Format Score of {0} [{1}] above Game profile minimum {2}", score, subject.CustomFormats.ConcatToString(), minScore);
+
+            return DownloadSpecDecision.Accept();
+        }
+    }
+}

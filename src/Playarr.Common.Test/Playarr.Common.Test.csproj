@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Playarr.Host\Playarr.Host.csproj" />
+    <ProjectReference Include="..\Playarr.Test.Common\Playarr.Test.Common.csproj" />
+    <ProjectReference Include="..\Playarr.Test.Dummy\Playarr.Test.Dummy.csproj" />
+  </ItemGroup>
+</Project>

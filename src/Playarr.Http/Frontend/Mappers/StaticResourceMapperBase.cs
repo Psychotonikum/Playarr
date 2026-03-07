@@ -1,0 +1,62 @@
+using System;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Net.Http.Headers;
+using NLog;
+using Playarr.Common.Disk;
+using Playarr.Common.EnvironmentInfo;
+
+namespace Playarr.Http.Frontend.Mappers
+{
+    public abstract class StaticResourceMapperBase : IMapHttpRequestsToDisk
+    {
+        private readonly IDiskProvider _diskProvider;
+        private readonly Logger _logger;
+        private readonly StringComparison _caseSensitive;
+        private readonly IContentTypeProvider _mimeTypeProvider;
+
+        protected StaticResourceMapperBase(IDiskProvider diskProvider, Logger logger)
+        {
+            _diskProvider = diskProvider;
+            _logger = logger;
+
+            _mimeTypeProvider = new FileExtensionContentTypeProvider();
+            _caseSensitive = RuntimeInfo.IsProduction ? DiskProviderBase.PathStringComparison : StringComparison.OrdinalIgnoreCase;
+        }
+
+        public abstract string Map(string resourceUrl);
+
+        public abstract bool CanHandle(string resourceUrl);
+
+        public Task<IActionResult> GetResponse(HttpContext context, string resourceUrl)
+        {
+            var filePath = Map(resourceUrl);
+
+            if (_diskProvider.FileExists(filePath, _caseSensitive))
+            {
+                if (!_mimeTypeProvider.TryGetContentType(filePath, out var contentType))
+                {
+                    contentType = "application/octet-stream";
+                }
+
+                return Task.FromResult<IActionResult>(new FileStreamResult(GetContentStream(context, filePath), new MediaTypeHeaderValue(contentType)
+                {
+                    Encoding = contentType == "text/plain" ? Encoding.UTF8 : null
+                }));
+            }
+
+            _logger.Warn("File {0} not found", filePath);
+
+            return Task.FromResult<IActionResult>(null);
+        }
+
+        protected virtual Stream GetContentStream(HttpContext context, string filePath)
+        {
+            return File.OpenRead(filePath);
+        }
+    }
+}

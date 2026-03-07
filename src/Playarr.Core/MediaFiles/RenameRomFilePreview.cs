@@ -1,0 +1,14 @@
+﻿using System.Collections.Generic;
+
+namespace Playarr.Core.MediaFiles
+{
+    public class RenameRomFilePreview
+    {
+        public int SeriesId { get; set; }
+        public int SeasonNumber { get; set; }
+        public List<int> RomNumbers { get; set; }
+        public int EpisodeFileId { get; set; }
+        public string ExistingPath { get; set; }
+        public string NewPath { get; set; }
+    }
+}

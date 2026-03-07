@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+
+    <ApplicationIcon>..\Playarr.Host\Playarr.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="!$(RuntimeIdentifier.StartsWith('win'))">
+    <AssemblyName>Playarr</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Playarr.Host\Playarr.Host.csproj" />
+    <ProjectReference Include="..\Playarr.RuntimePatches\Playarr.RuntimePatches.csproj" />
+  </ItemGroup>
+</Project>

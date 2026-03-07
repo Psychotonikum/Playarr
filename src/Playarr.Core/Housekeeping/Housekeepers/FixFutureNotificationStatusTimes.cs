@@ -1,0 +1,12 @@
+using Playarr.Core.Notifications;
+
+namespace Playarr.Core.Housekeeping.Housekeepers
+{
+    public class FixFutureNotificationStatusTimes : FixFutureProviderStatusTimes<NotificationStatus>, IHousekeepingTask
+    {
+        public FixFutureNotificationStatusTimes(INotificationStatusRepository notificationStatusRepository)
+            : base(notificationStatusRepository)
+        {
+        }
+    }
+}

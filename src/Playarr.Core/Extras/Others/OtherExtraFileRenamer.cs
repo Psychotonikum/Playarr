@@ -1,0 +1,78 @@
+﻿using System.IO;
+using NLog;
+using Playarr.Common.Disk;
+using Playarr.Common.Extensions;
+using Playarr.Core.MediaFiles;
+using Playarr.Core.Games;
+
+namespace Playarr.Core.Extras.Others
+{
+    public interface IOtherExtraFileRenamer
+    {
+        void RenameOtherExtraFile(Game game, string path);
+    }
+
+    public class OtherExtraFileRenamer : IOtherExtraFileRenamer
+    {
+        private readonly Logger _logger;
+        private readonly IDiskProvider _diskProvider;
+        private readonly IRecycleBinProvider _recycleBinProvider;
+        private readonly IGameService _seriesService;
+        private readonly IOtherExtraFileService _otherExtraFileService;
+
+        public OtherExtraFileRenamer(IOtherExtraFileService otherExtraFileService,
+                                     IGameService seriesService,
+                                     IRecycleBinProvider recycleBinProvider,
+                                     IDiskProvider diskProvider,
+                                     Logger logger)
+        {
+            _logger = logger;
+            _diskProvider = diskProvider;
+            _recycleBinProvider = recycleBinProvider;
+            _seriesService = seriesService;
+            _otherExtraFileService = otherExtraFileService;
+        }
+
+        public void RenameOtherExtraFile(Game game, string path)
+        {
+            if (!_diskProvider.FileExists(path))
+            {
+                return;
+            }
+
+            var relativePath = game.Path.GetRelativePath(path);
+            var otherExtraFile = _otherExtraFileService.FindByPath(game.Id, relativePath);
+
+            if (otherExtraFile != null)
+            {
+                var newPath = path + "-orig";
+
+                // Recycle an existing -orig file.
+                RemoveOtherExtraFile(game, newPath);
+
+                // Rename the file to .*-orig
+                _diskProvider.MoveFile(path, newPath);
+                otherExtraFile.RelativePath = relativePath + "-orig";
+                otherExtraFile.Extension += "-orig";
+                _otherExtraFileService.Upsert(otherExtraFile);
+            }
+        }
+
+        private void RemoveOtherExtraFile(Game game, string path)
+        {
+            if (!_diskProvider.FileExists(path))
+            {
+                return;
+            }
+
+            var relativePath = game.Path.GetRelativePath(path);
+            var otherExtraFile = _otherExtraFileService.FindByPath(game.Id, relativePath);
+
+            if (otherExtraFile != null)
+            {
+                var subfolder = Path.GetDirectoryName(relativePath);
+                _recycleBinProvider.DeleteFile(path, subfolder);
+            }
+        }
+    }
+}

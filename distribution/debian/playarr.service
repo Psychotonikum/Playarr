@@ -1,0 +1,20 @@
+# This file is owned by the playarr package, DO NOT MODIFY MANUALLY
+# Instead use 'dpkg-reconfigure -plow playarr' to modify User/Group/UMask/-data
+# Or use systemd built-in override functionality using 'systemctl edit playarr'
+[Unit]
+Description=Playarr Daemon
+After=network.target
+
+[Service]
+User=playarr
+Group=playarr
+UMask=002
+
+Type=simple
+ExecStart=/opt/Playarr/Playarr -nobrowser -data=/var/lib/playarr
+TimeoutStopSec=20
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

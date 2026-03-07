@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Playarr.Core\Playarr.Core.csproj" />
+    <ProjectReference Include="..\Playarr.Common\Playarr.Common.csproj" />
+  </ItemGroup>
+</Project>

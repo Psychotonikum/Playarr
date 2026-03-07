@@ -1,0 +1,42 @@
+using NLog;
+using Playarr.Core.Indexers;
+using Playarr.Core.Parser.Model;
+using Playarr.Core.Profiles.Delay;
+
+namespace Playarr.Core.DecisionEngine.Specifications
+{
+    public class ProtocolSpecification : IDownloadDecisionEngineSpecification
+    {
+        private readonly IDelayProfileService _delayProfileService;
+        private readonly Logger _logger;
+
+        public ProtocolSpecification(IDelayProfileService delayProfileService,
+                                     Logger logger)
+        {
+            _delayProfileService = delayProfileService;
+            _logger = logger;
+        }
+
+        public SpecificationPriority Priority => SpecificationPriority.Default;
+        public RejectionType Type => RejectionType.Permanent;
+
+        public virtual DownloadSpecDecision IsSatisfiedBy(RemoteEpisode subject, ReleaseDecisionInformation information)
+        {
+            var delayProfile = _delayProfileService.BestForTags(subject.Game.Tags);
+
+            if (subject.Release.DownloadProtocol == DownloadProtocol.Usenet && !delayProfile.EnableUsenet)
+            {
+                _logger.Debug("[{0}] Usenet is not enabled for this game", subject.Release.Title);
+                return DownloadSpecDecision.Reject(DownloadRejectionReason.ProtocolDisabled, "Usenet is not enabled for this game");
+            }
+
+            if (subject.Release.DownloadProtocol == DownloadProtocol.Torrent && !delayProfile.EnableTorrent)
+            {
+                _logger.Debug("[{0}] Torrent is not enabled for this game", subject.Release.Title);
+                return DownloadSpecDecision.Reject(DownloadRejectionReason.ProtocolDisabled, "Torrent is not enabled for this game");
+            }
+
+            return DownloadSpecDecision.Accept();
+        }
+    }
+}

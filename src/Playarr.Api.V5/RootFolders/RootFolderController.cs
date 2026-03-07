@@ -1,0 +1,73 @@
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Playarr.Core.RootFolders;
+using Playarr.Core.Validation.Paths;
+using Playarr.SignalR;
+using Playarr.Http;
+using Playarr.Http.Extensions;
+using Playarr.Http.REST;
+using Playarr.Http.REST.Attributes;
+
+namespace Playarr.Api.V5.RootFolders;
+
+[V5ApiController]
+public class RootFolderController : RestControllerWithSignalR<RootFolderResource, RootFolder>
+{
+    private readonly IRootFolderService _rootFolderService;
+
+    public RootFolderController(IRootFolderService rootFolderService,
+                            IBroadcastSignalRMessage signalRBroadcaster,
+                            RootFolderValidator rootFolderValidator,
+                            PathExistsValidator pathExistsValidator,
+                            MappedNetworkDriveValidator mappedNetworkDriveValidator,
+                            RecycleBinValidator recycleBinValidator,
+                            StartupFolderValidator startupFolderValidator,
+                            SystemFolderValidator systemFolderValidator,
+                            FolderWritableValidator folderWritableValidator)
+    : base(signalRBroadcaster)
+    {
+        _rootFolderService = rootFolderService;
+
+        SharedValidator.RuleFor(c => c.Path)
+            .Cascade(CascadeMode.Stop)
+            .IsValidPath()
+                       .SetValidator(rootFolderValidator)
+                       .SetValidator(mappedNetworkDriveValidator)
+                       .SetValidator(startupFolderValidator)
+                       .SetValidator(recycleBinValidator)
+                       .SetValidator(pathExistsValidator)
+                       .SetValidator(systemFolderValidator)
+                       .SetValidator(folderWritableValidator);
+    }
+
+    protected override RootFolderResource GetResourceById(int id)
+    {
+        var timeout = Request?.GetBooleanQueryParameter("timeout", true) ?? true;
+
+        return _rootFolderService.Get(id, timeout).ToResource();
+    }
+
+    [RestPostById]
+    [Consumes("application/json")]
+    public ActionResult<RootFolderResource> CreateRootFolder([FromBody] RootFolderResource rootFolderResource)
+    {
+        var model = rootFolderResource.ToModel();
+
+        return Created(_rootFolderService.Add(model).Id);
+    }
+
+    [HttpGet]
+    [Produces("application/json")]
+    public List<RootFolderResource> GetRootFolders()
+    {
+        return _rootFolderService.AllWithUnmappedFolders().ToResource();
+    }
+
+    [RestDeleteById]
+    public ActionResult DeleteFolder(int id)
+    {
+        _rootFolderService.Remove(id);
+
+        return NoContent();
+    }
+}

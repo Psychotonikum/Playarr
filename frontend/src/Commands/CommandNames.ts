@@ -1,0 +1,25 @@
+enum CommandNames {
+  ApplicationUpdate = 'ApplicationUpdate',
+  Backup = 'Backup',
+  ClearBlocklist = 'ClearBlocklist',
+  ClearLog = 'ClearLog',
+  CutoffUnmetEpisodeSearch = 'CutoffUnmetRomSearch',
+  DeleteLogFiles = 'DeleteLogFiles',
+  DeleteUpdateLogFiles = 'DeleteUpdateLogFiles',
+  DownloadedEpisodesScan = 'DownloadedEpisodesScan',
+  EpisodeSearch = 'RomSearch',
+  ManualImport = 'ManualImport',
+  MissingEpisodeSearch = 'MissingRomSearch',
+  MoveGame = 'MoveGame',
+  RefreshMonitoredDownloads = 'RefreshMonitoredDownloads',
+  RefreshSeries = 'RefreshSeries',
+  RenameFiles = 'RenameFiles',
+  RenameSeries = 'RenameSeries',
+  ResetApiKey = 'ResetApiKey',
+  ResetQualityDefinitions = 'ResetQualityDefinitions',
+  RssSync = 'RssSync',
+  SeasonSearch = 'SeasonSearch',
+  SeriesSearch = 'SeriesSearch',
+}
+
+export default CommandNames;

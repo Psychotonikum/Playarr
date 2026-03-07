@@ -1,0 +1,110 @@
+using System.Collections.Generic;
+using System.Linq;
+using FizzWare.NBuilder;
+using FluentAssertions;
+using NUnit.Framework;
+using Playarr.Core.CustomFormats;
+using Playarr.Core.MediaFiles;
+using Playarr.Core.Organizer;
+using Playarr.Core.Qualities;
+using Playarr.Core.Test.Framework;
+using Playarr.Core.Games;
+
+namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
+{
+    [TestFixture]
+    public class CleanTitleFixture : CoreTest<FileNameBuilder>
+    {
+        private Game _series;
+        private Rom _episode;
+        private RomFile _romFile;
+        private NamingConfig _namingConfig;
+
+        [SetUp]
+        public void Setup()
+        {
+            _series = Builder<Game>
+                    .CreateNew()
+                    .With(s => s.Title = "South Park")
+                    .Build();
+
+            _episode = Builder<Rom>.CreateNew()
+                            .With(e => e.Title = "City Sushi")
+                            .With(e => e.SeasonNumber = 15)
+                            .With(e => e.EpisodeNumber = 6)
+                            .With(e => e.AbsoluteEpisodeNumber = 100)
+                            .Build();
+
+            _romFile = new RomFile { Quality = new QualityModel(Quality.HDTV720p), ReleaseGroup = "PlayarrTest" };
+
+            _namingConfig = NamingConfig.Default;
+            _namingConfig.RenameEpisodes = true;
+
+            Mocker.GetMock<INamingConfigService>()
+                  .Setup(c => c.GetConfig()).Returns(_namingConfig);
+
+            Mocker.GetMock<IQualityDefinitionService>()
+                .Setup(v => v.Get(Moq.It.IsAny<Quality>()))
+                .Returns<Quality>(v => Quality.DefaultQualityDefinitions.First(c => c.Quality == v));
+
+            Mocker.GetMock<ICustomFormatService>()
+                  .Setup(v => v.All())
+                  .Returns(new List<CustomFormat>());
+        }
+
+        [TestCase("Florence + the Machine", "Florence + the Machine")]
+        [TestCase("Beyoncé X10", "Beyonce X10")]
+        [TestCase("Girlfriends' Guide to Divorce", "Girlfriends Guide to Divorce")]
+        [TestCase("Rule #23: Never Lie to the Kids", "Rule #23 Never Lie to the Kids")]
+        [TestCase("Anne Hathaway/Florence + The Machine", "Anne Hathaway Florence + The Machine")]
+        [TestCase("Chris Rock/Prince", "Chris Rock Prince")]
+        [TestCase("Karma's a B*tch!", "Karmas a B-tch!")]
+        [TestCase("Ke$ha: My Crazy Beautiful Life", "Ke$ha My Crazy Beautiful Life")]
+        [TestCase("$#*! My Dad Says", "$#-! My Dad Says")]
+        [TestCase("Free! - Iwatobi Swim Club", "Free! Iwatobi Swim Club")]
+        [TestCase("Tamara Ecclestone: Billion $$ Girl", "Tamara Ecclestone Billion $$ Girl")]
+        [TestCase("Marvel's Agents of S.H.I.E.L.D.", "Marvels Agents of S.H.I.E.L.D")]
+        [TestCase("Castle (2009)", "Castle 2009")]
+        [TestCase("Law & Order (UK)", "Law and Order UK")]
+        [TestCase("Is this okay?", "Is this okay")]
+        [TestCase("[a] title", "a title")]
+        [TestCase("backslash \\ backlash", "backslash backlash")]
+        [TestCase("I'm the Boss", "Im the Boss")]
+        [TestCase("The Title's", "The Title's")]
+        [TestCase("I'm after I'm", "Im after I'm")]
+        [TestCase("I've Been Caught", "Ive Been Caught")]
+        [TestCase("I'm Lost", "Im Lost")]
+        [TestCase("That'll Be The Day", "Thatll Be The Day")]
+        [TestCase("I'd Rather Be Alone", "Id Rather Be Alone")]
+        [TestCase("I Can't Die", "I Cant Die")]
+        [TestCase("Won`t Get Fooled Again", "Wont Get Fooled Again")]
+        [TestCase("Don’t Blink", "Dont Blink")]
+        [TestCase("The ` Legend of Kings", "The Legend of Kings")]
+        [TestCase("Joker: Folie à deux", "Joker Folie a deux")]
+        public void should_get_expected_title_back(string title, string expected)
+        {
+            _series.Title = title;
+            _namingConfig.StandardEpisodeFormat = "{Game CleanTitle}";
+
+            Subject.BuildFileName(new List<Rom> { _episode }, _series, _romFile)
+                   .Should().Be(expected);
+        }
+
+        [Test]
+        public void should_use_and_as_separator_for_multiple_episodes()
+        {
+            var roms = Builder<Rom>.CreateListOfSize(2)
+                                           .TheFirst(1)
+                                           .With(e => e.Title = "Surrender Benson")
+                                           .TheNext(1)
+                                           .With(e => e.Title = "Imprisoned Lives")
+                                           .Build()
+                                           .ToList();
+
+            _namingConfig.StandardEpisodeFormat = "{Rom CleanTitle}";
+
+            Subject.BuildFileName(roms, _series, _romFile)
+                   .Should().Be(roms.First().Title + " and " + roms.Last().Title);
+        }
+    }
+}

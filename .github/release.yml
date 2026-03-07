@@ -1,0 +1,9 @@
+ changelog:
+  exclude:
+    authors:
+      - Weblate
+      - PlayarrBot
+  categories:
+    - title: Changes
+      labels:
+        - '*'

@@ -1,0 +1,64 @@
+using Playarr.Core.CustomFormats;
+using Playarr.Core.DecisionEngine.Specifications;
+using Playarr.Core.Languages;
+using Playarr.Core.MediaFiles;
+using Playarr.Core.Parser.Model;
+using Playarr.Core.Qualities;
+using Playarr.Api.V5.CustomFormats;
+using Playarr.Http.REST;
+
+namespace Playarr.Api.V5.RomFiles
+{
+    public class RomFileResource : RestResource
+    {
+        public int SeriesId { get; set; }
+        public int SeasonNumber { get; set; }
+        public string? RelativePath { get; set; }
+        public string? Path { get; set; }
+        public long Size { get; set; }
+        public DateTime DateAdded { get; set; }
+        public string? SceneName { get; set; }
+        public string? ReleaseGroup { get; set; }
+        public List<Language> Languages { get; set; } = [];
+        public QualityModel? Quality { get; set; }
+        public List<CustomFormatResource> CustomFormats { get; set; } = [];
+        public int CustomFormatScore { get; set; }
+        public int? IndexerFlags { get; set; }
+        public ReleaseType? ReleaseType { get; set; }
+        public MediaInfoResource? MediaInfo { get; set; }
+
+        public bool QualityCutoffNotMet { get; set; }
+    }
+
+    public static class RomFileResourceMapper
+    {
+        public static RomFileResource ToResource(this RomFile model, Playarr.Core.Games.Game game, IUpgradableSpecification upgradableSpecification, ICustomFormatCalculationService formatCalculationService)
+        {
+            model.Game = game;
+            var customFormats = formatCalculationService?.ParseCustomFormat(model, model.Game) ?? [];
+            var customFormatScore = game.QualityProfile?.Value?.CalculateCustomFormatScore(customFormats) ?? 0;
+
+            return new RomFileResource
+            {
+                Id = model.Id,
+
+                SeriesId = model.SeriesId,
+                SeasonNumber = model.SeasonNumber,
+                RelativePath = model.RelativePath,
+                Path = Path.Combine(game.Path, model.RelativePath),
+                Size = model.Size,
+                DateAdded = model.DateAdded,
+                SceneName = model.SceneName,
+                ReleaseGroup = model.ReleaseGroup,
+                Languages = model.Languages,
+                Quality = model.Quality,
+                MediaInfo = model.MediaInfo.ToResource(model.SceneName),
+                QualityCutoffNotMet = upgradableSpecification.QualityCutoffNotMet(game.QualityProfile!.Value, model.Quality),
+                CustomFormats = customFormats.ToResource(false),
+                CustomFormatScore = customFormatScore,
+                IndexerFlags = (int)model.IndexerFlags,
+                ReleaseType = model.ReleaseType,
+            };
+        }
+    }
+}

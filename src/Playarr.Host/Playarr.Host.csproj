@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net10.0</TargetFrameworks>
+		<OutputType>Library</OutputType>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.5.4" />
+		<PackageReference Include="NLog.Extensions.Logging" Version="5.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.2" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.3" />
+		<PackageReference Include="DryIoc.dll" Version="5.4.3" />
+		<PackageReference Include="DryIoc.Microsoft.DependencyInjection" Version="6.2.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Playarr.Common\Playarr.Common.csproj" />
+		<ProjectReference Include="..\Playarr.Core\Playarr.Core.csproj" />
+		<ProjectReference Include="..\Playarr.SignalR\Playarr.SignalR.csproj" />
+		<ProjectReference Include="..\Playarr.Api.V3\Playarr.Api.V3.csproj" />
+		<ProjectReference Include="..\Playarr.Api.V5\Playarr.Api.V5.csproj" />
+		<ProjectReference Include="..\Playarr.Http\Playarr.Http.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="Interop.NetFwTypeLib">
+			<HintPath>..\Libraries\Interop.NetFwTypeLib.dll</HintPath>
+			<EmbedInteropTypes>True</EmbedInteropTypes>
+		</Reference>
+	</ItemGroup>
+</Project>

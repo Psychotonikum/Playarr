@@ -1,0 +1,206 @@
+using System;
+using System.Collections.Generic;
+using FluentValidation.Results;
+using NLog;
+using Playarr.Common.Disk;
+using Playarr.Common.Extensions;
+using Playarr.Common.Http;
+using Playarr.Core.Blocklisting;
+using Playarr.Core.Configuration;
+using Playarr.Core.Download.Clients.Hadouken.Models;
+using Playarr.Core.Localization;
+using Playarr.Core.MediaFiles.TorrentInfo;
+using Playarr.Core.Parser.Model;
+using Playarr.Core.RemotePathMappings;
+using Playarr.Core.Validation;
+
+namespace Playarr.Core.Download.Clients.Hadouken
+{
+    public class Hadouken : TorrentClientBase<HadoukenSettings>
+    {
+        private readonly IHadoukenProxy _proxy;
+
+        public Hadouken(IHadoukenProxy proxy,
+                        ITorrentFileInfoReader torrentFileInfoReader,
+                        IHttpClient httpClient,
+                        IConfigService configService,
+                        IDiskProvider diskProvider,
+                        IRemotePathMappingService remotePathMappingService,
+                        ILocalizationService localizationService,
+                        IBlocklistService blocklistService,
+                        Logger logger)
+            : base(torrentFileInfoReader, httpClient, configService, diskProvider, remotePathMappingService, localizationService, blocklistService, logger)
+        {
+            _proxy = proxy;
+        }
+
+        public override string Name => "Hadouken";
+
+        public override IEnumerable<DownloadClientItem> GetItems()
+        {
+            var torrents = _proxy.GetTorrents(Settings);
+
+            var items = new List<DownloadClientItem>();
+
+            foreach (var torrent in torrents)
+            {
+                if (Settings.Category.IsNotNullOrWhiteSpace() && torrent.Label != Settings.Category)
+                {
+                    continue;
+                }
+
+                var outputPath = _remotePathMappingService.RemapRemoteToLocal(Settings.Host, new OsPath(torrent.SavePath));
+                var eta = TimeSpan.FromSeconds(0);
+
+                if (torrent.DownloadRate > 0 && torrent.TotalSize > 0)
+                {
+                    eta = TimeSpan.FromSeconds(torrent.TotalSize / (double)torrent.DownloadRate);
+                }
+
+                var item = new DownloadClientItem
+                {
+                    DownloadClientInfo = DownloadClientItemClientInfo.FromDownloadClient(this, false),
+                    DownloadId = torrent.InfoHash.ToUpper(),
+                    OutputPath = outputPath + torrent.Name,
+                    RemainingSize = torrent.TotalSize - torrent.DownloadedBytes,
+                    RemainingTime = eta,
+                    Title = torrent.Name,
+                    TotalSize = torrent.TotalSize,
+                    SeedRatio = torrent.DownloadedBytes <= 0 ? 0 :
+                        (double)torrent.UploadedBytes / torrent.DownloadedBytes
+                };
+
+                if (!string.IsNullOrEmpty(torrent.Error))
+                {
+                    item.Status = DownloadItemStatus.Warning;
+                    item.Message = torrent.Error;
+                }
+                else if (torrent.IsFinished && torrent.State != HadoukenTorrentState.CheckingFiles)
+                {
+                    item.Status = DownloadItemStatus.Completed;
+                }
+                else if (torrent.State == HadoukenTorrentState.QueuedForChecking)
+                {
+                    item.Status = DownloadItemStatus.Queued;
+                }
+                else if (torrent.State == HadoukenTorrentState.Paused)
+                {
+                    item.Status = DownloadItemStatus.Paused;
+                }
+                else
+                {
+                    item.Status = DownloadItemStatus.Downloading;
+                }
+
+                item.CanMoveFiles = item.CanBeRemoved =
+                    item.DownloadClientInfo.RemoveCompletedDownloads &&
+                    torrent.IsFinished &&
+                    torrent.State == HadoukenTorrentState.Paused;
+
+                items.Add(item);
+            }
+
+            return items;
+        }
+
+        public override void RemoveItem(DownloadClientItem item, bool deleteData)
+        {
+            if (deleteData)
+            {
+                _proxy.RemoveTorrentAndData(Settings, item.DownloadId);
+            }
+            else
+            {
+                _proxy.RemoveTorrent(Settings, item.DownloadId);
+            }
+        }
+
+        public override DownloadClientInfo GetStatus()
+        {
+            var config = _proxy.GetConfig(Settings);
+            var destDir = new OsPath(config.GetValueOrDefault("bittorrent.defaultSavePath") as string);
+
+            var status = new DownloadClientInfo
+            {
+                IsLocalhost = Settings.Host == "127.0.0.1" || Settings.Host == "localhost"
+            };
+
+            if (!destDir.IsEmpty)
+            {
+                status.OutputRootFolders = new List<OsPath> { _remotePathMappingService.RemapRemoteToLocal(Settings.Host, destDir) };
+            }
+
+            return status;
+        }
+
+        protected override void Test(List<ValidationFailure> failures)
+        {
+            failures.AddIfNotNull(TestConnection());
+            if (failures.HasErrors())
+            {
+                return;
+            }
+
+            failures.AddIfNotNull(TestGetTorrents());
+        }
+
+        protected override string AddFromMagnetLink(RemoteEpisode remoteRom, string hash, string magnetLink)
+        {
+            _proxy.AddTorrentUri(Settings, magnetLink);
+
+            return hash.ToUpper();
+        }
+
+        protected override string AddFromTorrentFile(RemoteEpisode remoteRom, string hash, string filename, byte[] fileContent)
+        {
+            return _proxy.AddTorrentFile(Settings, fileContent).ToUpper();
+        }
+
+        private ValidationFailure TestConnection()
+        {
+            try
+            {
+                var sysInfo = _proxy.GetSystemInfo(Settings);
+                var version = new Version(sysInfo.Versions["hadouken"]);
+
+                if (version < new Version("5.1"))
+                {
+                    return new ValidationFailure(string.Empty,
+                        _localizationService.GetLocalizedString("DownloadClientValidationErrorVersion",
+                            new Dictionary<string, object>
+                                { { "clientName", Name }, { "requiredVersion", "5.1" }, { "reportedVersion", version } }));
+                }
+            }
+            catch (DownloadClientAuthenticationException ex)
+            {
+                _logger.Error(ex, ex.Message);
+
+                return new PlayarrValidationFailure("Password", _localizationService.GetLocalizedString("DownloadClientValidationAuthenticationFailure"));
+            }
+            catch (Exception ex)
+            {
+                return new PlayarrValidationFailure("Host", _localizationService.GetLocalizedString("DownloadClientValidationUnableToConnect"))
+                       {
+                           DetailedDescription = ex.Message
+                       };
+            }
+
+            return null;
+        }
+
+        private ValidationFailure TestGetTorrents()
+        {
+            try
+            {
+                _proxy.GetTorrents(Settings);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, ex.Message);
+                return new PlayarrValidationFailure(string.Empty, _localizationService.GetLocalizedString("DownloadClientValidationTestTorrents", new Dictionary<string, object> { { "exceptionMessage", ex.Message } }));
+            }
+
+            return null;
+        }
+    }
+}

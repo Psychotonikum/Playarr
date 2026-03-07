@@ -1,0 +1,114 @@
+using System;
+using System.Collections.Generic;
+using Moq;
+using NUnit.Framework;
+using Playarr.Common.Disk;
+using Playarr.Core.Download;
+using Playarr.Core.Download.Clients;
+using Playarr.Core.HealthCheck.Checks;
+using Playarr.Core.Localization;
+using Playarr.Core.RootFolders;
+using Playarr.Core.Test.Framework;
+using Playarr.Test.Common;
+
+namespace Playarr.Core.Test.HealthCheck.Checks
+{
+    [TestFixture]
+    public class DownloadClientRootFolderCheckFixture : CoreTest<DownloadClientRootFolderCheck>
+    {
+        private readonly string _downloadRootPath = @"c:\Test".AsOsAgnostic();
+
+        private DownloadClientInfo _clientStatus;
+        private Mock<IDownloadClient> _downloadClient;
+
+        private static Exception[] DownloadClientExceptions =
+        {
+            new DownloadClientUnavailableException("error"),
+            new DownloadClientAuthenticationException("error"),
+            new DownloadClientException("error")
+        };
+
+        [SetUp]
+        public void Setup()
+        {
+            _clientStatus = new DownloadClientInfo
+            {
+                IsLocalhost = true,
+                OutputRootFolders = new List<OsPath> { new OsPath(_downloadRootPath) }
+            };
+
+            _downloadClient = Mocker.GetMock<IDownloadClient>();
+            _downloadClient.Setup(s => s.Definition)
+                .Returns(new DownloadClientDefinition { Name = "Test" });
+
+            _downloadClient.Setup(s => s.GetStatus())
+                .Returns(_clientStatus);
+
+            Mocker.GetMock<IProvideDownloadClient>()
+                  .Setup(s => s.GetDownloadClients(It.IsAny<bool>()))
+                  .Returns(new IDownloadClient[] { _downloadClient.Object });
+
+            Mocker.GetMock<IDiskProvider>()
+                .Setup(x => x.FolderExists(It.IsAny<string>()))
+                .Returns(true);
+
+            Mocker.GetMock<IDiskProvider>()
+                  .Setup(x => x.FolderWritable(It.IsAny<string>()))
+                  .Returns(true);
+
+            Mocker.GetMock<ILocalizationService>()
+                .Setup(s => s.GetLocalizedString(It.IsAny<string>()))
+                .Returns("Some Warning Message");
+        }
+
+        private void GivenRootFolder(string folder)
+        {
+            Mocker.GetMock<IRootFolderService>()
+                  .Setup(s => s.All())
+                  .Returns(new List<RootFolder> { new RootFolder { Path = folder.AsOsAgnostic() } });
+        }
+
+        [Test]
+        public void should_return_downloads_in_root_folder_if_downloading_to_root_folder()
+        {
+            GivenRootFolder(_downloadRootPath);
+
+            Subject.Check().ShouldBeWarning();
+        }
+
+        [Test]
+        public void should_return_warning_if_downloading_inside_root_folder()
+        {
+            var rootFolderPath = "c:\\Test".AsOsAgnostic();
+            var downloadRootPath = "c:\\Test\\Downloads".AsOsAgnostic();
+
+            GivenRootFolder(rootFolderPath);
+
+            _clientStatus.OutputRootFolders = new List<OsPath> { new(downloadRootPath) };
+
+            Subject.Check().ShouldBeWarning();
+        }
+
+        [Test]
+        public void should_return_ok_if_not_downloading_to_root_folder()
+        {
+            var rootFolderPath = "c:\\Test2".AsOsAgnostic();
+
+            GivenRootFolder(rootFolderPath);
+
+            Subject.Check().ShouldBeOk();
+        }
+
+        [Test]
+        [TestCaseSource(nameof(DownloadClientExceptions))]
+        public void should_return_ok_if_client_throws_downloadclientexception(Exception ex)
+        {
+            _downloadClient.Setup(s => s.GetStatus())
+                .Throws(ex);
+
+            Subject.Check().ShouldBeOk();
+
+            ExceptionVerification.ExpectedErrors(0);
+        }
+    }
+}

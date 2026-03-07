@@ -1,0 +1,17 @@
+using FluentMigrator;
+using Playarr.Core.Datastore.Migration.Framework;
+
+namespace Playarr.Core.Datastore.Migration
+{
+    [Migration(192)]
+    public class import_exclusion_type : PlayarrMigrationBase
+    {
+        protected override void MainDbUpgrade()
+        {
+            IfDatabase(ProcessorIdConstants.SQLite).Alter.Table("ImportListExclusions").AlterColumn("TvdbId").AsInt32();
+
+            // PG cannot autocast varchar to integer
+            IfDatabase(ProcessorIdConstants.PostgreSQL).Execute.Sql("ALTER TABLE \"ImportListExclusions\" ALTER COLUMN \"TvdbId\" TYPE INTEGER USING \"TvdbId\"::integer");
+        }
+    }
+}

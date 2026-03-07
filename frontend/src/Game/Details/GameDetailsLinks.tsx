@@ -1,0 +1,103 @@
+import React, { useMemo } from 'react';
+import Label from 'Components/Label';
+import ClipboardButton from 'Components/Link/ClipboardButton';
+import Link from 'Components/Link/Link';
+import { kinds, sizes } from 'Helpers/Props';
+import Game from 'Game/Game';
+import translate from 'Utilities/String/translate';
+import styles from './GameDetailsLinks.css';
+
+type GameDetailsLinksProps = Pick<
+  Game,
+  'igdbId' | 'rawgId' | 'imdbId' | 'tmdbId'
+>;
+
+interface GameDetailsLink {
+  externalId: string | number;
+  name: string;
+  url: string;
+}
+
+function GameDetailsLinks(props: GameDetailsLinksProps) {
+  const { igdbId, rawgId, imdbId, tmdbId } = props;
+
+  const links = useMemo(() => {
+    const validLinks: GameDetailsLink[] = [];
+
+    if (igdbId) {
+      validLinks.push(
+        {
+          externalId: igdbId,
+          name: 'The IGDB',
+          url: `https://www.thetvdb.com/?tab=game&id=${igdbId}`,
+        },
+        {
+          externalId: igdbId,
+          name: 'Trakt',
+          url: `https://trakt.tv/search/tvdb/${igdbId}?id_type=show`,
+        }
+      );
+    }
+
+    if (rawgId) {
+      validLinks.push({
+        externalId: rawgId,
+        name: 'TV Maze',
+        url: `https://www.tvmaze.com/shows/${rawgId}/_`,
+      });
+    }
+
+    if (imdbId) {
+      validLinks.push(
+        {
+          externalId: imdbId,
+          name: 'IMDB',
+          url: `https://imdb.com/title/${imdbId}/`,
+        },
+        {
+          externalId: imdbId,
+          name: 'MDBList',
+          url: `https://mdblist.com/show/${imdbId}`,
+        }
+      );
+    }
+
+    if (tmdbId) {
+      validLinks.push({
+        externalId: tmdbId,
+        name: 'TMDB',
+        url: `https://www.themoviedb.org/tv/${tmdbId}`,
+      });
+    }
+
+    return validLinks;
+  }, [igdbId, rawgId, imdbId, tmdbId]);
+
+  return (
+    <div className={styles.links}>
+      {links.map((link) => (
+        <div key={link.name} className={styles.linkBlock}>
+          <Link className={styles.link} to={link.url}>
+            <Label
+              className={styles.linkLabel}
+              kind={kinds.INFO}
+              size={sizes.LARGE}
+            >
+              {link.name}
+            </Label>
+          </Link>
+
+          <ClipboardButton
+            value={`${link.externalId}`}
+            title={translate('CopyToClipboard')}
+            kind={kinds.DEFAULT}
+            size={sizes.SMALL}
+            label={link.externalId}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default GameDetailsLinks;
