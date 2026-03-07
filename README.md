@@ -1,85 +1,170 @@
-# <img width="24px" src="./Logo/256.png" alt="Playarr"></img> Playarr
+# Playarr
 
-[![Translated](https://translate.servarr.com/widget/servarr/playarr/svg-badge.svg)](https://translate.servarr.com/engage/servarr/)
-[![Backers on Open Collective](https://opencollective.com/Playarr/backers/badge.svg)](#backers)
-[![Sponsors on Open Collective](https://opencollective.com/Playarr/sponsors/badge.svg)](#sponsors)
-[![Mega Sponsors on Open Collective](https://opencollective.com/Playarr/megasponsors/badge.svg)](#mega-sponsors)
+**A ROM management system for retro gaming enthusiasts.** Playarr helps you organize, rename, and manage your game ROM collections across platforms. Built on the Servarr stack (Sonarr/Radarr architecture), it provides a familiar, powerful web UI for managing ROMs.
 
-Playarr is a PVR for Usenet and BitTorrent users. It can monitor multiple RSS feeds for new episodes of your favorite shows and will grab, sort and rename them. It can also be configured to automatically upgrade the quality of files already downloaded when a better quality format becomes available.
+## Overview
 
-## Getting Started
+Playarr monitors your ROM sources, automatically organizes files by game and platform, renames them to a clean standard, and keeps your library up to date. If you've used Sonarr or Radarr, you'll feel right at home.
 
-- [Download/Installation](https://playarr.tv/#downloads-v3)
-- [FAQ](https://wiki.servarr.com/playarr/faq)
-- [Wiki](https://wiki.servarr.com/Playarr)
-- [API Documentation](https://playarr.tv/docs/api)
-- [Donate](https://playarr.tv/donate)
-
-## Support
-
-Note: GitHub Issues are for Bugs and Feature Requests Only
-
-- [Forums](https://forums.playarr.tv/)
-- [Discord](https://discord.gg/M6BvZn5)
-- [GitHub - Bugs and Feature Requests Only](https://github.com/Playarr/Playarr/issues)
-- [IRC](https://web.libera.chat/?channels=#playarr)
-- [Reddit](https://www.reddit.com/r/playarr)
-- [Wiki](https://wiki.servarr.com/playarr)
+| | |
+|---|---|
+| **Default Port** | `9797` |
+| **Web UI** | `http://localhost:9797` |
+| **API Base** | `http://localhost:9797/api/v3` |
+| **Tech Stack** | .NET 10, ASP.NET Core, SQLite, React/TypeScript |
 
 ## Features
 
-### Current Features
+- **Multi-Platform ROM Management** — Organize ROMs by game and platform (NES, SNES, Genesis, PS1, etc.)
+- **Automatic File Renaming** — Configurable naming schemes for consistent library organization
+- **Quality Upgrades** — Automatically replace ROMs when better dumps become available
+- **Download Client Integration** — Full integration with SABnzbd, NZBGet, and torrent clients
+- **Media Server Integration** — Notifications and library updates for Kodi, Plex, Emby, Jellyfin
+- **Import Lists** — Bulk-import games from external lists or other Playarr instances
+- **Calendar View** — Track upcoming game releases and new ROM availability
+- **Custom Formats** — Define quality profiles and format preferences for ROM files
+- **Beautiful Web UI** — Responsive, full-featured SPA that works on desktop and mobile
+- **REST API** — Complete API for automation and third-party integrations
+- **Cross-Platform** — Runs on Windows, Linux, macOS, Raspberry Pi, Docker
 
-- Support for major platforms: Windows, Linux, macOS, Raspberry Pi, etc.
-- Automatically detects new episodes
-- Can scan your existing library and download any missing episodes
-- Can watch for better quality of the episodes you already have and do an automatic upgrade. _eg. from DVD to Blu-Ray_
-- Automatic failed download handling will try another release if one fails
-- Manual search so you can pick any release or to see why a release was not downloaded automatically
-- Fully configurable episode renaming
-- Full integration with SABnzbd and NZBGet
-- Full integration with Kodi, Plex (notification, library update, metadata)
-- Full support for specials and multi-episode releases
-- And a beautiful UI
+## Quick Start
 
-## Contributing
+### Prerequisites
 
-### Development
+- [.NET 10 Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [Node.js 20+](https://nodejs.org/) (for building from source)
+- [Yarn](https://yarnpkg.com/) (for building from source)
 
-This project exists thanks to all the people who contribute. [Contribute](CONTRIBUTING.md).
+### Run from Source
 
-<a href="https://github.com/Playarr/Playarr/graphs/contributors"><img src="https://opencollective.com/Playarr/contributors.svg?width=890&button=false" /></a>
+```bash
+git clone https://github.com/Psychotonikum/playarr.git
+cd playarr
 
-### Supporters
+# Install frontend dependencies and build
+yarn install
+yarn build
 
-This project would not be possible without the support of our users and software providers.
-[**Become a sponsor or backer**](https://opencollective.com/playarr) to help us out!
+# Build and run the backend
+dotnet build src/Playarr.sln
+dotnet run --project src/Playarr/Playarr.csproj
+```
 
-#### Mega Sponsors
+Open `http://localhost:9797` in your browser.
 
-[![Sponsors](https://opencollective.com/playarr/tiers/mega-sponsor.svg?width=890)](https://opencollective.com/playarr/contribute/mega-sponsor-21443/checkout)
+### Docker
 
-#### Sponsors
+```bash
+docker run -d \
+  --name playarr \
+  -p 9797:9797 \
+  -v /path/to/config:/config \
+  -v /path/to/roms:/roms \
+  playarr/playarr:latest
+```
 
-[![Flexible Sponsors](https://opencollective.com/playarr/sponsors.svg?width=890)](https://opencollective.com/playarr/contribute/sponsor-21457/checkout)
+### Debian/Ubuntu (systemd)
 
-#### Backers
+```bash
+cd distribution/debian
+sudo bash install.sh
+# Service runs on port 9797, managed via: sudo systemctl {start|stop|status} playarr
+```
 
-[![Backers](https://opencollective.com/playarr/backers.svg?width=890)](https://opencollective.com/playarr/contribute/backer-21442/checkout)
+## Configuration
 
-#### JetBrains
+Configuration file is located at:
+- **Linux**: `~/.config/Playarr/config.xml`
+- **Windows**: `%AppData%\Playarr\config.xml`
+- **macOS**: `~/.config/Playarr/config.xml`
 
-Thank you to [<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.png" alt="JetBrains" width="96">](http://www.jetbrains.com/) for providing us with free licenses to their great tools
+Key settings:
 
-[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/TeamCity.png" alt="TeamCity" width="64">](http://www.jetbrains.com/teamcity/)
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `Port` | `9797` | Web UI and API port |
+| `BindAddress` | `*` | Network interface to bind to |
+| `EnableSsl` | `false` | Enable HTTPS |
+| `ApiKey` | (auto-generated) | API authentication key |
 
-[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/ReSharper.png" alt="ReSharper" width="64">](http://www.jetbrains.com/resharper/)
+## Domain Model
 
-[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/dotTrace.png" alt="dotTrace" width="64">](http://www.jetbrains.com/dottrace/)
+Playarr maps the Servarr concepts to the ROM/gaming domain:
 
-[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/Rider.png" alt="Rider" width="64">](http://www.jetbrains.com/rider/)
+| Servarr Concept | Playarr Concept | Description |
+|-----------------|-----------------|-------------|
+| Series | **Game** | A game title (e.g., "Super Mario Bros.") |
+| Season | **Platform** | A gaming platform (e.g., NES, SNES, Genesis) |
+| Episode | **ROM** | An individual ROM file |
+| Episode File | **ROM File** | Physical ROM file on disk |
 
-### Licenses
+## API
+
+Playarr exposes a full REST API at `/api/v3`. All requests require the `X-Api-Key` header.
+
+```bash
+# List all games
+curl -H "X-Api-Key: YOUR_API_KEY" http://localhost:9797/api/v3/game
+
+# Get a specific game
+curl -H "X-Api-Key: YOUR_API_KEY" http://localhost:9797/api/v3/game/1
+
+# System status
+curl -H "X-Api-Key: YOUR_API_KEY" http://localhost:9797/api/v3/system/status
+```
+
+See [docs/api.md](docs/api.md) for the full API reference.
+
+## Project Structure
+
+```
+playarr/
+ src/
+   ├── Playarr/                  # Main application entry point
+   ├── Playarr.Core/             # Business logic, domain models, data access
+   │   ├── Games/                # Game, ROM, Platform, RomFile models
+   │   ├── Datastore/            # SQLite database, migrations (FluentMigrator)
+   │   ├── Download/             # Download client integrations
+   │   ├── ImportLists/          # Import list providers
+   │   └── Notifications/        # Notification providers
+   ├── Playarr.Api.V3/           # REST API controllers (v3)
+   ├── Playarr.Api.V5/           # REST API controllers (v5)
+   ├── Playarr.Host/             # ASP.NET Core hosting, startup
+   ├── Playarr.Http/             # HTTP middleware, authentication
+   ├── Playarr.Common/           # Shared utilities, exceptions
+   ├── Playarr.SignalR/          # Real-time push notifications
+   └── Playarr.Update/           # Self-update mechanism
+ frontend/
+   └── src/                      # React/TypeScript SPA
+       ├── Game/                 # Game management views
+       ├── AddGame/              # Add new game workflow
+       ├── Rom/                  # ROM detail views
+       ├── Platform/             # Platform management
+       ├── Calendar/             # Calendar view
+       ├── Settings/             # Settings pages
+       └── System/               # System status and logs
+ distribution/                 # Packaging (Debian, macOS, Windows)
+ docker/                       # Docker build files
+ docs/                         # Documentation
+```
+
+## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup.
+
+```bash
+# Backend: build & run
+dotnet build src/Playarr.sln
+dotnet run --project src/Playarr/Playarr.csproj
+
+# Frontend: dev mode with hot reload
+yarn start
+
+# Run tests
+dotnet test src/Playarr.Core.Test/Playarr.Core.Test.csproj
+```
+
+## License
 
 - [GNU GPL v3](http://www.gnu.org/licenses/gpl.html)
-- Copyright 2010-2025
+- Copyright 2024-2026 — Forked from [Sonarr](https://github.com/Sonarr/Sonarr)

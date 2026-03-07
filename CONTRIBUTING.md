@@ -1,52 +1,88 @@
 # How to Contribute
 
-We're always looking for people to help make Playarr even better, there are a number of ways to contribute.
+We're always looking for people to help make Playarr even better. There are several ways to contribute.
 
 ## Documentation
 
-Setup guides, [FAQ](https://wiki.servarr.com/playarr/faq), the more information we have on the [wiki](https://wiki.servarr.com/playarr) the better.
+Improvements to the [README](README.md), [docs/](docs/), and [wiki/](wiki/) are always welcome.
+
+## Bug Reports
+
+1. Search [existing issues](https://github.com/Psychotonikum/playarr/issues) to avoid duplicates
+2. Open a new issue with:
+   - Clear description of the bug
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Playarr version, OS, and runtime version
+   - Relevant log excerpts (set log level to Debug)
+
+## Feature Requests
+
+Open an issue labeled "feature request" describing the problem it solves and how you envision it working.
 
 ## Development
 
-### Tools required
+### Tools Required
 
-- Visual Studio 2019 or higher (https://www.visualstudio.com/vs/). The community version is free and works (https://www.visualstudio.com/downloads/).
-- HTML/Javascript editor of choice (VS Code/Sublime Text/Webstorm/Atom/etc)
-- [Git](https://git-scm.com/downloads)
-- [NodeJS](https://nodejs.org/en/download/) (Node 10.X.X or higher)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [Node.js 20+](https://nodejs.org/) 
 - [Yarn](https://yarnpkg.com/)
+- [Git](https://git-scm.com/downloads)
+- IDE of choice (VS Code, Rider, Visual Studio)
 
-### Getting started
+### Getting Started
 
-1. Fork Playarr
-2. Clone the repository into your development machine. [_info_](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
-3. Install the required Node Packages `yarn install`
-4. Start webpack to monitor your dev environment for any frontend changes that need post processing using `yarn start` command.
-5. Build the project in Visual Studio, Setting startup project to `Playarr.Console` and framework to `x86`
-6. Debug the project in Visual Studio
-7. Open http://localhost:9797
+1. Fork the repository
+2. Clone your fork:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/playarr.git
+   cd playarr
+   ```
+3. Install frontend dependencies: `yarn install`
+4. Start the frontend dev server: `yarn start`
+5. Build the backend: `dotnet build src/Playarr.sln`
+6. Run: `dotnet run --project src/Playarr/Playarr.csproj`
+7. Open `http://localhost:9797`
+
+### Running Tests
+
+```bash
+# Core tests
+dotnet test src/Playarr.Core.Test/Playarr.Core.Test.csproj
+
+# All tests
+dotnet test src/Playarr.sln
+```
 
 ### Contributing Code
 
-- If you're adding a new, already requested feature, please comment on [Github Issues](https://github.com/Playarr/Playarr/issues "Github Issues") so work is not duplicated (If you want to add something not already on there, please talk to us first)
-- Rebase from Playarr's `v5-develop` branch, don't merge
-- Make meaningful commits, or squash them
-- Feel free to make a pull request before work is complete, this will let us see where its at and make comments/suggest improvements
-- Reach out to us on our [forums](https://forums.playarr.tv/), [subreddit](https://www.reddit.com/r/playarr/), [discord](https://discord.gg/Ex7FmFK), or [IRC](https://web.libera.chat/?channels=#playarr) if you have any questions
-- Add tests (unit/integration)
-- Commit with *nix line endings for consistency (We checkout Windows and commit *nix)
-- One feature/bug fix per pull request to keep things clean and easy to understand
-- Use 4 spaces instead of tabs, this should be the default for VS 2019 and WebStorm
+- Check existing issues before starting work to avoid duplication
+- Rebase from `main`, don't merge
+- Make meaningful, focused commits
+- Feel free to open a draft PR early for feedback
+- Add tests for new functionality
+- One feature/bug fix per pull request
 
-### Pull Requesting
+### Code Style
 
-- Only make pull requests to the default branch (currently `v5-develop`), never `main`, if you make a PR to main we'll comment on it and close it
-- You're probably going to get some comments or questions from us, they will be to ensure consistency and maintainability
-- We'll try to respond to pull requests as soon as possible, if its been a day or two, please reach out to us, we may have missed it
-- Each PR should come from its own [feature branch](http://martinfowler.com/bliki/FeatureBranch.html) not develop in your fork, it should have a meaningful branch name (what is being added/fixed)
-  - new-feature (Good)
-  - fix-bug (Good)
-  - patch (Bad)
-  - develop (Bad)
+- 4-space indentation (no tabs)
+- Follow existing StyleCop rules (see `.editorconfig`)
+- Use `var` for variable declarations in C#
+- Unix line endings
+- Keep changes focused — don't refactor unrelated code
 
-If you have any questions about any of this, please let us know.
+### Pull Requests
+
+- Target the `main` branch
+- Include a clear description of what changed and why
+- Ensure backend and frontend both build: `dotnet build src/Playarr.sln && yarn build`
+- Ensure tests pass
+- Each PR should come from its own feature branch with a meaningful name:
+  - `add-platform-filter` (good)
+  - `fix-rom-import` (good)
+  - `patch` (bad)
+  - `dev` (bad)
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the [GNU GPL v3](http://www.gnu.org/licenses/gpl.html).
