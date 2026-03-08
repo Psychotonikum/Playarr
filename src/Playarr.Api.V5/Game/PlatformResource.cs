@@ -6,6 +6,7 @@ namespace Playarr.Api.V5.Game;
 public class SeasonResource
 {
     public int PlatformNumber { get; set; }
+    public string? Title { get; set; }
     public bool Monitored { get; set; }
     public SeasonStatisticsResource? Statistics { get; set; }
     public List<MediaCover>? Images { get; set; }
@@ -18,6 +19,7 @@ public static class SeasonResourceMapper
         return new SeasonResource
         {
             PlatformNumber = model.PlatformNumber,
+            Title = model.Title,
             Monitored = model.Monitored,
             Images = includeImages ? model.Images : null
         };
@@ -28,6 +30,7 @@ public static class SeasonResourceMapper
         return new Platform
         {
             PlatformNumber = resource.PlatformNumber,
+            Title = resource.Title,
             Monitored = resource.Monitored
         };
     }

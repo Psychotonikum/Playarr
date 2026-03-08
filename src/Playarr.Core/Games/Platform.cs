@@ -11,6 +11,7 @@ namespace Playarr.Core.Games
         }
 
         public int PlatformNumber { get; set; }
+        public string Title { get; set; }
         public bool Monitored { get; set; }
         public List<MediaCover.MediaCover> Images { get; set; }
     }

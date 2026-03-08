@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useAppDimension } from 'App/appStore';
 import CommandNames from 'Commands/CommandNames';
-import { useCommands } from 'Commands/useCommands';
+import { useCommands, useExecuteCommand } from 'Commands/useCommands';
 import Icon from 'Components/Icon';
 import Label from 'Components/Label';
 import IconButton from 'Components/Link/IconButton';
@@ -112,7 +111,7 @@ function GameDetailsPlatform({
   isExpanded,
   onExpandPress,
 }: GameDetailsPlatformProps) {
-  const dispatch = useDispatch();
+  const executeCommand = useExecuteCommand();
   const { monitored: seriesMonitored, path } = useSingleGame(gameId)!;
   const { data: items } = useSeasonEpisodes(gameId, platformNumber);
 
@@ -148,10 +147,14 @@ function GameDetailsPlatform({
   const lastToggledEpisode = useRef<number | null>(null);
   const hasSetInitalExpand = useRef(false);
 
+  const platformTitle = useSingleGame(gameId)?.platforms?.find(
+    (p) => p.platformNumber === platformNumber
+  )?.title;
+
   const platformNumberTitle =
     platformNumber === 0
       ? translate('Specials')
-      : translate('PlatformNumberToken', { platformNumber });
+      : platformTitle || translate('PlatformNumberToken', { platformNumber });
 
   const handleMonitorSeasonPress = useCallback(
     (value: boolean) => {
@@ -194,12 +197,12 @@ function GameDetailsPlatform({
   );
 
   const handleSearchPress = useCallback(() => {
-    dispatch({
+    executeCommand({
       name: CommandNames.SeasonSearch,
       gameId,
       platformNumber,
     });
-  }, [gameId, platformNumber, dispatch]);
+  }, [gameId, platformNumber, executeCommand]);
 
   const handleOrganizePress = useCallback(() => {
     setIsOrganizeModalOpen(true);
