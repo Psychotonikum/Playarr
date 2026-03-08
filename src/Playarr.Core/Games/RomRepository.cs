@@ -221,11 +221,11 @@ namespace Playarr.Core.Games
         {
             if (_database.DatabaseType == DatabaseType.PostgreSQL)
             {
-                return string.Format("\"Roms\".\"AirDateUtc\" + make_interval(mins => \"Game\".\"Runtime\") <= '{0}'",
+                return string.Format("\"Roms\".\"AirDateUtc\" + make_interval(mins => \"Games\".\"Runtime\") <= '{0}'",
                                      currentTime.ToString("yyyy-MM-dd HH:mm:ss"));
             }
 
-            return string.Format("datetime(strftime('%s', \"Roms\".\"AirDateUtc\") + \"Game\".\"Runtime\" * 60,  'unixepoch') <= '{0}'",
+            return string.Format("datetime(strftime('%s', \"Roms\".\"AirDateUtc\") + \"Games\".\"Runtime\" * 60,  'unixepoch') <= '{0}'",
                                  currentTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
@@ -248,7 +248,7 @@ namespace Playarr.Core.Games
             {
                 foreach (var belowCutoff in profile.QualityIds)
                 {
-                    clauses.Add(string.Format("(\"Game\".\"QualityProfileId\" = {0} AND \"RomFiles\".\"Quality\" LIKE '%_quality_: {1},%')", profile.ProfileId, belowCutoff));
+                    clauses.Add(string.Format("(\"Games\".\"QualityProfileId\" = {0} AND \"RomFiles\".\"Quality\" LIKE '%_quality_: {1},%')", profile.ProfileId, belowCutoff));
                 }
             }
 

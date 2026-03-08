@@ -18,9 +18,9 @@ namespace Playarr.Core.Housekeeping.Housekeepers
             mapper.Execute(@"DELETE FROM ""PendingReleases""
                                      WHERE ""Id"" IN (
                                      SELECT ""PendingReleases"".""Id"" FROM ""PendingReleases""
-                                     LEFT OUTER JOIN ""Series""
-                                     ON ""PendingReleases"".""GameId"" = ""Series"".""Id""
-                                     WHERE ""Series"".""Id"" IS NULL)");
+                                     LEFT OUTER JOIN ""Games""
+                                     ON ""PendingReleases"".""GameId"" = ""Games"".""Id""
+                                     WHERE ""Games"".""Id"" IS NULL)");
         }
     }
 }

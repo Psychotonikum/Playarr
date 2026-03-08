@@ -25,9 +25,9 @@ namespace Playarr.Core.Housekeeping.Housekeepers
             mapper.Execute(@"DELETE FROM ""MetadataFiles""
                                      WHERE ""Id"" IN (
                                      SELECT ""MetadataFiles"".""Id"" FROM ""MetadataFiles""
-                                     LEFT OUTER JOIN ""Series""
-                                     ON ""MetadataFiles"".""GameId"" = ""Series"".""Id""
-                                     WHERE ""Series"".""Id"" IS NULL)");
+                                     LEFT OUTER JOIN ""Games""
+                                     ON ""MetadataFiles"".""GameId"" = ""Games"".""Id""
+                                     WHERE ""Games"".""Id"" IS NULL)");
         }
 
         private void DeleteOrphanedByRomFile()
@@ -36,10 +36,10 @@ namespace Playarr.Core.Housekeeping.Housekeepers
             mapper.Execute(@"DELETE FROM ""MetadataFiles""
                                      WHERE ""Id"" IN (
                                      SELECT ""MetadataFiles"".""Id"" FROM ""MetadataFiles""
-                                     LEFT OUTER JOIN ""EpisodeFiles""
-                                     ON ""MetadataFiles"".""EpisodeFileId"" = ""EpisodeFiles"".""Id""
+                                     LEFT OUTER JOIN ""RomFiles""
+                                     ON ""MetadataFiles"".""EpisodeFileId"" = ""RomFiles"".""Id""
                                      WHERE ""MetadataFiles"".""EpisodeFileId"" > 0
-                                     AND ""EpisodeFiles"".""Id"" IS NULL)");
+                                     AND ""RomFiles"".""Id"" IS NULL)");
         }
 
         private void DeleteWhereRomFileIsZero()

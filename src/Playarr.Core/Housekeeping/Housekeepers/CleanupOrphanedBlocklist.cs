@@ -18,9 +18,9 @@ namespace Playarr.Core.Housekeeping.Housekeepers
             mapper.Execute(@"DELETE FROM ""Blocklist""
                                      WHERE ""Id"" IN (
                                      SELECT ""Blocklist"".""Id"" FROM ""Blocklist""
-                                     LEFT OUTER JOIN ""Series""
-                                     ON ""Blocklist"".""GameId"" = ""Series"".""Id""
-                                     WHERE ""Series"".""Id"" IS NULL)");
+                                     LEFT OUTER JOIN ""Games""
+                                     ON ""Blocklist"".""GameId"" = ""Games"".""Id""
+                                     WHERE ""Games"".""Id"" IS NULL)");
         }
     }
 }

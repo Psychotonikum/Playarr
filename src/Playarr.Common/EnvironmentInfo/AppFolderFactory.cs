@@ -109,6 +109,11 @@ namespace Playarr.Common.EnvironmentInfo
                     return;
                 }
 
+                if (_appFolderInfo.LegacyAppDataFolder == _appFolderInfo.AppDataFolder)
+                {
+                    return;
+                }
+
                 if (_diskProvider.FileExists(_appFolderInfo.GetDatabase()) || _diskProvider.FileExists(_appFolderInfo.GetConfigPath()))
                 {
                     return;
