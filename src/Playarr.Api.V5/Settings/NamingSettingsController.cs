@@ -28,7 +28,7 @@ public class NamingSettingsController : RestController<NamingSettingsResource>
         SharedValidator.RuleFor(c => c.StandardEpisodeFormat).ValidEpisodeFormat();
         SharedValidator.RuleFor(c => c.DailyEpisodeFormat).ValidDailyEpisodeFormat();
         SharedValidator.RuleFor(c => c.AnimeEpisodeFormat).ValidAnimeEpisodeFormat();
-        SharedValidator.RuleFor(c => c.GameFolderFormat).ValidGameFolderFormat();
+        SharedValidator.RuleFor(c => c.SeriesFolderFormat).ValidGameFolderFormat();
         SharedValidator.RuleFor(c => c.PlatformFolderFormat).ValidPlatformFolderFormat();
         SharedValidator.RuleFor(c => c.SpecialsFolderFormat).ValidSpecialsFolderFormat();
         SharedValidator.RuleFor(c => c.CustomColonReplacementFormat).ValidCustomColonReplacement().When(c => c.ColonReplacementFormat == (int)ColonReplacementFormat.Custom);

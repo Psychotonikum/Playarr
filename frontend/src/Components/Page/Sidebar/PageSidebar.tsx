@@ -101,10 +101,6 @@ const LINKS: SidebarItem[] = [
         title: () => translate('Missing'),
         to: '/wanted/missing',
       },
-      {
-        title: () => translate('CutoffUnmet'),
-        to: '/wanted/cutoffunmet',
-      },
     ],
   },
 
@@ -118,16 +114,8 @@ const LINKS: SidebarItem[] = [
         to: '/settings/mediamanagement',
       },
       {
-        title: () => translate('Profiles'),
-        to: '/settings/profiles',
-      },
-      {
-        title: () => translate('Quality'),
-        to: '/settings/quality',
-      },
-      {
-        title: () => translate('CustomFormats'),
-        to: '/settings/customformats',
+        title: () => 'Game Systems',
+        to: '/settings/gamesystems',
       },
       {
         title: () => translate('Indexers'),

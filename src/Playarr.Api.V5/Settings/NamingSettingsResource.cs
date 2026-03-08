@@ -4,7 +4,7 @@ namespace Playarr.Api.V5.Settings;
 
 public class NamingSettingsResource : RestResource
 {
-    public bool RenameEpisodes { get; set; }
+    public bool RenameRoms { get; set; }
     public bool ReplaceIllegalCharacters { get; set; }
     public int ColonReplacementFormat { get; set; }
     public string? CustomColonReplacementFormat { get; set; }
@@ -12,7 +12,7 @@ public class NamingSettingsResource : RestResource
     public string? StandardEpisodeFormat { get; set; }
     public string? DailyEpisodeFormat { get; set; }
     public string? AnimeEpisodeFormat { get; set; }
-    public string? GameFolderFormat { get; set; }
+    public string? SeriesFolderFormat { get; set; }
     public string? PlatformFolderFormat { get; set; }
     public string? SpecialsFolderFormat { get; set; }
 }

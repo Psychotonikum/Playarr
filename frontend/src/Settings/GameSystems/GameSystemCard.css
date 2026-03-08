@@ -1,45 +1,41 @@
 .gameSystem {
   composes: card from '~Components/Card.css';
-  position: relative;
-  min-width: 280px;
-  max-width: 400px;
+  width: 290px;
+}
+
+.nameContainer {
+  display: flex;
+  justify-content: space-between;
 }
 
 .name {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 5px;
+  @add-mixin truncate;
+
+  margin-bottom: 20px;
+  font-weight: 300;
+  font-size: 24px;
 }
 
-.folder {
-  color: var(--dimColor);
-  margin-bottom: 8px;
-}
-
-.type {
-  margin-bottom: 5px;
-}
-
-.extensions {
-  color: var(--dimColor);
-  font-size: 12px;
-}
-
-.naming {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--borderColor);
-  font-size: 12px;
-}
-
-.namingLabel {
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.actions {
+.topRight {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
+  align-items: flex-start;
   gap: 5px;
+}
+
+.systemIcon {
+  margin-top: 6px;
+  color: var(--dimColor);
+}
+
+.cloneButton {
+  composes: button from '~Components/Link/IconButton.css';
+
+  height: 36px;
+}
+
+.enabled {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 5px;
+  gap: 3px;
 }

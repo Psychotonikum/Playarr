@@ -28,30 +28,6 @@ function Settings() {
           Manage game systems, folder layouts, and Aerofoil naming schemes
         </div>
 
-        <Link className={styles.link} to="/settings/profiles">
-          {translate('Profiles')}
-        </Link>
-
-        <div className={styles.summary}>
-          {translate('ProfilesSettingsSummary')}
-        </div>
-
-        <Link className={styles.link} to="/settings/quality">
-          {translate('Quality')}
-        </Link>
-
-        <div className={styles.summary}>
-          {translate('QualitySettingsSummary')}
-        </div>
-
-        <Link className={styles.link} to="/settings/customformats">
-          {translate('CustomFormats')}
-        </Link>
-
-        <div className={styles.summary}>
-          {translate('CustomFormatsSettingsSummary')}
-        </div>
-
         <Link className={styles.link} to="/settings/indexers">
           {translate('Indexers')}
         </Link>

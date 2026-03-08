@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import Card from 'Components/Card';
 import ConfirmModal from 'Components/Modal/ConfirmModal';
 import Label from 'Components/Label';
+import Icon from 'Components/Icon';
 import IconButton from 'Components/Link/IconButton';
 import { icons, kinds } from 'Helpers/Props';
 import GameSystem from 'GameSystem/GameSystem';
@@ -10,7 +11,9 @@ import translate from 'Utilities/String/translate';
 import EditGameSystemModal from './EditGameSystemModal';
 import styles from './GameSystemCard.css';
 
-interface GameSystemCardProps extends GameSystem {}
+interface GameSystemCardProps extends GameSystem {
+  onClonePress: (id: number) => void;
+}
 
 function GameSystemCard(props: GameSystemCardProps) {
   const {
@@ -18,13 +21,7 @@ function GameSystemCard(props: GameSystemCardProps) {
     name,
     folderName,
     systemType,
-    fileExtensions,
-    namingFormat,
-    updateNamingFormat,
-    dlcNamingFormat,
-    baseFolderName,
-    updateFolderName,
-    dlcFolderName,
+    onClonePress,
   } = props;
 
   const { deleteGameSystem } = useDeleteGameSystem(id);
@@ -42,6 +39,7 @@ function GameSystemCard(props: GameSystemCardProps) {
   }, []);
 
   const handleDeletePress = useCallback(() => {
+    setIsEditModalOpen(false);
     setIsDeleteModalOpen(true);
   }, []);
 
@@ -54,61 +52,51 @@ function GameSystemCard(props: GameSystemCardProps) {
     setIsDeleteModalOpen(false);
   }, []);
 
+  const handleClonePress = useCallback(() => {
+    onClonePress(id);
+  }, [id, onClonePress]);
+
   return (
-    <Card className={styles.gameSystem} overlayContent={true}>
-      <div className={styles.name}>{name}</div>
+    <Card
+      className={styles.gameSystem}
+      overlayContent={true}
+      onPress={handleEditPress}
+    >
+      <div className={styles.nameContainer}>
+        <div className={styles.name}>{name}</div>
 
-      <div className={styles.folder}>/{folderName}/</div>
+        <div className={styles.topRight}>
+          <Icon
+            className={styles.systemIcon}
+            name={isPatchable ? icons.FOLDER_OPEN : icons.FOLDER}
+            size={18}
+            title={isPatchable ? 'Patchable' : 'Classic'}
+          />
 
-      <div className={styles.type}>
+          <IconButton
+            className={styles.cloneButton}
+            title="Clone System"
+            name={icons.CLONE}
+            onPress={handleClonePress}
+          />
+        </div>
+      </div>
+
+      <div className={styles.enabled}>
         <Label kind={isPatchable ? kinds.PRIMARY : kinds.DEFAULT}>
           {isPatchable ? 'Patchable' : 'Classic'}
         </Label>
-      </div>
 
-      {fileExtensions.length > 0 && (
-        <div className={styles.extensions}>
-          {fileExtensions.join(', ')}
-        </div>
-      )}
-
-      <div className={styles.naming}>
-        <div>
-          <span className={styles.namingLabel}>Naming:</span>
-          {namingFormat}
-        </div>
-
-        {isPatchable && updateNamingFormat && (
-          <div>
-            <span className={styles.namingLabel}>Update:</span>
-            {updateNamingFormat}
-          </div>
-        )}
-
-        {isPatchable && dlcNamingFormat && (
-          <div>
-            <span className={styles.namingLabel}>DLC:</span>
-            {dlcNamingFormat}
-          </div>
-        )}
-
-        {isPatchable && (
-          <div>
-            <span className={styles.namingLabel}>Folders:</span>
-            {baseFolderName}/{updateFolderName}/{dlcFolderName}
-          </div>
-        )}
-      </div>
-
-      <div className={styles.actions}>
-        <IconButton name={icons.EDIT} onPress={handleEditPress} />
-        <IconButton name={icons.DELETE} kind={kinds.DANGER} onPress={handleDeletePress} />
+        <Label kind={kinds.DEFAULT}>
+          /{folderName}/
+        </Label>
       </div>
 
       <EditGameSystemModal
         id={id}
         isOpen={isEditModalOpen}
         onModalClose={handleEditModalClose}
+        onDeletePress={handleDeletePress}
       />
 
       <ConfirmModal

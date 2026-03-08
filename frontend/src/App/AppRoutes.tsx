@@ -10,17 +10,14 @@ import NotFound from 'Components/NotFound';
 import Switch from 'Components/Router/Switch';
 import GameDetailsPage from 'Game/Details/GameDetailsPage';
 import GameIndex from 'Game/Index/GameIndex';
-import CustomFormatSettingsPage from 'Settings/CustomFormats/CustomFormatSettingsPage';
+import IndexerSettings from 'Settings/Indexers/IndexerSettings';
+import MediaManagement from 'Settings/MediaManagement/MediaManagement';
 import DownloadClientSettings from 'Settings/DownloadClients/DownloadClientSettings';
 import GeneralSettings from 'Settings/General/GeneralSettings';
 import ImportListSettings from 'Settings/ImportLists/ImportListSettings';
-import IndexerSettings from 'Settings/Indexers/IndexerSettings';
-import MediaManagement from 'Settings/MediaManagement/MediaManagement';
 import MetadataSettings from 'Settings/Metadata/MetadataSettings';
 import MetadataSourceSettings from 'Settings/MetadataSource/MetadataSourceSettings';
 import NotificationSettings from 'Settings/Notifications/NotificationSettings';
-import Profiles from 'Settings/Profiles/Profiles';
-import Quality from 'Settings/Quality/Quality';
 import Settings from 'Settings/Settings';
 import TagSettings from 'Settings/Tags/TagSettings';
 import GameSystemSettingsPage from 'Settings/GameSystems/GameSystemSettingsPage';
@@ -32,7 +29,6 @@ import Status from 'System/Status/Status';
 import Tasks from 'System/Tasks/Tasks';
 import Updates from 'System/Updates/Updates';
 import getPathWithUrlBase from 'Utilities/getPathWithUrlBase';
-import CutoffUnmet from 'Wanted/CutoffUnmet/CutoffUnmet';
 import Missing from 'Wanted/Missing/Missing';
 
 function RedirectWithUrlBase() {
@@ -91,8 +87,6 @@ function AppRoutes() {
 
       <Route path="/wanted/missing" component={Missing} />
 
-      <Route path="/wanted/cutoffunmet" component={CutoffUnmet} />
-
       {/*
         Settings
       */}
@@ -100,15 +94,6 @@ function AppRoutes() {
       <Route exact={true} path="/settings" component={Settings} />
 
       <Route path="/settings/mediamanagement" component={MediaManagement} />
-
-      <Route path="/settings/profiles" component={Profiles} />
-
-      <Route path="/settings/quality" component={Quality} />
-
-      <Route
-        path="/settings/customformats"
-        component={CustomFormatSettingsPage}
-      />
 
       <Route path="/settings/indexers" component={IndexerSettings} />
 

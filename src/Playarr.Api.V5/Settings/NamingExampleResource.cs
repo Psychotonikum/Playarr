@@ -22,7 +22,7 @@ public static class NamingConfigResourceMapper
         {
             Id = model.Id,
 
-            RenameEpisodes = model.RenameEpisodes,
+            RenameRoms = model.RenameEpisodes,
             ReplaceIllegalCharacters = model.ReplaceIllegalCharacters,
             ColonReplacementFormat = (int)model.ColonReplacementFormat,
             CustomColonReplacementFormat = model.CustomColonReplacementFormat,
@@ -30,7 +30,7 @@ public static class NamingConfigResourceMapper
             StandardEpisodeFormat = model.StandardEpisodeFormat,
             DailyEpisodeFormat = model.DailyEpisodeFormat,
             AnimeEpisodeFormat = model.AnimeEpisodeFormat,
-            GameFolderFormat = model.GameFolderFormat,
+            SeriesFolderFormat = model.GameFolderFormat,
             PlatformFolderFormat = model.PlatformFolderFormat,
             SpecialsFolderFormat = model.SpecialsFolderFormat
         };
@@ -42,7 +42,7 @@ public static class NamingConfigResourceMapper
         {
             Id = resource.Id,
 
-            RenameEpisodes = resource.RenameEpisodes,
+            RenameEpisodes = resource.RenameRoms,
             ReplaceIllegalCharacters = resource.ReplaceIllegalCharacters,
             MultiEpisodeStyle = (MultiEpisodeStyle)resource.MultiEpisodeStyle,
             ColonReplacementFormat = (ColonReplacementFormat)resource.ColonReplacementFormat,
@@ -50,7 +50,7 @@ public static class NamingConfigResourceMapper
             StandardEpisodeFormat = resource.StandardEpisodeFormat,
             DailyEpisodeFormat = resource.DailyEpisodeFormat,
             AnimeEpisodeFormat = resource.AnimeEpisodeFormat,
-            GameFolderFormat = resource.GameFolderFormat,
+            GameFolderFormat = resource.SeriesFolderFormat,
             PlatformFolderFormat = resource.PlatformFolderFormat,
             SpecialsFolderFormat = resource.SpecialsFolderFormat
         };

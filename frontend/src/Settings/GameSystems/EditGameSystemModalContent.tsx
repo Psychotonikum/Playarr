@@ -18,10 +18,13 @@ import useGameSystems, {
 } from 'GameSystem/useGameSystems';
 import { InputChanged } from 'typings/inputs';
 import translate from 'Utilities/String/translate';
+import styles from './EditGameSystemModalContent.css';
 
 interface EditGameSystemModalContentProps {
   id?: number;
+  cloneId?: number;
   onModalClose: () => void;
+  onDeletePress?: () => void;
 }
 
 const SYSTEM_TYPE_OPTIONS = [
@@ -31,12 +34,17 @@ const SYSTEM_TYPE_OPTIONS = [
 
 function EditGameSystemModalContent({
   id,
+  cloneId,
   onModalClose,
+  onDeletePress,
 }: EditGameSystemModalContentProps) {
   const { data: systems } = useGameSystems();
-  const existing = id ? systems.find((s) => s.id === id) : undefined;
+  const sourceId = id ?? cloneId;
+  const existing = sourceId ? systems.find((s) => s.id === sourceId) : undefined;
 
-  const [name, setName] = useState(existing?.name ?? '');
+  const [name, setName] = useState(
+    cloneId && existing ? `${existing.name} (Copy)` : (existing?.name ?? '')
+  );
   const [folderName, setFolderName] = useState(existing?.folderName ?? '');
   const [systemType, setSystemType] = useState(existing?.systemType ?? 0);
   const [fileExtensions, setFileExtensions] = useState(
@@ -288,6 +296,16 @@ function EditGameSystemModalContent({
       </ModalBody>
 
       <ModalFooter>
+        {!isNew && onDeletePress ? (
+          <Button
+            className={styles.deleteButton}
+            kind={kinds.DANGER}
+            onPress={onDeletePress}
+          >
+            {translate('Delete')}
+          </Button>
+        ) : null}
+
         <Button onPress={onModalClose}>{translate('Cancel')}</Button>
 
         <SpinnerErrorButton

@@ -11,13 +11,21 @@ import styles from './GameSystems.css';
 function GameSystems() {
   const { data: systems, isFetching, isFetched, error } = useGameSystems();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [cloneId, setCloneId] = useState<number | undefined>(undefined);
 
   const handleAddPress = useCallback(() => {
+    setCloneId(undefined);
+    setIsAddModalOpen(true);
+  }, []);
+
+  const handleClonePress = useCallback((id: number) => {
+    setCloneId(id);
     setIsAddModalOpen(true);
   }, []);
 
   const handleAddModalClose = useCallback(() => {
     setIsAddModalOpen(false);
+    setCloneId(undefined);
   }, []);
 
   return (
@@ -30,7 +38,11 @@ function GameSystems() {
       >
         <div className={styles.systems}>
           {systems.map((system) => (
-            <GameSystemCard key={system.id} {...system} />
+            <GameSystemCard
+              key={system.id}
+              {...system}
+              onClonePress={handleClonePress}
+            />
           ))}
 
           <div
@@ -45,6 +57,7 @@ function GameSystems() {
       </PageSectionContent>
 
       <EditGameSystemModal
+        cloneId={cloneId}
         isOpen={isAddModalOpen}
         onModalClose={handleAddModalClose}
       />
