@@ -80,7 +80,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_Series_underscore_Title()
         {
-            _namingConfig.StandardEpisodeFormat = "{Series_Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game_Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
                    .Should().Be("South_Park");
@@ -116,7 +116,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_SERIES_TITLE_with_random_casing_should_keep_original_casing()
         {
-            _namingConfig.StandardEpisodeFormat = "{sErIES-tItLE}";
+            _namingConfig.StandardEpisodeFormat = "{gAmE-tItLE}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
                    .Should().Be(_series.Title.Replace(' ', '-'));
@@ -153,7 +153,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_episode_title_if_pattern_has_random_casing()
         {
-            _namingConfig.StandardEpisodeFormat = "{ePisOde-TitLe}";
+            _namingConfig.StandardEpisodeFormat = "{rOm-TitLe}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
                    .Should().Be("City-Sushi");
@@ -533,7 +533,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_include_affixes_if_value_not_empty()
         {
-            _namingConfig.StandardEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}{_Episode.Title_}{Quality.Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}{_Rom.Title_}{Quality.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
                    .Should().Be("South.Park.S15E06_City.Sushi_HDTV-720p");
@@ -542,7 +542,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_not_include_affixes_if_value_empty()
         {
-            _namingConfig.StandardEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}{_Episode.Title_}";
+            _namingConfig.StandardEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}{_Rom.Title_}";
 
             _episode1.Title = "";
 

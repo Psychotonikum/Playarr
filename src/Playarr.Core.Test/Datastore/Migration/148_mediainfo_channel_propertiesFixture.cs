@@ -55,7 +55,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 }.ToJson()
             };
 
-            m.Insert.IntoTable("RomFiles").Row(rom);
+            m.Insert.IntoTable("EpisodeFiles").Row(rom);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 AddRomFile(c, 1);
             });
 
-            var items = db.Query<RomFile148>("SELECT \"MediaInfo\" FROM \"RomFiles\"");
+            var items = db.Query<RomFile148>("SELECT \"MediaInfo\" FROM \"EpisodeFiles\"");
 
             items.Should().HaveCount(1);
 

@@ -73,7 +73,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                                                        Items = "[]"
                                                    });
 
-                c.Insert.IntoTable("Game").Row(new
+                c.Insert.IntoTable("Series").Row(new
                                                  {
                                                      TvdbId = 0,
                                                      MobyGamesId = 0,
@@ -93,7 +93,7 @@ namespace Playarr.Core.Test.Datastore.Migration
             });
 
             var tag = db.Query<Tag69>("SELECT \"Id\", \"Label\" FROM \"Tags\"").Single();
-            var game = db.Query<Series69>("SELECT \"Tags\" FROM \"Game\"");
+            var game = db.Query<Series69>("SELECT \"Tags\" FROM \"Series\"");
 
             game.Should().HaveCount(1);
 

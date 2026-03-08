@@ -22,7 +22,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                     Language = 1
                 });
 
-                c.Insert.IntoTable("Game").Row(new
+                c.Insert.IntoTable("Series").Row(new
                 {
                     TvdbId = 1,
                     MobyGamesId = 1,
@@ -63,7 +63,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                     Language = 1
                 });
 
-                c.Insert.IntoTable("Game").Row(new
+                c.Insert.IntoTable("Series").Row(new
                 {
                     TvdbId = 1,
                     MobyGamesId = 1,
@@ -139,7 +139,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                     Language = 1
                 });
 
-                c.Insert.IntoTable("Game").Row(new
+                c.Insert.IntoTable("Series").Row(new
                 {
                     TvdbId = 1,
                     MobyGamesId = 1,
@@ -169,7 +169,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 });
             });
 
-            var game = db.Query<Series69>("SELECT \"Tags\" FROM \"Game\" WHERE \"Id\" = 1").Single();
+            var game = db.Query<Series69>("SELECT \"Tags\" FROM \"Series\" WHERE \"Id\" = 1").Single();
             game.Tags.First().Should().Be(1);
         }
 
@@ -186,7 +186,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                     Language = 1
                 });
 
-                c.Insert.IntoTable("Game").Row(new
+                c.Insert.IntoTable("Series").Row(new
                 {
                     TvdbId = 1,
                     MobyGamesId = 1,
@@ -205,7 +205,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                     ProfileId = 1
                 });
 
-                c.Insert.IntoTable("Game").Row(new
+                c.Insert.IntoTable("Series").Row(new
                 {
                     TvdbId = 2,
                     MobyGamesId = 2,
@@ -235,7 +235,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 });
             });
 
-            var game = db.Query<Series69>("SELECT \"Tags\" FROM \"Game\" WHERE \"Id\" = 2").Single();
+            var game = db.Query<Series69>("SELECT \"Tags\" FROM \"Series\" WHERE \"Id\" = 2").Single();
             game.Tags.Should().BeEmpty();
         }
     }

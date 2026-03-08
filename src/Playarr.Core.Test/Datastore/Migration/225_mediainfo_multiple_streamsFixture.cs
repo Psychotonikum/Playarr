@@ -20,7 +20,7 @@ public class mediainfo_multiple_streamsFixture : MigrationTest<mediainfo_multipl
     {
         var db = WithMigrationTestDb(c =>
         {
-            c.Insert.IntoTable("RomFiles").Row(new
+            c.Insert.IntoTable("EpisodeFiles").Row(new
             {
                 SeriesId = 1,
                 SeasonNumber = 1,
@@ -34,7 +34,7 @@ public class mediainfo_multiple_streamsFixture : MigrationTest<mediainfo_multipl
             });
         });
 
-        var items = db.Query<RomFile225>("SELECT \"Id\", \"MediaInfo\" FROM \"RomFiles\"");
+        var items = db.Query<RomFile225>("SELECT \"Id\", \"MediaInfo\" FROM \"EpisodeFiles\"");
 
         items.Should().HaveCount(1);
         items.First().MediaInfo.Should().BeNull();
@@ -45,7 +45,7 @@ public class mediainfo_multiple_streamsFixture : MigrationTest<mediainfo_multipl
     {
         var db = WithMigrationTestDb(c =>
         {
-            c.Insert.IntoTable("RomFiles").Row(new
+            c.Insert.IntoTable("EpisodeFiles").Row(new
             {
                 SeriesId = 1,
                 SeasonNumber = 1,
@@ -72,7 +72,7 @@ public class mediainfo_multiple_streamsFixture : MigrationTest<mediainfo_multipl
             });
         });
 
-        var items = db.Query<RomFile225>("SELECT \"Id\", \"RelativePath\", \"MediaInfo\" FROM \"RomFiles\"");
+        var items = db.Query<RomFile225>("SELECT \"Id\", \"RelativePath\", \"MediaInfo\" FROM \"EpisodeFiles\"");
 
         items.Should().HaveCount(1);
 
@@ -102,7 +102,7 @@ public class mediainfo_multiple_streamsFixture : MigrationTest<mediainfo_multipl
     {
         var db = WithMigrationTestDb(c =>
         {
-            c.Insert.IntoTable("RomFiles").Row(new
+            c.Insert.IntoTable("EpisodeFiles").Row(new
             {
                 SeriesId = 1,
                 SeasonNumber = 1,
@@ -122,7 +122,7 @@ public class mediainfo_multiple_streamsFixture : MigrationTest<mediainfo_multipl
             });
         });
 
-        var items = db.Query<RomFile225>("SELECT \"Id\", \"MediaInfo\" FROM \"RomFiles\"");
+        var items = db.Query<RomFile225>("SELECT \"Id\", \"MediaInfo\" FROM \"EpisodeFiles\"");
 
         items.Should().HaveCount(1);
         items.First().MediaInfo.Should().BeNull();

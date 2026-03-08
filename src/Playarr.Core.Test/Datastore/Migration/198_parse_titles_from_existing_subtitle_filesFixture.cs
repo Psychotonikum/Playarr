@@ -58,7 +58,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                     LanguageTags = new List<string> { "sdh" }.ToJson()
                 });
 
-                c.Insert.IntoTable("RomFiles").Row(new
+                c.Insert.IntoTable("EpisodeFiles").Row(new
                 {
                     SeriesId = 1,
                     RelativePath = episodePath,

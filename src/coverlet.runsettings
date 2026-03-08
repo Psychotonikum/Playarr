@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <RunSettings>
+  <NUnit>
+    <TestTimeout>120000</TestTimeout>
+  </NUnit>
   <DataCollectionRunSettings>
     <DataCollectors>
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>cobertura</Format>
-          <Exclude>[Gamearr.*.Test]*,[Gamearr.Test.*]*,[Gamearr.Api*]*</Exclude>
+          <Exclude>[Playarr.*.Test]*,[Playarr.Test.*]*,[Playarr.Api*]*</Exclude>
         </Configuration>
       </DataCollector>
     </DataCollectors>

@@ -27,7 +27,7 @@
       <enclosure url="https://hdaccess.net/download.php?torrent=11515&amp;passkey=123456" length="2538463390" type="application/x-bittorrent" />
       <torznab:attr name="rageid" value="37780" />
       <torznab:attr name="imdb" value="3032476" />
-      <torznab:attr name="tvdbid" value="273181" />
+      <torznab:attr name="igdbid" value="273181" />
       <torznab:attr name="category" value="5000" />
       <torznab:attr name="category" value="5040" />
       <torznab:attr name="category" value="100009" />
@@ -125,7 +125,7 @@
       <enclosure url="https://hdaccess.net/download.php?torrent=11501&amp;passkey=123456" length="1397243303" type="application/x-bittorrent" />
       <torznab:attr name="rageid" value="36903" />
       <torznab:attr name="imdb" value="3148266" />
-      <torznab:attr name="tvdbid" value="272644" />
+      <torznab:attr name="igdbid" value="272644" />
       <torznab:attr name="category" value="5000" />
       <torznab:attr name="category" value="5040" />
       <torznab:attr name="category" value="100004" />

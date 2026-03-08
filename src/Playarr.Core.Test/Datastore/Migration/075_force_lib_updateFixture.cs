@@ -15,7 +15,7 @@ namespace Playarr.Core.Test.Datastore.Migration
             var db = WithMigrationTestDb();
 
             db.Query("SELECT * FROM \"ScheduledTasks\"").Should().BeEmpty();
-            db.Query("SELECT * FROM \"Game\"").Should().BeEmpty();
+            db.Query("SELECT * FROM \"Series\"").Should().BeEmpty();
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                     Language = 1
                 });
 
-                c.Insert.IntoTable("Game").Row(new
+                c.Insert.IntoTable("Series").Row(new
                 {
                     TvdbId = 1,
                     MobyGamesId =1,
@@ -80,7 +80,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                     ProfileId = 1
                 });
 
-                c.Insert.IntoTable("Game").Row(new
+                c.Insert.IntoTable("Series").Row(new
                 {
                     TvdbId = 2,
                     MobyGamesId = 2,
@@ -99,7 +99,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 });
             });
 
-            var game = db.Query<Series69>("SELECT \"LastInfoSync\" FROM \"Game\"");
+            var game = db.Query<Series69>("SELECT \"LastInfoSync\" FROM \"Series\"");
 
             game.Should().OnlyContain(c => c.LastInfoSync.Value.Year == 2014);
         }

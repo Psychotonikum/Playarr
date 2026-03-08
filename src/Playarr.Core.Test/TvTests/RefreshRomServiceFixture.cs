@@ -6,7 +6,6 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using Playarr.Common.Extensions;
-using Playarr.Core.MetadataSource.SkyHook;
 using Playarr.Core.Test.Framework;
 using Playarr.Core.Games;
 using Playarr.Test.Common;
@@ -24,12 +23,34 @@ namespace Playarr.Core.Test.TvTests
         [OneTimeSetUp]
         public void TestFixture()
         {
-            UseRealHttp();
+            var game = Builder<Game>.CreateNew()
+                .With(s => s.IgdbId = 121361)
+                .With(s => s.Title = "Test Game")
+                .With(s => s.Runtime = 60)
+                .With(s => s.Status = GameStatusType.Continuing)
+                .With(s => s.SeriesType = GameTypes.Standard)
+                .With(s => s.Platforms = new List<Platform>
+                {
+                    new Platform { PlatformNumber = 1, Monitored = true },
+                    new Platform { PlatformNumber = 2, Monitored = true }
+                })
+                .Build();
 
-            _gameOfThrones = Mocker.Resolve<SkyHookProxy>().GetSeriesInfo(121361); // Game of thrones
+            var roms = Builder<Rom>.CreateListOfSize(20)
+                .All()
+                .With(e => e.PlatformNumber = 1)
+                .With(e => e.AirDateUtc = DateTime.UtcNow.AddDays(-30))
+                .With(e => e.AirDate = DateTime.UtcNow.AddDays(-30).ToShortDateString())
+                .Build()
+                .ToList();
 
-            // Remove specials.
-            _gameOfThrones.Item2.RemoveAll(v => v.PlatformNumber == 0);
+            for (var i = 0; i < roms.Count; i++)
+            {
+                roms[i].EpisodeNumber = i + 1;
+                roms[i].AbsoluteEpisodeNumber = i + 1;
+            }
+
+            _gameOfThrones = new Tuple<Game, List<Rom>>(game, roms);
         }
 
         private List<Rom> GetEpisodes()

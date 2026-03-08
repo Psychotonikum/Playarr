@@ -21,7 +21,7 @@ namespace Playarr.Core.Test.Datastore.Migration
         {
             var db = WithMigrationTestDb(c =>
             {
-                c.Insert.IntoTable("RomFiles").Row(new
+                c.Insert.IntoTable("EpisodeFiles").Row(new
                 {
                     SeriesId = 1,
                     SeasonNumber = 1,
@@ -35,7 +35,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 });
             });
 
-            var items = db.Query<RomFile203>("SELECT * FROM \"RomFiles\"");
+            var items = db.Query<RomFile203>("SELECT * FROM \"EpisodeFiles\"");
 
             items.Should().HaveCount(1);
 
@@ -47,7 +47,7 @@ namespace Playarr.Core.Test.Datastore.Migration
         {
             var db = WithMigrationTestDb(c =>
             {
-                c.Insert.IntoTable("RomFiles").Row(new
+                c.Insert.IntoTable("EpisodeFiles").Row(new
                 {
                     SeriesId = 1,
                     SeasonNumber = 1,
@@ -61,7 +61,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 });
             });
 
-            var items = db.Query<RomFile203>("SELECT * FROM \"RomFiles\"");
+            var items = db.Query<RomFile203>("SELECT * FROM \"EpisodeFiles\"");
 
             items.Should().HaveCount(1);
 
@@ -73,7 +73,7 @@ namespace Playarr.Core.Test.Datastore.Migration
         {
             var db = WithMigrationTestDb(c =>
             {
-                c.Insert.IntoTable("RomFiles").Row(new
+                c.Insert.IntoTable("EpisodeFiles").Row(new
                 {
                     SeriesId = 1,
                     SeasonNumber = 1,
@@ -87,7 +87,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 });
             });
 
-            var items = db.Query<RomFile203>("SELECT * FROM \"RomFiles\"");
+            var items = db.Query<RomFile203>("SELECT * FROM \"EpisodeFiles\"");
 
             items.Should().HaveCount(1);
 
@@ -99,7 +99,7 @@ namespace Playarr.Core.Test.Datastore.Migration
         {
             var db = WithMigrationTestDb(c =>
             {
-                c.Insert.IntoTable("RomFiles").Row(new
+                c.Insert.IntoTable("EpisodeFiles").Row(new
                 {
                     SeriesId = 1,
                     SeasonNumber = 1,
@@ -113,7 +113,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 });
             });
 
-            var items = db.Query<RomFile203>("SELECT * FROM \"RomFiles\"");
+            var items = db.Query<RomFile203>("SELECT * FROM \"EpisodeFiles\"");
 
             items.Should().HaveCount(1);
 
@@ -125,7 +125,7 @@ namespace Playarr.Core.Test.Datastore.Migration
         {
             var db = WithMigrationTestDb(c =>
             {
-                c.Insert.IntoTable("RomFiles").Row(new
+                c.Insert.IntoTable("EpisodeFiles").Row(new
                 {
                     SeriesId = 1,
                     SeasonNumber = 1,
@@ -139,7 +139,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 });
             });
 
-            var items = db.Query<RomFile203>("SELECT * FROM \"RomFiles\"");
+            var items = db.Query<RomFile203>("SELECT * FROM \"EpisodeFiles\"");
 
             items.Should().HaveCount(1);
 
@@ -151,7 +151,7 @@ namespace Playarr.Core.Test.Datastore.Migration
         {
             var db = WithMigrationTestDb(c =>
             {
-                c.Insert.IntoTable("RomFiles").Row(new
+                c.Insert.IntoTable("EpisodeFiles").Row(new
                 {
                     SeriesId = 1,
                     SeasonNumber = 1,
@@ -164,7 +164,7 @@ namespace Playarr.Core.Test.Datastore.Migration
                 });
             });
 
-            var items = db.Query<RomFile203>("SELECT * FROM \"RomFiles\"");
+            var items = db.Query<RomFile203>("SELECT * FROM \"EpisodeFiles\"");
 
             items.Should().HaveCount(1);
 

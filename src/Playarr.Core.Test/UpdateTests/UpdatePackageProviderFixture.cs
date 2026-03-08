@@ -9,6 +9,7 @@ using Playarr.Core.Update;
 
 namespace Playarr.Core.Test.UpdateTests
 {
+    [Category("IntegrationTest")]
     public class UpdatePackageProviderFixture : CoreTest<UpdatePackageProvider>
     {
         [SetUp]

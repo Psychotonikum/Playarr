@@ -32,7 +32,7 @@ namespace Playarr.Core.Test.Datastore
         {
             _subject = Where(x => x.Id == 10);
 
-            _subject.ToString().Should().Be($"(\"Game\".\"Id\" = @Clause1_P1)");
+            _subject.ToString().Should().Be($"(\"Games\".\"Id\" = @Clause1_P1)");
             _subject.Parameters.Get<int>("Clause1_P1").Should().Be(10);
         }
 
@@ -42,7 +42,7 @@ namespace Playarr.Core.Test.Datastore
             var id = 10;
             _subject = Where(x => x.Id == id);
 
-            _subject.ToString().Should().Be($"(\"Game\".\"Id\" = @Clause1_P1)");
+            _subject.ToString().Should().Be($"(\"Games\".\"Id\" = @Clause1_P1)");
             _subject.Parameters.Get<int>("Clause1_P1").Should().Be(id);
         }
 
@@ -53,7 +53,7 @@ namespace Playarr.Core.Test.Datastore
             _subject = Where(x => x.Id == movie.Id);
 
             _subject.Parameters.ParameterNames.Should().HaveCount(1);
-            _subject.ToString().Should().Be($"(\"Game\".\"Id\" = @Clause1_P1)");
+            _subject.ToString().Should().Be($"(\"Games\".\"Id\" = @Clause1_P1)");
             _subject.Parameters.Get<int>("Clause1_P1").Should().Be(movie.Id);
         }
 
@@ -80,7 +80,7 @@ namespace Playarr.Core.Test.Datastore
         {
             Expression<Func<Game, Game, bool>> filter = (x, y) => x.Id == y.Id;
             _subject = new WhereBuilderPostgres(filter, false, 0);
-            _subject.ToString().Should().Be($"(\"Game\".\"Id\" = \"Game\".\"Id\")");
+            _subject.ToString().Should().Be($"(\"Games\".\"Id\" = \"Games\".\"Id\")");
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace Playarr.Core.Test.Datastore
         {
             _subject = Where(x => x.CleanTitle == null);
 
-            _subject.ToString().Should().Be($"(\"Game\".\"CleanTitle\" IS NULL)");
+            _subject.ToString().Should().Be($"(\"Games\".\"CleanTitle\" IS NULL)");
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace Playarr.Core.Test.Datastore
             string cleanTitle = null;
             _subject = Where(x => x.CleanTitle == cleanTitle);
 
-            _subject.ToString().Should().Be($"(\"Game\".\"CleanTitle\" IS NULL)");
+            _subject.ToString().Should().Be($"(\"Games\".\"CleanTitle\" IS NULL)");
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace Playarr.Core.Test.Datastore
             var movie = new Game { CleanTitle = null };
             _subject = Where(x => x.CleanTitle == movie.CleanTitle);
 
-            _subject.ToString().Should().Be($"(\"Game\".\"CleanTitle\" IS NULL)");
+            _subject.ToString().Should().Be($"(\"Games\".\"CleanTitle\" IS NULL)");
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Playarr.Core.Test.Datastore
             var test = "small";
             _subject = Where(x => x.CleanTitle.Contains(test));
 
-            _subject.ToString().Should().Be($"(\"Game\".\"CleanTitle\" ILIKE '%' || @Clause1_P1 || '%')");
+            _subject.ToString().Should().Be($"(\"Games\".\"CleanTitle\" ILIKE '%' || @Clause1_P1 || '%')");
             _subject.Parameters.Get<string>("Clause1_P1").Should().Be(test);
         }
 
@@ -125,7 +125,7 @@ namespace Playarr.Core.Test.Datastore
             var test = "small";
             _subject = Where(x => test.Contains(x.CleanTitle));
 
-            _subject.ToString().Should().Be($"(@Clause1_P1 ILIKE '%' || \"Game\".\"CleanTitle\" || '%')");
+            _subject.ToString().Should().Be($"(@Clause1_P1 ILIKE '%' || \"Games\".\"CleanTitle\" || '%')");
             _subject.Parameters.Get<string>("Clause1_P1").Should().Be(test);
         }
 
@@ -135,7 +135,7 @@ namespace Playarr.Core.Test.Datastore
             var test = "small";
             _subject = Where(x => x.CleanTitle.StartsWith(test));
 
-            _subject.ToString().Should().Be($"(\"Game\".\"CleanTitle\" ILIKE @Clause1_P1 || '%')");
+            _subject.ToString().Should().Be($"(\"Games\".\"CleanTitle\" ILIKE @Clause1_P1 || '%')");
             _subject.Parameters.Get<string>("Clause1_P1").Should().Be(test);
         }
 
@@ -145,7 +145,7 @@ namespace Playarr.Core.Test.Datastore
             var test = "small";
             _subject = Where(x => x.CleanTitle.EndsWith(test));
 
-            _subject.ToString().Should().Be($"(\"Game\".\"CleanTitle\" ILIKE '%' || @Clause1_P1)");
+            _subject.ToString().Should().Be($"(\"Games\".\"CleanTitle\" ILIKE '%' || @Clause1_P1)");
             _subject.Parameters.Get<string>("Clause1_P1").Should().Be(test);
         }
 
@@ -155,7 +155,7 @@ namespace Playarr.Core.Test.Datastore
             var list = new List<int> { 1, 2, 3 };
             _subject = Where(x => list.Contains(x.Id));
 
-            _subject.ToString().Should().Be($"(\"Game\".\"Id\" = ANY (('{{1, 2, 3}}')))");
+            _subject.ToString().Should().Be($"(\"Games\".\"Id\" = ANY (('{{1, 2, 3}}')))");
 
             _subject.Parameters.ParameterNames.Should().BeEmpty();
         }
@@ -166,7 +166,7 @@ namespace Playarr.Core.Test.Datastore
             var list = new List<int> { 1, 2, 3 };
             _subject = Where(x => x.CleanTitle == "test" && list.Contains(x.Id));
 
-            _subject.ToString().Should().Be($"((\"Game\".\"CleanTitle\" = @Clause1_P1) AND (\"Game\".\"Id\" = ANY (('{{1, 2, 3}}'))))");
+            _subject.ToString().Should().Be($"((\"Games\".\"CleanTitle\" = @Clause1_P1) AND (\"Games\".\"Id\" = ANY (('{{1, 2, 3}}'))))");
         }
 
         [Test]
@@ -176,7 +176,7 @@ namespace Playarr.Core.Test.Datastore
 
             _subject = Where(x => list.Contains(x.CleanTitle));
 
-            _subject.ToString().Should().Be($"(\"Game\".\"CleanTitle\" = ANY (@Clause1_P1))");
+            _subject.ToString().Should().Be($"(\"Games\".\"CleanTitle\" = ANY (@Clause1_P1))");
         }
 
         [Test]
@@ -184,7 +184,7 @@ namespace Playarr.Core.Test.Datastore
         {
             _subject = Where(x => x.Status == GameStatusType.Upcoming);
 
-            _subject.ToString().Should().Be($"(\"Game\".\"Status\" = @Clause1_P1)");
+            _subject.ToString().Should().Be($"(\"Games\".\"Status\" = @Clause1_P1)");
         }
 
         [Test]
@@ -193,7 +193,7 @@ namespace Playarr.Core.Test.Datastore
             var allowed = new List<GameStatusType> { GameStatusType.Upcoming, GameStatusType.Continuing };
             _subject = Where(x => allowed.Contains(x.Status));
 
-            _subject.ToString().Should().Be($"(\"Game\".\"Status\" = ANY (@Clause1_P1))");
+            _subject.ToString().Should().Be($"(\"Games\".\"Status\" = ANY (@Clause1_P1))");
         }
 
         [Test]
@@ -202,7 +202,7 @@ namespace Playarr.Core.Test.Datastore
             var allowed = new GameStatusType[] { GameStatusType.Upcoming, GameStatusType.Continuing };
             _subject = Where(x => allowed.Contains(x.Status));
 
-            _subject.ToString().Should().Be($"(\"Game\".\"Status\" = ANY (@Clause1_P1))");
+            _subject.ToString().Should().Be($"(\"Games\".\"Status\" = ANY (@Clause1_P1))");
         }
     }
 }

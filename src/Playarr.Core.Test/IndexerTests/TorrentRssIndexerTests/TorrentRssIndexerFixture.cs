@@ -277,7 +277,7 @@ namespace Playarr.Core.Test.IndexerTests.TorrentRssIndexerTests
 
             var torrentInfo = releases.First() as TorrentInfo;
 
-            torrentInfo.Title.Should().Be("[TVShow --> TVShow Bluray 720p] Fargo S01 Complete Platform 1 720p BRRip DD5.1 x264-PSYPHER [SEEDERS (3)/LEECHERS (0)]");
+            torrentInfo.Title.Should().Be("[TVShow --> TVShow Bluray 720p] Fargo S01 Complete Season 1 720p BRRip DD5.1 x264-PSYPHER [SEEDERS (3)/LEECHERS (0)]");
             torrentInfo.DownloadProtocol.Should().Be(DownloadProtocol.Torrent);
             torrentInfo.DownloadUrl.Should().Be("http://ew.pw/download.php?id=dea071a7a62a0d662538d46402fb112f30b8c9fa&f=Fargo%20S01%20Complete%20Season%201%20720p%20BRRip%20DD5.1%20x264-PSYPHER.torrent&auth=secret");
             torrentInfo.InfoUrl.Should().BeNullOrEmpty();

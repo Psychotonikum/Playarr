@@ -62,6 +62,8 @@ namespace Playarr.Test.Common
                 Start(Path.Combine(TestContext.CurrentContext.TestDirectory, "bin", consoleExe));
             }
 
+            var startTime = DateTime.UtcNow;
+
             while (true)
             {
                 _nzbDroneProcess.Refresh();
@@ -69,6 +71,12 @@ namespace Playarr.Test.Common
                 if (_nzbDroneProcess.HasExited)
                 {
                     Assert.Fail("Process has exited");
+                }
+
+                var elapsed = DateTime.UtcNow - startTime;
+                if (elapsed.TotalSeconds > 120)
+                {
+                    Assert.Fail("Playarr failed to start within 120 seconds");
                 }
 
                 var request = new RestRequest("system/status");
