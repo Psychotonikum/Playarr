@@ -61,17 +61,26 @@ docker run -d \
 
 ### Debian/Ubuntu (systemd)
 
+**From GitHub release** (once a release is published):
+
 ```bash
-# Fresh install or update:
-curl -sL https://raw.githubusercontent.com/Psychotonikum/playarr/main/distribution/debian/install.sh | sudo bash
+# Clone the repo and run the installer (downloads latest release automatically)
+git clone https://github.com/Psychotonikum/playarr.git
+cd playarr
+sudo bash distribution/debian/install.sh
 ```
 
-Or clone and run locally:
+**From a locally built tarball** (for private repo / no releases yet):
 
 ```bash
 git clone https://github.com/Psychotonikum/playarr.git
-cd playarr/distribution/debian
-sudo bash install.sh
+cd playarr
+
+# Build a release tarball
+bash scripts/build-release.sh --skip-frontend
+
+# Install from the local tarball
+sudo bash distribution/debian/install.sh --tarball _artifacts/Playarr.*.linux-x64.tar.gz
 ```
 
 The service runs on port **9797** and is managed via systemd:

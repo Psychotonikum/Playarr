@@ -34,9 +34,10 @@ fi
 
 app="playarr"
 app_port="9797"
-app_prereq="curl sqlite3 wget"
+app_prereq="curl sqlite3 wget jq"
 app_umask="0002"
 branch="main"
+github_repo="Psychotonikum/playarr"
 
 # Constants
 installdir="/opt"              # Install Location
@@ -72,6 +73,10 @@ Options:
 
   --branch <name>     Which branch to install (Default: main)
 
+  --tarball <path>    Install from a local tar.gz file instead of downloading
+
+  --version <ver>     Install a specific version (e.g., 4.0.0.1). Default: latest
+
   -u                  Unattended mode
                       The installer will not prompt or pause, making it
                       suitable for automated installations. Requires --user
@@ -85,6 +90,8 @@ EOF
 arg_user=""
 arg_group=""
 arg_unattended=false
+arg_tarball=""
+arg_version=""
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
@@ -125,6 +132,32 @@ while [[ $# -gt 0 ]]; do
                 shift 2
             else
                 echo "Error: --branch requires a value." >&2
+                exit 1
+            fi
+            ;;
+        --tarball=*)
+            arg_tarball="${1#*=}"
+            shift
+            ;;
+        --tarball)
+            if [[ -n "${2:-}" && "$2" != -* ]]; then
+                arg_tarball="$2"
+                shift 2
+            else
+                echo "Error: --tarball requires a value." >&2
+                exit 1
+            fi
+            ;;
+        --version=*)
+            arg_version="${1#*=}"
+            shift
+            ;;
+        --version)
+            if [[ -n "${2:-}" && "$2" != -* ]]; then
+                arg_version="$2"
+                shift 2
+            else
+                echo "Error: --version requires a value." >&2
                 exit 1
             fi
             ;;
@@ -243,25 +276,67 @@ apt-get update && apt-get install -y $app_prereq
 echo ""
 ARCH=$(dpkg --print-architecture)
 
-dlbase="https://services.playarr.tv/v1/download/$branch/latest?version=4&os=linux"
-case "$ARCH" in
-"amd64") DLURL="${dlbase}&arch=x64" ;;
-"armhf") DLURL="${dlbase}&arch=arm" ;;
-"arm64") DLURL="${dlbase}&arch=arm64" ;;
-*)
-    echo "Arch not supported: $ARCH"
-    exit 1
-    ;;
-esac
-
 # Use a temporary directory for download
 tmpdir=$(mktemp -d)
 trap 'rm -rf "$tmpdir"' EXIT
 
-echo ""
-echo "Downloading..."
-wget --content-disposition -P "$tmpdir" "$DLURL"
-tar -xzf "$tmpdir"/"${app^}".*.tar.gz -C "$tmpdir"
+if [ -n "$arg_tarball" ]; then
+    # Install from local tarball
+    if [ ! -f "$arg_tarball" ]; then
+        echo "Error: Tarball not found: $arg_tarball" >&2
+        exit 1
+    fi
+    echo ""
+    echo "Installing from local tarball: $arg_tarball"
+    tar -xzf "$arg_tarball" -C "$tmpdir"
+else
+    # Download from GitHub releases
+    case "$ARCH" in
+    "amd64") rid="linux-x64" ;;
+    "armhf") rid="linux-arm" ;;
+    "arm64") rid="linux-arm64" ;;
+    *)
+        echo "Arch not supported: $ARCH"
+        exit 1
+        ;;
+    esac
+
+    if [ -n "$arg_version" ]; then
+        # Download specific version
+        DLURL="https://github.com/${github_repo}/releases/download/v${arg_version}/Playarr.${branch}.${arg_version}.${rid}.tar.gz"
+    else
+        # Get latest release URL from GitHub API
+        echo "Fetching latest release info from GitHub..."
+        release_json=$(curl -sL "https://api.github.com/repos/${github_repo}/releases/latest")
+
+        # Check if the API returned a valid response with assets
+        if ! echo "$release_json" | jq -e '.assets' &>/dev/null; then
+            echo "Error: Could not find any releases at https://github.com/${github_repo}/releases" >&2
+            echo "The repository may be private, or no releases have been published yet." >&2
+            echo "" >&2
+            echo "You can build from source and install with --tarball:" >&2
+            echo "  bash scripts/build-release.sh --runtime ${rid}" >&2
+            echo "  sudo bash distribution/debian/install.sh --tarball _artifacts/Playarr.*.${rid}.tar.gz" >&2
+            exit 1
+        fi
+
+        DLURL=$(echo "$release_json" | jq -r ".assets[] | select(.name | contains(\"${rid}\")) | select(.name | endswith(\".tar.gz\")) | .browser_download_url" | head -1)
+
+        if [ -z "$DLURL" ] || [ "$DLURL" = "null" ]; then
+            echo "Error: Could not find a release asset for ${rid} at https://github.com/${github_repo}/releases" >&2
+            echo "" >&2
+            echo "You can build from source and install with --tarball:" >&2
+            echo "  bash scripts/build-release.sh --runtime ${rid}" >&2
+            echo "  sudo bash distribution/debian/install.sh --tarball _artifacts/Playarr.*.${rid}.tar.gz" >&2
+            exit 1
+        fi
+    fi
+
+    echo ""
+    echo "Downloading from: $DLURL"
+    wget -q --show-progress -O "$tmpdir/playarr.tar.gz" "$DLURL"
+    tar -xzf "$tmpdir/playarr.tar.gz" -C "$tmpdir"
+fi
 echo ""
 echo "Installation files downloaded and extracted"
 
