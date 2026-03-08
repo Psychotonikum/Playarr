@@ -1,229 +1,140 @@
 # Development Guide
 
-## Architecture Overview
+## Architecture
 
-Playarr is a fork of [Sonarr](https://github.com/Sonarr/Sonarr), adapted for ROM management. It follows the Servarr architecture:
+Playarr is a fork of [Sonarr](https://github.com/Sonarr/Sonarr), adapted for ROM/game management. The architecture follows the Servarr pattern:
 
 ```
-┌─────────────────────────────────────────────┐
-│                 Web Browser                  │
-│            React/TypeScript SPA              │
-├─────────────────────────────────────────────┤
-│              REST API (v3/v5)                │
-│           Playarr.Api.V3 / V5               │
-├─────────────────────────────────────────────┤
-│          ASP.NET Core Host                   │
-│     Playarr.Host / Playarr.Http             │
-├─────────────────────────────────────────────┤
-│            Core Business Logic               │
-│             Playarr.Core                     │
-│  ┌─────────┬──────────┬──────────────────┐  │
-│  │  Games  │ Download │  Notifications   │  │
-│  │  ROMs   │ Clients  │  Import Lists    │  │
-│  │Platform │ Indexers  │  Housekeeping    │  │
-│  └─────────┴──────────┴──────────────────┘  │
-├─────────────────────────────────────────────┤
-│            Data Access Layer                 │
-│    Dapper ORM + FluentMigrator + SQLite      │
-└─────────────────────────────────────────────┘
+
+              Web Browser (SPA)              │
+          React 18 / TypeScript              │
+
+           REST API (v3 / v5)               │
+         Playarr.Api.V3 / V5               │
+
+         ASP.NET Core Host                  │
+      Playarr.Host / Playarr.Http          │
+
+         Core Business Logic                │
+           Playarr.Core                     │
+  ┌─────────┬──────────┬─────────────────┐  │
+  │  Games  │ Download │  Notifications  │  │
+  │  ROMs   │ Clients  │  Import Lists   │  │
+  │Platform │ Indexers  │  Housekeeping   │  │
+  └─────────┴──────────┴─────────────────┘  │
+
+          Data Access Layer                 │
+   Dapper ORM + FluentMigrator + SQLite     │
+
 ```
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Backend | .NET 10, ASP.NET Core |
-| Frontend | React 18, TypeScript, webpack 5 |
-| Database | SQLite (default), PostgreSQL (optional) |
-| ORM | Dapper (micro-ORM) |
-| Migrations | FluentMigrator |
-| Real-time | SignalR |
-| DI Container | DryIoc |
-| Testing | NUnit, Moq, FluentAssertions |
 
 ## Prerequisites
 
-- .NET 10 SDK
+- .NET 10 SDK (10.0.103+)
 - Node.js 20+
 - Yarn 1.x
 - Git
 
-## Getting Started
+## Quick Setup
 
 ```bash
-git clone https://github.com/Psychotonikum/playarr.git
-cd playarr
+# Automated setup (Debian/Ubuntu):
+sudo bash scripts/setup-dev.sh
 
-# Restore NuGet packages
+# Or manually:
 dotnet restore src/Playarr.sln
-
-# Build backend
 dotnet build src/Playarr.sln
-
-# Install frontend dependencies
 yarn install
-
-# Build frontend (production)
 yarn build
+```
 
-# Or run frontend dev server (hot reload on port 9797)
+## Building & Running
+
+```bash
+# Backend build (Debug, Posix)
+dotnet msbuild -restore src/Playarr.sln -p:Configuration=Debug -p:Platform=Posix
+
+# Run
+./_output/net10.0/Playarr
+
+# Frontend dev mode (hot reload on port 9797)
 yarn start
-```
-
-## Project Structure
-
-```
-src/
-├── Playarr/                    # Entry point (Program.cs)
-├── Playarr.Host/               # ASP.NET Core setup, Startup.cs, middleware
-├── Playarr.Http/               # HTTP pipeline, auth, error handling
-├── Playarr.Api.V3/             # REST API v3 controllers & resources
-├── Playarr.Api.V5/             # REST API v5 controllers & resources
-├── Playarr.Core/               # All business logic
-│   ├── Games/                  # Game, Rom, Platform, RomFile domain models
-│   ├── Datastore/              # DB context, repositories, table mapping
-│   │   └── Migration/          # 223 FluentMigrator migration files
-│   ├── Download/               # Download client providers
-│   ├── Indexers/               # Indexer providers (Newznab, Torznab, etc.)
-│   ├── ImportLists/            # Import list providers
-│   ├── MediaFiles/             # File management, renaming, importing
-│   ├── Notifications/          # Notification providers (Plex, Kodi, email, etc.)
-│   ├── Housekeeping/           # Scheduled cleanup tasks
-│   ├── Configuration/          # Config file management
-│   ├── Profiles/               # Quality & language profiles
-│   └── Validation/             # Custom validators
-├── Playarr.Common/             # Shared utilities, exceptions, logging
-├── Playarr.SignalR/            # SignalR hub for real-time updates
-├── Playarr.Update/             # Self-update mechanism
-├── Playarr.Mono/               # Mono-specific implementations
-├── Playarr.Windows/            # Windows-specific implementations
-├── Playarr.RuntimePatches/     # Runtime patches for compatibility
-├── Playarr.Core.Test/          # Core unit tests (NUnit)
-├── Playarr.Host.Test/          # Host tests
-├── Playarr.Common.Test/        # Common library tests
-├── Playarr.Api.Test/           # API tests
-├── Playarr.Integration.Test/   # Integration tests
-├── Playarr.Libraries.Test/     # Third-party library tests
-└── Playarr.Test.Common/        # Shared test utilities
-
-frontend/
-└── src/
-    ├── Game/                   # Game list, details, editor views
-    ├── AddGame/                # Add new game workflow
-    ├── Rom/                    # ROM detail views
-    ├── Platform/               # Platform management
-    ├── Calendar/               # Calendar view
-    ├── Activity/               # Queue, history, blocklist
-    ├── Settings/               # All settings pages
-    ├── System/                 # System status, tasks, logs, updates
-    ├── Components/             # Shared UI components
-    ├── Store/                  # Redux-like state management
-    └── Helpers/                # Utility functions
-```
-
-## Domain Model Mapping
-
-Playarr keeps Sonarr's database schema but maps domain concepts:
-
-| C# Class | DB Table | Sonarr Equivalent | Description |
-|----------|----------|-------------------|-------------|
-| `Game` | `Series` | Series | A game title |
-| `Platform` | (computed) | Season | A gaming platform |
-| `Rom` | `Episodes` | Episode | An individual ROM |
-| `RomFile` | `EpisodeFiles` | EpisodeFile | Physical file on disk |
-
-**Important**: Model properties that map to database columns use the **original Sonarr column names** (e.g., `TvdbId`, `SeriesId`, `SeasonNumber`, `EpisodeNumber`). This is because Dapper uses convention-based mapping, and the FluentMigrator migrations create tables with the original Sonarr schema.
-
-The `TableMapping.cs` file maps C# classes to DB table names:
-```csharp
-Mapper.Entity<Game>("Series");
-Mapper.Entity<Rom>("Episodes");
-Mapper.Entity<RomFile>("EpisodeFiles");
-```
-
-## Database Migrations
-
-Migrations are in `src/Playarr.Core/Datastore/Migration/`. There are 223 migration files following Sonarr's historical schema evolution.
-
-**Critical rule**: Never rename table or column names in migration files. They must keep original Sonarr names because they represent historical schema steps.
-
-To add a new migration:
-
-```csharp
-// src/Playarr.Core/Datastore/Migration/224_add_your_feature.cs
-[Migration(224)]
-public class AddYourFeature : PlayarrMigrationBase
-{
-    protected override void MainDbUpgrade()
-    {
-        Create.Column("NewColumn").OnTable("Series").AsString().Nullable();
-    }
-}
 ```
 
 ## Running Tests
 
 ```bash
-# All Core tests
-dotnet test src/Playarr.Core.Test/Playarr.Core.Test.csproj
+# Unit tests only (recommended — excludes integration tests that need external services)
+dotnet test src/Playarr.sln --filter 'Category!=IntegrationTest&Category!=AutomationTest&Category!=ManualTest'
 
-# Specific test
-dotnet test src/Playarr.Core.Test/Playarr.Core.Test.csproj --filter "ClassName.TestName"
+# Single test project
+dotnet test src/Playarr.Core.Test/Playarr.Core.Test.csproj --no-build
 
-# All tests in solution
-dotnet test src/Playarr.sln
+# With code coverage
+dotnet test src/Playarr.sln --settings src/coverlet.runsettings --filter 'Category!=IntegrationTest'
+
+# Integration tests (require running Playarr instance and network access)
+dotnet test src/Playarr.Integration.Test/Playarr.Integration.Test.csproj
 ```
 
-Expected results: ~4800+ pass, ~200 fail (network/integration tests that need external services).
+**Note**: Running `dotnet test` without `--filter` will include integration tests that attempt to start a Playarr server and make HTTP calls to external services. These will hang if the build output or network is unavailable.
 
-## Frontend Development
+## IGDB / Twitch API Setup
+
+Game metadata comes from IGDB via the Twitch API. To enable game search:
+
+1. Create a Twitch developer account at https://dev.twitch.tv/
+2. Register an application to get a Client ID and Secret
+3. In Playarr: **Settings > Metadata Source** — enter the credentials
+4. For local development, store credentials in `.env.local` (git-ignored):
+
+```
+TWITCH_CLIENT_ID=your_client_id
+TWITCH_CLIENT_SECRET=your_client_secret
+```
+
+## Domain Model
+
+Playarr reuses the Sonarr database schema. The C# class names differ from the table names:
+
+| C# Class | DB Table | Sonarr Equivalent |
+|----------|----------|-------------------|
+| `Game` | `Series` | Series |
+| `Platform` | (computed) | Season |
+| `Rom` | `Episodes` | Episode |
+| `RomFile` | `EpisodeFiles` | EpisodeFile |
+
+Properties that map to database columns use the **original Sonarr column names** (e.g., `TvdbId`, `SeriesId`, `SeasonNumber`). `TableMapping.cs` maps C# classes to their DB tables.
+
+## Database Migrations
+
+Migrations live in `src/Playarr.Core/Datastore/Migration/` and use FluentMigrator.
+
+**Rules:**
+- Never rename existing table or column names
+- New migrations get the next sequential number
+- Test migrations with both SQLite and PostgreSQL
+
+```csharp
+[Migration(232)]
+public class add_your_feature : PlayarrMigrationBase
+{
+    protected override void MainDbUpgrade()
+    {
+        // migration code
+    }
+}
+```
+
+## Frontend
+
+The frontend is a React SPA in `frontend/src/`:
 
 ```bash
-# Development server with hot reload
-yarn start
-# Proxies API requests to http://localhost:9797
-
-# Production build
-yarn build
-# Output goes to frontend/build/
-
-# Type checking
-yarn tsc
-
-# Linting
-yarn lint
+yarn start        # Dev server with hot reload
+yarn build        # Production build
+yarn lint         # ESLint
+yarn stylelint    # CSS linting
 ```
 
-The frontend is a React SPA using:
-- TypeScript for type safety
-- CSS Modules for scoped styles
-- webpack 5 for bundling
-- Custom state management (Redux-like pattern)
-
-## Code Style
-
-- Backend: StyleCop analyzer rules (see `.editorconfig`)
-- Frontend: ESLint + TypeScript strict mode
-- 4-space indentation everywhere
-- `var` preferred over explicit types in C#
-- Using directives at top of file (SA1200 suppressed)
-
-## Building for Release
-
-```bash
-# Backend publish (self-contained for Linux x64)
-dotnet publish src/Playarr/Playarr.csproj -c Release -r linux-x64 --self-contained
-
-# Frontend production build
-yarn build
-```
-
-## Adding a New Feature
-
-1. **Domain model**: Add/modify classes in `Playarr.Core/Games/`
-2. **Repository**: Add data access in `Playarr.Core/Datastore/`
-3. **Service**: Add business logic service in `Playarr.Core/`
-4. **Migration**: Add database migration if schema changes
-5. **API**: Add controller/resource in `Playarr.Api.V3/`
-6. **Frontend**: Add React components in `frontend/src/`
-7. **Tests**: Add NUnit tests in `Playarr.Core.Test/`
+The SPA communicates with the backend via REST API (`/api/v3`) and SignalR WebSocket for real-time updates.

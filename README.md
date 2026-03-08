@@ -1,56 +1,52 @@
 # Playarr
 
-**A ROM management system for retro gaming enthusiasts.** Playarr helps you organize, rename, and manage your game ROM collections across platforms. Built on the Servarr stack (Sonarr/Radarr architecture), it provides a familiar, powerful web UI for managing ROMs.
+<p align="center">
+  <img src="Logo/1024.png" alt="Playarr Logo" width="200">
+</p>
 
-## Overview
+**Playarr** is a game ROM management system built on the [Sonarr](https://github.com/Sonarr/Sonarr)/Servarr architecture. It organizes, renames, and manages game ROM collections through a web UI, using [IGDB](https://www.igdb.com/) for game metadata.
 
-Playarr monitors your ROM sources, automatically organizes files by game and platform, renames them to a clean standard, and keeps your library up to date. If you've used Sonarr or Radarr, you'll feel right at home.
-
-| | |
-|---|---|
-| **Default Port** | `9797` |
-| **Web UI** | `http://localhost:9797` |
-| **API Base** | `http://localhost:9797/api/v3` |
-| **Tech Stack** | .NET 10, ASP.NET Core, SQLite, React/TypeScript |
+> **Status**: Early development. Playarr is functional but under active development. Expect rough edges.
 
 ## Features
 
-- **Multi-Platform ROM Management** — Organize ROMs by game and platform (NES, SNES, Genesis, PS1, etc.)
-- **Automatic File Renaming** — Configurable naming schemes for consistent library organization
-- **Quality Upgrades** — Automatically replace ROMs when better dumps become available
-- **Download Client Integration** — Full integration with SABnzbd, NZBGet, and torrent clients
-- **Media Server Integration** — Notifications and library updates for Kodi, Plex, Emby, Jellyfin
-- **Import Lists** — Bulk-import games from external lists or other Playarr instances
-- **Calendar View** — Track upcoming game releases and new ROM availability
-- **Custom Formats** — Define quality profiles and format preferences for ROM files
-- **Beautiful Web UI** — Responsive, full-featured SPA that works on desktop and mobile
-- **REST API** — Complete API for automation and third-party integrations
-- **Cross-Platform** — Runs on Windows, Linux, macOS, Raspberry Pi, Docker
+- **Game Library Management** — Organize ROMs by game and platform (NES, SNES, Genesis, PS1, Switch, etc.)
+- **IGDB Metadata** — Automatic game artwork, descriptions, ratings, and platform info from IGDB
+- **File Renaming** — Configurable naming schemes for clean library organization
+- **Download Client Integration** — SABnzbd, NZBGet, qBittorrent, Transmission, Deluge, and more
+- **Calendar** — Track upcoming game releases from IGDB and Metacritic
+- **Quality Profiles** — Define preferences for ROM file quality and format
+- **Game System Presets** — Built-in definitions for 25+ retro and modern platforms
+- **Metacritic Scores** — Optional alternative rating source
+- **REST API** — Full API at `/api/v3` for automation and integrations
+- **Web UI** — Responsive React/TypeScript interface
 
 ## Quick Start
 
 ### Prerequisites
 
-- [.NET 10 Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)
-- [Node.js 20+](https://nodejs.org/) (for building from source)
-- [Yarn](https://yarnpkg.com/) (for building from source)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [Node.js 20+](https://nodejs.org/)
+- [Yarn](https://yarnpkg.com/) (v1.x)
 
-### Run from Source
+### From Source
 
 ```bash
 git clone https://github.com/Psychotonikum/playarr.git
 cd playarr
 
-# Install frontend dependencies and build
-yarn install
-yarn build
+# Set up the development environment (installs all dependencies)
+sudo bash scripts/setup-dev.sh
 
-# Build and run the backend
+# Or manually:
+yarn install && yarn build
 dotnet build src/Playarr.sln
-dotnet run --project src/Playarr/Playarr.csproj
+
+# Run
+./_output/net10.0/Playarr
 ```
 
-Open `http://localhost:9797` in your browser.
+Open **http://localhost:9797** in your browser.
 
 ### Docker
 
@@ -66,119 +62,117 @@ docker run -d \
 ### Debian/Ubuntu (systemd)
 
 ```bash
-cd distribution/debian
+# Fresh install or update:
+curl -sL https://raw.githubusercontent.com/Psychotonikum/playarr/main/distribution/debian/install.sh | sudo bash
+```
+
+Or clone and run locally:
+
+```bash
+git clone https://github.com/Psychotonikum/playarr.git
+cd playarr/distribution/debian
 sudo bash install.sh
-# Service runs on port 9797, managed via: sudo systemctl {start|stop|status} playarr
+```
+
+The service runs on port **9797** and is managed via systemd:
+
+```bash
+sudo systemctl {start|stop|restart|status} playarr
 ```
 
 ## Configuration
 
-Configuration file is located at:
-- **Linux**: `~/.config/Playarr/config.xml`
-- **Windows**: `%AppData%\Playarr\config.xml`
-- **macOS**: `~/.config/Playarr/config.xml`
+After first launch, configure Playarr through the web UI at `http://localhost:9797`:
 
-Key settings:
+1. **Settings > Metadata Source** — Enter your [Twitch/IGDB API credentials](https://api-docs.igdb.com/#account-creation) (required for game search)
+2. **Settings > Media Management** — Add a root folder for your ROM library
+3. **Settings > Game Systems** — Add the platforms you want to manage
+4. **Games > Add New** — Search for a game by name and add it
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `Port` | `9797` | Web UI and API port |
-| `BindAddress` | `*` | Network interface to bind to |
-| `EnableSsl` | `false` | Enable HTTPS |
-| `ApiKey` | (auto-generated) | API authentication key |
+Configuration file location:
 
-## Domain Model
+| OS | Path |
+|----|------|
+| Linux | `~/.config/Playarr/config.xml` |
+| Docker | `/config/config.xml` |
+| Windows | `%AppData%\Playarr\config.xml` |
 
-Playarr maps the Servarr concepts to the ROM/gaming domain:
-
-| Servarr Concept | Playarr Concept | Description |
-|-----------------|-----------------|-------------|
-| Series | **Game** | A game title (e.g., "Super Mario Bros.") |
-| Season | **Platform** | A gaming platform (e.g., NES, SNES, Genesis) |
-| Episode | **ROM** | An individual ROM file |
-| Episode File | **ROM File** | Physical ROM file on disk |
-
-## API
-
-Playarr exposes a full REST API at `/api/v3`. All requests require the `X-Api-Key` header.
+## Development
 
 ```bash
-# List all games
-curl -H "X-Api-Key: YOUR_API_KEY" http://localhost:9797/api/v3/game
+# Build backend
+dotnet msbuild -restore src/Playarr.sln -p:Configuration=Debug -p:Platform=Posix
 
-# Get a specific game
-curl -H "X-Api-Key: YOUR_API_KEY" http://localhost:9797/api/v3/game/1
+# Build frontend
+yarn build
 
-# System status
-curl -H "X-Api-Key: YOUR_API_KEY" http://localhost:9797/api/v3/system/status
+# Frontend dev mode (hot reload)
+yarn start
+
+# Run unit tests (excludes integration tests that need external services)
+dotnet test src/Playarr.sln --filter 'Category!=IntegrationTest&Category!=AutomationTest&Category!=ManualTest'
+
+# Run a specific test project
+dotnet test src/Playarr.Core.Test/Playarr.Core.Test.csproj --no-build --filter 'Category!=IntegrationTest'
 ```
 
-See [docs/api.md](docs/api.md) for the full API reference.
+See [docs/development.md](docs/development.md) for the full development guide.
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Backend | .NET 10, ASP.NET Core |
+| Frontend | React 18, TypeScript, webpack 5 |
+| Database | SQLite (default), PostgreSQL (optional) |
+| ORM | Dapper |
+| Migrations | FluentMigrator |
+| Real-time | SignalR |
+| Testing | NUnit, Moq, FluentAssertions |
+| Metadata | IGDB (via [igdb-dotnet](https://github.com/kamranayub/igdb-dotnet)), Metacritic |
 
 ## Project Structure
 
 ```
-playarr/
- src/
-   ├── Playarr/                  # Main application entry point
-   ├── Playarr.Core/             # Business logic, domain models, data access
-   │   ├── Games/                # Game, ROM, Platform, RomFile models
-   │   ├── Datastore/            # SQLite database, migrations (FluentMigrator)
-   │   ├── Download/             # Download client integrations
-   │   ├── ImportLists/          # Import list providers
-   │   └── Notifications/        # Notification providers
-   ├── Playarr.Api.V3/           # REST API controllers (v3)
-   ├── Playarr.Api.V5/           # REST API controllers (v5)
-   ├── Playarr.Host/             # ASP.NET Core hosting, startup
-   ├── Playarr.Http/             # HTTP middleware, authentication
-   ├── Playarr.Common/           # Shared utilities, exceptions
-   ├── Playarr.SignalR/          # Real-time push notifications
-   └── Playarr.Update/           # Self-update mechanism
- frontend/
-   └── src/                      # React/TypeScript SPA
-       ├── Game/                 # Game management views
-       ├── AddGame/              # Add new game workflow
-       ├── Rom/                  # ROM detail views
-       ├── Platform/             # Platform management
-       ├── Calendar/             # Calendar view
-       ├── Settings/             # Settings pages
-       └── System/               # System status and logs
- distribution/                 # Packaging (Debian, macOS, Windows)
- docker/                       # Docker build files
- docs/                         # Documentation
+src/
+ Playarr/               # Application entry point
+ Playarr.Core/          # Business logic, domain models, data access
+   ├── Games/             # Game, Rom, Platform, GameSystem models
+   ├── MetadataSource/    # IGDB and Metacritic integrations
+   └── Datastore/         # DB repositories, 223+ migrations
+ Playarr.Api.V3/        # REST API controllers
+ Playarr.Host/          # ASP.NET Core hosting
+ Playarr.Http/          # HTTP middleware, authentication
+ Playarr.Common/        # Shared utilities
+ Playarr.SignalR/       # Real-time notifications
+
+frontend/src/              # React/TypeScript SPA
+distribution/              # Packaging (Debian, Docker, macOS, Windows)
+scripts/                   # Build, test, and dev setup scripts
 ```
 
-## Development
+## Domain Model
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup.
+Playarr reuses the Sonarr database schema, mapping TV concepts to gaming:
 
-```bash
-# Backend: build & run
-dotnet build src/Playarr.sln
-dotnet run --project src/Playarr/Playarr.csproj
-
-# Frontend: dev mode with hot reload
-yarn start
-
-# Run tests
-dotnet test src/Playarr.Core.Test/Playarr.Core.Test.csproj
-```
+| Sonarr | Playarr | DB Table |
+|--------|---------|----------|
+| Series | Game | `Series` |
+| Season | Platform | (computed) |
+| Episode | ROM | `Episodes` |
+| EpisodeFile | RomFile | `EpisodeFiles` |
 
 ## License
 
-- [GNU GPL v3](http://www.gnu.org/licenses/gpl.html)
-- Copyright 2024-2026 — Forked from [Sonarr](https://github.com/Sonarr/Sonarr)
+[GNU General Public License v3.0](LICENSE.md)
 
-## Credits and Attribution
+## Credits & Attribution
 
-Playarr is built on the foundation of the excellent Servarr project family:
+Playarr is a derivative work of [Sonarr](https://github.com/Sonarr/Sonarr) (GPL v3).
 
-- **[Sonarr](https://github.com/Sonarr/Sonarr)** — The core architecture, backend framework, and API design
-- **[Radarr](https://github.com/Radarr/Radarr)** — Additional design patterns and quality management features
-- **[Servarr](https://github.com/Servarr)** — The overall ecosystem and shared libraries
+Third-party components:
+- **[Sonarr](https://github.com/Sonarr/Sonarr)** — Original codebase (GPL v3). Copyright 2010-2017 Mark McDowall, Keivan Beigi, Taloth Saldono and contributors.
+- **[igdb-dotnet](https://github.com/kamranayub/igdb-dotnet)** — IGDB API client (Apache 2.0) by Kamran Ayub
+- **[AeroFoil](https://github.com/luketanti/AeroFoil)** — Inspiration for ROM file name parsing conventions
 
-We are grateful to the Servarr community and all contributors to these projects for creating the robust, maintainable codebase that Playarr builds upon.
-
-Additional thanks to:
-- **IGDB (Internet Game Database)** — Game metadata and information
-- **All open-source contributors** — See git history for detailed contributions
+See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and [COPYRIGHT.md](COPYRIGHT.md) for full details.

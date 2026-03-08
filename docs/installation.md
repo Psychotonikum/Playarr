@@ -4,46 +4,50 @@
 
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
-| OS | Linux (Debian 11+), Windows 10+, macOS 12+ | Debian 12 / Ubuntu 22.04 |
-| Runtime | .NET 10 Runtime | .NET 10 SDK (for building) |
+| OS | Debian 11+, Ubuntu 20.04+, Windows 10+, macOS 12+ | Debian 12 / Ubuntu 22.04 |
+| Runtime | .NET 10 Runtime | .NET 10 SDK (for building from source) |
 | RAM | 512 MB | 1 GB+ |
-| Disk | 200 MB (app) + space for ROMs | SSD recommended |
-| Browser | Any modern browser | Chrome, Firefox, Safari |
+| Disk | 200 MB (application) + ROM storage | SSD for database |
 
-## Installation Methods
+## Method 1: Debian/Ubuntu (Recommended)
 
-### 1. From Source (Recommended for Development)
+The install script sets up Playarr as a systemd service. It handles both fresh installs and updates.
 
 ```bash
-# Clone the repository
-git clone https://github.com/Psychotonikum/playarr.git
-cd playarr
-
-# Install .NET 10 SDK (if not installed)
-wget https://dot.net/v1/dotnet-install.sh
-bash dotnet-install.sh --channel 10.0
-export PATH="$HOME/.dotnet:$PATH"
-
-# Install Node.js 20 and Yarn
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
-sudo apt-get install -y nodejs
-npm install -g yarn
-
-# Build frontend
-yarn install
-yarn build
-
-# Build backend
-dotnet restore src/Playarr.sln
-dotnet build src/Playarr.sln
-
-# Run
-dotnet run --project src/Playarr/Playarr.csproj
+# Download and run the install script
+cd /tmp
+curl -sLO https://raw.githubusercontent.com/Psychotonikum/playarr/main/distribution/debian/install.sh
+sudo bash install.sh
 ```
 
-The web UI will be available at `http://localhost:9797`.
+**Options:**
 
-### 2. Docker
+```bash
+# Unattended mode (for automation)
+sudo bash install.sh --user playarr --group media -u
+
+# Custom user/group
+sudo bash install.sh --user myuser --group mygroup
+
+# Help
+bash install.sh --help
+```
+
+**Managing the service:**
+
+```bash
+sudo systemctl start playarr
+sudo systemctl stop playarr
+sudo systemctl restart playarr
+sudo systemctl status playarr
+journalctl -u playarr -f    # View logs
+```
+
+**Updating:**
+
+Run the install script again. It detects the existing installation, stops the service, replaces the binaries, and restarts.
+
+## Method 2: Docker
 
 ```bash
 docker run -d \
@@ -51,16 +55,13 @@ docker run -d \
   -p 9797:9797 \
   -v /path/to/config:/config \
   -v /path/to/roms:/roms \
-  -e PUID=1000 \
-  -e PGID=1000 \
-  -e TZ=America/New_York \
+  --restart unless-stopped \
   playarr/playarr:latest
 ```
 
-#### Docker Compose
+**Docker Compose:**
 
 ```yaml
-version: "3"
 services:
   playarr:
     image: playarr/playarr:latest
@@ -70,64 +71,53 @@ services:
     volumes:
       - ./config:/config
       - /path/to/roms:/roms
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
     restart: unless-stopped
 ```
 
-### 3. Debian/Ubuntu (systemd)
+## Method 3: From Source
+
+Requires .NET 10 SDK, Node.js 20+, and Yarn.
 
 ```bash
-# From the project root
-cd distribution/debian
-sudo bash install.sh
-
-# The service is now running on port 9797
-sudo systemctl status playarr
-
-# Manage the service
-sudo systemctl start playarr
-sudo systemctl stop playarr
-sudo systemctl restart playarr
-
-# View logs
-journalctl -u playarr -f
-```
-
-### 4. Manual (start.sh)
-
-For quick testing or debugging:
-
-```bash
+git clone https://github.com/Psychotonikum/playarr.git
 cd playarr
-bash start.sh
+
+# Automated setup (Debian/Ubuntu)
+sudo bash scripts/setup-dev.sh
+
+# Or manual steps:
+yarn install && yarn build
+dotnet msbuild -restore src/Playarr.sln -p:Configuration=Debug -p:Platform=Posix
+./_output/net10.0/Playarr
 ```
 
 ## Post-Installation
 
-1. Open `http://localhost:9797` in your browser
-2. Set up your root folder (where ROMs are stored)
-3. Configure a download client (Settings > Download Clients)
-4. Add an indexer (Settings > Indexers)
-5. Add your first game (Games > Add New)
+1. Open **http://localhost:9797** (or your server's IP)
+2. Go to **Settings > Metadata Source** and enter your Twitch/IGDB API credentials
+3. Go to **Settings > Media Management** and add a root folder for ROMs
+4. Go to **Settings > Game Systems** and add the platforms you manage
+5. Click **+ Add Game** to search and add your first game
 
-## Changing the Port
+## Configuration
 
-Edit `config.xml` in your config directory:
+Configuration is stored in `config.xml`:
 
-```xml
-<Config>
-  <Port>9797</Port>
-</Config>
-```
+| OS | Location |
+|----|----------|
+| Linux (systemd) | `/var/lib/playarr/config.xml` |
+| Linux (manual) | `~/.config/Playarr/config.xml` |
+| Docker | `/config/config.xml` |
+| Windows | `%AppData%\Playarr\config.xml` |
 
-Or pass it as a command-line argument:
+Key settings:
 
-```bash
-dotnet run --project src/Playarr/Playarr.csproj -- --port=9797
-```
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `Port` | `9797` | Web UI / API port |
+| `BindAddress` | `*` | Network interface |
+| `ApiKey` | (auto) | API authentication key |
+| `AuthenticationMethod` | `None` | `None`, `Basic`, `Forms`, `External` |
 
 ## Reverse Proxy
 
@@ -145,41 +135,13 @@ location /playarr {
 }
 ```
 
-### Apache
-
-```apache
-<Location /playarr>
-    ProxyPass http://127.0.0.1:9797/playarr
-    ProxyPassReverse http://127.0.0.1:9797/playarr
-</Location>
-```
-
-## Updating
-
-### From Source
-
-```bash
-cd playarr
-git pull
-yarn install && yarn build
-dotnet build src/Playarr.sln
-# Restart the application
-```
-
-### Docker
-
-```bash
-docker pull playarr/playarr:latest
-docker stop playarr && docker rm playarr
-# Re-run with the same docker run command
-```
+Set `UrlBase` to `/playarr` in `config.xml` when using a reverse proxy with a sub-path.
 
 ## Troubleshooting
 
 | Problem | Solution |
 |---------|----------|
-| Port already in use | Change port in config.xml or kill the conflicting process |
-| Permission denied | Check file ownership. Use PUID/PGID in Docker |
-| Database locked | Only one instance of Playarr can run at a time |
-| White screen on UI | Clear browser cache or rebuild frontend with `yarn build` |
-| Can't connect to download client | Verify the client's host, port, and API key in Settings |
+| Won't start | Check port availability, review logs, verify .NET 10 runtime |
+| Blank UI | Clear browser cache, rebuild frontend with `yarn build` |
+| Database locked | Kill duplicate Playarr processes |
+| Game search fails | Verify Twitch/IGDB credentials in Settings > Metadata Source |

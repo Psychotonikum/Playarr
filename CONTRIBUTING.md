@@ -1,88 +1,74 @@
-# How to Contribute
+# Contributing to Playarr
 
-We're always looking for people to help make Playarr even better. There are several ways to contribute.
+Thank you for your interest in contributing to Playarr.
 
-## Documentation
+## Prerequisites
 
-Improvements to the [README](README.md), [docs/](docs/), and [wiki/](wiki/) are always welcome.
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (10.0.103+)
+- [Node.js 20+](https://nodejs.org/)
+- [Yarn](https://yarnpkg.com/) (v1.x)
+- Git
 
-## Bug Reports
-
-1. Search [existing issues](https://github.com/Psychotonikum/playarr/issues) to avoid duplicates
-2. Open a new issue with:
-   - Clear description of the bug
-   - Steps to reproduce
-   - Expected vs actual behavior
-   - Playarr version, OS, and runtime version
-   - Relevant log excerpts (set log level to Debug)
-
-## Feature Requests
-
-Open an issue labeled "feature request" describing the problem it solves and how you envision it working.
-
-## Development
-
-### Tools Required
-
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- [Node.js 20+](https://nodejs.org/) 
-- [Yarn](https://yarnpkg.com/)
-- [Git](https://git-scm.com/downloads)
-- IDE of choice (VS Code, Rider, Visual Studio)
-
-### Getting Started
-
-1. Fork the repository
-2. Clone your fork:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/playarr.git
-   cd playarr
-   ```
-3. Install frontend dependencies: `yarn install`
-4. Start the frontend dev server: `yarn start`
-5. Build the backend: `dotnet build src/Playarr.sln`
-6. Run: `dotnet run --project src/Playarr/Playarr.csproj`
-7. Open `http://localhost:9797`
-
-### Running Tests
+## Development Setup
 
 ```bash
-# Core tests
-dotnet test src/Playarr.Core.Test/Playarr.Core.Test.csproj
+git clone https://github.com/Psychotonikum/playarr.git
+cd playarr
 
-# All tests
-dotnet test src/Playarr.sln
+# Automated setup for Debian/Ubuntu:
+sudo bash scripts/setup-dev.sh
+
+# Or manually:
+yarn install && yarn build
+dotnet msbuild -restore src/Playarr.sln -p:Configuration=Debug -p:Platform=Posix
 ```
 
-### Contributing Code
+## Running
 
-- Check existing issues before starting work to avoid duplication
-- Rebase from `main`, don't merge
-- Make meaningful, focused commits
-- Feel free to open a draft PR early for feedback
-- Add tests for new functionality
-- One feature/bug fix per pull request
+```bash
+./_output/net10.0/Playarr
+# Web UI: http://localhost:9797
+```
 
-### Code Style
+For frontend hot reload during development:
 
-- 4-space indentation (no tabs)
-- Follow existing StyleCop rules (see `.editorconfig`)
-- Use `var` for variable declarations in C#
-- Unix line endings
-- Keep changes focused — don't refactor unrelated code
+```bash
+yarn start
+```
 
-### Pull Requests
+## Testing
 
-- Target the `main` branch
-- Include a clear description of what changed and why
-- Ensure backend and frontend both build: `dotnet build src/Playarr.sln && yarn build`
-- Ensure tests pass
-- Each PR should come from its own feature branch with a meaningful name:
-  - `add-platform-filter` (good)
-  - `fix-rom-import` (good)
-  - `patch` (bad)
-  - `dev` (bad)
+```bash
+# Run unit tests (excludes integration tests)
+dotnet test src/Playarr.sln --filter 'Category!=IntegrationTest&Category!=AutomationTest&Category!=ManualTest'
+```
+
+## Pull Request Process
+
+1. Fork the repository
+2. Create a feature branch from `main`
+3. Make your changes
+4. Run the test suite
+5. Submit a pull request to `main`
+
+## Code Style
+
+- Follow existing code conventions in the project
+- C# code should follow the .editorconfig and stylecop rules
+- Frontend code should pass `yarn lint` and `yarn stylelint`
+
+## Architecture Notes
+
+Playarr is a fork of [Sonarr](https://github.com/Sonarr/Sonarr). The domain model maps TV concepts to gaming:
+
+| Sonarr | Playarr |
+|--------|---------|
+| Series | Game |
+| Season | Platform |
+| Episode | ROM |
+
+See [docs/development.md](docs/development.md) for the full architecture guide.
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [GNU GPL v3](http://www.gnu.org/licenses/gpl.html).
+By contributing, you agree that your contributions will be licensed under the [GNU GPL v3](LICENSE.md).
