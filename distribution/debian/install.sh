@@ -2,12 +2,13 @@
 ### Description: Playarr .NET Debian install
 ### Originally written for Radarr by: DoctorArr - doctorarr@the-rowlands.co.uk on 2021-10-01 v1.0
 ### Updates for servarr suite made by Bakerboy448, DoctorArr, brightghost, aeramor and VP-EN
-### Version v1.0.0 2023-12-29 - StevieTV - adapted from servarr script for Playarr installs
+### Version v1.0.0 2023-12-29 - StevieTV - adapted from servarr script for Sonarr installs
 ### Version V1.0.1 2024-01-02 - StevieTV - remove UTF8-BOM
 ### Version V1.0.2 2024-01-03 - markus101 - Get user input from /dev/tty
 ### Version V1.0.3 2024-01-06 - StevieTV - exit script when it is ran from install directory
 ### Version V1.0.4 2025-04-05 - kaecyra - Allow user/group to be supplied via CLI, add unattended mode
 ### Version V1.0.5 2025-07-08 - bparkin1283 - use systemctl instead of service for stopping app
+### Version V2.0.0 2026-03-08 - Playarr - Adapted for Playarr, added update support
 
 ### Boilerplate Warning
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
@@ -18,18 +19,17 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-scriptversion="1.0.4"
-scriptdate="2025-04-05"
+scriptversion="2.0.0"
+scriptdate="2026-03-08"
 
 set -euo pipefail
 
 echo "Running Playarr Install Script - Version [$scriptversion] as of [$scriptdate]"
 
 # Am I root?, need root!
-
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root."
-    exit
+    exit 1
 fi
 
 app="playarr"
@@ -39,32 +39,43 @@ app_umask="0002"
 branch="main"
 
 # Constants
-### Update these variables as required for your specific instance
-installdir="/opt"              # {Update me if needed} Install Location
+installdir="/opt"              # Install Location
 bindir="${installdir}/${app^}" # Full Path to Install Location
-datadir="/var/lib/$app/"       # {Update me if needed} AppData directory to use
+datadir="/var/lib/$app/"       # AppData directory
 app_bin=${app^}                # Binary Name of the app
 
-# This script should not be ran from installdir, otherwise later in the script the extracted files will be removed before they can be moved to installdir.
+# Detect if this is an update (existing installation)
+is_update=false
+if [ -d "$bindir" ] && [ -f "$bindir/$app_bin" ]; then
+    is_update=true
+fi
+
+# This script should not be ran from installdir
 if [ "$installdir" == "$(dirname -- "$( readlink -f -- "$0"; )")" ] || [ "$bindir" == "$(dirname -- "$( readlink -f -- "$0"; )")" ]; then
     echo "You should not run this script from the intended install directory. The script will exit. Please re-run it from another directory"
-    exit
+    exit 1
 fi
 
 show_help() {
     cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
 
+Installs or updates Playarr. If Playarr is already installed, it will be
+stopped, updated in-place, and restarted automatically.
+
 Options:
-  --user <name>       What user will $app run under?
+  --user <name>       What user will ${app^} run under?
                       User will be created if it doesn't already exist.
 
-  --group <name>      What group will $app run under?
+  --group <name>      What group will ${app^} run under?
                       Group will be created if it doesn't already exist.
 
+  --branch <name>     Which branch to install (Default: main)
+
   -u                  Unattended mode
-                      The installer will not prompt or pause, making it suitable for automated installations.
-                      This option requires the use of --user and --group to supply those inputs for the script.
+                      The installer will not prompt or pause, making it
+                      suitable for automated installations. Requires --user
+                      and --group.
 
   -h, --help          Show this help message and exit
 EOF
@@ -83,7 +94,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --user)
-            if [[ -n "$2" && "$2" != -* ]]; then
+            if [[ -n "${2:-}" && "$2" != -* ]]; then
                 arg_user="$2"
                 shift 2
             else
@@ -96,11 +107,24 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --group)
-            if [[ -n "$2" && "$2" != -* ]]; then
+            if [[ -n "${2:-}" && "$2" != -* ]]; then
                 arg_group="$2"
                 shift 2
             else
                 echo "Error: --group requires a value." >&2
+                exit 1
+            fi
+            ;;
+        --branch=*)
+            branch="${1#*=}"
+            shift
+            ;;
+        --branch)
+            if [[ -n "${2:-}" && "$2" != -* ]]; then
+                branch="$2"
+                shift 2
+            else
+                echo "Error: --branch requires a value." >&2
                 exit 1
             fi
             ;;
@@ -128,9 +152,25 @@ if $arg_unattended; then
     fi
 fi
 
+if $is_update; then
+    echo ""
+    echo "Existing ${app^} installation detected at [$bindir]"
+    echo "This script will update it in-place."
+    echo ""
+fi
+
 # Prompt User if necessary
 if [ -n "$arg_user" ]; then
     app_uid="$arg_user"
+elif $is_update; then
+    # Try to detect the current user from the systemd service
+    existing_user=$(grep -oP '(?<=^User=).*' /etc/systemd/system/"$app".service 2>/dev/null || echo "")
+    if [ -n "$existing_user" ]; then
+        app_uid="$existing_user"
+        echo "Using existing service user: $app_uid"
+    else
+        read -r -p "What user should ${app^} run as? (Default: $app): " app_uid < /dev/tty
+    fi
 else
     read -r -p "What user should ${app^} run as? (Default: $app): " app_uid < /dev/tty
 fi
@@ -140,14 +180,29 @@ app_uid=${app_uid:-$app}
 # Prompt Group if necessary
 if [ -n "$arg_group" ]; then
     app_guid="$arg_group"
+elif $is_update; then
+    existing_group=$(grep -oP '(?<=^Group=).*' /etc/systemd/system/"$app".service 2>/dev/null || echo "")
+    if [ -n "$existing_group" ]; then
+        app_guid="$existing_group"
+        echo "Using existing service group: $app_guid"
+    else
+        read -r -p "What group should ${app^} run as? (Default: media): " app_guid < /dev/tty
+    fi
 else
     read -r -p "What group should ${app^} run as? (Default: media): " app_guid < /dev/tty
 fi
 app_guid=$(echo "$app_guid" | tr -d ' ')
 app_guid=${app_guid:-media}
 
-echo "This will install [${app^}] to [$bindir] and use [$datadir] for the AppData Directory"
-echo "${app^} will run as the user [$app_uid] and group [$app_guid]. By continuing, you've confirmed that the selected user and group will have READ and WRITE access to your Media Library and Download Client Completed Download directories"
+if $is_update; then
+    echo "Updating [${app^}] at [$bindir] using [$datadir] for the AppData Directory"
+else
+    echo "This will install [${app^}] to [$bindir] and use [$datadir] for the AppData Directory"
+fi
+echo "${app^} will run as the user [$app_uid] and group [$app_guid]."
+if ! $is_update; then
+    echo "By continuing, you've confirmed that the selected user and group will have READ and WRITE access to your ROM Library and Download Client Completed Download directories"
+fi
 if ! $arg_unattended; then
     read -n 1 -r -s -p $'Press enter to continue or ctrl+c to exit...\n' < /dev/tty
 fi
@@ -168,67 +223,68 @@ if ! getent group "$app_guid" | grep -qw "$app_uid"; then
     echo "Added User [$app_uid] to Group [$app_guid]"
 fi
 
-# Stop and disable the App if running
-if [ $(systemctl is-active "$app") = "active" ]; then
-    systemctl disable --now -q "$app"
-    echo "Stopped and disabled existing $app"
+# Stop the App if running
+if systemctl is-active --quiet "$app" 2>/dev/null; then
+    systemctl stop "$app"
+    echo "Stopped existing $app"
 fi
 
 # Create Appdata Directory
-
-# AppData
 mkdir -p "$datadir"
 chown -R "$app_uid":"$app_guid" "$datadir"
 chmod 775 "$datadir"
 echo "Directories created"
-# Download and install the App
 
-# prerequisite packages
+# Download and install the App
 echo ""
 echo "Installing pre-requisite Packages"
 # shellcheck disable=SC2086
-apt update && apt install -y $app_prereq
+apt-get update && apt-get install -y $app_prereq
 echo ""
 ARCH=$(dpkg --print-architecture)
-# get arch
+
 dlbase="https://services.playarr.tv/v1/download/$branch/latest?version=4&os=linux"
 case "$ARCH" in
 "amd64") DLURL="${dlbase}&arch=x64" ;;
 "armhf") DLURL="${dlbase}&arch=arm" ;;
 "arm64") DLURL="${dlbase}&arch=arm64" ;;
 *)
-    echo "Arch not supported"
+    echo "Arch not supported: $ARCH"
     exit 1
     ;;
 esac
-echo ""
-echo "Removing previous tarballs"
-# -f to Force so we fail if it doesn't exist
-rm -f "${app^}".*.tar.gz
+
+# Use a temporary directory for download
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+
 echo ""
 echo "Downloading..."
-wget --content-disposition "$DLURL"
-tar -xvzf "${app^}".*.tar.gz
+wget --content-disposition -P "$tmpdir" "$DLURL"
+tar -xzf "$tmpdir"/"${app^}".*.tar.gz -C "$tmpdir"
 echo ""
 echo "Installation files downloaded and extracted"
 
-# remove existing installs
-echo "Removing existing installation"
-rm -rf "$bindir"
+# Remove existing installation (config data is in datadir, not bindir)
+if [ -d "$bindir" ]; then
+    echo "Removing existing installation"
+    rm -rf "$bindir"
+fi
+
 echo "Installing..."
-mv "${app^}" $installdir
+mv "$tmpdir/${app^}" "$installdir"
 chown "$app_uid":"$app_guid" -R "$bindir"
 chmod 775 "$bindir"
-rm -rf "${app^}.*.tar.gz"
+
 # Ensure we check for an update in case user installs older version or different branch
 touch "$datadir"/update_required
 chown "$app_uid":"$app_guid" "$datadir"/update_required
 echo "App Installed"
-# Configure Autostart
 
+# Configure Autostart
 # Remove any previous app .service
 echo "Removing old service file"
-rm -rf /etc/systemd/system/"$app".service
+rm -f /etc/systemd/system/"$app".service
 
 # Create app .service with correct user startup
 echo "Creating service file"
@@ -236,6 +292,7 @@ cat <<EOF | tee /etc/systemd/system/"$app".service >/dev/null
 [Unit]
 Description=${app^} Daemon
 After=syslog.target network.target
+
 [Service]
 User=$app_uid
 Group=$app_guid
@@ -245,6 +302,7 @@ ExecStart=$bindir/$app_bin -nobrowser -data=$datadir
 TimeoutStopSec=20
 KillMode=process
 Restart=on-failure
+
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -258,7 +316,11 @@ systemctl enable --now -q "$app"
 host=$(hostname -I)
 ip_local=$(grep -oP '^\S*' <<<"$host")
 echo ""
-echo "Install complete"
+if $is_update; then
+    echo "Update complete"
+else
+    echo "Install complete"
+fi
 sleep 10
 STATUS="$(systemctl is-active "$app")"
 if [ "${STATUS}" = "active" ]; then
