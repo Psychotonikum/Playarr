@@ -83,13 +83,8 @@ export const useAddRootFolder = () => {
     path: '/rootFolder',
     method: 'POST',
     mutationOptions: {
-      onSuccess: (newRootFolder) => {
-        queryClient.setQueryData<RootFolder[]>(
-          ['/rootFolder'],
-          (oldRootFolders = []) => {
-            return [...oldRootFolders, newRootFolder];
-          }
-        );
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['/rootFolder'] });
       },
     },
   });
