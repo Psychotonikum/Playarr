@@ -420,6 +420,18 @@ namespace Playarr.Core.Configuration
 
         public string ApplicationUrl => GetValue("ApplicationUrl", string.Empty);
 
+        public string TwitchClientId
+        {
+            get { return GetValue("TwitchClientId", string.Empty); }
+            set { SetValue("TwitchClientId", value); }
+        }
+
+        public string TwitchClientSecret
+        {
+            get { return GetValue("TwitchClientSecret", string.Empty); }
+            set { SetValue("TwitchClientSecret", value); }
+        }
+
         public bool TrustCgnatIpAddresses
         {
             get { return GetValueBoolean("TrustCgnatIpAddresses", false); }

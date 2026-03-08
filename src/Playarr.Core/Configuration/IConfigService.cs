@@ -100,5 +100,9 @@ namespace Playarr.Core.Configuration
 
         CertificateValidationType CertificateValidation { get; }
         string ApplicationUrl { get; }
+
+        // IGDB / Twitch
+        string TwitchClientId { get; set; }
+        string TwitchClientSecret { get; set; }
     }
 }

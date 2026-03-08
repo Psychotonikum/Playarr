@@ -1,108 +1,74 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net;
+using IGDB;
 using NLog;
-using Playarr.Common.Cloud;
 using Playarr.Common.Disk;
 using Playarr.Common.Extensions;
 using Playarr.Common.Http;
 using Playarr.Core.DataAugmentation.DailySeries;
 using Playarr.Core.Exceptions;
+using Playarr.Core.Games;
 using Playarr.Core.Languages;
 using Playarr.Core.MediaCover;
-using Playarr.Core.MetadataSource.SkyHook.Resource;
-using Playarr.Core.Parser;
-using Playarr.Core.Games;
 
 namespace Playarr.Core.MetadataSource.SkyHook
 {
-    public class SkyHookProxy : IProvideSeriesInfo, ISearchForNewSeries
+    public class SkyHookProxy : IProvideSeriesInfo, ISearchForNewSeries, IFetchUpcomingReleases
     {
-        private readonly IHttpClient _httpClient;
+        private const string GameFields = "fields id,name,summary,first_release_date,cover.image_id,platforms.name,platforms.abbreviation,genres.name,rating,rating_count,slug,game_status,screenshots.image_id,artworks.image_id,involved_companies.developer,involved_companies.publisher,involved_companies.company.name;";
+
+        private readonly IIgdbClient _igdbClient;
         private readonly Logger _logger;
         private readonly IGameService _seriesService;
         private readonly IDailyGameService _dailyGameService;
-        private readonly IHttpRequestBuilderFactory _requestBuilder;
 
-        public SkyHookProxy(IHttpClient httpClient,
-                            IPlayarrCloudRequestBuilder requestBuilder,
+        public SkyHookProxy(IIgdbClient igdbClient,
                             IGameService seriesService,
                             IDailyGameService dailyGameService,
                             Logger logger)
         {
-            _httpClient = httpClient;
-            _requestBuilder = requestBuilder.SkyHookIgdb;
+            _igdbClient = igdbClient;
             _logger = logger;
             _seriesService = seriesService;
             _dailyGameService = dailyGameService;
-            _requestBuilder = requestBuilder.SkyHookIgdb;
         }
 
         public Tuple<Game, List<Rom>> GetSeriesInfo(int igdbGameId)
         {
-            var httpRequest = _requestBuilder.Create()
-                                             .SetSegment("route", "shows")
-                                             .Resource(igdbGameId.ToString())
-                                             .Build();
+            var query = $"{GameFields} where id = {igdbGameId}; limit 1;";
+            var games = _igdbClient.SearchGames(query);
 
-            httpRequest.AllowAutoRedirect = true;
-            httpRequest.SuppressHttpError = true;
-
-            var httpResponse = _httpClient.Get<ShowResource>(httpRequest);
-
-            if (httpResponse.HasHttpError)
+            if (games == null || games.Length == 0)
             {
-                if (httpResponse.StatusCode == HttpStatusCode.NotFound)
-                {
-                    throw new SeriesNotFoundException(igdbGameId);
-                }
-                else
-                {
-                    throw new HttpException(httpRequest, httpResponse);
-                }
+                throw new SeriesNotFoundException(igdbGameId);
             }
 
-            var roms = httpResponse.Resource.Roms.Select(MapEpisode);
-            var game = MapSeries(httpResponse.Resource);
+            var game = MapIgdbGame(games[0]);
+            var roms = new List<Rom>();
 
-            return new Tuple<Game, List<Rom>>(game, roms.ToList());
+            return new Tuple<Game, List<Rom>>(game, roms);
         }
 
         public List<Game> SearchForNewSeriesByImdbId(string imdbId)
         {
-            imdbId = Parser.Parser.NormalizeImdbId(imdbId);
-
-            if (imdbId == null)
-            {
-                return new List<Game>();
-            }
-
-            var results = SearchForNewSeries($"imdb:{imdbId}");
-
-            return results;
+            return new List<Game>();
         }
 
         public List<Game> SearchForNewSeriesByAniListId(int aniListId)
         {
-            var results = SearchForNewSeries($"anilist:{aniListId}");
-
-            return results;
+            return new List<Game>();
         }
 
         public List<Game> SearchForNewSeriesByMyAnimeListId(int malId)
         {
-            var results = SearchForNewSeries($"mal:{malId}");
-
-            return results;
+            return new List<Game>();
         }
 
         public List<Game> SearchForNewSeriesByTmdbId(int tmdbId)
         {
-            var results = SearchForNewSeries($"tmdb:{tmdbId}");
-
-            return results;
+            return new List<Game>();
         }
 
         public List<Game> SearchForNewSeries(string title)
@@ -141,235 +107,255 @@ namespace Playarr.Core.MetadataSource.SkyHook
                     }
                 }
 
-                var httpRequest = _requestBuilder.Create()
-                                                 .SetSegment("route", "search")
-                                                 .AddQueryParam("term", title.ToLower().Trim())
-                                                 .Build();
+                var escapedTitle = title.Replace("\"", "\\\"").Trim();
+                var query = $"{GameFields} search \"{escapedTitle}\"; limit 20;";
+                var games = _igdbClient.SearchGames(query);
 
-                var httpResponse = _httpClient.Get<List<ShowResource>>(httpRequest);
+                if (games == null)
+                {
+                    return new List<Game>();
+                }
 
-                return httpResponse.Resource.SelectList(MapSearchResult);
+                return games.Select(MapSearchResult).ToList();
             }
             catch (HttpException ex)
             {
                 _logger.Warn(ex);
-                throw new SkyHookException("Search for '{0}' failed. Unable to communicate with SkyHook. {1}", ex, title, ex.Message);
+                throw new SkyHookException("Search for '{0}' failed. Unable to communicate with IGDB. {1}", ex, title, ex.Message);
             }
             catch (WebException ex)
             {
                 _logger.Warn(ex);
-                throw new SkyHookException("Search for '{0}' failed. Unable to communicate with SkyHook. {1}", ex, title, ex.Message);
+                throw new SkyHookException("Search for '{0}' failed. Unable to communicate with IGDB. {1}", ex, title, ex.Message);
             }
             catch (Exception ex)
             {
                 _logger.Warn(ex);
-                throw new SkyHookException("Search for '{0}' failed. Invalid response received from SkyHook. {1}", ex, title, ex.Message);
+                throw new SkyHookException("Search for '{0}' failed. Invalid response received from IGDB. {1}", ex, title, ex.Message);
             }
         }
 
-        private Game MapSearchResult(ShowResource show)
+        public List<Game> GetUpcomingReleases(DateTime start, DateTime end)
         {
-            var game = _seriesService.FindByIgdbId(show.IgdbId);
-
-            if (game == null)
+            try
             {
-                game = MapSeries(show);
-            }
+                var startUtc = new DateTimeOffset(DateTime.SpecifyKind(start, DateTimeKind.Utc));
+                var endUtc = new DateTimeOffset(DateTime.SpecifyKind(end, DateTimeKind.Utc));
 
-            return game;
+                var query = $"fields game.name,game.slug,game.summary,game.cover.image_id,game.platforms.name,game.genres.name,game.rating,game.rating_count,game.game_status,date,human,platform.name,platform.abbreviation; where date >= {startUtc.ToUnixTimeSeconds()} & date <= {endUtc.ToUnixTimeSeconds()}; sort date asc; limit 50;";
+                var releases = _igdbClient.SearchReleaseDates(query);
+
+                if (releases == null)
+                {
+                    return new List<Game>();
+                }
+
+                var games = new Dictionary<int, Game>();
+
+                foreach (var release in releases)
+                {
+                    var releaseGame = release.Game?.Value;
+                    if (releaseGame?.Id == null)
+                    {
+                        continue;
+                    }
+
+                    var gameId = (int)releaseGame.Id.Value;
+
+                    if (!games.ContainsKey(gameId))
+                    {
+                        var game = MapIgdbGame(releaseGame);
+                        game.Status = GameStatusType.Upcoming;
+                        game.Monitored = false;
+
+                        if (release.Date.HasValue)
+                        {
+                            game.FirstAired = release.Date.Value.UtcDateTime;
+                            game.Year = release.Date.Value.Year;
+                        }
+
+                        games[gameId] = game;
+                    }
+
+                    if (release.Platform?.Value != null)
+                    {
+                        games[gameId].Platforms.Add(new Platform
+                        {
+                            PlatformNumber = games[gameId].Platforms.Count + 1,
+                            Images = new List<MediaCover.MediaCover>(),
+                            Monitored = true
+                        });
+                    }
+                }
+
+                return games.Values.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn(ex, "Failed to fetch upcoming releases from IGDB");
+                return new List<Game>();
+            }
         }
 
-        private Game MapSeries(ShowResource show)
+        private Game MapSearchResult(IGDB.Models.Game igdbGame)
         {
-            var game = new Game();
-            game.IgdbId = show.IgdbId;
-
-            if (show.MobyGamesId.HasValue)
+            if (igdbGame.Id == null)
             {
-                game.MobyGamesId = show.MobyGamesId.Value;
+                return new Game();
             }
 
-            if (show.RawgId.HasValue)
+            var gameId = (int)igdbGame.Id.Value;
+            var existingGame = _seriesService.FindByIgdbId(gameId);
+
+            if (existingGame != null)
             {
-                game.RawgId = show.RawgId.Value;
+                return existingGame;
             }
 
-            if (show.TmdbId.HasValue)
+            return MapIgdbGame(igdbGame);
+        }
+
+        private Game MapIgdbGame(IGDB.Models.Game igdbGame)
+        {
+            var gameId = igdbGame.Id.HasValue ? (int)igdbGame.Id.Value : 0;
+            var title = igdbGame.Name ?? string.Empty;
+
+            var game = new Game
             {
-                game.TmdbId = show.TmdbId.Value;
-            }
-
-            game.ImdbId = show.ImdbId;
-            game.MalIds = show.MalIds;
-            game.AniListIds = show.AniListIds;
-            game.Title = show.Title;
-            game.CleanTitle = Parser.Parser.CleanGameTitle(show.Title);
-            game.SortTitle = GameTitleNormalizer.Normalize(show.Title, show.IgdbId);
-
-            game.OriginalLanguage = show.OriginalLanguage.IsNotNullOrWhiteSpace() ?
-                IsoLanguages.Find(show.OriginalLanguage.ToLower())?.Language ?? Language.English :
-                Language.English;
-
-            if (show.FirstAired != null)
-            {
-                game.FirstAired = DateTime.ParseExact(show.FirstAired, "yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
-                game.Year = game.FirstAired.Value.Year;
-            }
-
-            if (show.LastAired != null)
-            {
-                game.LastAired = DateTime.ParseExact(show.LastAired, "yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
-            }
-
-            game.Overview = show.Overview;
-
-            if (show.Runtime != null)
-            {
-                game.Runtime = show.Runtime.Value;
-            }
-
-            game.Network = show.Network;
-
-            if (show.TimeOfDay != null)
-            {
-                game.AirTime = string.Format("{0:00}:{1:00}", show.TimeOfDay.Hours, show.TimeOfDay.Minutes);
-            }
-
-            game.TitleSlug = show.Slug;
-            game.Status = MapGameStatus(show.Status);
-            game.Ratings = MapRatings(show.Rating);
-            game.Genres = show.Genres;
-            game.OriginalCountry = show.OriginalCountry;
-
-            if (show.ContentRating.IsNotNullOrWhiteSpace())
-            {
-                game.Certification = show.ContentRating.ToUpper();
-            }
+                IgdbId = gameId,
+                Title = title,
+                CleanTitle = Playarr.Core.Parser.Parser.CleanGameTitle(title),
+                SortTitle = GameTitleNormalizer.Normalize(title, gameId),
+                Overview = igdbGame.Summary,
+                TitleSlug = igdbGame.Slug,
+                Status = MapIgdbStatus(igdbGame),
+                OriginalLanguage = Language.English,
+                Monitored = true,
+                Ratings = new Ratings(),
+                Images = new List<MediaCover.MediaCover>(),
+                Platforms = new List<Platform>(),
+                Genres = new List<string>(),
+                Actors = new List<Actor>()
+            };
 
             if (_dailyGameService.IsDailySeries(game.IgdbId))
             {
                 game.SeriesType = GameTypes.Daily;
             }
 
-            game.Actors = show.Actors.Select(MapActors).ToList();
-            game.Platforms = show.Platforms.Select(MapSeason).ToList();
-            game.Images = show.Images.Select(MapImage).ToList();
-            game.Monitored = true;
+            if (igdbGame.FirstReleaseDate.HasValue)
+            {
+                game.FirstAired = igdbGame.FirstReleaseDate.Value.UtcDateTime;
+                game.Year = igdbGame.FirstReleaseDate.Value.Year;
+            }
+
+            if (igdbGame.Rating.HasValue && igdbGame.RatingCount.HasValue)
+            {
+                game.Ratings = new Ratings
+                {
+                    Value = (decimal)(igdbGame.Rating.Value / 10.0),
+                    Votes = igdbGame.RatingCount.Value
+                };
+            }
+
+            if (igdbGame.Genres?.Values != null)
+            {
+                game.Genres = igdbGame.Genres.Values
+                    .Where(g => g != null && !string.IsNullOrWhiteSpace(g.Name))
+                    .Select(g => g.Name)
+                    .ToList();
+            }
+
+            if (igdbGame.InvolvedCompanies?.Values != null)
+            {
+                var developer = igdbGame.InvolvedCompanies.Values.FirstOrDefault(c => c?.Developer == true && c.Company?.Value != null);
+                if (developer?.Company?.Value != null)
+                {
+                    game.Network = developer.Company.Value.Name;
+                }
+                else
+                {
+                    var publisher = igdbGame.InvolvedCompanies.Values.FirstOrDefault(c => c?.Publisher == true && c.Company?.Value != null);
+                    if (publisher?.Company?.Value != null)
+                    {
+                        game.Network = publisher.Company.Value.Name;
+                    }
+                }
+            }
+
+            if (igdbGame.Platforms?.Values != null)
+            {
+                game.Platforms = igdbGame.Platforms.Values.Select((_, i) => new Platform
+                {
+                    PlatformNumber = i + 1,
+                    Images = new List<MediaCover.MediaCover>(),
+                    Monitored = true
+                }).ToList();
+            }
+
+            var coverImageId = igdbGame.Cover?.Value?.ImageId;
+            if (!string.IsNullOrWhiteSpace(coverImageId))
+            {
+                game.Images.Add(new MediaCover.MediaCover
+                {
+                    CoverType = MediaCoverTypes.Poster,
+                    RemoteUrl = NormalizeImageUrl(ImageHelper.GetImageUrl(coverImageId, ImageSize.CoverBig))
+                });
+            }
+
+            if (igdbGame.Screenshots?.Values != null)
+            {
+                foreach (var screenshot in igdbGame.Screenshots.Values.Where(s => s != null && !string.IsNullOrWhiteSpace(s.ImageId)).Take(3))
+                {
+                    game.Images.Add(new MediaCover.MediaCover
+                    {
+                        CoverType = MediaCoverTypes.Fanart,
+                        RemoteUrl = NormalizeImageUrl(ImageHelper.GetImageUrl(screenshot.ImageId, ImageSize.ScreenshotBig))
+                    });
+                }
+            }
+
+            if (igdbGame.Artworks?.Values != null && igdbGame.Artworks.Values.Any())
+            {
+                foreach (var artwork in igdbGame.Artworks.Values.Where(a => a != null && !string.IsNullOrWhiteSpace(a.ImageId)).Take(2))
+                {
+                    game.Images.Add(new MediaCover.MediaCover
+                    {
+                        CoverType = MediaCoverTypes.Banner,
+                        RemoteUrl = NormalizeImageUrl(ImageHelper.GetImageUrl(artwork.ImageId, ImageSize.ScreenshotBig))
+                    });
+                }
+            }
 
             return game;
         }
 
-        private static Actor MapActors(ActorResource arg)
+        private static string NormalizeImageUrl(string imageUrl)
         {
-            var newActor = new Actor
+            if (string.IsNullOrWhiteSpace(imageUrl))
             {
-                Name = arg.Name,
-                Character = arg.Character
-            };
-
-            if (arg.Image != null)
-            {
-                newActor.Images = new List<MediaCover.MediaCover>
-                {
-                    new MediaCover.MediaCover(MediaCoverTypes.Headshot, arg.Image)
-                };
+                return imageUrl;
             }
 
-            return newActor;
+            return imageUrl.StartsWith("//") ? $"https:{imageUrl}" : imageUrl;
         }
 
-        private static Rom MapEpisode(RomResource oracleEpisode)
+        private static GameStatusType MapIgdbStatus(IGDB.Models.Game game)
         {
-            var rom = new Rom();
-            rom.IgdbId = oracleEpisode.IgdbId;
-            rom.Overview = oracleEpisode.Overview;
-            rom.PlatformNumber = oracleEpisode.PlatformNumber;
-            rom.EpisodeNumber = oracleEpisode.EpisodeNumber;
-            rom.AbsoluteEpisodeNumber = oracleEpisode.AbsoluteEpisodeNumber;
-            rom.Title = oracleEpisode.Title;
-            rom.AiredAfterPlatformNumber = oracleEpisode.AiredAfterPlatformNumber;
-            rom.AiredBeforePlatformNumber = oracleEpisode.AiredBeforePlatformNumber;
-            rom.AiredBeforeRomNumber = oracleEpisode.AiredBeforeRomNumber;
+            var statusId = game.GameStatus?.Id;
 
-            rom.AirDate = oracleEpisode.AirDate;
-            rom.AirDateUtc = oracleEpisode.AirDateUtc;
-            rom.Runtime = oracleEpisode.Runtime;
-            rom.FinaleType = oracleEpisode.FinaleType;
-
-            rom.Ratings = MapRatings(oracleEpisode.Rating);
-
-            // Don't include game fanart images as rom screenshot
-            if (oracleEpisode.Image != null)
-            {
-                rom.Images.Add(new MediaCover.MediaCover(MediaCoverTypes.Screenshot, oracleEpisode.Image));
-            }
-
-            return rom;
-        }
-
-        private static Platform MapSeason(SeasonResource seasonResource)
-        {
-            return new Platform
-            {
-                PlatformNumber = seasonResource.PlatformNumber,
-                Images = seasonResource.Images.Select(MapImage).ToList(),
-                Monitored = seasonResource.PlatformNumber > 0
-            };
-        }
-
-        private static GameStatusType MapGameStatus(string status)
-        {
-            if (status.Equals("ended", StringComparison.InvariantCultureIgnoreCase))
+            // IGDB game_status IDs: 0 released, 2 alpha, 3 beta, 4 early_access, 5 offline, 6 cancelled, 7 rumored, 8 delisted
+            if (!statusId.HasValue || statusId.Value == 0)
             {
                 return GameStatusType.Ended;
             }
 
-            if (status.Equals("upcoming", StringComparison.InvariantCultureIgnoreCase))
+            if (statusId.Value == 2 || statusId.Value == 3 || statusId.Value == 4 || statusId.Value == 7)
             {
                 return GameStatusType.Upcoming;
             }
 
             return GameStatusType.Continuing;
-        }
-
-        private static Ratings MapRatings(RatingResource rating)
-        {
-            if (rating == null)
-            {
-                return new Ratings();
-            }
-
-            return new Ratings
-            {
-                Votes = rating.Count,
-                Value = rating.Value
-            };
-        }
-
-        private static MediaCover.MediaCover MapImage(ImageResource arg)
-        {
-            return new MediaCover.MediaCover
-            {
-                RemoteUrl = arg.Url,
-                CoverType = MapCoverType(arg.CoverType)
-            };
-        }
-
-        private static MediaCoverTypes MapCoverType(string coverType)
-        {
-            switch (coverType.ToLower())
-            {
-                case "poster":
-                    return MediaCoverTypes.Poster;
-                case "banner":
-                    return MediaCoverTypes.Banner;
-                case "fanart":
-                    return MediaCoverTypes.Fanart;
-                case "clearlogo":
-                    return MediaCoverTypes.Clearlogo;
-                default:
-                    return MediaCoverTypes.Unknown;
-            }
         }
     }
 }
