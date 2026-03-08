@@ -18,11 +18,13 @@ import useGameSystems, {
 } from 'GameSystem/useGameSystems';
 import { InputChanged } from 'typings/inputs';
 import translate from 'Utilities/String/translate';
+import { GameSystemPreset } from './gameSystemPresets';
 import styles from './EditGameSystemModalContent.css';
 
 interface EditGameSystemModalContentProps {
   id?: number;
   cloneId?: number;
+  preset?: GameSystemPreset | null;
   onModalClose: () => void;
   onDeletePress?: () => void;
 }
@@ -35,6 +37,7 @@ const SYSTEM_TYPE_OPTIONS = [
 function EditGameSystemModalContent({
   id,
   cloneId,
+  preset,
   onModalClose,
   onDeletePress,
 }: EditGameSystemModalContentProps) {
@@ -42,31 +45,33 @@ function EditGameSystemModalContent({
   const sourceId = id ?? cloneId;
   const existing = sourceId ? systems.find((s) => s.id === sourceId) : undefined;
 
+  const defaults = preset ?? existing;
+
   const [name, setName] = useState(
-    cloneId && existing ? `${existing.name} (Copy)` : (existing?.name ?? '')
+    cloneId && existing ? `${existing.name} (Copy)` : (defaults?.name ?? '')
   );
-  const [folderName, setFolderName] = useState(existing?.folderName ?? '');
-  const [systemType, setSystemType] = useState(existing?.systemType ?? 0);
+  const [folderName, setFolderName] = useState(defaults?.folderName ?? '');
+  const [systemType, setSystemType] = useState(defaults?.systemType ?? 0);
   const [fileExtensions, setFileExtensions] = useState(
-    existing?.fileExtensions?.join(', ') ?? ''
+    defaults?.fileExtensions?.join(', ') ?? ''
   );
   const [namingFormat, setNamingFormat] = useState(
-    existing?.namingFormat ?? '{Game Title} {Region}.{Extension}'
+    defaults?.namingFormat ?? '{Game Title} {Region}.{Extension}'
   );
   const [updateNamingFormat, setUpdateNamingFormat] = useState(
-    existing?.updateNamingFormat ?? '{Game Title} v{Version}.{Extension}'
+    defaults?.updateNamingFormat ?? '{Game Title} v{Version}.{Extension}'
   );
   const [dlcNamingFormat, setDlcNamingFormat] = useState(
-    existing?.dlcNamingFormat ?? '{Game Title} DLC{Index}.{Extension}'
+    defaults?.dlcNamingFormat ?? '{Game Title} DLC{Index}.{Extension}'
   );
   const [baseFolderName, setBaseFolderName] = useState(
-    existing?.baseFolderName ?? 'base'
+    defaults?.baseFolderName ?? 'base'
   );
   const [updateFolderName, setUpdateFolderName] = useState(
-    existing?.updateFolderName ?? 'update'
+    defaults?.updateFolderName ?? 'update'
   );
   const [dlcFolderName, setDlcFolderName] = useState(
-    existing?.dlcFolderName ?? 'dlc'
+    defaults?.dlcFolderName ?? 'dlc'
   );
 
   const {

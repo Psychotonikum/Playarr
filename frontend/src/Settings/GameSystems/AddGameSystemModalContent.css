@@ -1,0 +1,42 @@
+.presetGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.presetCard {
+  composes: card from '~Components/Card.css';
+
+  width: 180px;
+  min-height: 50px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+  font-size: $defaultFontSize;
+
+  &:hover {
+    background-color: var(--tableRowHoverBackgroundColor);
+  }
+}
+
+.presetName {
+  font-weight: bold;
+}
+
+.presetFolder {
+  color: var(--dimColor);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.presetType {
+  color: var(--dimColor);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.customCard {
+  composes: presetCard;
+  border: 2px dashed var(--borderColor);
+}
