@@ -168,3 +168,17 @@ dotnet test src/Playarr.Core.Test/Playarr.Core.Test.csproj
 
 - [GNU GPL v3](http://www.gnu.org/licenses/gpl.html)
 - Copyright 2024-2026 — Forked from [Sonarr](https://github.com/Sonarr/Sonarr)
+
+## Credits and Attribution
+
+Playarr is built on the foundation of the excellent Servarr project family:
+
+- **[Sonarr](https://github.com/Sonarr/Sonarr)** — The core architecture, backend framework, and API design
+- **[Radarr](https://github.com/Radarr/Radarr)** — Additional design patterns and quality management features
+- **[Servarr](https://github.com/Servarr)** — The overall ecosystem and shared libraries
+
+We are grateful to the Servarr community and all contributors to these projects for creating the robust, maintainable codebase that Playarr builds upon.
+
+Additional thanks to:
+- **IGDB (Internet Game Database)** — Game metadata and information
+- **All open-source contributors** — See git history for detailed contributions

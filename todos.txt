@@ -1,0 +1,52 @@
+multiple changes/bugs:
+
+general:
+- dont call it roms -> call it files.
+- dont call it "Specials" -> call it "Demo"
+
+Add New:
+ - the example in the search box does say "Breaking Bad". exchange it with "Metal Gear Solid" 
+ - "AddNewGameHelpText" -> "It's easy to add a new games, just start typing the name of the game you want to add."
+
+after an search has been excexuted following need to be changed on the results cards
+- the current rating has to many digits. round it to full integers
+- remove the "Ended"
+- remove the languge ex. "English"
+
+after opening a search results cards following points need to be changed:
+- "AddNewGameRootFolderHelpText"-> "'<name of the game>' subfolder will be created automatically"
+- remove the gquality
+- Game Type should be renamded to Game Platform. Options should be "all" and one entry for every released platfrom. 
+- the monitor drop donw has to many options. kepp all, future, missing, specials
+- "AddNewGameSearchForMissingEpisodes" -> "Search for Missing Files"
+- remove the "AddNewGameSearchForCutoffUnmetEpisodes"
+- remove the option to disable the platfrom folder
+
+Game Details page after addding a new game from search:
+- the "Seasons" which are now the platfrom are called Platform 1 and Platform 2. There should be system names.
+- the "Episodes" which are the of a game are missing. 
+-- for multi file systems like switch use the infos from tinfoil. same as aerofoil does with their library management
+-- if there are multiple files, try to sort them by release date. while keeping the base game on top. 
+- none of the buttons on a season are working, like the searc, manual search.
+- remove the external link for trakt.tv. 
+
+Calendar:
+- the calendar is empty. is it a problem with igdb? also include the game release calendar of metacritic: https://www.metacritic.com/news/major-new-and-upcoming-video-games-ps5-xbox-switch-pc/. don't show duplicates.
+
+Settings:
+Media Management:
+- when adding a root folde rit is added twice
+
+Game Systems:
+- do not start out with mutliple systems added. make the + card and then make systems available to add. give some ready to use examples (grouped by console Generatiosn) like with the indexers, but also allow for aadding a custom option.
+
+Metadata:
+- this are currently for video platforms. change to gaming platforms. as an example make a card for batocera, which is using retroarch. add others if known. 
+
+Metadata Source
+- add an option for using the metacritic score instead of the IGDB Score
+
+
+Documentation:
+Update Docuementation and Readme.
+Links to all other projects wher code was pulled from. 
