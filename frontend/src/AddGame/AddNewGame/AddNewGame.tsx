@@ -60,7 +60,7 @@ function AddNewGame() {
             className={styles.searchInput}
             name="seriesLookup"
             value={term}
-            placeholder="eg. Breaking Bad, igdb:####"
+            placeholder="eg. Metal Gear Solid, igdb:####"
             autoFocus={true}
             onChange={handleSearchInputChange}
           />

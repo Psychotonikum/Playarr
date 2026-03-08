@@ -26,51 +26,9 @@ const monitorOptions: MonitorOption[] = [
     },
   },
   {
-    key: 'existing',
-    get value() {
-      return translate('MonitorExistingEpisodes');
-    },
-  },
-  {
-    key: 'recent',
-    get value() {
-      return translate('MonitorRecentEpisodes');
-    },
-  },
-  {
-    key: 'pilot',
-    get value() {
-      return translate('MonitorPilotEpisode');
-    },
-  },
-  {
-    key: 'firstPlatform',
-    get value() {
-      return translate('MonitorFirstSeason');
-    },
-  },
-  {
-    key: 'lastPlatform',
-    get value() {
-      return translate('MonitorLastSeason');
-    },
-  },
-  {
     key: 'monitorSpecials',
     get value() {
       return translate('MonitorSpecialEpisodes');
-    },
-  },
-  {
-    key: 'unmonitorSpecials',
-    get value() {
-      return translate('UnmonitorSpecialEpisodes');
-    },
-  },
-  {
-    key: 'none',
-    get value() {
-      return translate('MonitorNoEpisodes');
     },
   },
 ];

@@ -26,7 +26,6 @@ function AddNewGameSearchResult({ game }: AddNewGameSearchResultProps) {
     title,
     year,
     network,
-    originalLanguage,
     genres = [],
     status,
     statistics = {} as Statistics,
@@ -127,21 +126,11 @@ function AddNewGameSearchResult({ game }: AddNewGameSearchResultProps) {
           <div>
             <Label size={sizes.LARGE}>
               <HeartRating
-                rating={ratings.value}
+                rating={Math.round(ratings.value)}
                 votes={ratings.votes}
                 iconSize={13}
               />
             </Label>
-
-            {originalLanguage?.name ? (
-              <Label size={sizes.LARGE}>
-                <Icon name={icons.LANGUAGE} size={13} />
-
-                <span className={styles.originalLanguageName}>
-                  {originalLanguage.name}
-                </span>
-              </Label>
-            ) : null}
 
             {network ? (
               <Label size={sizes.LARGE}>
@@ -159,12 +148,6 @@ function AddNewGameSearchResult({ game }: AddNewGameSearchResultProps) {
             ) : null}
 
             {platformCount ? <Label size={sizes.LARGE}>{platforms}</Label> : null}
-
-            {status === 'ended' ? (
-              <Label kind={kinds.DANGER} size={sizes.LARGE}>
-                {translate('Ended')}
-              </Label>
-            ) : null}
 
             {status === 'upcoming' ? (
               <Label kind={kinds.INFO} size={sizes.LARGE}>

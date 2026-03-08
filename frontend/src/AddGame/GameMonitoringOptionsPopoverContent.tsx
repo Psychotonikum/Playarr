@@ -22,43 +22,8 @@ function GameMonitoringOptionsPopoverContent() {
       />
 
       <DescriptionListItem
-        title={translate('MonitorExistingEpisodes')}
-        data={translate('MonitorExistingEpisodesDescription')}
-      />
-
-      <DescriptionListItem
-        title={translate('MonitorRecentEpisodes')}
-        data={translate('MonitorRecentEpisodesDescription')}
-      />
-
-      <DescriptionListItem
-        title={translate('MonitorPilotEpisode')}
-        data={translate('MonitorPilotEpisodeDescription')}
-      />
-
-      <DescriptionListItem
-        title={translate('MonitorFirstSeason')}
-        data={translate('MonitorFirstSeasonDescription')}
-      />
-
-      <DescriptionListItem
-        title={translate('MonitorLastSeason')}
-        data={translate('MonitorLastSeasonDescription')}
-      />
-
-      <DescriptionListItem
         title={translate('MonitorSpecialEpisodes')}
         data={translate('MonitorSpecialEpisodesDescription')}
-      />
-
-      <DescriptionListItem
-        title={translate('UnmonitorSpecialEpisodes')}
-        data={translate('UnmonitorSpecialsEpisodesDescription')}
-      />
-
-      <DescriptionListItem
-        title={translate('MonitorNoEpisodes')}
-        data={translate('MonitorNoEpisodesDescription')}
       />
     </DescriptionList>
   );

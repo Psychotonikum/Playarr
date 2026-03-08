@@ -43,6 +43,7 @@ export interface Statistics {
 export interface Platform {
   monitored: boolean;
   platformNumber: number;
+  title?: string;
   statistics: Statistics;
 }
 
@@ -62,7 +63,7 @@ export interface AlternateTitle {
 export interface GameAddOptions {
   monitor: GameMonitor;
   searchForMissingRoms: boolean;
-  searchForCutoffUnmetRoms: boolean;
+  searchForCutoffUnmetRoms?: boolean;
 }
 
 interface Game extends ModelBase {

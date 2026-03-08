@@ -64,11 +64,8 @@ function AddNewGameModalContent({
 
   const {
     monitor,
-    qualityProfileId,
     rootFolderPath,
-    searchForCutoffUnmetRoms,
     searchForMissingRoms,
-    platformFolder,
     gameType: gameTypeSetting,
     tags,
   } = settings;
@@ -80,13 +77,6 @@ function AddNewGameModalContent({
     []
   );
 
-  const handleQualityProfileIdChange = useCallback(
-    ({ value }: InputChanged<string | number>) => {
-      setAddGameOption('qualityProfileId', value as number);
-    },
-    []
-  );
-
   const handleAddGamePress = useCallback(() => {
     addGame({
       ...game,
@@ -94,11 +84,8 @@ function AddNewGameModalContent({
       addOptions: {
         monitor: monitor.value,
         searchForMissingRoms: searchForMissingRoms.value,
-        searchForCutoffUnmetRoms: searchForCutoffUnmetRoms.value,
       },
-      qualityProfileId: qualityProfileId.value,
       gameType,
-      platformFolder: platformFolder.value,
       tags: tags.value,
     });
   }, [
@@ -106,10 +93,7 @@ function AddNewGameModalContent({
     gameType,
     rootFolderPath,
     monitor,
-    qualityProfileId,
-    platformFolder,
     searchForMissingRoms,
-    searchForCutoffUnmetRoms,
     tags,
     addGame,
   ]);
@@ -195,17 +179,6 @@ function AddNewGameModalContent({
               </FormGroup>
 
               <FormGroup>
-                <FormLabel>{translate('QualityProfile')}</FormLabel>
-
-                <FormInputGroup
-                  type={inputTypes.QUALITY_PROFILE_SELECT}
-                  name="qualityProfileId"
-                  onChange={handleQualityProfileIdChange}
-                  {...qualityProfileId}
-                />
-              </FormGroup>
-
-              <FormGroup>
                 <FormLabel>
                   {translate('GameType')}
 
@@ -226,17 +199,6 @@ function AddNewGameModalContent({
                   {...gameTypeSetting}
                   value={gameType}
                   helpText={translate('GameTypesHelpText')}
-                />
-              </FormGroup>
-
-              <FormGroup>
-                <FormLabel>{translate('PlatformFolder')}</FormLabel>
-
-                <FormInputGroup
-                  type={inputTypes.CHECK}
-                  name="platformFolder"
-                  onChange={handleInputChange}
-                  {...platformFolder}
                 />
               </FormGroup>
 
@@ -268,20 +230,6 @@ function AddNewGameModalContent({
               name="searchForMissingRoms"
               onChange={handleInputChange}
               {...searchForMissingRoms}
-            />
-          </label>
-
-          <label className={styles.searchLabelContainer}>
-            <span className={styles.searchLabel}>
-              {translate('AddNewGameSearchForCutoffUnmetEpisodes')}
-            </span>
-
-            <CheckInput
-              containerClassName={styles.searchInputContainer}
-              className={styles.searchInput}
-              name="searchForCutoffUnmetRoms"
-              onChange={handleInputChange}
-              {...searchForCutoffUnmetRoms}
             />
           </label>
         </div>
