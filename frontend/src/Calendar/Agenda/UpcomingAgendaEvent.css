@@ -1,0 +1,67 @@
+.event {
+  position: relative;
+  padding: 5px;
+  border-bottom: 1px solid var(--borderColor);
+}
+
+.overlay {
+  position: relative;
+  display: flex;
+  overflow-x: hidden;
+  font-size: $defaultFontSize;
+}
+
+.eventWrapper {
+  display: flex;
+  flex: 1 0 1px;
+  overflow-x: hidden;
+  padding-left: 6px;
+  border-left-width: 4px;
+  border-left-style: solid;
+  border-left-color: var(--primaryColor);
+  opacity: 0.85;
+}
+
+.date {
+  flex: 0 0 250px;
+  font-weight: bold;
+}
+
+.gameTitle {
+  @add-mixin truncate;
+
+  flex: 0 1 300px;
+  margin-right: 10px;
+}
+
+.source {
+  flex: 0 0 80px;
+  font-size: 11px;
+  color: var(--calendarTextDim);
+  text-transform: uppercase;
+}
+
+.platformCount {
+  flex: 1 1 1px;
+  color: var(--calendarTextDim);
+}
+
+@media only screen and (max-width: $breakpointSmall) {
+  .overlay {
+    flex-direction: column;
+  }
+
+  .eventWrapper {
+    display: block;
+    flex: 0 0 auto;
+  }
+
+  .date {
+    flex: 0 0 auto;
+  }
+
+  .gameTitle,
+  .source {
+    display: inline;
+  }
+}

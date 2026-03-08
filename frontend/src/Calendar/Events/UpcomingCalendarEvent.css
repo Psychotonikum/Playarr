@@ -1,0 +1,43 @@
+.event {
+  position: relative;
+  margin: 4px 2px;
+  padding: 5px;
+  border-bottom: 1px solid var(--calendarBorderColor);
+  border-left: 4px solid var(--primaryColor);
+  opacity: 0.85;
+}
+
+.underlay {
+  @add-mixin cover;
+}
+
+.overlay {
+  @add-mixin linkOverlay;
+
+  position: relative;
+  overflow-x: hidden;
+  font-size: 12px;
+}
+
+.info {
+  display: flex;
+}
+
+.gameTitle {
+  @add-mixin truncate;
+  flex: 1 0 1px;
+  margin-right: 10px;
+  color: var(--calendarTextDimAlternate);
+  font-size: $defaultFontSize;
+}
+
+.source {
+  font-size: 10px;
+  color: var(--calendarTextDim);
+  text-transform: uppercase;
+}
+
+.platformCount {
+  color: var(--calendarTextDim);
+  font-size: 11px;
+}

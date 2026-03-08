@@ -5,7 +5,11 @@ import { useCalendarOption } from 'Calendar/calendarOptionsStore';
 import * as calendarViews from 'Calendar/calendarViews';
 import CalendarEvent from 'Calendar/Events/CalendarEvent';
 import CalendarEventGroup from 'Calendar/Events/CalendarEventGroup';
+import UpcomingCalendarEvent from 'Calendar/Events/UpcomingCalendarEvent';
 import useCalendar, { useCalendarTime } from 'Calendar/useCalendar';
+import useUpcomingReleases, {
+  UpcomingRelease,
+} from 'Calendar/useUpcomingReleases';
 import {
   CalendarEvent as CalendarEventModel,
   CalendarEventGroup as CalendarEventGroupModel,
@@ -83,6 +87,15 @@ const useCalendarEvents = (date: string) => {
   return sort(grouped);
 };
 
+const useUpcomingReleasesForDay = (date: string) => {
+  const { data } = useUpcomingReleases();
+  const momentDate = moment(date);
+
+  return data.filter((release: UpcomingRelease) => {
+    return release.releaseDate && momentDate.isSame(moment(release.releaseDate), 'day');
+  });
+};
+
 interface CalendarDayProps {
   date: string;
   isTodaysDate: boolean;
@@ -97,6 +110,7 @@ function CalendarDay({
   const view = useCalendarOption('view');
   const time = useCalendarTime();
   const events = useCalendarEvents(date);
+  const upcomingReleases = useUpcomingReleasesForDay(date);
 
   const ref = React.useRef<HTMLDivElement>(null);
 
@@ -149,6 +163,13 @@ function CalendarDay({
             />
           );
         })}
+
+        {upcomingReleases.map((release) => (
+          <UpcomingCalendarEvent
+            key={`upcoming-${release.igdbId}-${release.title}`}
+            release={release}
+          />
+        ))}
       </div>
     </div>
   );
