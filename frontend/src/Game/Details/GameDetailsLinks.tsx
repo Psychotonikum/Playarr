@@ -29,12 +29,12 @@ function GameDetailsLinks(props: GameDetailsLinksProps) {
         {
           externalId: igdbId,
           name: 'The IGDB',
-          url: `https://www.thetvdb.com/?tab=game&id=${igdbId}`,
+          url: `https://www.theigdb.com/?tab=game&id=${igdbId}`,
         },
         {
           externalId: igdbId,
           name: 'Trakt',
-          url: `https://trakt.tv/search/tvdb/${igdbId}?id_type=show`,
+          url: `https://trakt.tv/search/igdb/${igdbId}?id_type=show`,
         }
       );
     }

@@ -2,19 +2,18 @@ import React from 'react';
 import PageContent from 'Components/Page/PageContent';
 import PageContentBody from 'Components/Page/PageContentBody';
 import SettingsToolbar from 'Settings/SettingsToolbar';
-import translate from 'Utilities/String/translate';
-import TheIgdb from './TheIgdb';
+import GameSystems from './GameSystems';
 
-function MetadataSourceSettings() {
+function GameSystemSettingsPage() {
   return (
-    <PageContent title={translate('MetadataSourceSettings')}>
+    <PageContent title="Game Systems">
       <SettingsToolbar showSave={false} />
 
       <PageContentBody>
-        <TheIgdb />
+        <GameSystems />
       </PageContentBody>
     </PageContent>
   );
 }
 
-export default MetadataSourceSettings;
+export default GameSystemSettingsPage;

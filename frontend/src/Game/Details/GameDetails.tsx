@@ -600,7 +600,7 @@ function GameDetails({ gameId }: GameDetailsProps) {
                       </span>
                     ) : null}
 
-                    {ratings.value ? (
+                    {ratings?.value ? (
                       <HeartRating
                         rating={ratings.value}
                         votes={ratings.votes}

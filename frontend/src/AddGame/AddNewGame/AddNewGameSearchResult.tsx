@@ -50,7 +50,7 @@ function AddNewGameSearchResult({ game }: AddNewGameSearchResultProps) {
     setIsNewAddGameModalOpen(false);
   }, []);
 
-  const handleTvdbLinkPress = useCallback((event: React.SyntheticEvent) => {
+  const handleIgdbLinkPress = useCallback((event: React.SyntheticEvent) => {
     event.stopPropagation();
   }, []);
 
@@ -111,12 +111,12 @@ function AddNewGameSearchResult({ game }: AddNewGameSearchResultProps) {
               ) : null}
 
               <Link
-                className={styles.tvdbLink}
-                to={`https://www.thetvdb.com/?tab=game&id=${igdbId}`}
-                onPress={handleTvdbLinkPress}
+                className={styles.igdbLink}
+                to={`https://www.theigdb.com/?tab=game&id=${igdbId}`}
+                onPress={handleIgdbLinkPress}
               >
                 <Icon
-                  className={styles.tvdbLinkIcon}
+                  className={styles.igdbLinkIcon}
                   name={icons.EXTERNAL_LINK}
                   size={28}
                 />

@@ -60,7 +60,7 @@ function AddNewGame() {
             className={styles.searchInput}
             name="seriesLookup"
             value={term}
-            placeholder="eg. Breaking Bad, tvdb:####"
+            placeholder="eg. Breaking Bad, igdb:####"
             autoFocus={true}
             onChange={handleSearchInputChange}
           />
@@ -102,7 +102,7 @@ function AddNewGame() {
             </div>
             <div>{translate('SearchByIgdbId')}</div>
             <div>
-              <Link to="https://wiki.servarr.com/playarr/faq#why-cant-i-add-a-new-game-when-i-know-the-tvdb-id">
+              <Link to="https://wiki.servarr.com/playarr/faq#why-cant-i-add-a-new-game-when-i-know-the-igdb-id">
                 {translate('WhyCantIFindMyShow')}
               </Link>
             </div>

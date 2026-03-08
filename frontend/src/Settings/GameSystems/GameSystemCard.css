@@ -1,0 +1,45 @@
+.gameSystem {
+  composes: card from '~Components/Card.css';
+  position: relative;
+  min-width: 280px;
+  max-width: 400px;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.folder {
+  color: var(--dimColor);
+  margin-bottom: 8px;
+}
+
+.type {
+  margin-bottom: 5px;
+}
+
+.extensions {
+  color: var(--dimColor);
+  font-size: 12px;
+}
+
+.naming {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--borderColor);
+  font-size: 12px;
+}
+
+.namingLabel {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  gap: 5px;
+}

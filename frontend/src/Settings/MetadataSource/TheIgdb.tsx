@@ -1,21 +1,21 @@
 import React from 'react';
 import InlineMarkdown from 'Components/Markdown/InlineMarkdown';
 import translate from 'Utilities/String/translate';
-import styles from './TheTvdb.css';
+import styles from './TheIgdb.css';
 
-function TheTvdb() {
+function TheIgdb() {
   return (
     <div className={styles.container}>
       <img
         className={styles.image}
-        src={`${window.Playarr.urlBase}/Content/Images/thetvdb.png`}
+        src={`${window.Playarr.urlBase}/Content/Images/theigdb.png`}
       />
 
       <div className={styles.info}>
-        <div className={styles.title}>{translate('TheTvdb')}</div>
+        <div className={styles.title}>{translate('TheIgdb')}</div>
         <InlineMarkdown
           data={translate('SeriesAndRomInformationIsProvidedByTheIGDB', {
-            url: 'https://www.thetvdb.com/subscribe',
+            url: 'https://www.theigdb.com/subscribe',
           })}
         />
       </div>
@@ -23,4 +23,4 @@ function TheTvdb() {
   );
 }
 
-export default TheTvdb;
+export default TheIgdb;

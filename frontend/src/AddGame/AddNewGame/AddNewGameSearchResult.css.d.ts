@@ -6,6 +6,8 @@ interface CssExports {
   'excludedIcon': string;
   'genres': string;
   'icons': string;
+  'igdbLink': string;
+  'igdbLinkIcon': string;
   'network': string;
   'originalLanguageName': string;
   'overlay': string;
@@ -15,8 +17,6 @@ interface CssExports {
   'title': string;
   'titleContainer': string;
   'titleRow': string;
-  'tvdbLink': string;
-  'tvdbLinkIcon': string;
   'underlay': string;
   'year': string;
 }

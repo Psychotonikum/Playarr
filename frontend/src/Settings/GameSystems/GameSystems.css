@@ -1,0 +1,18 @@
+.systems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.addSystem {
+  composes: card from '~Components/Card.css';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  cursor: pointer;
+}
+
+.center {
+  text-align: center;
+}

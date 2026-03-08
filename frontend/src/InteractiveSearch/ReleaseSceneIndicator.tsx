@@ -105,7 +105,7 @@ function ReleaseSceneIndicator(props: ReleaseSceneIndicatorProps) {
   const messages = [];
 
   const isMixed = sceneOrigin === 'mixed';
-  const isUnknown = sceneOrigin === 'unknown' || sceneOrigin === 'unknown:tvdb';
+  const isUnknown = sceneOrigin === 'unknown' || sceneOrigin === 'unknown:igdb';
 
   let level = styles.levelNone;
 
@@ -131,9 +131,9 @@ function ReleaseSceneIndicator(props: ReleaseSceneIndicatorProps) {
           {translate('ReleaseSceneIndicatorAssumingScene')}.
         </div>
       );
-    } else if (sceneOrigin === 'unknown:tvdb') {
+    } else if (sceneOrigin === 'unknown:igdb') {
       messages.push(
-        <div key="origin">{translate('ReleaseSceneIndicatorAssumingTvdb')}</div>
+        <div key="origin">{translate('ReleaseSceneIndicatorAssumingIgdb')}</div>
       );
     }
   } else if (mappingDifferent) {
@@ -194,7 +194,7 @@ function ReleaseSceneIndicator(props: ReleaseSceneIndicatorProps) {
         <DescriptionListItem
           titleClassName={styles.title}
           descriptionClassName={styles.description}
-          title={translate('TheTvdb')}
+          title={translate('TheIgdb')}
           data={mappedNumber ?? 'unknown'}
         />
       )}

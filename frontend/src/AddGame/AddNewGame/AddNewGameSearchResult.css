@@ -79,7 +79,7 @@
   pointer-events: all;
 }
 
-.tvdbLink {
+.igdbLink {
   composes: link from '~Components/Link/Link.css';
 
   margin-top: -4px;
@@ -87,7 +87,7 @@
   color: var(--textColor);
 }
 
-.tvdbLinkIcon {
+.igdbLinkIcon {
   margin-left: 10px;
 }
 

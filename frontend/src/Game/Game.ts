@@ -55,7 +55,7 @@ export interface AlternateTitle {
   platformNumber: number;
   scenePlatformNumber?: number;
   title: string;
-  sceneOrigin: 'unknown' | 'unknown:tvdb' | 'mixed' | 'tvdb';
+  sceneOrigin: 'unknown' | 'unknown:igdb' | 'mixed' | 'igdb';
   comment?: string;
 }
 
@@ -104,6 +104,7 @@ interface Game extends ModelBase {
   useSceneNumbering: boolean;
   year: number;
   addOptions: GameAddOptions;
+  gameSystemId?: number;
 }
 
 export default Game;

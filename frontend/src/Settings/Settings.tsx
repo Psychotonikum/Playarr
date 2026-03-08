@@ -20,6 +20,14 @@ function Settings() {
           {translate('MediaManagementSettingsSummary')}
         </div>
 
+        <Link className={styles.link} to="/settings/gamesystems">
+          Game Systems
+        </Link>
+
+        <div className={styles.summary}>
+          Manage game systems, folder layouts, and Aerofoil naming schemes
+        </div>
+
         <Link className={styles.link} to="/settings/profiles">
           {translate('Profiles')}
         </Link>

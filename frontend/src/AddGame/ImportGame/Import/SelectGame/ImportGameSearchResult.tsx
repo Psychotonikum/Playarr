@@ -39,11 +39,11 @@ function ImportGameSearchResult({
       </Link>
 
       <Link
-        className={styles.tvdbLink}
-        to={`https://www.thetvdb.com/?tab=game&id=${igdbId}`}
+        className={styles.igdbLink}
+        to={`https://www.theigdb.com/?tab=game&id=${igdbId}`}
       >
         <Icon
-          className={styles.tvdbLinkIcon}
+          className={styles.igdbLinkIcon}
           name={icons.EXTERNAL_LINK}
           size={16}
         />

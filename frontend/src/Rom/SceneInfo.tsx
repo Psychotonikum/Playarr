@@ -37,7 +37,7 @@ function SceneInfo(props: SceneInfoProps) {
         sceneRomNumber === undefined ? romNumber : sceneRomNumber;
 
       const mappingPlatformNumber =
-        alternateTitle.sceneOrigin === 'tvdb'
+        alternateTitle.sceneOrigin === 'igdb'
           ? platformNumber
           : altScenePlatformNumber;
       const altPlatformNumber =
@@ -46,7 +46,7 @@ function SceneInfo(props: SceneInfoProps) {
           ? alternateTitle.scenePlatformNumber
           : mappingPlatformNumber;
       const altRomNumber =
-        alternateTitle.sceneOrigin === 'tvdb'
+        alternateTitle.sceneOrigin === 'igdb'
           ? romNumber
           : altSceneRomNumber;
 

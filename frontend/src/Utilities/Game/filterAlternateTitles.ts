@@ -14,7 +14,7 @@ function filterAlternateTitles(
     alternateTitles.forEach((alternateTitle) => {
       if (
         alternateTitle.sceneOrigin === 'unknown' ||
-        alternateTitle.sceneOrigin === 'unknown:tvdb'
+        alternateTitle.sceneOrigin === 'unknown:igdb'
       ) {
         return;
       }
@@ -57,9 +57,9 @@ function filterAlternateTitles(
       const mappedAltPlatformNumber = hasAltPlatformNumber
         ? alternateTitle.platformNumber
         : alternateTitle.scenePlatformNumber;
-      // Select scene or tvdb on the rom
+      // Select scene or igdb on the rom
       const mappedPlatformNumber =
-        alternateTitle.sceneOrigin === 'tvdb'
+        alternateTitle.sceneOrigin === 'igdb'
           ? platformNumber
           : scenePlatformNumber;
 

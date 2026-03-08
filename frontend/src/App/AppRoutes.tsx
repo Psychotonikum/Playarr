@@ -23,6 +23,7 @@ import Profiles from 'Settings/Profiles/Profiles';
 import Quality from 'Settings/Quality/Quality';
 import Settings from 'Settings/Settings';
 import TagSettings from 'Settings/Tags/TagSettings';
+import GameSystemSettingsPage from 'Settings/GameSystems/GameSystemSettingsPage';
 import UISettings from 'Settings/UI/UISettings';
 import Backups from 'System/Backup/Backups';
 import LogsTable from 'System/Events/LogsTable';
@@ -126,6 +127,8 @@ function AppRoutes() {
         path="/settings/metadatasource"
         component={MetadataSourceSettings}
       />
+
+      <Route path="/settings/gamesystems" component={GameSystemSettingsPage} />
 
       <Route path="/settings/tags" component={TagSettings} />
 
