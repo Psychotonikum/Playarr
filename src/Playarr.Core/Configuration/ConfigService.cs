@@ -432,6 +432,12 @@ namespace Playarr.Core.Configuration
             set { SetValue("TwitchClientSecret", value); }
         }
 
+        public string RatingSource
+        {
+            get { return GetValue("RatingSource", "igdb"); }
+            set { SetValue("RatingSource", value); }
+        }
+
         public bool TrustCgnatIpAddresses
         {
             get { return GetValueBoolean("TrustCgnatIpAddresses", false); }

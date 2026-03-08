@@ -78,6 +78,23 @@ function MetadataSourceSettings() {
                 />
               </FormGroup>
             </FieldSet>
+
+            <FieldSet legend="Rating Source">
+              <FormGroup>
+                <FormLabel>Score Source</FormLabel>
+                <FormInputGroup
+                  type={inputTypes.SELECT}
+                  name="ratingSource"
+                  values={[
+                    { key: 'igdb', value: 'IGDB' },
+                    { key: 'metacritic', value: 'Metacritic' },
+                  ]}
+                  helpText="Choose which service provides game ratings/scores"
+                  onChange={handleInputChange}
+                  {...settings.ratingSource}
+                />
+              </FormGroup>
+            </FieldSet>
           </Form>
         ) : null}
       </PageContentBody>

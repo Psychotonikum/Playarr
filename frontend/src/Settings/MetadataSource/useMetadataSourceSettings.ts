@@ -6,6 +6,7 @@ import {
 export interface MetadataSourceSettingsModel {
   twitchClientId: string;
   twitchClientSecret: string;
+  ratingSource: string;
 }
 
 const PATH = '/settings/metadatasource';

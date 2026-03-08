@@ -7,6 +7,7 @@ public class MetadataSourceSettingsResource : RestResource
 {
     public string? TwitchClientId { get; set; }
     public string? TwitchClientSecret { get; set; }
+    public string? RatingSource { get; set; }
 }
 
 public static class MetadataSourceSettingsResourceMapper
@@ -16,7 +17,8 @@ public static class MetadataSourceSettingsResourceMapper
         return new MetadataSourceSettingsResource
         {
             TwitchClientId = model.TwitchClientId,
-            TwitchClientSecret = model.TwitchClientSecret
+            TwitchClientSecret = model.TwitchClientSecret,
+            RatingSource = model.RatingSource
         };
     }
 }

@@ -104,5 +104,8 @@ namespace Playarr.Core.Configuration
         // IGDB / Twitch
         string TwitchClientId { get; set; }
         string TwitchClientSecret { get; set; }
+
+        // Rating Source: "igdb" or "metacritic"
+        string RatingSource { get; set; }
     }
 }

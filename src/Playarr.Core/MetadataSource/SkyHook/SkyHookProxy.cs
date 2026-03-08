@@ -7,11 +7,13 @@ using NLog;
 using Playarr.Common.Disk;
 using Playarr.Common.Extensions;
 using Playarr.Common.Http;
+using Playarr.Core.Configuration;
 using Playarr.Core.DataAugmentation.DailySeries;
 using Playarr.Core.Exceptions;
 using Playarr.Core.Games;
 using Playarr.Core.Languages;
 using Playarr.Core.MediaCover;
+using Playarr.Core.MetadataSource.Metacritic;
 
 namespace Playarr.Core.MetadataSource.SkyHook
 {
@@ -23,16 +25,22 @@ namespace Playarr.Core.MetadataSource.SkyHook
         private readonly Logger _logger;
         private readonly IGameService _seriesService;
         private readonly IDailyGameService _dailyGameService;
+        private readonly IConfigService _configService;
+        private readonly IMetacriticProxy _metacriticProxy;
 
         public SkyHookProxy(IIgdbClient igdbClient,
                             IGameService seriesService,
                             IDailyGameService dailyGameService,
+                            IConfigService configService,
+                            IMetacriticProxy metacriticProxy,
                             Logger logger)
         {
             _igdbClient = igdbClient;
             _logger = logger;
             _seriesService = seriesService;
             _dailyGameService = dailyGameService;
+            _configService = configService;
+            _metacriticProxy = metacriticProxy;
         }
 
         public Tuple<Game, List<Rom>> GetSeriesInfo(int igdbGameId)
@@ -179,9 +187,11 @@ namespace Playarr.Core.MetadataSource.SkyHook
 
                     if (release.Platform?.Value != null)
                     {
+                        var platformName = release.Platform.Value.Abbreviation ?? release.Platform.Value.Name ?? $"Platform {games[gameId].Platforms.Count + 1}";
                         games[gameId].Platforms.Add(new Platform
                         {
                             PlatformNumber = games[gameId].Platforms.Count + 1,
+                            Title = platformName,
                             Images = new List<MediaCover.MediaCover>(),
                             Monitored = true
                         });
@@ -258,6 +268,27 @@ namespace Playarr.Core.MetadataSource.SkyHook
                 };
             }
 
+            if (_configService.RatingSource == "metacritic")
+            {
+                try
+                {
+                    var metacriticScore = _metacriticProxy.GetMetacriticScore(game.Title, game.Year);
+
+                    if (metacriticScore.HasValue)
+                    {
+                        game.Ratings = new Ratings
+                        {
+                            Value = metacriticScore.Value,
+                            Votes = game.Ratings?.Votes ?? 0
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Debug(ex, "Failed to fetch Metacritic score for {0}", game.Title);
+                }
+            }
+
             if (igdbGame.Genres?.Values != null)
             {
                 game.Genres = igdbGame.Genres.Values
@@ -285,12 +316,15 @@ namespace Playarr.Core.MetadataSource.SkyHook
 
             if (igdbGame.Platforms?.Values != null)
             {
-                game.Platforms = igdbGame.Platforms.Values.Select((_, i) => new Platform
-                {
-                    PlatformNumber = i + 1,
-                    Images = new List<MediaCover.MediaCover>(),
-                    Monitored = true
-                }).ToList();
+                game.Platforms = igdbGame.Platforms.Values
+                    .Where(p => p != null)
+                    .Select((p, i) => new Platform
+                    {
+                        PlatformNumber = i + 1,
+                        Title = p.Abbreviation ?? p.Name ?? $"Platform {i + 1}",
+                        Images = new List<MediaCover.MediaCover>(),
+                        Monitored = true
+                    }).ToList();
             }
 
             var coverImageId = igdbGame.Cover?.Value?.ImageId;
