@@ -50,14 +50,14 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         [Test]
         public void should_parse_concatenated_title()
         {
-            var game = new Game { TvdbId = 100 };
+            var game = new Game { IgdbId = 100 };
             Mocker.GetMock<IGameService>().Setup(v => v.FindByTitle("Welcome")).Returns(game);
             Mocker.GetMock<ISceneMappingService>().Setup(v => v.FindIgdbId("Mairimashita", It.IsAny<string>(), It.IsAny<int>())).Returns(100);
 
             var result = Subject.GetSeries("Welcome (Mairimashita).S01E01.720p.WEB-DL-Viva");
 
             result.Should().NotBeNull();
-            result.TvdbId.Should().Be(100);
+            result.IgdbId.Should().Be(100);
         }
     }
 }

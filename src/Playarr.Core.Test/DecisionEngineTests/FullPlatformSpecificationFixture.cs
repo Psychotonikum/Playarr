@@ -28,7 +28,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 Roms = Builder<Rom>.CreateListOfSize(3)
                                            .All()
                                            .With(e => e.AirDateUtc = DateTime.UtcNow.AddDays(-8))
-                                           .With(s => s.SeriesId = show.Id)
+                                           .With(s => s.GameId = show.Id)
                                            .BuildList(),
                 Game = show,
                 Release = new ReleaseInfo

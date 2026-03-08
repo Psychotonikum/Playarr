@@ -13,10 +13,10 @@ namespace Playarr.Api.V3.Roms
 {
     public class RomResource : RestResource
     {
-        public int SeriesId { get; set; }
-        public int TvdbId { get; set; }
+        public int GameId { get; set; }
+        public int IgdbId { get; set; }
         public int EpisodeFileId { get; set; }
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public int EpisodeNumber { get; set; }
         public string Title { get; set; }
         public string AirDate { get; set; }
@@ -31,7 +31,7 @@ namespace Playarr.Api.V3.Roms
         public int? AbsoluteEpisodeNumber { get; set; }
         public int? SceneAbsoluteEpisodeNumber { get; set; }
         public int? SceneEpisodeNumber { get; set; }
-        public int? SceneSeasonNumber { get; set; }
+        public int? ScenePlatformNumber { get; set; }
         public bool UnverifiedSceneNumbering { get; set; }
         public GameResource Game { get; set; }
         public List<MediaCover> Images { get; set; }
@@ -55,10 +55,10 @@ namespace Playarr.Api.V3.Roms
             {
                 Id = model.Id,
 
-                SeriesId = model.SeriesId,
-                TvdbId = model.TvdbId,
+                GameId = model.GameId,
+                IgdbId = model.IgdbId,
                 EpisodeFileId = model.EpisodeFileId,
-                SeasonNumber = model.SeasonNumber,
+                PlatformNumber = model.PlatformNumber,
                 EpisodeNumber = model.EpisodeNumber,
                 Title = model.Title,
                 AirDate = model.AirDate,
@@ -75,7 +75,7 @@ namespace Playarr.Api.V3.Roms
                 AbsoluteEpisodeNumber = model.AbsoluteEpisodeNumber,
                 SceneAbsoluteEpisodeNumber = model.SceneAbsoluteEpisodeNumber,
                 SceneEpisodeNumber = model.SceneEpisodeNumber,
-                SceneSeasonNumber = model.SceneSeasonNumber,
+                ScenePlatformNumber = model.ScenePlatformNumber,
                 UnverifiedSceneNumbering = model.UnverifiedSceneNumbering,
 
                 // Game = model.Game.MapToResource(),

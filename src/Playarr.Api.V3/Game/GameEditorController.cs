@@ -62,7 +62,7 @@ namespace Playarr.Api.V3.Game
                     game.RootFolderPath = resource.RootFolderPath;
                     seriesToMove.Add(new BulkMoveGame
                     {
-                        SeriesId = game.Id,
+                        GameId = game.Id,
                         SourcePath = game.Path
                     });
                 }

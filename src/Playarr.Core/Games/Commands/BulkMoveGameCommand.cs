@@ -15,7 +15,7 @@ namespace Playarr.Core.Games.Commands
 
     public class BulkMoveGame : IEquatable<BulkMoveGame>
     {
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public string SourcePath { get; set; }
 
         public bool Equals(BulkMoveGame other)
@@ -25,7 +25,7 @@ namespace Playarr.Core.Games.Commands
                 return false;
             }
 
-            return SeriesId.Equals(other.SeriesId);
+            return GameId.Equals(other.GameId);
         }
 
         public override bool Equals(object obj)
@@ -40,12 +40,12 @@ namespace Playarr.Core.Games.Commands
                 return false;
             }
 
-            return SeriesId.Equals(((BulkMoveGame)obj).SeriesId);
+            return GameId.Equals(((BulkMoveGame)obj).GameId);
         }
 
         public override int GetHashCode()
         {
-            return SeriesId.GetHashCode();
+            return GameId.GetHashCode();
         }
     }
 }

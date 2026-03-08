@@ -172,16 +172,16 @@ namespace Playarr.Core.Notifications.Gotify
                             linkUrl = $"https://www.imdb.com/title/{game.ImdbId}";
                         }
 
-                        if (linkType == MetadataLinkType.Tvdb && game.TvdbId > 0)
+                        if (linkType == MetadataLinkType.Igdb && game.IgdbId > 0)
                         {
                             linkText = "TVDb";
-                            linkUrl = $"http://www.thetvdb.com/?tab=game&id={game.TvdbId}";
+                            linkUrl = $"http://www.theigdb.com/?tab=game&id={game.IgdbId}";
                         }
 
-                        if (linkType == MetadataLinkType.Trakt && game.TvdbId > 0)
+                        if (linkType == MetadataLinkType.Trakt && game.IgdbId > 0)
                         {
                             linkText = "Trakt";
-                            linkUrl = $"http://trakt.tv/search/tvdb/{game.TvdbId}?id_type=show";
+                            linkUrl = $"http://trakt.tv/search/igdb/{game.IgdbId}?id_type=show";
                         }
 
                         if (linkType == MetadataLinkType.Tvmaze && game.RawgId > 0)

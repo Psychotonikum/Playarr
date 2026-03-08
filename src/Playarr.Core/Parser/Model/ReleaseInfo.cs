@@ -26,7 +26,7 @@ namespace Playarr.Core.Parser.Model
         public int IndexerPriority { get; set; }
         public int SeasonSearchMaximumSingleEpisodeAge { get; set; }
         public DownloadProtocol DownloadProtocol { get; set; }
-        public int TvdbId { get; set; }
+        public int IgdbId { get; set; }
         public int MobyGamesId { get; set; }
         public string ImdbId { get; set; }
         public DateTime PublishDate { get; set; }
@@ -101,7 +101,7 @@ namespace Playarr.Core.Parser.Model
                     stringBuilder.AppendLine("Indexer: " + Indexer ?? "Empty");
                     stringBuilder.AppendLine("CommentUrl: " + CommentUrl ?? "Empty");
                     stringBuilder.AppendLine("DownloadProtocol: " + DownloadProtocol ?? "Empty");
-                    stringBuilder.AppendLine("TvdbId: " + TvdbId ?? "Empty");
+                    stringBuilder.AppendLine("IgdbId: " + IgdbId ?? "Empty");
                     stringBuilder.AppendLine("MobyGamesId: " + MobyGamesId ?? "Empty");
                     stringBuilder.AppendLine("ImdbId: " + ImdbId ?? "Empty");
                     stringBuilder.AppendLine("PublishDate: " + PublishDate ?? "Empty");

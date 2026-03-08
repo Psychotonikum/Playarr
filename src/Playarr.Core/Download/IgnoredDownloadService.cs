@@ -36,7 +36,7 @@ namespace Playarr.Core.Download
 
             var downloadIgnoredEvent = new DownloadIgnoredEvent
                                       {
-                                          SeriesId = game.Id,
+                                          GameId = game.Id,
                                           RomIds = roms.Select(e => e.Id).ToList(),
                                           Languages = trackedDownload.RemoteEpisode.Languages,
                                           Quality = trackedDownload.RemoteEpisode.ParsedRomInfo.Quality,

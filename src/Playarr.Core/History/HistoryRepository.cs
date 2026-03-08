@@ -54,9 +54,9 @@ namespace Playarr.Core.History
 
         public List<EpisodeHistory> GetBySeries(int gameId, EpisodeHistoryEventType? eventType)
         {
-            var builder = Builder().Join<EpisodeHistory, Game>((h, a) => h.SeriesId == a.Id)
+            var builder = Builder().Join<EpisodeHistory, Game>((h, a) => h.GameId == a.Id)
                                    .Join<EpisodeHistory, Rom>((h, a) => h.EpisodeId == a.Id)
-                                   .Where<EpisodeHistory>(h => h.SeriesId == gameId);
+                                   .Where<EpisodeHistory>(h => h.GameId == gameId);
 
             if (eventType.HasValue)
             {
@@ -70,8 +70,8 @@ namespace Playarr.Core.History
         {
             var builder = Builder()
                 .Join<EpisodeHistory, Rom>((h, a) => h.EpisodeId == a.Id)
-                .Join<EpisodeHistory, Game>((h, a) => h.SeriesId == a.Id)
-                .Where<EpisodeHistory>(h => h.SeriesId == gameId && h.Rom.SeasonNumber == platformNumber);
+                .Join<EpisodeHistory, Game>((h, a) => h.GameId == a.Id)
+                .Where<EpisodeHistory>(h => h.GameId == gameId && h.Rom.PlatformNumber == platformNumber);
 
             if (eventType.HasValue)
             {
@@ -90,7 +90,7 @@ namespace Playarr.Core.History
         public List<EpisodeHistory> GetByEpisode(int romId, EpisodeHistoryEventType? eventType)
         {
             var builder = Builder()
-                .Join<EpisodeHistory, Game>((h, a) => h.SeriesId == a.Id)
+                .Join<EpisodeHistory, Game>((h, a) => h.GameId == a.Id)
                 .Join<EpisodeHistory, Rom>((h, a) => h.EpisodeId == a.Id)
                 .Where<EpisodeHistory>(h => h.EpisodeId == romId);
 
@@ -105,7 +105,7 @@ namespace Playarr.Core.History
         public List<EpisodeHistory> FindDownloadHistory(int idGameId, QualityModel quality)
         {
             return Query(h =>
-                 h.SeriesId == idGameId &&
+                 h.GameId == idGameId &&
                  h.Quality == quality &&
                  (h.EventType == EpisodeHistoryEventType.Grabbed ||
                  h.EventType == EpisodeHistoryEventType.DownloadFailed ||
@@ -115,13 +115,13 @@ namespace Playarr.Core.History
 
         public void DeleteForSeries(List<int> gameIds)
         {
-            Delete(c => gameIds.Contains(c.SeriesId));
+            Delete(c => gameIds.Contains(c.GameId));
         }
 
         public List<EpisodeHistory> Since(DateTime date, EpisodeHistoryEventType? eventType)
         {
             var builder = Builder()
-                .Join<EpisodeHistory, Game>((h, a) => h.SeriesId == a.Id)
+                .Join<EpisodeHistory, Game>((h, a) => h.GameId == a.Id)
                 .Join<EpisodeHistory, Rom>((h, a) => h.EpisodeId == a.Id)
                 .Where<EpisodeHistory>(x => x.Date >= date);
 
@@ -151,7 +151,7 @@ namespace Playarr.Core.History
         private SqlBuilder PagedBuilder(int[] languages, int[] qualities)
         {
             var builder = Builder()
-                .Join<EpisodeHistory, Game>((h, a) => h.SeriesId == a.Id)
+                .Join<EpisodeHistory, Game>((h, a) => h.GameId == a.Id)
                 .Join<EpisodeHistory, Rom>((h, a) => h.EpisodeId == a.Id);
 
             if (languages is { Length: > 0 })

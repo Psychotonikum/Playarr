@@ -21,7 +21,7 @@ namespace Playarr.Core.Games
             AniListIds = new HashSet<int>();
         }
 
-        public int TvdbId { get; set; }
+        public int IgdbId { get; set; }
         public int MobyGamesId { get; set; }
         public int RawgId { get; set; }
         public string ImdbId { get; set; }
@@ -61,15 +61,16 @@ namespace Playarr.Core.Games
         public List<Platform> Platforms { get; set; }
         public HashSet<int> Tags { get; set; }
         public AddGameOptions AddOptions { get; set; }
+        public int? GameSystemId { get; set; }
 
         public override string ToString()
         {
-            return string.Format("[{0}][{1}]", TvdbId, Title.NullSafe());
+            return string.Format("[{0}][{1}]", IgdbId, Title.NullSafe());
         }
 
         public void ApplyChanges(Game otherGame)
         {
-            TvdbId = otherGame.TvdbId;
+            IgdbId = otherGame.IgdbId;
 
             Platforms = otherGame.Platforms;
             Path = otherGame.Path;

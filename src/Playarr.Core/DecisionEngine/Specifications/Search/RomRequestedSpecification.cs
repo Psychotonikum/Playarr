@@ -32,15 +32,15 @@ namespace Playarr.Core.DecisionEngine.Specifications.Search
 
                 if (remoteRoms.Any())
                 {
-                    var roms = remoteRom.Roms.OrderBy(v => v.SeasonNumber).ThenBy(v => v.EpisodeNumber).ToList();
+                    var roms = remoteRom.Roms.OrderBy(v => v.PlatformNumber).ThenBy(v => v.EpisodeNumber).ToList();
 
                     if (roms.Count > 1)
                     {
-                        return DownloadSpecDecision.Reject(DownloadRejectionReason.WrongEpisode, $"Rom wasn't requested: {roms.First().SeasonNumber}x{roms.First().EpisodeNumber}-{roms.Last().EpisodeNumber}");
+                        return DownloadSpecDecision.Reject(DownloadRejectionReason.WrongEpisode, $"Rom wasn't requested: {roms.First().PlatformNumber}x{roms.First().EpisodeNumber}-{roms.Last().EpisodeNumber}");
                     }
                     else
                     {
-                        return DownloadSpecDecision.Reject(DownloadRejectionReason.WrongEpisode, $"Rom wasn't requested: {roms.First().SeasonNumber}x{roms.First().EpisodeNumber}");
+                        return DownloadSpecDecision.Reject(DownloadRejectionReason.WrongEpisode, $"Rom wasn't requested: {roms.First().PlatformNumber}x{roms.First().EpisodeNumber}");
                     }
                 }
                 else

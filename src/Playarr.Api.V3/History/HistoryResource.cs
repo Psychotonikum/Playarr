@@ -14,7 +14,7 @@ namespace Playarr.Api.V3.History
     public class HistoryResource : RestResource
     {
         public int EpisodeId { get; set; }
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public string SourceTitle { get; set; }
         public List<Language> Languages { get; set; }
         public QualityModel Quality { get; set; }
@@ -49,7 +49,7 @@ namespace Playarr.Api.V3.History
                 Id = model.Id,
 
                 EpisodeId = model.EpisodeId,
-                SeriesId = model.SeriesId,
+                GameId = model.GameId,
                 SourceTitle = model.SourceTitle,
                 Languages = model.Languages,
                 Quality = model.Quality,

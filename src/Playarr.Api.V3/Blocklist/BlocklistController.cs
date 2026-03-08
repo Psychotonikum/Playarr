@@ -43,7 +43,7 @@ namespace Playarr.Api.V3.Blocklist
 
             if (gameIds?.Any() == true)
             {
-                pagingSpec.FilterExpressions.Add(b => gameIds.Contains(b.SeriesId));
+                pagingSpec.FilterExpressions.Add(b => gameIds.Contains(b.GameId));
             }
 
             if (protocols?.Any() == true)

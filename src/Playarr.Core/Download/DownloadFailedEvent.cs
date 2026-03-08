@@ -14,7 +14,7 @@ namespace Playarr.Core.Download
             Data = new Dictionary<string, string>();
         }
 
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public List<int> RomIds { get; set; }
         public QualityModel Quality { get; set; }
         public string SourceTitle { get; set; }

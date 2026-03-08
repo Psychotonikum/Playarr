@@ -80,7 +80,7 @@ namespace Playarr.Core.DecisionEngine
 
                     if (parsedRomInfo == null || parsedRomInfo.IsPossibleSpecialEpisode)
                     {
-                        var specialRomInfo = _parsingService.ParseSpecialRomTitle(parsedRomInfo, report.Title, report.TvdbId, report.MobyGamesId, report.ImdbId, searchCriteria);
+                        var specialRomInfo = _parsingService.ParseSpecialRomTitle(parsedRomInfo, report.Title, report.IgdbId, report.MobyGamesId, report.ImdbId, searchCriteria);
 
                         if (specialRomInfo != null)
                         {
@@ -90,13 +90,13 @@ namespace Playarr.Core.DecisionEngine
 
                     if (parsedRomInfo != null && !parsedRomInfo.GameTitle.IsNullOrWhiteSpace())
                     {
-                        var remoteRom = _parsingService.Map(parsedRomInfo, report.TvdbId, report.MobyGamesId, report.ImdbId, searchCriteria);
+                        var remoteRom = _parsingService.Map(parsedRomInfo, report.IgdbId, report.MobyGamesId, report.ImdbId, searchCriteria);
                         remoteRom.Release = report;
                         remoteRom.ReleaseSource = GetReleaseSource(pushedRelease, searchCriteria);
 
                         if (remoteRom.Game == null)
                         {
-                            var matchingIgdbId = _sceneMappingService.FindIgdbId(parsedRomInfo.GameTitle, parsedRomInfo.ReleaseTitle, parsedRomInfo.SeasonNumber);
+                            var matchingIgdbId = _sceneMappingService.FindIgdbId(parsedRomInfo.GameTitle, parsedRomInfo.ReleaseTitle, parsedRomInfo.PlatformNumber);
 
                             if (matchingIgdbId.HasValue)
                             {

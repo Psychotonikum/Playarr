@@ -45,8 +45,8 @@ namespace Playarr.Core.Test.Messaging.Commands
         [Test]
         public void should_return_true_when_multiple_properties_match()
         {
-            var command1 = new SeasonSearchCommand { SeriesId = 1, SeasonNumber = 1 };
-            var command2 = new SeasonSearchCommand { SeriesId = 1, SeasonNumber = 1 };
+            var command1 = new SeasonSearchCommand { GameId = 1, PlatformNumber = 1 };
+            var command2 = new SeasonSearchCommand { GameId = 1, PlatformNumber = 1 };
 
             CommandEqualityComparer.Instance.Equals(command1, command2).Should().BeTrue();
         }
@@ -63,8 +63,8 @@ namespace Playarr.Core.Test.Messaging.Commands
         [Test]
         public void should_return_false_when_only_one_property_matches()
         {
-            var command1 = new SeasonSearchCommand { SeriesId = 1, SeasonNumber = 1 };
-            var command2 = new SeasonSearchCommand { SeriesId = 1, SeasonNumber = 2 };
+            var command1 = new SeasonSearchCommand { GameId = 1, PlatformNumber = 1 };
+            var command2 = new SeasonSearchCommand { GameId = 1, PlatformNumber = 2 };
 
             CommandEqualityComparer.Instance.Equals(command1, command2).Should().BeFalse();
         }
@@ -72,8 +72,8 @@ namespace Playarr.Core.Test.Messaging.Commands
         [Test]
         public void should_return_false_when_no_properties_match()
         {
-            var command1 = new SeasonSearchCommand { SeriesId = 1, SeasonNumber = 1 };
-            var command2 = new SeasonSearchCommand { SeriesId = 2, SeasonNumber = 2 };
+            var command1 = new SeasonSearchCommand { GameId = 1, PlatformNumber = 1 };
+            var command2 = new SeasonSearchCommand { GameId = 2, PlatformNumber = 2 };
 
             CommandEqualityComparer.Instance.Equals(command1, command2).Should().BeFalse();
         }
@@ -82,7 +82,7 @@ namespace Playarr.Core.Test.Messaging.Commands
         public void should_return_false_when_only_one_has_properties()
         {
             var command1 = new SeasonSearchCommand();
-            var command2 = new SeasonSearchCommand { SeriesId = 2, SeasonNumber = 2 };
+            var command2 = new SeasonSearchCommand { GameId = 2, PlatformNumber = 2 };
 
             CommandEqualityComparer.Instance.Equals(command1, command2).Should().BeFalse();
         }

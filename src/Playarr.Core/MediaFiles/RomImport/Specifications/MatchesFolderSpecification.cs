@@ -32,12 +32,12 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Specifications
 
             if (fileInfo != null && fileInfo.IsPossibleSceneSeasonSpecial)
             {
-                fileInfo = _parsingService.ParseSpecialRomTitle(fileInfo, fileInfo.ReleaseTitle, localRom.Game.TvdbId, 0, null);
+                fileInfo = _parsingService.ParseSpecialRomTitle(fileInfo, fileInfo.ReleaseTitle, localRom.Game.IgdbId, 0, null);
             }
 
             if (folderInfo != null && folderInfo.IsPossibleSceneSeasonSpecial)
             {
-                folderInfo = _parsingService.ParseSpecialRomTitle(folderInfo, folderInfo.ReleaseTitle, localRom.Game.TvdbId, 0, null);
+                folderInfo = _parsingService.ParseSpecialRomTitle(folderInfo, folderInfo.ReleaseTitle, localRom.Game.IgdbId, 0, null);
             }
 
             if (folderInfo == null)
@@ -80,7 +80,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Specifications
 
         private string FormatEpisode(List<Rom> roms)
         {
-            return string.Join(", ", roms.Select(e => $"{e.SeasonNumber}x{e.EpisodeNumber:00}"));
+            return string.Join(", ", roms.Select(e => $"{e.PlatformNumber}x{e.EpisodeNumber:00}"));
         }
     }
 }

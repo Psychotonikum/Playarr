@@ -76,8 +76,8 @@ namespace Playarr.Core.Extras.Subtitles
 
                     var subtitleFile = new SubtitleFile
                                        {
-                                           SeriesId = game.Id,
-                                           SeasonNumber = localRom.SeasonNumber,
+                                           GameId = game.Id,
+                                           PlatformNumber = localRom.PlatformNumber,
                                            EpisodeFileId = firstEpisode.EpisodeFileId,
                                            RelativePath = game.Path.GetRelativePath(possibleSubtitleFile),
                                            Language = localRom.SubtitleInfo?.Language ?? Language.Unknown,

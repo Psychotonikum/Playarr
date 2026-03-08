@@ -29,7 +29,7 @@ namespace Playarr.Core.Test.TvTests
             _gameOfThrones = Mocker.Resolve<SkyHookProxy>().GetSeriesInfo(121361); // Game of thrones
 
             // Remove specials.
-            _gameOfThrones.Item2.RemoveAll(v => v.SeasonNumber == 0);
+            _gameOfThrones.Item2.RemoveAll(v => v.PlatformNumber == 0);
         }
 
         private List<Rom> GetEpisodes()
@@ -130,7 +130,7 @@ namespace Playarr.Core.Test.TvTests
         {
             var game = GetSeries();
             game.Platforms = new List<Platform>();
-            game.Platforms.Add(new Platform { SeasonNumber = 1, Monitored = false });
+            game.Platforms.Add(new Platform { PlatformNumber = 1, Monitored = false });
 
             var roms = GetEpisodes();
 
@@ -150,9 +150,9 @@ namespace Playarr.Core.Test.TvTests
         {
             var game = GetSeries();
             game.Platforms = new List<Platform>();
-            game.Platforms.Add(new Platform { SeasonNumber = 1, Monitored = true });
+            game.Platforms.Add(new Platform { PlatformNumber = 1, Monitored = true });
 
-            var roms = GetEpisodes().OrderBy(v => v.SeasonNumber).ThenBy(v => v.EpisodeNumber).Take(5).ToList();
+            var roms = GetEpisodes().OrderBy(v => v.PlatformNumber).ThenBy(v => v.EpisodeNumber).Take(5).ToList();
 
             roms[1].AirDateUtc = DateTime.UtcNow.AddDays(-15);
             roms[2].AirDateUtc = DateTime.UtcNow.AddDays(-10);
@@ -184,7 +184,7 @@ namespace Playarr.Core.Test.TvTests
 
             var roms = Builder<Rom>.CreateListOfSize(5)
                                            .TheFirst(2)
-                                           .With(e => e.SeasonNumber = 1)
+                                           .With(e => e.PlatformNumber = 1)
                                            .With(e => e.EpisodeNumber = 1)
                                            .Build()
                                            .ToList();
@@ -303,7 +303,7 @@ namespace Playarr.Core.Test.TvTests
 
             var roms = Builder<Rom>.CreateListOfSize(2)
                                            .All()
-                                           .With(e => e.SeasonNumber = 1)
+                                           .With(e => e.PlatformNumber = 1)
                                            .With(e => e.AirDate = now.ToShortDateString())
                                            .With(e => e.AirDateUtc = now)
                                            .Build()
@@ -326,7 +326,7 @@ namespace Playarr.Core.Test.TvTests
 
             var roms = Builder<Rom>.CreateListOfSize(4)
                                            .All()
-                                           .With(e => e.SeasonNumber = 1)
+                                           .With(e => e.PlatformNumber = 1)
                                            .With(e => e.AirDate = now.ToShortDateString())
                                            .With(e => e.AirDateUtc = now)
                                            .Build()
@@ -345,12 +345,12 @@ namespace Playarr.Core.Test.TvTests
                 .ToList();
 
             roms[0].AbsoluteEpisodeNumber = null;
-            roms[0].SeasonNumber.Should().NotBe(roms[1].SeasonNumber);
+            roms[0].PlatformNumber.Should().NotBe(roms[1].PlatformNumber);
             roms[0].EpisodeNumber.Should().NotBe(roms[1].EpisodeNumber);
 
             var existingRom = new Rom
             {
-                SeasonNumber = roms[0].SeasonNumber,
+                PlatformNumber = roms[0].PlatformNumber,
                 EpisodeNumber = roms[0].EpisodeNumber,
                 AbsoluteEpisodeNumber = roms[1].AbsoluteEpisodeNumber
             };
@@ -360,11 +360,11 @@ namespace Playarr.Core.Test.TvTests
 
             Subject.RefreshRomInfo(GetAnimeSeries(), roms);
 
-            _updatedEpisodes.First().SeasonNumber.Should().Be(roms[0].SeasonNumber);
+            _updatedEpisodes.First().PlatformNumber.Should().Be(roms[0].PlatformNumber);
             _updatedEpisodes.First().EpisodeNumber.Should().Be(roms[0].EpisodeNumber);
             _updatedEpisodes.First().AbsoluteEpisodeNumber.Should().Be(roms[0].AbsoluteEpisodeNumber);
 
-            _insertedEpisodes.First().SeasonNumber.Should().Be(roms[1].SeasonNumber);
+            _insertedEpisodes.First().PlatformNumber.Should().Be(roms[1].PlatformNumber);
             _insertedEpisodes.First().EpisodeNumber.Should().Be(roms[1].EpisodeNumber);
             _insertedEpisodes.First().AbsoluteEpisodeNumber.Should().Be(roms[1].AbsoluteEpisodeNumber);
         }
@@ -389,7 +389,7 @@ namespace Playarr.Core.Test.TvTests
 
             Subject.RefreshRomInfo(GetAnimeSeries(), roms);
 
-            _updatedEpisodes.First().SeasonNumber.Should().Be(roms[1].SeasonNumber);
+            _updatedEpisodes.First().PlatformNumber.Should().Be(roms[1].PlatformNumber);
             _updatedEpisodes.First().EpisodeNumber.Should().Be(roms[1].EpisodeNumber);
             _updatedEpisodes.First().AbsoluteEpisodeNumber.Should().NotBeNull();
             _updatedEpisodes.First().AbsoluteRomNumberAdded.Should().BeTrue();
@@ -402,17 +402,17 @@ namespace Playarr.Core.Test.TvTests
         {
             var game = GetSeries();
             game.Platforms = new List<Platform>();
-            game.Platforms.Add(new Platform { SeasonNumber = 1, Monitored = true });
+            game.Platforms.Add(new Platform { PlatformNumber = 1, Monitored = true });
 
             var roms = Builder<Rom>.CreateListOfSize(2)
                 .All()
-                .With(e => e.SeasonNumber = 1)
+                .With(e => e.PlatformNumber = 1)
                 .Build()
                 .ToList();
 
             var existingRom = new Rom
             {
-                SeasonNumber = roms[0].SeasonNumber,
+                PlatformNumber = roms[0].PlatformNumber,
                 EpisodeNumber = roms[0].EpisodeNumber,
                 Monitored = true
             };
@@ -432,17 +432,17 @@ namespace Playarr.Core.Test.TvTests
         {
             var game = GetSeries();
             game.Platforms = new List<Platform>();
-            game.Platforms.Add(new Platform { SeasonNumber = 1, Monitored = false });
+            game.Platforms.Add(new Platform { PlatformNumber = 1, Monitored = false });
 
             var roms = Builder<Rom>.CreateListOfSize(2)
                 .All()
-                .With(e => e.SeasonNumber = 1)
+                .With(e => e.PlatformNumber = 1)
                 .Build()
                 .ToList();
 
             var existingRom = new Rom
             {
-                SeasonNumber = roms[0].SeasonNumber,
+                PlatformNumber = roms[0].PlatformNumber,
                 EpisodeNumber = roms[0].EpisodeNumber,
                 Monitored = true
             };

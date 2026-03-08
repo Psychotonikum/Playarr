@@ -24,14 +24,14 @@ public static class NotificationMetadataLinkGenerator
                 links.Add(new NotificationMetadataLink(MetadataLinkType.Imdb, "IMDb", $"https://www.imdb.com/title/{game.ImdbId}"));
             }
 
-            if (linkType == MetadataLinkType.Tvdb && game.TvdbId > 0)
+            if (linkType == MetadataLinkType.Igdb && game.IgdbId > 0)
             {
-                links.Add(new NotificationMetadataLink(MetadataLinkType.Tvdb, "TVDb", $"http://www.thetvdb.com/?tab=game&id={game.TvdbId}"));
+                links.Add(new NotificationMetadataLink(MetadataLinkType.Igdb, "TVDb", $"http://www.theigdb.com/?tab=game&id={game.IgdbId}"));
             }
 
-            if (linkType == MetadataLinkType.Trakt && game.TvdbId > 0)
+            if (linkType == MetadataLinkType.Trakt && game.IgdbId > 0)
             {
-                links.Add(new NotificationMetadataLink(MetadataLinkType.Trakt, "Trakt", $"http://trakt.tv/search/tvdb/{game.TvdbId}?id_type=show"));
+                links.Add(new NotificationMetadataLink(MetadataLinkType.Trakt, "Trakt", $"http://trakt.tv/search/igdb/{game.IgdbId}?id_type=show"));
             }
 
             if (linkType == MetadataLinkType.Tvmaze && game.RawgId > 0)

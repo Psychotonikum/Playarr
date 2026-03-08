@@ -36,33 +36,33 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
 
             _singleEpisodeSearchCriteria = new SingleEpisodeSearchCriteria
             {
-                Game = new Games.Game { MobyGamesId = 10, TvdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
+                Game = new Games.Game { MobyGamesId = 10, IgdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
                 SceneTitles = new List<string> { "Monkey Island" },
-                SeasonNumber = 1,
+                PlatformNumber = 1,
                 EpisodeNumber = 2
             };
 
             _seasonSearchCriteria = new SeasonSearchCriteria
             {
-                Game = new Games.Game { MobyGamesId = 10, TvdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
+                Game = new Games.Game { MobyGamesId = 10, IgdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
                 SceneTitles = new List<string> { "Monkey Island" },
-                SeasonNumber = 1,
+                PlatformNumber = 1,
             };
 
             _animeSearchCriteria = new AnimeEpisodeSearchCriteria()
             {
-                Game = new Games.Game { MobyGamesId = 10, TvdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
+                Game = new Games.Game { MobyGamesId = 10, IgdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
                 SceneTitles = new List<string>() { "Monkey+Island" },
                 AbsoluteEpisodeNumber = 100,
-                SeasonNumber = 5,
+                PlatformNumber = 5,
                 EpisodeNumber = 4
             };
 
             _animeSeasonSearchCriteria = new AnimeSeasonSearchCriteria()
             {
-                Game = new Games.Game { MobyGamesId = 10, TvdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
+                Game = new Games.Game { MobyGamesId = 10, IgdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
                 SceneTitles = new List<string> { "Monkey Island" },
-                SeasonNumber = 3,
+                PlatformNumber = 3,
             };
 
             _capabilities = new NewznabCapabilities();
@@ -216,7 +216,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
         }
 
         [Test]
-        public void should_not_search_by_tvdbid_if_not_supported()
+        public void should_not_search_by_igdbid_if_not_supported()
         {
             _capabilities.SupportedTvSearchParameters = new[] { "q", "platform", "ep" };
 
@@ -230,16 +230,16 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
         }
 
         [Test]
-        public void should_search_by_tvdbid_if_supported()
+        public void should_search_by_igdbid_if_supported()
         {
-            _capabilities.SupportedTvSearchParameters = new[] { "q", "tvdbid", "platform", "ep" };
+            _capabilities.SupportedTvSearchParameters = new[] { "q", "igdbid", "platform", "ep" };
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
             results.GetTier(0).Should().HaveCount(1);
 
             var page = results.GetAllTiers().First().First();
 
-            page.Url.Query.Should().Contain("tvdbid=20");
+            page.Url.Query.Should().Contain("igdbid=20");
         }
 
         [Test]
@@ -282,23 +282,23 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
         }
 
         [Test]
-        public void should_prefer_search_by_tvdbid_if_rid_supported()
+        public void should_prefer_search_by_igdbid_if_rid_supported()
         {
-            _capabilities.SupportedTvSearchParameters = new[] { "q", "tvdbid", "rid", "platform", "ep" };
+            _capabilities.SupportedTvSearchParameters = new[] { "q", "igdbid", "rid", "platform", "ep" };
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
             results.GetTier(0).Should().HaveCount(1);
 
             var page = results.GetAllTiers().First().First();
 
-            page.Url.Query.Should().Contain("tvdbid=20");
+            page.Url.Query.Should().Contain("igdbid=20");
             page.Url.Query.Should().NotContain("rid=10");
         }
 
         [Test]
         public void should_use_aggregrated_id_search_if_supported()
         {
-            _capabilities.SupportedTvSearchParameters = new[] { "q", "tvdbid", "rid", "platform", "ep" };
+            _capabilities.SupportedTvSearchParameters = new[] { "q", "igdbid", "rid", "platform", "ep" };
             _capabilities.SupportsAggregateIdSearch = true;
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
@@ -306,7 +306,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
 
             var page = results.GetTier(0).First().First();
 
-            page.Url.Query.Should().Contain("tvdbid=20");
+            page.Url.Query.Should().Contain("igdbid=20");
             page.Url.Query.Should().Contain("rid=10");
         }
 
@@ -343,7 +343,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
         [Test]
         public void should_fallback_to_title()
         {
-            _capabilities.SupportedTvSearchParameters = new[] { "q", "title", "tvdbid", "rid", "platform", "ep" };
+            _capabilities.SupportedTvSearchParameters = new[] { "q", "title", "igdbid", "rid", "platform", "ep" };
             _capabilities.SupportsAggregateIdSearch = true;
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
@@ -351,7 +351,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
 
             var pageTier2 = results.GetTier(1).First().First();
 
-            pageTier2.Url.Query.Should().NotContain("tvdbid=20");
+            pageTier2.Url.Query.Should().NotContain("igdbid=20");
             pageTier2.Url.Query.Should().NotContain("rid=10");
             pageTier2.Url.Query.Should().NotContain("q=");
             pageTier2.Url.Query.Should().Contain("title=Monkey%20Island");
@@ -360,7 +360,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
         [Test]
         public void should_url_encode_title()
         {
-            _capabilities.SupportedTvSearchParameters = new[] { "q", "title", "tvdbid", "rid", "platform", "ep" };
+            _capabilities.SupportedTvSearchParameters = new[] { "q", "title", "igdbid", "rid", "platform", "ep" };
             _capabilities.SupportsAggregateIdSearch = true;
 
             _singleEpisodeSearchCriteria.SceneTitles[0] = "Elith & Little";
@@ -370,7 +370,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
 
             var pageTier2 = results.GetTier(1).First().First();
 
-            pageTier2.Url.Query.Should().NotContain("tvdbid=20");
+            pageTier2.Url.Query.Should().NotContain("igdbid=20");
             pageTier2.Url.Query.Should().NotContain("rid=10");
             pageTier2.Url.Query.Should().NotContain("q=");
             pageTier2.Url.Query.Should().Contain("title=Elith%20%26%20Little");
@@ -379,7 +379,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
         [Test]
         public void should_fallback_to_q()
         {
-            _capabilities.SupportedTvSearchParameters = new[] { "q", "tvdbid", "rid", "platform", "ep" };
+            _capabilities.SupportedTvSearchParameters = new[] { "q", "igdbid", "rid", "platform", "ep" };
             _capabilities.SupportsAggregateIdSearch = true;
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
@@ -387,7 +387,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
 
             var pageTier2 = results.GetTier(1).First().First();
 
-            pageTier2.Url.Query.Should().NotContain("tvdbid=20");
+            pageTier2.Url.Query.Should().NotContain("igdbid=20");
             pageTier2.Url.Query.Should().NotContain("rid=10");
             pageTier2.Url.Query.Should().Contain("q=");
         }
@@ -430,20 +430,20 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
         [Test]
         public void should_allow_season_search_even_if_episode_search_is_not_allowed()
         {
-            _capabilities.SupportedTvSearchParameters = new[] { "q", "tvdbid", "platform" };
+            _capabilities.SupportedTvSearchParameters = new[] { "q", "igdbid", "platform" };
 
             var results = Subject.GetSearchRequests(_seasonSearchCriteria);
             results.GetTier(0).Should().HaveCount(1);
 
             var page = results.GetAllTiers().First().First();
 
-            page.Url.Query.Should().Contain("tvdbid=20");
+            page.Url.Query.Should().Contain("igdbid=20");
         }
 
         [Test]
         public void should_not_allow_season_search_if_season_param_is_not_allowed()
         {
-            _capabilities.SupportedTvSearchParameters = new[] { "q", "tvdbid" };
+            _capabilities.SupportedTvSearchParameters = new[] { "q", "igdbid" };
 
             var results = Subject.GetSearchRequests(_seasonSearchCriteria);
             results.GetTier(0).Should().HaveCount(0);

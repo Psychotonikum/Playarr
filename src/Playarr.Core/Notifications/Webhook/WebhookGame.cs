@@ -11,7 +11,7 @@ namespace Playarr.Core.Notifications.Webhook
         public string Title { get; set; }
         public string TitleSlug { get; set; }
         public string Path { get; set; }
-        public int TvdbId { get; set; }
+        public int IgdbId { get; set; }
         public int RawgId { get; set; }
         public int TmdbId { get; set; }
         public string ImdbId { get; set; }
@@ -35,7 +35,7 @@ namespace Playarr.Core.Notifications.Webhook
             Title = game.Title;
             TitleSlug = game.TitleSlug;
             Path = game.Path;
-            TvdbId = game.TvdbId;
+            IgdbId = game.IgdbId;
             RawgId = game.RawgId;
             TmdbId = game.TmdbId;
             ImdbId = game.ImdbId;

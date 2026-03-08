@@ -148,33 +148,33 @@ namespace Playarr.Core.ImportLists
                 }
 
                 // Map by IMDb ID if we have it
-                if (item.TvdbId <= 0 && item.ImdbId.IsNotNullOrWhiteSpace())
+                if (item.IgdbId <= 0 && item.ImdbId.IsNotNullOrWhiteSpace())
                 {
                     var mappedSeries = _seriesSearchService.SearchForNewSeriesByImdbId(item.ImdbId)
                         .FirstOrDefault();
 
                     if (mappedSeries != null)
                     {
-                        item.TvdbId = mappedSeries.TvdbId;
+                        item.IgdbId = mappedSeries.IgdbId;
                         item.Title = mappedSeries?.Title;
                     }
                 }
 
                 // Map by TMDb ID if we have it
-                if (item.TvdbId <= 0 && item.TmdbId > 0)
+                if (item.IgdbId <= 0 && item.TmdbId > 0)
                 {
                     var mappedSeries = _seriesSearchService.SearchForNewSeriesByTmdbId(item.TmdbId)
                         .FirstOrDefault();
 
                     if (mappedSeries != null)
                     {
-                        item.TvdbId = mappedSeries.TvdbId;
+                        item.IgdbId = mappedSeries.IgdbId;
                         item.Title = mappedSeries?.Title;
                     }
                 }
 
                 // Map by AniList ID if we have it
-                if (item.TvdbId <= 0 && item.AniListId > 0)
+                if (item.IgdbId <= 0 && item.AniListId > 0)
                 {
                     var mappedSeries = _seriesSearchService.SearchForNewSeriesByAniListId(item.AniListId)
                         .FirstOrDefault();
@@ -186,12 +186,12 @@ namespace Playarr.Core.ImportLists
                         continue;
                     }
 
-                    item.TvdbId = mappedSeries.TvdbId;
+                    item.IgdbId = mappedSeries.IgdbId;
                     item.Title = mappedSeries.Title;
                 }
 
                 // Map by MyAniList ID if we have it
-                if (item.TvdbId <= 0 && item.MalId > 0)
+                if (item.IgdbId <= 0 && item.MalId > 0)
                 {
                     var mappedSeries = _seriesSearchService.SearchForNewSeriesByMyAnimeListId(item.MalId)
                         .FirstOrDefault();
@@ -203,40 +203,40 @@ namespace Playarr.Core.ImportLists
                         continue;
                     }
 
-                    item.TvdbId = mappedSeries.TvdbId;
+                    item.IgdbId = mappedSeries.IgdbId;
                     item.Title = mappedSeries.Title;
                 }
 
-                if (item.TvdbId == 0)
+                if (item.IgdbId == 0)
                 {
                     _logger.Debug("[{0}] Rejected, unable to find IGDB ID", item.Title);
                     continue;
                 }
 
                 // Check to see if game excluded
-                var excludedSeries = listExclusions.SingleOrDefault(s => s.TvdbId == item.TvdbId);
+                var excludedSeries = listExclusions.SingleOrDefault(s => s.IgdbId == item.IgdbId);
 
                 if (excludedSeries != null)
                 {
-                    _logger.Debug("{0} [{1}] Rejected due to list exclusion", item.TvdbId, item.Title);
+                    _logger.Debug("{0} [{1}] Rejected due to list exclusion", item.IgdbId, item.Title);
                     continue;
                 }
 
                 // Break if Game Exists in DB
-                if (existingIgdbIds.Any(x => x == item.TvdbId))
+                if (existingIgdbIds.Any(x => x == item.IgdbId))
                 {
-                    _logger.Debug("{0} [{1}] Rejected, game exists in database", item.TvdbId, item.Title);
+                    _logger.Debug("{0} [{1}] Rejected, game exists in database", item.IgdbId, item.Title);
                     continue;
                 }
 
                 // Append Game if not already in DB or already on add list
-                if (gamesToAdd.All(s => s.TvdbId != item.TvdbId))
+                if (gamesToAdd.All(s => s.IgdbId != item.IgdbId))
                 {
                     var monitored = importList.ShouldMonitor != MonitorTypes.None;
 
                     gamesToAdd.Add(new Game
                     {
-                        TvdbId = item.TvdbId,
+                        IgdbId = item.IgdbId,
                         Title = item.Title,
                         Year = item.Year,
                         Monitored = monitored,
@@ -302,7 +302,7 @@ namespace Playarr.Core.ImportLists
             foreach (var game in seriesInLibrary)
             {
                 var seriesExists = allListItems.Where(l =>
-                    l.TvdbId == game.TvdbId ||
+                    l.IgdbId == game.IgdbId ||
                     (l.ImdbId.IsNotNullOrWhiteSpace() && game.ImdbId.IsNotNullOrWhiteSpace() && l.ImdbId == game.ImdbId) ||
                     l.TmdbId == game.TmdbId ||
                     game.MalIds.Contains(l.MalId) ||

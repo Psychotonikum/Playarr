@@ -46,7 +46,7 @@ namespace Playarr.Core.Test.ParserTests
         public void should_parse_full_season_release(string postTitle, string title, int platform)
         {
             var result = Parser.Parser.ParseTitle(postTitle);
-            result.SeasonNumber.Should().Be(platform);
+            result.PlatformNumber.Should().Be(platform);
             result.GameTitle.Should().Be(title);
             result.RomNumbers.Should().BeEmpty();
             result.AbsoluteRomNumbers.Should().BeEmpty();
@@ -61,7 +61,7 @@ namespace Playarr.Core.Test.ParserTests
         public void should_parse_season_extras(string postTitle, string title, int platform)
         {
             var result = Parser.Parser.ParseTitle(postTitle);
-            result.SeasonNumber.Should().Be(platform);
+            result.PlatformNumber.Should().Be(platform);
             result.GameTitle.Should().Be(title);
             result.RomNumbers.Should().BeEmpty();
             result.AbsoluteRomNumbers.Should().BeEmpty();
@@ -75,7 +75,7 @@ namespace Playarr.Core.Test.ParserTests
         public void should_parse_season_subpack(string postTitle, string title, int platform)
         {
             var result = Parser.Parser.ParseTitle(postTitle);
-            result.SeasonNumber.Should().Be(platform);
+            result.PlatformNumber.Should().Be(platform);
             result.GameTitle.Should().Be(title);
             result.RomNumbers.Should().BeEmpty();
             result.AbsoluteRomNumbers.Should().BeEmpty();
@@ -89,7 +89,7 @@ namespace Playarr.Core.Test.ParserTests
         public void should_parse_partial_season_release(string postTitle, string title, int platform, int seasonPart)
         {
             var result = Parser.Parser.ParseTitle(postTitle);
-            result.SeasonNumber.Should().Be(platform);
+            result.PlatformNumber.Should().Be(platform);
             result.GameTitle.Should().Be(title);
             result.RomNumbers.Should().BeEmpty();
             result.AbsoluteRomNumbers.Should().BeEmpty();
@@ -109,7 +109,7 @@ namespace Playarr.Core.Test.ParserTests
         public void should_parse_multi_season_release(string postTitle, string title, int firstSeason)
         {
             var result = Parser.Parser.ParseTitle(postTitle);
-            result.SeasonNumber.Should().Be(firstSeason);
+            result.PlatformNumber.Should().Be(firstSeason);
             result.GameTitle.Should().Be(title);
             result.RomNumbers.Should().BeEmpty();
             result.AbsoluteRomNumbers.Should().BeEmpty();

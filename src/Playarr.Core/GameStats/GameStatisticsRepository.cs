@@ -37,15 +37,15 @@ namespace Playarr.Core.GameStats
         {
             var time = DateTime.UtcNow;
 
-            return MapResults(Query(EpisodesBuilder(time).Where<Rom>(x => x.SeriesId == gameId), _selectEpisodesTemplate),
-                Query(RomFilesBuilder().Where<RomFile>(x => x.SeriesId == gameId), _selectRomFilesTemplate));
+            return MapResults(Query(EpisodesBuilder(time).Where<Rom>(x => x.GameId == gameId), _selectEpisodesTemplate),
+                Query(RomFilesBuilder().Where<RomFile>(x => x.GameId == gameId), _selectRomFilesTemplate));
         }
 
         private List<SeasonStatistics> MapResults(List<SeasonStatistics> episodesResult, List<SeasonStatistics> filesResult)
         {
             episodesResult.ForEach(e =>
             {
-                var file = filesResult.SingleOrDefault(f => f.SeriesId == e.SeriesId & f.SeasonNumber == e.SeasonNumber);
+                var file = filesResult.SingleOrDefault(f => f.GameId == e.GameId & f.PlatformNumber == e.PlatformNumber);
 
                 e.SizeOnDisk = file?.SizeOnDisk ?? 0;
                 e.ReleaseGroupsString = file?.ReleaseGroupsString;
@@ -73,8 +73,8 @@ namespace Playarr.Core.GameStats
             var falseIndicator = _database.DatabaseType == DatabaseType.PostgreSQL ? "false" : "0";
 
             return new SqlBuilder(_database.DatabaseType)
-            .Select($@"""Episodes"".""SeriesId"" AS SeriesId,
-                             ""Episodes"".""SeasonNumber"",
+            .Select($@"""Roms"".""GameId"" AS GameId,
+                             ""Roms"".""PlatformNumber"",
                              COUNT(*) AS TotalEpisodeCount,
                              SUM(CASE WHEN ""AirDateUtc"" <= @currentDate OR ""EpisodeFileId"" > 0 THEN 1 ELSE 0 END) AS AvailableEpisodeCount,
                              SUM(CASE WHEN (""Monitored"" = {trueIndicator} AND ""AirDateUtc"" <= @currentDate) OR ""EpisodeFileId"" > 0 THEN 1 ELSE 0 END) AS EpisodeCount,
@@ -84,8 +84,8 @@ namespace Playarr.Core.GameStats
                              MAX(CASE WHEN ""AirDateUtc"" >= @currentDate OR ""Monitored"" = {falseIndicator} THEN NULL ELSE ""AirDateUtc"" END) AS PreviousAiringString,
                              MAX(""AirDate"") AS LastAiredString",
                 parameters)
-            .GroupBy<Rom>(x => x.SeriesId)
-            .GroupBy<Rom>(x => x.SeasonNumber);
+            .GroupBy<Rom>(x => x.GameId)
+            .GroupBy<Rom>(x => x.PlatformNumber);
         }
 
         private SqlBuilder RomFilesBuilder()
@@ -93,21 +93,21 @@ namespace Playarr.Core.GameStats
             if (_database.DatabaseType == DatabaseType.SQLite)
             {
                 return new SqlBuilder(_database.DatabaseType)
-                .Select(@"""SeriesId"",
-                            ""SeasonNumber"",
+                .Select(@"""GameId"",
+                            ""PlatformNumber"",
                             SUM(COALESCE(""Size"", 0)) AS SizeOnDisk,
                             GROUP_CONCAT(""ReleaseGroup"", '|') AS ReleaseGroupsString")
-                .GroupBy<RomFile>(x => x.SeriesId)
-                .GroupBy<RomFile>(x => x.SeasonNumber);
+                .GroupBy<RomFile>(x => x.GameId)
+                .GroupBy<RomFile>(x => x.PlatformNumber);
             }
 
             return new SqlBuilder(_database.DatabaseType)
-                .Select(@"""SeriesId"",
-                            ""SeasonNumber"",
+                .Select(@"""GameId"",
+                            ""PlatformNumber"",
                             SUM(COALESCE(""Size"", 0)) AS SizeOnDisk,
                             string_agg(""ReleaseGroup"", '|') AS ReleaseGroupsString")
-                .GroupBy<RomFile>(x => x.SeriesId)
-                .GroupBy<RomFile>(x => x.SeasonNumber);
+                .GroupBy<RomFile>(x => x.GameId)
+                .GroupBy<RomFile>(x => x.PlatformNumber);
         }
     }
 }

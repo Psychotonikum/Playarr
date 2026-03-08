@@ -36,7 +36,7 @@ namespace Playarr.Api.V3.PlatformPass
                 {
                     foreach (var seriesSeason in game.Platforms)
                     {
-                        var platform = s.Platforms.FirstOrDefault(c => c.SeasonNumber == seriesSeason.SeasonNumber);
+                        var platform = s.Platforms.FirstOrDefault(c => c.PlatformNumber == seriesSeason.PlatformNumber);
 
                         if (platform != null)
                         {

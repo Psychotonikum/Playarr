@@ -11,7 +11,7 @@ public class ReleasePushResource : RestResource
     public int IndexerId { get; set; }
     public string? Indexer { get; set; }
     public string? Title { get; set; }
-    public int TvdbId { get; set; }
+    public int IgdbId { get; set; }
     public int MobyGamesId { get; set; }
     public string? ImdbId { get; set; }
     public IEnumerable<string> Rejections { get; set; } = [];
@@ -59,7 +59,7 @@ public static class ReleasePushResourceMapper
         model.IndexerId = resource.IndexerId;
         model.Indexer = resource.Indexer;
         model.DownloadProtocol = resource.Protocol;
-        model.TvdbId = resource.TvdbId;
+        model.IgdbId = resource.IgdbId;
         model.MobyGamesId = resource.MobyGamesId;
         model.ImdbId = resource.ImdbId;
         model.PublishDate = resource.PublishDate.ToUniversalTime();

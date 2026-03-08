@@ -47,7 +47,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                                      .Build();
 
             _episode = Builder<Rom>.CreateNew()
-                                       .With(e => e.SeriesId = _series.Id)
+                                       .With(e => e.GameId = _series.Id)
                                        .Build();
 
             _otherGame = Builder<Game>.CreateNew()
@@ -55,9 +55,9 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                                           .Build();
 
             _otherEpisode = Builder<Rom>.CreateNew()
-                                            .With(e => e.SeriesId = _otherGame.Id)
+                                            .With(e => e.GameId = _otherGame.Id)
                                             .With(e => e.Id = 2)
-                                            .With(e => e.SeasonNumber = 2)
+                                            .With(e => e.PlatformNumber = 2)
                                             .With(e => e.EpisodeNumber = 2)
                                             .Build();
 
@@ -149,7 +149,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
         {
             GivenEmptyPendingQueue();
 
-            _otherEpisode.SeriesId = _series.Id;
+            _otherEpisode.GameId = _series.Id;
 
             Mocker.GetMock<IPendingReleaseService>()
                 .Setup(s => s.GetPendingQueue())

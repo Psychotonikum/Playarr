@@ -76,14 +76,14 @@ namespace Playarr.Core.Indexers.Newznab
             }
         }
 
-        private bool SupportsTvdbSearch
+        private bool SupportsIgdbSearch
         {
             get
             {
                 var capabilities = _capabilitiesProvider.GetCapabilities(Settings);
 
                 return capabilities.SupportedTvSearchParameters != null &&
-                       capabilities.SupportedTvSearchParameters.Contains("tvdbid");
+                       capabilities.SupportedTvSearchParameters.Contains("igdbid");
             }
         }
 
@@ -136,7 +136,7 @@ namespace Playarr.Core.Indexers.Newznab
         {
             get
             {
-                return SupportsTvdbSearch || SupportsImdbSearch || SupportsTvRageSearch || SupportsTvMazeSearch || SupportsTmdbSearch;
+                return SupportsIgdbSearch || SupportsImdbSearch || SupportsTvRageSearch || SupportsTvMazeSearch || SupportsTmdbSearch;
             }
         }
 
@@ -224,7 +224,7 @@ namespace Playarr.Core.Indexers.Newznab
 
             if (!SupportsTvTextSearches && !SupportsTvIdSearches)
             {
-                _logger.Debug("Indexer capabilities lacking q, title, tvdbid, imdbid, rid and tvmazeid parameters, no Standard game search possible: {0}", Definition.Name);
+                _logger.Debug("Indexer capabilities lacking q, title, igdbid, imdbid, rid and tvmazeid parameters, no Standard game search possible: {0}", Definition.Name);
 
                 return pageableRequests;
             }
@@ -236,7 +236,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTvIdPageableRequests(pageableRequests,
                     categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.SeasonNumber)}&ep={searchCriteria.EpisodeNumber}");
+                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
             }
 
             if (searchCriteria.SearchMode.HasFlag(SearchMode.SearchTitle))
@@ -244,7 +244,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.SeasonNumber)}&ep={searchCriteria.EpisodeNumber}");
+                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
             }
 
             pageableRequests.AddTier();
@@ -254,7 +254,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.SeasonNumber)}&ep={searchCriteria.EpisodeNumber}");
+                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
             }
 
             return pageableRequests;
@@ -273,7 +273,7 @@ namespace Playarr.Core.Indexers.Newznab
 
             if (!SupportsTvTextSearches && !SupportsTvIdSearches)
             {
-                _logger.Debug("Indexer capabilities lacking q, title, tvdbid, imdbid, rid and tvmazeid parameters, no Standard game search possible: {0}", Definition.Name);
+                _logger.Debug("Indexer capabilities lacking q, title, igdbid, imdbid, rid and tvmazeid parameters, no Standard game search possible: {0}", Definition.Name);
 
                 return pageableRequests;
             }
@@ -283,7 +283,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTvIdPageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.SeasonNumber)}");
+                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
             }
 
             if (searchCriteria.SearchMode.HasFlag(SearchMode.SearchTitle))
@@ -291,7 +291,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.SeasonNumber)}");
+                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
             }
 
             pageableRequests.AddTier();
@@ -301,7 +301,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.SeasonNumber)}");
+                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
             }
 
             return pageableRequests;
@@ -320,7 +320,7 @@ namespace Playarr.Core.Indexers.Newznab
 
             if (!SupportsTvTextSearches && !SupportsTvIdSearches)
             {
-                _logger.Debug("Indexer capabilities lacking q, title, tvdbid, imdbid, rid and tvmazeid parameters, no Daily game search possible: {0}", Definition.Name);
+                _logger.Debug("Indexer capabilities lacking q, title, igdbid, imdbid, rid and tvmazeid parameters, no Daily game search possible: {0}", Definition.Name);
 
                 return pageableRequests;
             }
@@ -367,7 +367,7 @@ namespace Playarr.Core.Indexers.Newznab
 
             if (!SupportsTvTextSearches && !SupportsTvIdSearches)
             {
-                _logger.Debug("Indexer capabilities lacking q, title, tvdbid, imdbid, rid and tvmazeid parameters, no Daily game search possible: {0}", Definition.Name);
+                _logger.Debug("Indexer capabilities lacking q, title, igdbid, imdbid, rid and tvmazeid parameters, no Daily game search possible: {0}", Definition.Name);
 
                 return pageableRequests;
             }
@@ -413,7 +413,7 @@ namespace Playarr.Core.Indexers.Newznab
                     $"&q={searchCriteria.AbsoluteEpisodeNumber:00}");
 
                 var includeAnimeStandardFormatSearch = Settings.AnimeStandardFormatSearch &&
-                                                       searchCriteria.SeasonNumber > 0 &&
+                                                       searchCriteria.PlatformNumber > 0 &&
                                                        searchCriteria.EpisodeNumber > 0;
 
                 if (includeAnimeStandardFormatSearch && SupportsEpisodeSearch)
@@ -421,7 +421,7 @@ namespace Playarr.Core.Indexers.Newznab
                     AddTvIdPageableRequests(pageableRequests,
                         Settings.AnimeCategories,
                         searchCriteria,
-                        $"&platform={NewznabifyPlatformNumber(searchCriteria.SeasonNumber)}&ep={searchCriteria.EpisodeNumber}");
+                        $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
                 }
 
                 var queryTitles = TextSearchEngine == "raw" ? searchCriteria.AllSceneTitles : searchCriteria.CleanSceneTitles;
@@ -438,7 +438,7 @@ namespace Playarr.Core.Indexers.Newznab
                         pageableRequests.Add(GetPagedRequests(MaxPages,
                             Settings.AnimeCategories,
                             "tvsearch",
-                            $"&q={NewsnabifyTitle(queryTitle)}&platform={NewznabifyPlatformNumber(searchCriteria.SeasonNumber)}&ep={searchCriteria.EpisodeNumber}"));
+                            $"&q={NewsnabifyTitle(queryTitle)}&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}"));
                     }
                 }
             }
@@ -450,12 +450,12 @@ namespace Playarr.Core.Indexers.Newznab
         {
             var pageableRequests = new IndexerPageableRequestChain();
 
-            if (SupportsSearch && Settings.AnimeStandardFormatSearch && searchCriteria.SeasonNumber > 0)
+            if (SupportsSearch && Settings.AnimeStandardFormatSearch && searchCriteria.PlatformNumber > 0)
             {
                 AddTvIdPageableRequests(pageableRequests,
                     Settings.AnimeCategories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.SeasonNumber)}");
+                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
 
                 var queryTitles = TextSearchEngine == "raw" ? searchCriteria.AllSceneTitles : searchCriteria.CleanSceneTitles;
 
@@ -464,7 +464,7 @@ namespace Playarr.Core.Indexers.Newznab
                     pageableRequests.Add(GetPagedRequests(MaxPages,
                         Settings.AnimeCategories,
                         "tvsearch",
-                        $"&q={NewsnabifyTitle(queryTitle)}&platform={NewznabifyPlatformNumber(searchCriteria.SeasonNumber)}"));
+                        $"&q={NewsnabifyTitle(queryTitle)}&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}"));
                 }
             }
 
@@ -496,19 +496,19 @@ namespace Playarr.Core.Indexers.Newznab
 
         private void AddTvIdPageableRequests(IndexerPageableRequestChain chain, IEnumerable<int> categories, SearchCriteriaBase searchCriteria, string parameters)
         {
-            var includeTvdbSearch = SupportsTvdbSearch && searchCriteria.Game.TvdbId > 0;
+            var includeIgdbSearch = SupportsIgdbSearch && searchCriteria.Game.IgdbId > 0;
             var includeImdbSearch = SupportsImdbSearch && searchCriteria.Game.ImdbId.IsNotNullOrWhiteSpace();
             var includeTvRageSearch = SupportsTvRageSearch && searchCriteria.Game.MobyGamesId > 0;
             var includeTvMazeSearch = SupportsTvMazeSearch && searchCriteria.Game.RawgId > 0;
             var includeTmdbSearch = SupportsTmdbSearch && searchCriteria.Game.TmdbId > 0;
 
-            if (SupportsAggregatedIdSearch && (includeTvdbSearch || includeTvRageSearch || includeTvMazeSearch || includeTmdbSearch))
+            if (SupportsAggregatedIdSearch && (includeIgdbSearch || includeTvRageSearch || includeTvMazeSearch || includeTmdbSearch))
             {
                 var ids = "";
 
-                if (includeTvdbSearch)
+                if (includeIgdbSearch)
                 {
-                    ids += "&tvdbid=" + searchCriteria.Game.TvdbId;
+                    ids += "&igdbid=" + searchCriteria.Game.IgdbId;
                 }
 
                 if (includeImdbSearch)
@@ -535,12 +535,12 @@ namespace Playarr.Core.Indexers.Newznab
             }
             else
             {
-                if (includeTvdbSearch)
+                if (includeIgdbSearch)
                 {
                     chain.Add(GetPagedRequests(MaxPages,
                         categories,
                         "tvsearch",
-                        $"&tvdbid={searchCriteria.Game.TvdbId}{parameters}"));
+                        $"&igdbid={searchCriteria.Game.IgdbId}{parameters}"));
                 }
                 else if (includeImdbSearch)
                 {

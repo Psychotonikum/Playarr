@@ -33,7 +33,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(game);
 
             var pendingRelease = Builder<PendingRelease>.CreateNew()
-                .With(h => h.SeriesId = game.Id)
+                .With(h => h.GameId = game.Id)
                 .With(h => h.ParsedRomInfo = new ParsedRomInfo())
                 .With(h => h.Release = new ReleaseInfo())
                 .BuildNew();

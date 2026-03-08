@@ -68,7 +68,7 @@ namespace Playarr.Core.Test.IndexerTests.TorznabTests
             releaseInfo.Indexer.Should().Be(Subject.Definition.Name);
             releaseInfo.PublishDate.Should().Be(DateTime.Parse("2015/03/14 21:10:42"));
             releaseInfo.Size.Should().Be(2538463390);
-            releaseInfo.TvdbId.Should().Be(273181);
+            releaseInfo.IgdbId.Should().Be(273181);
             releaseInfo.MobyGamesId.Should().Be(37780);
             releaseInfo.InfoHash.Should().Be("63e07ff523710ca268567dad344ce1e0e6b7e8a3");
             releaseInfo.Seeders.Should().Be(7);
@@ -129,7 +129,7 @@ namespace Playarr.Core.Test.IndexerTests.TorznabTests
             releaseInfo.Indexer.Should().Be(Subject.Definition.Name);
             releaseInfo.PublishDate.Should().Be(DateTime.Parse("Wed, 17 May 2017 20:36:06 +0000").ToUniversalTime());
             releaseInfo.Size.Should().Be(316477946);
-            releaseInfo.TvdbId.Should().Be(0);
+            releaseInfo.IgdbId.Should().Be(0);
             releaseInfo.MobyGamesId.Should().Be(0);
             releaseInfo.InfoHash.Should().Be("2d69a861bef5a9f2cdf791b7328e37b7953205e1");
             releaseInfo.Seeders.Should().BeNull();

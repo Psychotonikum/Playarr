@@ -32,7 +32,7 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
             _episodes = Builder<Rom>.CreateListOfSize(10)
                                         .All()
                                         .With(e => e.EpisodeFileId = 0)
-                                        .With(e => e.SeriesId = SERIES_ID)
+                                        .With(e => e.GameId = SERIES_ID)
                                         .BuildListOfNew()
                                         .ToList();
 
@@ -65,13 +65,13 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
             Db.Insert(romFile);
 
             var rom = Builder<Rom>.CreateNew()
-                                          .With(e => e.SeriesId = SERIES_ID + 10)
+                                          .With(e => e.GameId = SERIES_ID + 10)
                                           .With(e => e.EpisodeFileId = romFile.Id)
                                           .BuildNew();
 
             Db.Insert(rom);
 
-            Subject.EpisodesWithFiles(rom.SeriesId).Should().OnlyContain(e => e.SeriesId == rom.SeriesId);
+            Subject.EpisodesWithFiles(rom.GameId).Should().OnlyContain(e => e.GameId == rom.GameId);
         }
 
         [Test]

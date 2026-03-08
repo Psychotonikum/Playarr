@@ -22,7 +22,7 @@ namespace Playarr.Api.V3.ImportLists
         {
             _importListExclusionService = importListExclusionService;
 
-            SharedValidator.RuleFor(c => c.TvdbId).Cascade(CascadeMode.Stop)
+            SharedValidator.RuleFor(c => c.IgdbId).Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .SetValidator(importListExclusionExistsValidator);
 

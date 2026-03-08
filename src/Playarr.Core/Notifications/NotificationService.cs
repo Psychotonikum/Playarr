@@ -65,7 +65,7 @@ namespace Playarr.Core.Notifications
 
             var romTitles = string.Join(" + ", roms.Select(e => e.Title));
 
-            return $"{game.Title} - {roms.First().SeasonNumber}{romNumbers} - {romTitles} [{qualityString}]";
+            return $"{game.Title} - {roms.First().PlatformNumber}{romNumbers} - {romTitles} [{qualityString}]";
         }
 
         private string GetFullSeasonMessage(Game game, int platformNumber, QualityModel quality)
@@ -210,7 +210,7 @@ namespace Playarr.Core.Notifications
             var downloadMessage = new ImportCompleteMessage
             {
                 Message = parsedRomInfo.FullSeason
-                    ? GetFullSeasonMessage(game, roms.First().SeasonNumber, parsedRomInfo.Quality)
+                    ? GetFullSeasonMessage(game, roms.First().PlatformNumber, parsedRomInfo.Quality)
                     : GetMessage(game, roms, parsedRomInfo.Quality),
                 Game = game,
                 Roms = roms,
@@ -254,7 +254,7 @@ namespace Playarr.Core.Notifications
             var downloadMessage = new ImportCompleteMessage
             {
                 Message = parsedRomInfo.FullSeason
-                    ? GetFullSeasonMessage(game, roms.First().SeasonNumber, parsedRomInfo.Quality)
+                    ? GetFullSeasonMessage(game, roms.First().PlatformNumber, parsedRomInfo.Quality)
                     : GetMessage(game, roms, parsedRomInfo.Quality),
                 Game = game,
                 Roms = roms,

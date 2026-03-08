@@ -75,7 +75,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
 
             Mocker.GetMock<IPendingReleaseRepository>()
                   .Setup(s => s.AllByGameId(It.IsAny<int>()))
-                  .Returns<int>(i => _heldReleases.Where(v => v.SeriesId == i).ToList());
+                  .Returns<int>(i => _heldReleases.Where(v => v.GameId == i).ToList());
 
             Mocker.GetMock<IGameService>()
                   .Setup(s => s.GetSeries(It.IsAny<int>()))
@@ -105,7 +105,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
 
             var heldReleases = Builder<PendingRelease>.CreateListOfSize(1)
                                                    .All()
-                                                   .With(h => h.SeriesId = _series.Id)
+                                                   .With(h => h.GameId = _series.Id)
                                                    .With(h => h.Release = _release.JsonClone())
                                                    .With(h => h.ParsedRomInfo = parsedRomInfo)
                                                    .Build();

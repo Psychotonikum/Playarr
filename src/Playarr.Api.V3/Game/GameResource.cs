@@ -48,7 +48,7 @@ namespace Playarr.Api.V3.Game
 
         public bool UseSceneNumbering { get; set; }
         public int Runtime { get; set; }
-        public int TvdbId { get; set; }
+        public int IgdbId { get; set; }
         public int MobyGamesId { get; set; }
         public int RawgId { get; set; }
         public int TmdbId { get; set; }
@@ -121,7 +121,7 @@ namespace Playarr.Api.V3.Game
 
                        UseSceneNumbering = model.UseSceneNumbering,
                        Runtime = model.Runtime,
-                       TvdbId = model.TvdbId,
+                       IgdbId = model.IgdbId,
                        MobyGamesId = model.MobyGamesId,
                        RawgId = model.RawgId,
                        TmdbId = model.TmdbId,
@@ -186,7 +186,7 @@ namespace Playarr.Api.V3.Game
 
                        UseSceneNumbering = resource.UseSceneNumbering,
                        Runtime = resource.Runtime,
-                       TvdbId = resource.TvdbId,
+                       IgdbId = resource.IgdbId,
                        MobyGamesId = resource.MobyGamesId,
                        RawgId = resource.RawgId,
                        TmdbId = resource.TmdbId,

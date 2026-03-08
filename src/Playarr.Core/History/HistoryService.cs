@@ -151,7 +151,7 @@ namespace Playarr.Core.History
                     Date = DateTime.UtcNow,
                     Quality = message.Rom.ParsedRomInfo.Quality,
                     SourceTitle = message.Rom.Release.Title,
-                    SeriesId = rom.SeriesId,
+                    GameId = rom.GameId,
                     EpisodeId = rom.Id,
                     DownloadId = message.DownloadId,
                     Languages = message.Rom.Languages,
@@ -169,7 +169,7 @@ namespace Playarr.Core.History
                 history.Data.Add("Size", message.Rom.Release.Size.ToString());
                 history.Data.Add("DownloadUrl", message.Rom.Release.DownloadUrl);
                 history.Data.Add("Guid", message.Rom.Release.Guid);
-                history.Data.Add("TvdbId", message.Rom.Release.TvdbId.ToString());
+                history.Data.Add("IgdbId", message.Rom.Release.IgdbId.ToString());
                 history.Data.Add("MobyGamesId", message.Rom.Release.MobyGamesId.ToString());
                 history.Data.Add("ImdbId", message.Rom.Release.ImdbId);
                 history.Data.Add("Protocol", ((int)message.Rom.Release.DownloadProtocol).ToString());
@@ -215,7 +215,7 @@ namespace Playarr.Core.History
                     Date = DateTime.UtcNow,
                     Quality = message.RomInfo.Quality,
                     SourceTitle = message.ImportedEpisode.SceneName ?? Path.GetFileNameWithoutExtension(message.RomInfo.Path),
-                    SeriesId = message.ImportedEpisode.SeriesId,
+                    GameId = message.ImportedEpisode.GameId,
                     EpisodeId = rom.Id,
                     DownloadId = downloadId,
                     Languages = message.RomInfo.Languages
@@ -246,7 +246,7 @@ namespace Playarr.Core.History
                     Date = DateTime.UtcNow,
                     Quality = message.Quality,
                     SourceTitle = message.SourceTitle,
-                    SeriesId = message.SeriesId,
+                    GameId = message.GameId,
                     EpisodeId = romId,
                     DownloadId = message.DownloadId,
                     Languages = message.Languages
@@ -285,7 +285,7 @@ namespace Playarr.Core.History
                     Date = DateTime.UtcNow,
                     Quality = message.RomFile.Quality,
                     SourceTitle = message.RomFile.Path,
-                    SeriesId = message.RomFile.SeriesId,
+                    GameId = message.RomFile.GameId,
                     EpisodeId = rom.Id,
                     Languages = message.RomFile.Languages
                 };
@@ -315,7 +315,7 @@ namespace Playarr.Core.History
                     Date = DateTime.UtcNow,
                     Quality = message.RomFile.Quality,
                     SourceTitle = message.OriginalPath,
-                    SeriesId = message.RomFile.SeriesId,
+                    GameId = message.RomFile.GameId,
                     EpisodeId = rom.Id,
                     Languages = message.RomFile.Languages
                 };
@@ -345,7 +345,7 @@ namespace Playarr.Core.History
                     Date = DateTime.UtcNow,
                     Quality = message.Quality,
                     SourceTitle = message.SourceTitle,
-                    SeriesId = message.SeriesId,
+                    GameId = message.GameId,
                     EpisodeId = romId,
                     DownloadId = message.DownloadId,
                     Languages = message.Languages

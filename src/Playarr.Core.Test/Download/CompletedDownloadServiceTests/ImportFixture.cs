@@ -29,9 +29,9 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
         [SetUp]
         public void Setup()
         {
-            _episode1 = new Rom { Id = 1, SeasonNumber = 1, EpisodeNumber = 1 };
-            _episode2 = new Rom { Id = 2, SeasonNumber = 1, EpisodeNumber = 2 };
-            _episode3 = new Rom { Id = 2, SeasonNumber = 1, EpisodeNumber = 3 };
+            _episode1 = new Rom { Id = 1, PlatformNumber = 1, EpisodeNumber = 1 };
+            _episode2 = new Rom { Id = 2, PlatformNumber = 1, EpisodeNumber = 2 };
+            _episode3 = new Rom { Id = 2, PlatformNumber = 1, EpisodeNumber = 3 };
 
             var completed = Builder<DownloadClientItem>.CreateNew()
                                                     .With(h => h.Status = DownloadItemStatus.Completed)

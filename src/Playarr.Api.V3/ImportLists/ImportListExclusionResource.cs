@@ -7,7 +7,7 @@ namespace Playarr.Api.V3.ImportLists
 {
     public class ImportListExclusionResource : RestResource
     {
-        public int TvdbId { get; set; }
+        public int IgdbId { get; set; }
         public string Title { get; set; }
     }
 
@@ -23,7 +23,7 @@ namespace Playarr.Api.V3.ImportLists
             return new ImportListExclusionResource
             {
                 Id = model.Id,
-                TvdbId = model.TvdbId,
+                IgdbId = model.IgdbId,
                 Title = model.Title,
             };
         }
@@ -38,7 +38,7 @@ namespace Playarr.Api.V3.ImportLists
             return new ImportListExclusion
             {
                 Id = resource.Id,
-                TvdbId = resource.TvdbId,
+                IgdbId = resource.IgdbId,
                 Title = resource.Title
             };
         }

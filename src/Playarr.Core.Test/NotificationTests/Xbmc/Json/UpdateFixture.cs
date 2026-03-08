@@ -42,7 +42,7 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
         public void should_update_using_series_path()
         {
             var game = Builder<Game>.CreateNew()
-                                        .With(s => s.TvdbId = IGDB_ID)
+                                        .With(s => s.IgdbId = IGDB_ID)
                                         .Build();
 
             Subject.Update(_settings, game);
@@ -55,7 +55,7 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
         public void should_update_all_paths_when_series_path_not_found()
         {
             var fakeSeries = Builder<Game>.CreateNew()
-                                            .With(s => s.TvdbId = 1000)
+                                            .With(s => s.IgdbId = 1000)
                                             .With(s => s.Title = "Not 30 Rock")
                                             .Build();
 

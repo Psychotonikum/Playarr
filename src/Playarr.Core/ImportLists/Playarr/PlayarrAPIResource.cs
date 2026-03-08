@@ -6,7 +6,7 @@ namespace Playarr.Core.ImportLists.Playarr
     {
         public string Title { get; set; }
         public string SortTitle { get; set; }
-        public int TvdbId { get; set; }
+        public int IgdbId { get; set; }
         public string Overview { get; set; }
         public List<MediaCover.MediaCover> Images { get; set; }
         public bool Monitored { get; set; }
@@ -39,7 +39,7 @@ namespace Playarr.Core.ImportLists.Playarr
 
     public class PlayarrSeason
     {
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public bool Monitored { get; set; }
     }
 }

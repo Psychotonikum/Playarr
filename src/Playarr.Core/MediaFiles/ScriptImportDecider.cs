@@ -135,7 +135,7 @@ namespace Playarr.Core.MediaFiles
             environmentVariables.Add("Playarr_Series_Title", game.Title);
             environmentVariables.Add("Playarr_Series_TitleSlug", game.TitleSlug);
             environmentVariables.Add("Playarr_Series_Path", game.Path);
-            environmentVariables.Add("Playarr_Series_IgdbId", game.TvdbId.ToString());
+            environmentVariables.Add("Playarr_Series_IgdbId", game.IgdbId.ToString());
             environmentVariables.Add("Playarr_Series_RawgId", game.RawgId.ToString());
             environmentVariables.Add("Playarr_Series_TmdbId", game.TmdbId.ToString());
             environmentVariables.Add("Playarr_Series_ImdbId", game.ImdbId ?? string.Empty);
@@ -146,7 +146,7 @@ namespace Playarr.Core.MediaFiles
 
             environmentVariables.Add("Playarr_RomFile_EpisodeCount", localRom.Roms.Count.ToString());
             environmentVariables.Add("Playarr_RomFile_RomIds", string.Join(",", localRom.Roms.Select(e => e.Id)));
-            environmentVariables.Add("Playarr_RomFile_PlatformNumber", localRom.SeasonNumber.ToString());
+            environmentVariables.Add("Playarr_RomFile_PlatformNumber", localRom.PlatformNumber.ToString());
             environmentVariables.Add("Playarr_RomFile_RomNumbers", string.Join(",", localRom.Roms.Select(e => e.EpisodeNumber)));
             environmentVariables.Add("Playarr_RomFile_EpisodeAirDates", string.Join(",", localRom.Roms.Select(e => e.AirDate)));
             environmentVariables.Add("Playarr_RomFile_EpisodeAirDatesUtc", string.Join(",", localRom.Roms.Select(e => e.AirDateUtc)));

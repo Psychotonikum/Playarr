@@ -102,7 +102,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
             .SetValidator(qualityProfileExistsValidator);
 
         PostValidator.RuleFor(s => s.Title).NotEmpty();
-        PostValidator.RuleFor(s => s.TvdbId).GreaterThan(0).SetValidator(seriesExistsValidator);
+        PostValidator.RuleFor(s => s.IgdbId).GreaterThan(0).SetValidator(seriesExistsValidator);
     }
 
     [HttpGet]
@@ -123,7 +123,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
         }
 
         MapCoversToLocal(seriesResources.ToArray());
-        LinkSeriesStatistics(seriesResources, seriesStats.ToDictionary(x => x.SeriesId));
+        LinkSeriesStatistics(seriesResources, seriesStats.ToDictionary(x => x.GameId));
         PopulateAlternateTitles(seriesResources);
         seriesResources.ForEach(LinkRootFolderPath);
 
@@ -202,7 +202,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
 
             _commandQueueManager.Push(new MoveGameCommand
             {
-                SeriesId = game.Id,
+                GameId = game.Id,
                 SourcePath = sourcePath,
                 DestinationPath = destinationPath
             },
@@ -226,7 +226,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
         lock (_seriesLockPool.GetLock(id))
         {
             var game = _seriesService.GetSeries(id);
-            var platform = game.Platforms.FirstOrDefault(s => s.SeasonNumber == seasonResource.SeasonNumber);
+            var platform = game.Platforms.FirstOrDefault(s => s.PlatformNumber == seasonResource.PlatformNumber);
 
             if (platform == null)
             {
@@ -304,7 +304,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
         {
             foreach (var platform in resource.Platforms)
             {
-                platform.Statistics = seriesStatistics.SeasonStatistics?.SingleOrDefault(s => s.SeasonNumber == platform.SeasonNumber)?.ToResource();
+                platform.Statistics = seriesStatistics.SeasonStatistics?.SingleOrDefault(s => s.PlatformNumber == platform.PlatformNumber)?.ToResource();
             }
         }
     }
@@ -319,7 +319,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
 
     private void PopulateAlternateTitles(GameResource resource)
     {
-        var mappings = _sceneMappingService.FindByIgdbId(resource.TvdbId);
+        var mappings = _sceneMappingService.FindByIgdbId(resource.IgdbId);
 
         if (mappings == null)
         {
@@ -337,7 +337,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
     [NonAction]
     public void Handle(EpisodeImportedEvent message)
     {
-        BroadcastResourceChange(ModelAction.Updated, message.ImportedEpisode.SeriesId);
+        BroadcastResourceChange(ModelAction.Updated, message.ImportedEpisode.GameId);
     }
 
     [NonAction]
@@ -348,7 +348,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
             return;
         }
 
-        BroadcastResourceChange(ModelAction.Updated, message.RomFile.SeriesId);
+        BroadcastResourceChange(ModelAction.Updated, message.RomFile.GameId);
     }
 
     [NonAction]

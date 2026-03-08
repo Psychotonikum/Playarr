@@ -29,7 +29,7 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
 
             _unmonitoredSeries = Builder<Game>.CreateNew()
                                         .With(s => s.Id = 0)
-                                        .With(s => s.TvdbId = RandomNumber)
+                                        .With(s => s.IgdbId = RandomNumber)
                                         .With(s => s.Runtime = 30)
                                         .With(s => s.Monitored = false)
                                         .With(s => s.TitleSlug = "Title2")
@@ -49,33 +49,33 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
             var monitoredSeriesEpisodes = Builder<Rom>.CreateListOfSize(3)
                                            .All()
                                            .With(e => e.Id = 0)
-                                           .With(e => e.SeriesId = _monitoredSeries.Id)
+                                           .With(e => e.GameId = _monitoredSeries.Id)
                                            .With(e => e.EpisodeFileId = 0)
                                            .With(e => e.AirDateUtc = DateTime.Now.AddDays(-5))
                                            .With(e => e.Monitored = true)
                                            .TheFirst(1)
                                            .With(e => e.Monitored = false)
                                            .TheLast(1)
-                                           .With(e => e.SeasonNumber = 0)
+                                           .With(e => e.PlatformNumber = 0)
                                            .Build();
 
             var unmonitoredSeriesEpisodes = Builder<Rom>.CreateListOfSize(3)
                                            .All()
                                            .With(e => e.Id = 0)
-                                           .With(e => e.SeriesId = _unmonitoredSeries.Id)
+                                           .With(e => e.GameId = _unmonitoredSeries.Id)
                                            .With(e => e.EpisodeFileId = 0)
                                            .With(e => e.AirDateUtc = DateTime.Now.AddDays(-5))
                                            .With(e => e.Monitored = true)
                                            .TheFirst(1)
                                            .With(e => e.Monitored = false)
                                            .TheLast(1)
-                                           .With(e => e.SeasonNumber = 0)
+                                           .With(e => e.PlatformNumber = 0)
                                            .Build();
 
             var unairedEpisodes           = Builder<Rom>.CreateListOfSize(1)
                                            .All()
                                            .With(e => e.Id = 0)
-                                           .With(e => e.SeriesId = _monitoredSeries.Id)
+                                           .With(e => e.GameId = _monitoredSeries.Id)
                                            .With(e => e.EpisodeFileId = 0)
                                            .With(e => e.AirDateUtc = DateTime.Now.AddDays(5))
                                            .With(e => e.Monitored = true)
@@ -132,7 +132,7 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
 
             var roms = Subject.EpisodesWithoutFiles(_pagingSpec, false);
 
-            roms.Records.Should().NotContain(e => e.SeriesId == _unmonitoredSeries.Id);
+            roms.Records.Should().NotContain(e => e.GameId == _unmonitoredSeries.Id);
         }
 
         [Test]
@@ -148,7 +148,7 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
         {
             var onAirEpisode = Builder<Rom>.CreateNew()
                                                .With(e => e.Id = 0)
-                                               .With(e => e.SeriesId = _monitoredSeries.Id)
+                                               .With(e => e.GameId = _monitoredSeries.Id)
                                                .With(e => e.EpisodeFileId = 0)
                                                .With(e => e.AirDateUtc = DateTime.Now.AddMinutes(-15))
                                                .With(e => e.Monitored = true)

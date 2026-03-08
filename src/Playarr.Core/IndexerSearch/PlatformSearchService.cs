@@ -22,7 +22,7 @@ namespace Playarr.Core.IndexerSearch
 
         public void Execute(SeasonSearchCommand message)
         {
-            var decisions = _releaseSearchService.SeasonSearch(message.SeriesId, message.SeasonNumber, false, true, message.Trigger == CommandTrigger.Manual, false).GetAwaiter().GetResult();
+            var decisions = _releaseSearchService.SeasonSearch(message.GameId, message.PlatformNumber, false, true, message.Trigger == CommandTrigger.Manual, false).GetAwaiter().GetResult();
             var processed = _processDownloadDecisions.ProcessDecisions(decisions).GetAwaiter().GetResult();
 
             _logger.ProgressInfo("Platform search completed. {0} reports downloaded.", processed.Grabbed.Count);

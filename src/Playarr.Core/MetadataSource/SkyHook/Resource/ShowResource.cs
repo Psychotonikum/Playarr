@@ -13,7 +13,7 @@ namespace Playarr.Core.MetadataSource.SkyHook.Resource
             Roms = new List<RomResource>();
         }
 
-        public int TvdbId { get; set; }
+        public int IgdbId { get; set; }
         public string Title { get; set; }
         public string Overview { get; set; }
 

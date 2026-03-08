@@ -122,7 +122,7 @@ namespace Playarr.Core.Indexers.Newznab
                 }
 
                 if (capabilities.SupportedTvSearchParameters != null &&
-                    new[] { "q", "tvdbid", "rid" }.Any(v => capabilities.SupportedTvSearchParameters.Contains(v)) &&
+                    new[] { "q", "igdbid", "rid" }.Any(v => capabilities.SupportedTvSearchParameters.Contains(v)) &&
                     new[] { "platform", "ep" }.All(v => capabilities.SupportedTvSearchParameters.Contains(v)))
                 {
                     return null;

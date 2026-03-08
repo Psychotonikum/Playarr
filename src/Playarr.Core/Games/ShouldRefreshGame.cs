@@ -34,7 +34,7 @@ namespace Playarr.Core.Games
                 var roms = _episodeService.GetEpisodeBySeries(game.Id);
 
                 var atLeastOneAiredEpisodeWithoutTitle = roms.Any(e =>
-                    e.SeasonNumber > 0 &&
+                    e.PlatformNumber > 0 &&
                     e.AirDateUtc.HasValue && e.AirDateUtc.Value.Before(DateTime.UtcNow) &&
                     e.Title.Equals("TBA", StringComparison.Ordinal));
 

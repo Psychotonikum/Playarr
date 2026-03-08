@@ -40,43 +40,43 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
                         {
                             Builder<Rom>.CreateNew()
                                             .With(e => e.Title = "Rom Title 1")
-                                            .With(e => e.SeasonNumber = 1)
+                                            .With(e => e.PlatformNumber = 1)
                                             .With(e => e.EpisodeNumber = 1)
                                             .Build(),
 
                             Builder<Rom>.CreateNew()
                                             .With(e => e.Title = "Another Rom Title")
-                                            .With(e => e.SeasonNumber = 1)
+                                            .With(e => e.PlatformNumber = 1)
                                             .With(e => e.EpisodeNumber = 2)
                                             .Build(),
 
                             Builder<Rom>.CreateNew()
                                             .With(e => e.Title = "Yet Another Rom Title")
-                                            .With(e => e.SeasonNumber = 1)
+                                            .With(e => e.PlatformNumber = 1)
                                             .With(e => e.EpisodeNumber = 3)
                                             .Build(),
 
                             Builder<Rom>.CreateNew()
                                             .With(e => e.Title = "Yet Another Rom Title Take 2")
-                                            .With(e => e.SeasonNumber = 1)
+                                            .With(e => e.PlatformNumber = 1)
                                             .With(e => e.EpisodeNumber = 4)
                                             .Build(),
 
                             Builder<Rom>.CreateNew()
                                             .With(e => e.Title = "Yet Another Rom Title Take 3")
-                                            .With(e => e.SeasonNumber = 1)
+                                            .With(e => e.PlatformNumber = 1)
                                             .With(e => e.EpisodeNumber = 5)
                                             .Build(),
 
                             Builder<Rom>.CreateNew()
                                             .With(e => e.Title = "Yet Another Rom Title Take 4")
-                                            .With(e => e.SeasonNumber = 1)
+                                            .With(e => e.PlatformNumber = 1)
                                             .With(e => e.EpisodeNumber = 6)
                                             .Build(),
 
                             Builder<Rom>.CreateNew()
                                             .With(e => e.Title = "A Really Really Really Really Long Rom Title")
-                                            .With(e => e.SeasonNumber = 1)
+                                            .With(e => e.PlatformNumber = 1)
                                             .With(e => e.EpisodeNumber = 7)
                                             .Build()
                         };
@@ -102,7 +102,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         {
             _series.Title = "The Fantastic Life of Mr. Sisko";
 
-            _episodes[0].SeasonNumber = 2;
+            _episodes[0].PlatformNumber = 2;
             _episodes[0].EpisodeNumber = 18;
             _episodes[0].Title = "This title has to be 197 characters in length, combined with the game title, quality and rom number it becomes 254ish and the extension puts it above the 255 limit and triggers the truncation";
             _romFile.Quality.Quality = Quality.Bluray1080p;

@@ -63,7 +63,7 @@ public class ManualImportController : Controller
 
         foreach (var item in items)
         {
-            var processedItem = _manualImportService.ReprocessItem(item.Path, item.DownloadId, item.SeriesId, item.SeasonNumber, item.RomIds ?? new List<int>(), item.ReleaseGroup, item.Quality, item.Languages, item.IndexerFlags, item.ReleaseType);
+            var processedItem = _manualImportService.ReprocessItem(item.Path, item.DownloadId, item.GameId, item.PlatformNumber, item.RomIds ?? new List<int>(), item.ReleaseGroup, item.Quality, item.Languages, item.IndexerFlags, item.ReleaseType);
 
             // Only use the processed item's languages, quality, and release group if the user hasn't specified them.
             // Languages won't be returned when reprocessing if the platform/rom isn't filled in yet and we don't want to return no languages to the client.
@@ -82,9 +82,9 @@ public class ManualImportController : Controller
                 processedItem.ReleaseGroup = item.ReleaseGroup;
             }
 
-            if (item.SeasonNumber.HasValue && !processedItem.SeasonNumber.HasValue)
+            if (item.PlatformNumber.HasValue && !processedItem.PlatformNumber.HasValue)
             {
-                processedItem.SeasonNumber = item.SeasonNumber;
+                processedItem.PlatformNumber = item.PlatformNumber;
             }
 
             updatedItems.Add(processedItem);

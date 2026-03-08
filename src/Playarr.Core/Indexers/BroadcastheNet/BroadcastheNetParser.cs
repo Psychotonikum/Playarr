@@ -85,9 +85,9 @@ namespace Playarr.Core.Indexers.BroadcastheNet
                     IndexerFlags = GetIndexerFlags(torrent)
                 };
 
-                if (torrent.TvdbID is > 0)
+                if (torrent.IgdbID is > 0)
                 {
-                    torrentInfo.TvdbId = torrent.TvdbID.Value;
+                    torrentInfo.IgdbId = torrent.IgdbID.Value;
                 }
 
                 if (torrent.TvrageID is > 0)

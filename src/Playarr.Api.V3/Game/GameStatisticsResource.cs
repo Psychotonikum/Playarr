@@ -38,7 +38,7 @@ namespace Playarr.Api.V3.Game
 
             return new SeriesStatisticsResource
             {
-                SeasonCount = platforms == null ? 0 : platforms.Where(s => s.SeasonNumber > 0).Count(),
+                SeasonCount = platforms == null ? 0 : platforms.Where(s => s.PlatformNumber > 0).Count(),
                 EpisodeFileCount = model.EpisodeFileCount,
                 EpisodeCount = model.EpisodeCount,
                 TotalEpisodeCount = model.TotalEpisodeCount,

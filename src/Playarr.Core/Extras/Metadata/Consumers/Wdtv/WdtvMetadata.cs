@@ -64,7 +64,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Wdtv
 
             var metadata = new MetadataFile
                            {
-                               SeriesId = game.Id,
+                               GameId = game.Id,
                                Consumer = GetType().Name,
                                RelativePath = game.Path.GetRelativePath(path)
                            };
@@ -80,11 +80,11 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Wdtv
 
                     if (seasonMatch.Groups["specials"].Success)
                     {
-                        metadata.SeasonNumber = 0;
+                        metadata.PlatformNumber = 0;
                     }
                     else
                     {
-                        metadata.SeasonNumber = Convert.ToInt32(seasonMatch.Groups["platform"].Value);
+                        metadata.PlatformNumber = Convert.ToInt32(seasonMatch.Groups["platform"].Value);
                     }
 
                     return metadata;
@@ -142,10 +142,10 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Wdtv
 
                     var details = new XElement("details");
                     details.Add(new XElement("id", game.Id));
-                    details.Add(new XElement("title", string.Format("{0} - {1}x{2:00} - {3}", game.Title, rom.SeasonNumber, rom.EpisodeNumber, rom.Title)));
+                    details.Add(new XElement("title", string.Format("{0} - {1}x{2:00} - {3}", game.Title, rom.PlatformNumber, rom.EpisodeNumber, rom.Title)));
                     details.Add(new XElement("series_name", game.Title));
                     details.Add(new XElement("episode_name", rom.Title));
-                    details.Add(new XElement("season_number", rom.SeasonNumber.ToString("00")));
+                    details.Add(new XElement("season_number", rom.PlatformNumber.ToString("00")));
                     details.Add(new XElement("episode_number", rom.EpisodeNumber.ToString("00")));
                     details.Add(new XElement("firstaired", rom.AirDate));
                     details.Add(new XElement("genre", string.Join(" / ", game.Genres)));
@@ -153,8 +153,8 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Wdtv
                     details.Add(new XElement("overview", rom.Overview));
 
                     // Todo: get guest stars, writer and director
-                    // details.Add(new XElement("credits", tvdbEpisode.Writer.FirstOrDefault()));
-                    // details.Add(new XElement("director", tvdbEpisode.Directors.FirstOrDefault()));
+                    // details.Add(new XElement("credits", igdbEpisode.Writer.FirstOrDefault()));
+                    // details.Add(new XElement("director", igdbEpisode.Directors.FirstOrDefault()));
 
                     doc.Add(details);
                     doc.Save(xw);
@@ -203,9 +203,9 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Wdtv
             var platformFolders = GetPlatformFolders(game);
 
             // Work out the path to this platform - if we don't have a matching path then skip this platform.
-            if (!platformFolders.TryGetValue(platform.SeasonNumber, out var platformFolder))
+            if (!platformFolders.TryGetValue(platform.PlatformNumber, out var platformFolder))
             {
-                _logger.Trace("Failed to find platform folder for game {0}, platform {1}.", game.Title, platform.SeasonNumber);
+                _logger.Trace("Failed to find platform folder for game {0}, platform {1}.", game.Title, platform.PlatformNumber);
                 return new List<ImageFileResult>();
             }
 
@@ -213,7 +213,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Wdtv
             var image = platform.Images.SingleOrDefault(c => c.CoverType == MediaCoverTypes.Poster) ?? platform.Images.FirstOrDefault();
             if (image == null)
             {
-                _logger.Trace("Failed to find suitable platform image for game {0}, platform {1}.", game.Title, platform.SeasonNumber);
+                _logger.Trace("Failed to find suitable platform image for game {0}, platform {1}.", game.Title, platform.PlatformNumber);
                 return new List<ImageFileResult>();
             }
 

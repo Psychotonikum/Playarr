@@ -5,6 +5,6 @@ namespace Playarr.Core.Notifications.Trakt.Resource
         public int Trakt { get; set; }
         public string Slug { get; set; }
         public string Imdb { get; set; }
-        public int Tvdb { get; set; }
+        public int Igdb { get; set; }
     }
 }

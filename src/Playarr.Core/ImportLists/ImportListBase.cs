@@ -84,7 +84,7 @@ namespace Playarr.Core.ImportLists
 
         protected virtual IList<ImportListItemInfo> CleanupListItems(IEnumerable<ImportListItemInfo> releases)
         {
-            var result = releases.DistinctBy(r => new { r.Title, r.TvdbId, r.ImdbId }).ToList();
+            var result = releases.DistinctBy(r => new { r.Title, r.IgdbId, r.ImdbId }).ToList();
 
             result.ForEach(c =>
             {

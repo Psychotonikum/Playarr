@@ -20,7 +20,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
                       .CreateNew()
                       .With(s => s.Title = "Game Title")
                       .With(s => s.ImdbId = "tt12345")
-                      .With(s => s.TvdbId = 12345)
+                      .With(s => s.IgdbId = 12345)
                       .With(s => s.MobyGamesId = 54321)
                       .Build();
 
@@ -40,12 +40,12 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         }
 
         [Test]
-        public void should_add_tvdb_id()
+        public void should_add_igdb_id()
         {
-            _namingConfig.GameFolderFormat = "{Game Title} ({TvdbId})";
+            _namingConfig.GameFolderFormat = "{Game Title} ({IgdbId})";
 
             Subject.GetGameFolder(_series)
-                   .Should().Be($"Game Title ({_series.TvdbId})");
+                   .Should().Be($"Game Title ({_series.IgdbId})");
         }
 
         [Test]

@@ -14,7 +14,7 @@ namespace Playarr.Core.Queue
     {
         public Game Game { get; set; }
 
-        public int? SeasonNumber { get; set; }
+        public int? PlatformNumber { get; set; }
 
         [Obsolete]
         public Rom Rom { get; set; }

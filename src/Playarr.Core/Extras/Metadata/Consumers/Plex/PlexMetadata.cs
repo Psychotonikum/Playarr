@@ -37,7 +37,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Plex
             {
                 return new MetadataFile
                 {
-                    SeriesId = game.Id,
+                    GameId = game.Id,
                     Consumer = GetType().Name,
                     RelativePath = game.Path.GetRelativePath(path),
                     Type = MetadataType.SeriesMetadata
@@ -58,7 +58,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Plex
 
             content.AppendLine($"Title: {game.Title}");
             content.AppendLine($"Year: {game.Year}");
-            content.AppendLine($"TvdbId: {game.TvdbId}");
+            content.AppendLine($"IgdbId: {game.IgdbId}");
             content.AppendLine($"ImdbId: {game.ImdbId}");
 
             if (Settings.EpisodeMappings)
@@ -69,9 +69,9 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Plex
                 foreach (var romFile in romFiles)
                 {
                     var episodesInFile = roms.Where(e => e.EpisodeFileId == romFile.Id);
-                    var episodeFormat = $"S{romFile.SeasonNumber:00}{string.Join("-", episodesInFile.Select(e => $"E{e.EpisodeNumber:00}"))}";
+                    var episodeFormat = $"S{romFile.PlatformNumber:00}{string.Join("-", episodesInFile.Select(e => $"E{e.EpisodeNumber:00}"))}";
 
-                    if (romFile.SeasonNumber == 0)
+                    if (romFile.PlatformNumber == 0)
                     {
                         episodeFormat = $"SP{episodesInFile.First().EpisodeNumber:00}";
                     }

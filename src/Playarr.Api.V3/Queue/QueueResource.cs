@@ -16,9 +16,9 @@ namespace Playarr.Api.V3.Queue
 {
     public class QueueResource : RestResource
     {
-        public int? SeriesId { get; set; }
+        public int? GameId { get; set; }
         public int? EpisodeId { get; set; }
-        public int? SeasonNumber { get; set; }
+        public int? PlatformNumber { get; set; }
         public GameResource Game { get; set; }
         public RomResource Rom { get; set; }
         public List<Language> Languages { get; set; }
@@ -69,9 +69,9 @@ namespace Playarr.Api.V3.Queue
             return new QueueResource
             {
                 Id = model.Id,
-                SeriesId = model.Game?.Id,
+                GameId = model.Game?.Id,
                 EpisodeId = model.Rom?.Id,
-                SeasonNumber = model.Rom?.SeasonNumber,
+                PlatformNumber = model.Rom?.PlatformNumber,
                 Game = includeSeries && model.Game != null ? model.Game.ToResource() : null,
                 Rom = includeEpisode && model.Rom != null ? model.Rom.ToResource() : null,
                 Languages = model.Languages,

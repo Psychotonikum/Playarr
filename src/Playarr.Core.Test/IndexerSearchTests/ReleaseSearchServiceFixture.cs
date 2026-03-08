@@ -51,7 +51,7 @@ namespace Playarr.Core.Test.IndexerSearchTests
 
             Mocker.GetMock<IRomService>()
                 .Setup(v => v.GetEpisodesBySeason(_xemSeries.Id, It.IsAny<int>()))
-                .Returns<int, int>((i, j) => _xemEpisodes.Where(d => d.SeasonNumber == j).ToList());
+                .Returns<int, int>((i, j) => _xemEpisodes.Where(d => d.PlatformNumber == j).ToList());
 
             Mocker.GetMock<ISceneMappingService>()
                   .Setup(s => s.FindByIgdbId(It.IsAny<int>()))
@@ -65,11 +65,11 @@ namespace Playarr.Core.Test.IndexerSearchTests
         private void WithEpisode(int platformNumber, int romNumber, int? scenePlatformNumber, int? sceneRomNumber, string airDate = null)
         {
             var rom = Builder<Rom>.CreateNew()
-                .With(v => v.SeriesId == _xemSeries.Id)
+                .With(v => v.GameId == _xemSeries.Id)
                 .With(v => v.Game == _xemSeries)
-                .With(v => v.SeasonNumber, platformNumber)
+                .With(v => v.PlatformNumber, platformNumber)
                 .With(v => v.EpisodeNumber, romNumber)
-                .With(v => v.SceneSeasonNumber, scenePlatformNumber)
+                .With(v => v.ScenePlatformNumber, scenePlatformNumber)
                 .With(v => v.SceneEpisodeNumber, sceneRomNumber)
                 .With(v => v.AirDate = airDate ?? $"{2000 + platformNumber}-{(romNumber % 12) + 1:00}-05")
                 .With(v => v.AirDateUtc = DateTime.ParseExact(v.AirDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).ToUniversalTime())
@@ -261,7 +261,7 @@ namespace Playarr.Core.Test.IndexerSearchTests
             var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(1);
-            criteria[0].SeasonNumber.Should().Be(2);
+            criteria[0].PlatformNumber.Should().Be(2);
             criteria[0].EpisodeNumber.Should().Be(3);
         }
 
@@ -277,7 +277,7 @@ namespace Playarr.Core.Test.IndexerSearchTests
             var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(1);
-            criteria[0].SeasonNumber.Should().Be(2);
+            criteria[0].PlatformNumber.Should().Be(2);
         }
 
         [Test]
@@ -292,8 +292,8 @@ namespace Playarr.Core.Test.IndexerSearchTests
             var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(2);
-            criteria[0].SeasonNumber.Should().Be(3);
-            criteria[1].SeasonNumber.Should().Be(4);
+            criteria[0].PlatformNumber.Should().Be(3);
+            criteria[1].PlatformNumber.Should().Be(4);
         }
 
         [Test]
@@ -309,10 +309,10 @@ namespace Playarr.Core.Test.IndexerSearchTests
             var criteria2 = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
             criteria1.Count.Should().Be(1);
-            criteria1[0].SeasonNumber.Should().Be(5);
+            criteria1[0].PlatformNumber.Should().Be(5);
 
             criteria2.Count.Should().Be(1);
-            criteria2[0].SeasonNumber.Should().Be(6);
+            criteria2[0].PlatformNumber.Should().Be(6);
             criteria2[0].EpisodeNumber.Should().Be(11);
         }
 
@@ -328,7 +328,7 @@ namespace Playarr.Core.Test.IndexerSearchTests
             var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(1);
-            criteria[0].SeasonNumber.Should().Be(7);
+            criteria[0].PlatformNumber.Should().Be(7);
         }
 
         [Test]
@@ -360,7 +360,7 @@ namespace Playarr.Core.Test.IndexerSearchTests
 
             var criteria = allCriteria.OfType<AnimeEpisodeSearchCriteria>().ToList();
 
-            criteria.Count.Should().Be(_xemEpisodes.Count(e => e.SeasonNumber == platformNumber));
+            criteria.Count.Should().Be(_xemEpisodes.Count(e => e.PlatformNumber == platformNumber));
         }
 
         [Test]
@@ -430,7 +430,7 @@ namespace Playarr.Core.Test.IndexerSearchTests
 
             var criteria = allCriteria.OfType<AnimeEpisodeSearchCriteria>().ToList();
 
-            criteria.Count.Should().Be(_xemEpisodes.Count(e => e.SeasonNumber == platformNumber));
+            criteria.Count.Should().Be(_xemEpisodes.Count(e => e.PlatformNumber == platformNumber));
             criteria.ForEach(c => c.IsSeasonSearch.Should().BeTrue());
         }
 
@@ -448,8 +448,8 @@ namespace Playarr.Core.Test.IndexerSearchTests
 
             var criteria = allCriteria.OfType<AnimeSeasonSearchCriteria>().ToList();
 
-            var episodesForSeason1 = _xemEpisodes.Where(e => e.SeasonNumber == platformNumber);
-            criteria.Count.Should().Be(episodesForSeason1.Select(e => e.SeasonNumber).Distinct().Count());
+            var episodesForSeason1 = _xemEpisodes.Where(e => e.PlatformNumber == platformNumber);
+            criteria.Count.Should().Be(episodesForSeason1.Select(e => e.PlatformNumber).Distinct().Count());
         }
 
         [Test]
@@ -581,7 +581,7 @@ namespace Playarr.Core.Test.IndexerSearchTests
 
             allCriteria.Should().HaveCount(1);
             allCriteria.First().Should().BeOfType<SeasonSearchCriteria>();
-            allCriteria.First().As<SeasonSearchCriteria>().SeasonNumber.Should().Be(7);
+            allCriteria.First().As<SeasonSearchCriteria>().PlatformNumber.Should().Be(7);
         }
 
         [Test]
@@ -595,13 +595,13 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 {
                     new SceneMapping
                     {
-                        TvdbId = _xemSeries.TvdbId,
+                        IgdbId = _xemSeries.IgdbId,
                         SearchTerm = _xemSeries.Title,
                         ParseTerm = _xemSeries.Title,
                         FilterRegex = "(?i)-(BTN)$",
-                        SeasonNumber = 1,
-                        SceneSeasonNumber = 1,
-                        SceneOrigin = "tvdb",
+                        PlatformNumber = 1,
+                        ScenePlatformNumber = 1,
+                        SceneOrigin = "igdb",
                         Type = "ServicesProvider"
                     }
                 });
@@ -616,11 +616,11 @@ namespace Playarr.Core.Test.IndexerSearchTests
             allCriteria.Should().HaveCount(2);
 
             allCriteria.First().Should().BeOfType<SingleEpisodeSearchCriteria>();
-            allCriteria.First().As<SingleEpisodeSearchCriteria>().SeasonNumber.Should().Be(1);
+            allCriteria.First().As<SingleEpisodeSearchCriteria>().PlatformNumber.Should().Be(1);
             allCriteria.First().As<SingleEpisodeSearchCriteria>().EpisodeNumber.Should().Be(12);
 
             allCriteria.Last().Should().BeOfType<SingleEpisodeSearchCriteria>();
-            allCriteria.Last().As<SingleEpisodeSearchCriteria>().SeasonNumber.Should().Be(2);
+            allCriteria.Last().As<SingleEpisodeSearchCriteria>().PlatformNumber.Should().Be(2);
             allCriteria.Last().As<SingleEpisodeSearchCriteria>().EpisodeNumber.Should().Be(3);
         }
 
@@ -638,12 +638,12 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 {
                     new SceneMapping
                     {
-                        TvdbId = _xemSeries.TvdbId,
+                        IgdbId = _xemSeries.IgdbId,
                         SearchTerm = "Playarrs Title",
                         ParseTerm = _xemSeries.CleanTitle,
-                        SeasonNumber = 1,
-                        SceneSeasonNumber = 1,
-                        SceneOrigin = "tvdb",
+                        PlatformNumber = 1,
+                        ScenePlatformNumber = 1,
+                        SceneOrigin = "igdb",
                         Type = "ServicesProvider"
                     }
                 });
@@ -658,11 +658,11 @@ namespace Playarr.Core.Test.IndexerSearchTests
             allCriteria.Should().HaveCount(2);
 
             allCriteria.First().Should().BeOfType<SingleEpisodeSearchCriteria>();
-            allCriteria.First().As<SingleEpisodeSearchCriteria>().SeasonNumber.Should().Be(1);
+            allCriteria.First().As<SingleEpisodeSearchCriteria>().PlatformNumber.Should().Be(1);
             allCriteria.First().As<SingleEpisodeSearchCriteria>().EpisodeNumber.Should().Be(12);
 
             allCriteria.Last().Should().BeOfType<SingleEpisodeSearchCriteria>();
-            allCriteria.Last().As<SingleEpisodeSearchCriteria>().SeasonNumber.Should().Be(2);
+            allCriteria.Last().As<SingleEpisodeSearchCriteria>().PlatformNumber.Should().Be(2);
             allCriteria.Last().As<SingleEpisodeSearchCriteria>().EpisodeNumber.Should().Be(3);
         }
     }

@@ -40,7 +40,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             _multiSearch = new SeasonSearchCriteria();
             _multiSearch.Roms = _episodes.ToList();
-            _multiSearch.SeasonNumber = 1;
+            _multiSearch.PlatformNumber = 1;
             _multiInfo = new ReleaseDecisionInformation(false, _multiSearch);
 
             _parseResultMulti = new RemoteEpisode
@@ -64,7 +64,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             return new Rom()
                    {
-                        SeasonNumber = 1,
+                        PlatformNumber = 1,
                         EpisodeNumber = number,
                         AirDateUtc = DateTime.UtcNow.AddDays(-age)
                    };

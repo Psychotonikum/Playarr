@@ -12,7 +12,7 @@ namespace Playarr.Api.V3.Blocklist
 {
     public class BlocklistResource : RestResource
     {
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public List<int> RomIds { get; set; }
         public string SourceTitle { get; set; }
         public List<Language> Languages { get; set; }
@@ -39,7 +39,7 @@ namespace Playarr.Api.V3.Blocklist
             {
                 Id = model.Id,
 
-                SeriesId = model.SeriesId,
+                GameId = model.GameId,
                 RomIds = model.RomIds,
                 SourceTitle = model.SourceTitle,
                 Languages = model.Languages,

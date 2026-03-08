@@ -33,18 +33,18 @@ namespace Playarr.Core.MetadataSource.SkyHook
                             Logger logger)
         {
             _httpClient = httpClient;
-            _requestBuilder = requestBuilder.SkyHookTvdb;
+            _requestBuilder = requestBuilder.SkyHookIgdb;
             _logger = logger;
             _seriesService = seriesService;
             _dailyGameService = dailyGameService;
-            _requestBuilder = requestBuilder.SkyHookTvdb;
+            _requestBuilder = requestBuilder.SkyHookIgdb;
         }
 
-        public Tuple<Game, List<Rom>> GetSeriesInfo(int tvdbGameId)
+        public Tuple<Game, List<Rom>> GetSeriesInfo(int igdbGameId)
         {
             var httpRequest = _requestBuilder.Create()
                                              .SetSegment("route", "shows")
-                                             .Resource(tvdbGameId.ToString())
+                                             .Resource(igdbGameId.ToString())
                                              .Build();
 
             httpRequest.AllowAutoRedirect = true;
@@ -56,7 +56,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
             {
                 if (httpResponse.StatusCode == HttpStatusCode.NotFound)
                 {
-                    throw new SeriesNotFoundException(tvdbGameId);
+                    throw new SeriesNotFoundException(igdbGameId);
                 }
                 else
                 {
@@ -116,7 +116,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
             {
                 var lowerTitle = title.ToLowerInvariant();
 
-                if (lowerTitle.StartsWith("tvdb:") || lowerTitle.StartsWith("tvdbid:"))
+                if (lowerTitle.StartsWith("igdb:") || lowerTitle.StartsWith("igdbid:"))
                 {
                     var slug = lowerTitle.Split(':')[1].Trim();
 
@@ -169,7 +169,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
 
         private Game MapSearchResult(ShowResource show)
         {
-            var game = _seriesService.FindByIgdbId(show.TvdbId);
+            var game = _seriesService.FindByIgdbId(show.IgdbId);
 
             if (game == null)
             {
@@ -182,7 +182,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
         private Game MapSeries(ShowResource show)
         {
             var game = new Game();
-            game.TvdbId = show.TvdbId;
+            game.IgdbId = show.IgdbId;
 
             if (show.MobyGamesId.HasValue)
             {
@@ -204,7 +204,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
             game.AniListIds = show.AniListIds;
             game.Title = show.Title;
             game.CleanTitle = Parser.Parser.CleanGameTitle(show.Title);
-            game.SortTitle = GameTitleNormalizer.Normalize(show.Title, show.TvdbId);
+            game.SortTitle = GameTitleNormalizer.Normalize(show.Title, show.IgdbId);
 
             game.OriginalLanguage = show.OriginalLanguage.IsNotNullOrWhiteSpace() ?
                 IsoLanguages.Find(show.OriginalLanguage.ToLower())?.Language ?? Language.English :
@@ -246,7 +246,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
                 game.Certification = show.ContentRating.ToUpper();
             }
 
-            if (_dailyGameService.IsDailySeries(game.TvdbId))
+            if (_dailyGameService.IsDailySeries(game.IgdbId))
             {
                 game.SeriesType = GameTypes.Daily;
             }
@@ -281,9 +281,9 @@ namespace Playarr.Core.MetadataSource.SkyHook
         private static Rom MapEpisode(RomResource oracleEpisode)
         {
             var rom = new Rom();
-            rom.TvdbId = oracleEpisode.TvdbId;
+            rom.IgdbId = oracleEpisode.IgdbId;
             rom.Overview = oracleEpisode.Overview;
-            rom.SeasonNumber = oracleEpisode.SeasonNumber;
+            rom.PlatformNumber = oracleEpisode.PlatformNumber;
             rom.EpisodeNumber = oracleEpisode.EpisodeNumber;
             rom.AbsoluteEpisodeNumber = oracleEpisode.AbsoluteEpisodeNumber;
             rom.Title = oracleEpisode.Title;
@@ -311,9 +311,9 @@ namespace Playarr.Core.MetadataSource.SkyHook
         {
             return new Platform
             {
-                SeasonNumber = seasonResource.SeasonNumber,
+                PlatformNumber = seasonResource.PlatformNumber,
                 Images = seasonResource.Images.Select(MapImage).ToList(),
-                Monitored = seasonResource.SeasonNumber > 0
+                Monitored = seasonResource.PlatformNumber > 0
             };
         }
 

@@ -34,7 +34,7 @@ namespace Playarr.Core.DataAugmentation.DailySeries
                                                         .Build();
 
                 var response = _httpClient.Get<List<DailySeries>>(dailySeriesRequest);
-                return response.Resource.Select(c => c.TvdbId);
+                return response.Resource.Select(c => c.IgdbId);
             }
             catch (Exception ex)
             {

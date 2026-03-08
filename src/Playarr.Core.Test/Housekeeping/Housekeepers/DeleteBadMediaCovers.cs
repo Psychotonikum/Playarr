@@ -56,7 +56,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
         }
 
         [Test]
-        public void should_not_process_images_before_tvdb_switch()
+        public void should_not_process_images_before_igdb_switch()
         {
             _metadata.First().LastUpdated = new DateTime(2014, 12, 25);
 

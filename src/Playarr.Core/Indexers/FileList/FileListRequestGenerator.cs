@@ -27,19 +27,19 @@ namespace Playarr.Core.Indexers.FileList
 
             if (searchCriteria.SearchMode.HasFlag(SearchMode.SearchID) || searchCriteria.SearchMode == SearchMode.Default)
             {
-                AddImdbRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.SeasonNumber}&rom={searchCriteria.EpisodeNumber}");
+                AddImdbRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.PlatformNumber}&rom={searchCriteria.EpisodeNumber}");
             }
 
             if (searchCriteria.SearchMode.HasFlag(SearchMode.SearchTitle))
             {
-                AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.SeasonNumber}&rom={searchCriteria.EpisodeNumber}");
+                AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.PlatformNumber}&rom={searchCriteria.EpisodeNumber}");
             }
 
             pageableRequests.AddTier();
 
             if (searchCriteria.SearchMode == SearchMode.Default)
             {
-                AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.SeasonNumber}&rom={searchCriteria.EpisodeNumber}");
+                AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.PlatformNumber}&rom={searchCriteria.EpisodeNumber}");
             }
 
             return pageableRequests;
@@ -51,19 +51,19 @@ namespace Playarr.Core.Indexers.FileList
 
             if (searchCriteria.SearchMode.HasFlag(SearchMode.SearchID) || searchCriteria.SearchMode == SearchMode.Default)
             {
-                AddImdbRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.SeasonNumber}");
+                AddImdbRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.PlatformNumber}");
             }
 
             if (searchCriteria.SearchMode.HasFlag(SearchMode.SearchTitle))
             {
-                AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.SeasonNumber}");
+                AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.PlatformNumber}");
             }
 
             pageableRequests.AddTier();
 
             if (searchCriteria.SearchMode == SearchMode.Default)
             {
-                AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.SeasonNumber}");
+                AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.Categories, $"&platform={searchCriteria.PlatformNumber}");
             }
 
             return pageableRequests;
@@ -83,12 +83,12 @@ namespace Playarr.Core.Indexers.FileList
         {
             var pageableRequests = new IndexerPageableRequestChain();
 
-            // FileList has absolute releases in E01 format but also release sin S01E01 format, likely by imdb numbering but we only have tvdb numbering... so we try those as fallback to abs.
+            // FileList has absolute releases in E01 format but also release sin S01E01 format, likely by imdb numbering but we only have igdb numbering... so we try those as fallback to abs.
             AddImdbRequests(pageableRequests, searchCriteria, "search-torrents", Settings.AnimeCategories, $"&platform=0&rom={searchCriteria.AbsoluteEpisodeNumber}");
             pageableRequests.AddTier();
             foreach (var eps in searchCriteria.Roms)
             {
-                AddImdbRequests(pageableRequests, searchCriteria, "search-torrents", Settings.AnimeCategories, $"&platform={eps.SeasonNumber}&rom={eps.EpisodeNumber}");
+                AddImdbRequests(pageableRequests, searchCriteria, "search-torrents", Settings.AnimeCategories, $"&platform={eps.PlatformNumber}&rom={eps.EpisodeNumber}");
             }
 
             pageableRequests.AddTier();
@@ -97,7 +97,7 @@ namespace Playarr.Core.Indexers.FileList
             pageableRequests.AddTier();
             foreach (var eps in searchCriteria.Roms)
             {
-                AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.AnimeCategories, $"&platform={eps.SeasonNumber}&rom={eps.EpisodeNumber}");
+                AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.AnimeCategories, $"&platform={eps.PlatformNumber}&rom={eps.EpisodeNumber}");
             }
 
             return pageableRequests;
@@ -107,9 +107,9 @@ namespace Playarr.Core.Indexers.FileList
         {
             var pageableRequests = new IndexerPageableRequestChain();
 
-            AddImdbRequests(pageableRequests, searchCriteria, "search-torrents", Settings.AnimeCategories, $"&platform={searchCriteria.SeasonNumber}");
+            AddImdbRequests(pageableRequests, searchCriteria, "search-torrents", Settings.AnimeCategories, $"&platform={searchCriteria.PlatformNumber}");
             pageableRequests.AddTier();
-            AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.AnimeCategories, $"&platform={searchCriteria.SeasonNumber}");
+            AddNameRequests(pageableRequests, searchCriteria, "search-torrents", Settings.AnimeCategories, $"&platform={searchCriteria.PlatformNumber}");
 
             return pageableRequests;
         }

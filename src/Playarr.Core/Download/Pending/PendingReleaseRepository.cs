@@ -21,18 +21,18 @@ namespace Playarr.Core.Download.Pending
 
         public void DeleteByGameIds(List<int> gameIds)
         {
-            Delete(r => gameIds.Contains(r.SeriesId));
+            Delete(r => gameIds.Contains(r.GameId));
         }
 
         public List<PendingRelease> AllByGameId(int gameId)
         {
-            return Query(p => p.SeriesId == gameId);
+            return Query(p => p.GameId == gameId);
         }
 
         public List<PendingRelease> WithoutFallback()
         {
             var builder = new SqlBuilder(_database.DatabaseType)
-                .InnerJoin<PendingRelease, Game>((p, s) => p.SeriesId == s.Id)
+                .InnerJoin<PendingRelease, Game>((p, s) => p.GameId == s.Id)
                 .Where<PendingRelease>(p => p.Reason != PendingReleaseReason.Fallback);
 
             return Query(builder);

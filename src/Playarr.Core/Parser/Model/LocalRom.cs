@@ -46,11 +46,11 @@ namespace Playarr.Core.Parser.Model
         public List<string> PossibleExtraFiles { get; set; }
         public SubtitleTitleInfo SubtitleInfo { get; set; }
 
-        public int SeasonNumber
+        public int PlatformNumber
         {
             get
             {
-                var platforms = Roms.Select(c => c.SeasonNumber).Distinct().ToList();
+                var platforms = Roms.Select(c => c.PlatformNumber).Distinct().ToList();
 
                 if (platforms.Empty())
                 {
@@ -66,7 +66,7 @@ namespace Playarr.Core.Parser.Model
             }
         }
 
-        public bool IsSpecial => SeasonNumber == 0;
+        public bool IsSpecial => PlatformNumber == 0;
 
         public override string ToString()
         {
@@ -93,12 +93,12 @@ namespace Playarr.Core.Parser.Model
             var romFile = new RomFile
             {
                 DateAdded = DateTime.UtcNow,
-                SeriesId = Game.Id,
+                GameId = Game.Id,
                 Path = Path.CleanFilePath(),
                 Quality = Quality,
                 MediaInfo = MediaInfo,
                 Game = Game,
-                SeasonNumber = SeasonNumber,
+                PlatformNumber = PlatformNumber,
                 Roms = Roms,
                 ReleaseGroup = ReleaseGroup,
                 ReleaseHash = ReleaseHash,

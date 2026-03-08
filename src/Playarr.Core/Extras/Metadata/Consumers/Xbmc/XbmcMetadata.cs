@@ -77,7 +77,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Xbmc
 
             var metadata = new MetadataFile
             {
-                SeriesId = game.Id,
+                GameId = game.Id,
                 Consumer = GetType().Name,
                 RelativePath = game.Path.GetRelativePath(path)
             };
@@ -98,11 +98,11 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Xbmc
 
                 if (platformNumberMatch.Contains("specials"))
                 {
-                    metadata.SeasonNumber = 0;
+                    metadata.PlatformNumber = 0;
                 }
                 else if (int.TryParse(platformNumberMatch, out var platformNumber))
                 {
-                    metadata.SeasonNumber = platformNumber;
+                    metadata.PlatformNumber = platformNumber;
                 }
                 else
                 {
@@ -162,10 +162,10 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Xbmc
 
                 tvShow.Add(new XElement("plot", game.Overview));
                 tvShow.Add(new XElement("mpaa", game.Certification));
-                tvShow.Add(new XElement("id", game.TvdbId));
+                tvShow.Add(new XElement("id", game.IgdbId));
 
-                var uniqueId = new XElement("uniqueid", game.TvdbId);
-                uniqueId.SetAttributeValue("type", "tvdb");
+                var uniqueId = new XElement("uniqueid", game.IgdbId);
+                uniqueId.SetAttributeValue("type", "igdb");
                 uniqueId.SetAttributeValue("default", true);
                 tvShow.Add(uniqueId);
 
@@ -269,7 +269,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Xbmc
                     xmlResult += Environment.NewLine;
                 }
 
-                xmlResult += "https://www.thetvdb.com/?tab=game&id=" + game.TvdbId;
+                xmlResult += "https://www.theigdb.com/?tab=game&id=" + game.IgdbId;
             }
 
             return xmlResult.IsNullOrWhiteSpace() ? null : new MetadataFileResult("tvshow.nfo", xmlResult);
@@ -304,23 +304,23 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Xbmc
 
                 var details = new XElement("episodedetails");
                 details.Add(new XElement("title", rom.Title));
-                details.Add(new XElement("platform", rom.SeasonNumber));
+                details.Add(new XElement("platform", rom.PlatformNumber));
                 details.Add(new XElement("rom", rom.EpisodeNumber));
                 details.Add(new XElement("aired", rom.AirDate));
                 details.Add(new XElement("plot", rom.Overview));
 
-                if (rom.SeasonNumber == 0 && rom.AiredAfterPlatformNumber.HasValue)
+                if (rom.PlatformNumber == 0 && rom.AiredAfterPlatformNumber.HasValue)
                 {
                     details.Add(new XElement("displayafterseason", rom.AiredAfterPlatformNumber));
                 }
-                else if (rom.SeasonNumber == 0 && rom.AiredBeforePlatformNumber.HasValue)
+                else if (rom.PlatformNumber == 0 && rom.AiredBeforePlatformNumber.HasValue)
                 {
                     details.Add(new XElement("displayseason", rom.AiredBeforePlatformNumber));
                     details.Add(new XElement("displayepisode", rom.AiredBeforeRomNumber ?? -1));
                 }
 
-                var igdbId = new XElement("uniqueid", rom.TvdbId);
-                igdbId.SetAttributeValue("type", "tvdb");
+                var igdbId = new XElement("uniqueid", rom.IgdbId);
+                igdbId.SetAttributeValue("type", "igdb");
                 igdbId.SetAttributeValue("default", true);
                 details.Add(igdbId);
 
@@ -410,8 +410,8 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Xbmc
                 }
 
                 // Todo: get guest stars, writer and director
-                // details.Add(new XElement("credits", tvdbEpisode.Writer.FirstOrDefault()));
-                // details.Add(new XElement("director", tvdbEpisode.Directors.FirstOrDefault()));
+                // details.Add(new XElement("credits", igdbEpisode.Writer.FirstOrDefault()));
+                // details.Add(new XElement("director", igdbEpisode.Directors.FirstOrDefault()));
 
                 details.WriteTo(xw);
             }
@@ -495,9 +495,9 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Xbmc
         {
             foreach (var image in platform.Images)
             {
-                var filename = string.Format("platform{0:00}-{1}.jpg", platform.SeasonNumber, image.CoverType.ToString().ToLower());
+                var filename = string.Format("platform{0:00}-{1}.jpg", platform.PlatformNumber, image.CoverType.ToString().ToLower());
 
-                if (platform.SeasonNumber == 0)
+                if (platform.PlatformNumber == 0)
                 {
                     filename = string.Format("platform-specials-{0}.jpg", image.CoverType.ToString().ToLower());
                 }

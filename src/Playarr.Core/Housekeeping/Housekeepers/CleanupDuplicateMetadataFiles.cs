@@ -26,8 +26,8 @@ namespace Playarr.Core.Housekeeping.Housekeepers
                                      WHERE ""Id"" IN (
                                          SELECT MIN(""Id"") FROM ""MetadataFiles""
                                          WHERE ""Type"" = 1
-                                         GROUP BY ""SeriesId"", ""Consumer""
-                                         HAVING COUNT(""SeriesId"") > 1
+                                         GROUP BY ""GameId"", ""Consumer""
+                                         HAVING COUNT(""GameId"") > 1
                                      )");
         }
 

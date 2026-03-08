@@ -52,7 +52,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Specifications
 
             var roms = localRom.Roms;
             var firstEpisode = roms.First();
-            var episodesInSeason = _episodeService.GetEpisodesBySeason(firstEpisode.SeriesId, firstEpisode.EpisodeNumber);
+            var episodesInSeason = _episodeService.GetEpisodesBySeason(firstEpisode.GameId, firstEpisode.EpisodeNumber);
             var allEpisodesOnTheSameDay = firstEpisode.AirDateUtc.HasValue && roms.All(e =>
                                               !e.AirDateUtc.HasValue ||
                                               e.AirDateUtc.Value == firstEpisode.AirDateUtc.Value);

@@ -64,7 +64,7 @@ namespace Playarr.Core.Notifications.Emby
             {
                 var paths = ProcessGetRequest<MediaBrowserItems>(request, settings).Items.GroupBy(item =>
                 {
-                    if (item is { ProviderIds.Tvdb: int tvdbid } && tvdbid != 0 && tvdbid == game.TvdbId)
+                    if (item is { ProviderIds.Igdb: int igdbid } && igdbid != 0 && igdbid == game.IgdbId)
                     {
                         return MediaBrowserMatchQuality.Id;
                     }

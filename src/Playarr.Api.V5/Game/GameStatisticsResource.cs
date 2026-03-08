@@ -32,7 +32,7 @@ public static class SeriesStatisticsResourceMapper
     {
         return new SeriesStatisticsResource
         {
-            SeasonCount = platforms?.Count(s => s.SeasonNumber > 0) ?? 0,
+            SeasonCount = platforms?.Count(s => s.PlatformNumber > 0) ?? 0,
             EpisodeFileCount = model.EpisodeFileCount,
             EpisodeCount = model.EpisodeCount,
             TotalEpisodeCount = model.TotalEpisodeCount,

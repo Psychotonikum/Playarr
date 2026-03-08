@@ -152,7 +152,7 @@ namespace Playarr.Core.Download.TrackedDownloads
                         if (parsedRomInfo != null)
                         {
                             trackedDownload.RemoteEpisode = _parsingService.Map(parsedRomInfo,
-                                firstHistoryItem.SeriesId,
+                                firstHistoryItem.GameId,
                                 historyItems.Where(v => v.EventType == EpisodeHistoryEventType.Grabbed)
                                     .Select(h => h.EpisodeId).Distinct());
                         }
@@ -296,7 +296,7 @@ namespace Playarr.Core.Download.TrackedDownloads
             var cachedItems = _cache.Values
                 .Where(t =>
                     t.RemoteEpisode?.Game == null ||
-                    message.Game?.TvdbId == t.RemoteEpisode.Game.TvdbId)
+                    message.Game?.IgdbId == t.RemoteEpisode.Game.IgdbId)
                 .ToList();
 
             if (cachedItems.Any())
@@ -312,7 +312,7 @@ namespace Playarr.Core.Download.TrackedDownloads
             var cachedItems = _cache.Values
                 .Where(t =>
                     t.RemoteEpisode?.Game != null &&
-                    (t.RemoteEpisode.Game.Id == message.Game?.Id || t.RemoteEpisode.Game.TvdbId == message.Game?.TvdbId))
+                    (t.RemoteEpisode.Game.Id == message.Game?.Id || t.RemoteEpisode.Game.IgdbId == message.Game?.IgdbId))
                 .ToList();
 
             if (cachedItems.Any())
@@ -328,7 +328,7 @@ namespace Playarr.Core.Download.TrackedDownloads
             var cachedItems = _cache.Values
                 .Where(t =>
                     t.RemoteEpisode?.Game != null &&
-                    message.Game.Any(s => s.Id == t.RemoteEpisode.Game.Id || s.TvdbId == t.RemoteEpisode.Game.TvdbId))
+                    message.Game.Any(s => s.Id == t.RemoteEpisode.Game.Id || s.IgdbId == t.RemoteEpisode.Game.IgdbId))
                 .ToList();
 
             if (cachedItems.Any())
@@ -344,7 +344,7 @@ namespace Playarr.Core.Download.TrackedDownloads
             var cachedItems = _cache.Values
                 .Where(t =>
                     t.RemoteEpisode?.Game != null &&
-                    message.Game.Any(s => s.Id == t.RemoteEpisode.Game.Id || s.TvdbId == t.RemoteEpisode.Game.TvdbId))
+                    message.Game.Any(s => s.Id == t.RemoteEpisode.Game.Id || s.IgdbId == t.RemoteEpisode.Game.IgdbId))
                 .ToList();
 
             if (cachedItems.Any())

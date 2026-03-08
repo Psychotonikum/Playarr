@@ -6,7 +6,7 @@ namespace Playarr.Core.Download.Pending
 {
     public class PendingRelease : ModelBase
     {
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public string Title { get; set; }
         public DateTime Added { get; set; }
         public ParsedRomInfo ParsedRomInfo { get; set; }

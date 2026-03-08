@@ -25,7 +25,7 @@ namespace Playarr.Core.Test.IndexerTests.IntegrationTests
             _singleSearchCriteria = new SingleEpisodeSearchCriteria()
                 {
                     SceneTitles = new List<string> { "Person of Interest" },
-                    SeasonNumber = 1,
+                    PlatformNumber = 1,
                     EpisodeNumber = 1
                 };
 

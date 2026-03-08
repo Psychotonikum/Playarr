@@ -6,8 +6,8 @@ namespace Playarr.Api.V3.Roms
 {
     public class RenameRomResource : RestResource
     {
-        public int SeriesId { get; set; }
-        public int SeasonNumber { get; set; }
+        public int GameId { get; set; }
+        public int PlatformNumber { get; set; }
         public List<int> RomNumbers { get; set; }
         public int EpisodeFileId { get; set; }
         public string ExistingPath { get; set; }
@@ -26,8 +26,8 @@ namespace Playarr.Api.V3.Roms
             return new RenameRomResource
             {
                 Id = model.EpisodeFileId,
-                SeriesId = model.SeriesId,
-                SeasonNumber = model.SeasonNumber,
+                GameId = model.GameId,
+                PlatformNumber = model.PlatformNumber,
                 RomNumbers = model.RomNumbers.ToList(),
                 EpisodeFileId = model.EpisodeFileId,
                 ExistingPath = model.ExistingPath,

@@ -35,8 +35,8 @@ namespace Playarr.Core.ImportLists.MyAnimeList
         [JsonProperty("mal_id")]
         public int MalId { get; set; }
 
-        [JsonProperty("thetvdb_id")]
-        public int TvdbId { get; set; }
+        [JsonProperty("theigdb_id")]
+        public int IgdbId { get; set; }
     }
 
     public class MyAnimeListAuthToken

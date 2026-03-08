@@ -44,7 +44,7 @@ namespace Playarr.Api.V5.Calendar
 
             foreach (var rom in roms)
             {
-                var game = allGames.SingleOrDefault(s => s.Id == rom.SeriesId);
+                var game = allGames.SingleOrDefault(s => s.Id == rom.GameId);
 
                 if (game == null)
                 {

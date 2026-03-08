@@ -38,7 +38,7 @@ namespace Playarr.Core.Games
 
             var updateList = new List<Rom>();
             var newList = new List<Rom>();
-            var dupeFreeRemoteEpisodes = remoteRoms.DistinctBy(m => new { m.SeasonNumber, m.EpisodeNumber }).ToList();
+            var dupeFreeRemoteEpisodes = remoteRoms.DistinctBy(m => new { m.PlatformNumber, m.EpisodeNumber }).ToList();
 
             if (game.SeriesType == GameTypes.Anime)
             {
@@ -46,14 +46,14 @@ namespace Playarr.Core.Games
             }
 
             var orderedEpisodes = OrderEpisodes(game, dupeFreeRemoteEpisodes).ToList();
-            var episodesPerSeason = orderedEpisodes.GroupBy(s => s.SeasonNumber).ToDictionary(g => g.Key, g => g.Count());
-            var latestSeason = platforms.MaxBy(s => s.SeasonNumber);
+            var episodesPerSeason = orderedEpisodes.GroupBy(s => s.PlatformNumber).ToDictionary(g => g.Key, g => g.Count());
+            var latestSeason = platforms.MaxBy(s => s.PlatformNumber);
 
             foreach (var rom in orderedEpisodes)
             {
                 try
                 {
-                    var episodeToUpdate = existingRoms.FirstOrDefault(e => e.SeasonNumber == rom.SeasonNumber && e.EpisodeNumber == rom.EpisodeNumber);
+                    var episodeToUpdate = existingRoms.FirstOrDefault(e => e.PlatformNumber == rom.PlatformNumber && e.EpisodeNumber == rom.EpisodeNumber);
 
                     if (episodeToUpdate != null)
                     {
@@ -75,10 +75,10 @@ namespace Playarr.Core.Games
                         newList.Add(episodeToUpdate);
                     }
 
-                    episodeToUpdate.SeriesId = game.Id;
-                    episodeToUpdate.TvdbId = rom.TvdbId;
+                    episodeToUpdate.GameId = game.Id;
+                    episodeToUpdate.IgdbId = rom.IgdbId;
                     episodeToUpdate.EpisodeNumber = rom.EpisodeNumber;
-                    episodeToUpdate.SeasonNumber = rom.SeasonNumber;
+                    episodeToUpdate.PlatformNumber = rom.PlatformNumber;
                     episodeToUpdate.AbsoluteEpisodeNumber = rom.AbsoluteEpisodeNumber;
                     episodeToUpdate.AiredAfterPlatformNumber = rom.AiredAfterPlatformNumber;
                     episodeToUpdate.AiredBeforePlatformNumber = rom.AiredBeforePlatformNumber;
@@ -95,13 +95,13 @@ namespace Playarr.Core.Games
                     // TheIGDB has a severe lack of platform/game finales, this helps smooth out that limitation so they can be displayed in the UI
                     if (game.Status == GameStatusType.Ended &&
                         episodeToUpdate.FinaleType == null &&
-                        episodeToUpdate.SeasonNumber > 0 &&
-                        episodeToUpdate.SeasonNumber == latestSeason.SeasonNumber &&
+                        episodeToUpdate.PlatformNumber > 0 &&
+                        episodeToUpdate.PlatformNumber == latestSeason.PlatformNumber &&
                         episodeToUpdate.EpisodeNumber > 1 &&
-                        episodeToUpdate.EpisodeNumber == episodesPerSeason[episodeToUpdate.SeasonNumber] &&
+                        episodeToUpdate.EpisodeNumber == episodesPerSeason[episodeToUpdate.PlatformNumber] &&
                         episodeToUpdate.AirDateUtc.HasValue &&
                         episodeToUpdate.AirDateUtc.Value.After(DateTime.UtcNow.AddDays(-14)) &&
-                        orderedEpisodes.None(e => e.SeasonNumber == latestSeason.SeasonNumber && e.FinaleType != null))
+                        orderedEpisodes.None(e => e.PlatformNumber == latestSeason.PlatformNumber && e.FinaleType != null))
                     {
                         episodeToUpdate.FinaleType = "game";
                     }
@@ -145,12 +145,12 @@ namespace Playarr.Core.Games
 
         private bool GetMonitoredStatus(Rom rom, IEnumerable<Platform> platforms, Game game)
         {
-            if (rom.EpisodeNumber == 0 && rom.SeasonNumber != 1)
+            if (rom.EpisodeNumber == 0 && rom.PlatformNumber != 1)
             {
                 return false;
             }
 
-            var platform = platforms.SingleOrDefault(c => c.SeasonNumber == rom.SeasonNumber);
+            var platform = platforms.SingleOrDefault(c => c.PlatformNumber == rom.PlatformNumber);
             return platform == null || platform.Monitored;
         }
 
@@ -169,7 +169,7 @@ namespace Playarr.Core.Games
             {
                 if (hasExisting)
                 {
-                    _logger.Warn("Show {0} ({1}) had {2} old roms appear, please check monitored status.", game.TvdbId, game.Title, oldEpisodes.Count);
+                    _logger.Warn("Show {0} ({1}) had {2} old roms appear, please check monitored status.", game.IgdbId, game.Title, oldEpisodes.Count);
                 }
                 else
                 {
@@ -183,7 +183,7 @@ namespace Playarr.Core.Games
                         }
                     }
 
-                    _logger.Warn("Show {0} ({1}) had {2} old roms appear, unmonitored aired roms to prevent unexpected downloads.", game.TvdbId, game.Title, oldEpisodes.Count);
+                    _logger.Warn("Show {0} ({1}) had {2} old roms appear, unmonitored aired roms to prevent unexpected downloads.", game.IgdbId, game.Title, oldEpisodes.Count);
                 }
             }
         }
@@ -191,21 +191,21 @@ namespace Playarr.Core.Games
         private void AdjustMultiEpisodeAirTime(Game game, IEnumerable<Rom> allEpisodes)
         {
             var groups = allEpisodes.Where(c => c.AirDateUtc.HasValue)
-                                    .GroupBy(e => new { e.SeasonNumber, e.AirDate })
+                                    .GroupBy(e => new { e.PlatformNumber, e.AirDate })
                                     .Where(g => g.Count() > 1)
                                     .ToList();
 
             foreach (var group in groups)
             {
-                if (group.Key.SeasonNumber != 0 && group.Count() > 3)
+                if (group.Key.PlatformNumber != 0 && group.Count() > 3)
                 {
-                    _logger.Debug("Not adjusting multi-rom air times for game {0} platform {1} since more than 3 roms 'aired' on the same day", game.Title, group.Key.SeasonNumber);
+                    _logger.Debug("Not adjusting multi-rom air times for game {0} platform {1} since more than 3 roms 'aired' on the same day", game.Title, group.Key.PlatformNumber);
                     continue;
                 }
 
                 var episodeCount = 0;
 
-                foreach (var rom in group.OrderBy(e => e.SeasonNumber).ThenBy(e => e.EpisodeNumber))
+                foreach (var rom in group.OrderBy(e => e.PlatformNumber).ThenBy(e => e.EpisodeNumber))
                 {
                     rom.AirDateUtc = rom.AirDateUtc.Value.AddMinutes(game.Runtime * episodeCount);
                     episodeCount++;
@@ -229,7 +229,7 @@ namespace Playarr.Core.Games
         {
             // Return all roms with no abs number, but distinct for those with abs number
             return remoteRoms.Where(e => e.AbsoluteEpisodeNumber.HasValue)
-                                 .OrderByDescending(e => e.SeasonNumber)
+                                 .OrderByDescending(e => e.PlatformNumber)
                                  .DistinctBy(e => e.AbsoluteEpisodeNumber.Value)
                                  .Concat(remoteRoms.Where(e => !e.AbsoluteEpisodeNumber.HasValue))
                                  .ToList();
@@ -243,13 +243,13 @@ namespace Playarr.Core.Games
                                       .OrderBy(e => e.AbsoluteEpisodeNumber);
 
                 var withoutAbs = roms.Where(e => !e.AbsoluteEpisodeNumber.HasValue)
-                                         .OrderBy(e => e.SeasonNumber)
+                                         .OrderBy(e => e.PlatformNumber)
                                          .ThenBy(e => e.EpisodeNumber);
 
                 return withAbs.Concat(withoutAbs);
             }
 
-            return roms.OrderBy(e => e.SeasonNumber).ThenBy(e => e.EpisodeNumber);
+            return roms.OrderBy(e => e.PlatformNumber).ThenBy(e => e.EpisodeNumber);
         }
     }
 }

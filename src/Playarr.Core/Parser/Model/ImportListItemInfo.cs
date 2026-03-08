@@ -16,7 +16,7 @@ namespace Playarr.Core.Parser.Model
         public string ImportList { get; set; }
         public string Title { get; set; }
         public int Year { get; set; }
-        public int TvdbId { get; set; }
+        public int IgdbId { get; set; }
         public int TmdbId { get; set; }
         public string ImdbId { get; set; }
         public int MalId { get; set; }

@@ -25,8 +25,8 @@ namespace Playarr.Core.Test.MediaFiles
 
             _romFiles = Builder<RomFile>.CreateListOfSize(2)
                                                 .All()
-                                                .With(e => e.SeriesId = _series.Id)
-                                                .With(e => e.SeasonNumber = 1)
+                                                .With(e => e.GameId = _series.Id)
+                                                .With(e => e.PlatformNumber = 1)
                                                 .Build()
                                                 .ToList();
 

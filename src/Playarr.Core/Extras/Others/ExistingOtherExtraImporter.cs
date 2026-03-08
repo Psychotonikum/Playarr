@@ -76,8 +76,8 @@ namespace Playarr.Core.Extras.Others
 
                 var extraFile = new OtherExtraFile
                 {
-                    SeriesId = game.Id,
-                    SeasonNumber = localRom.SeasonNumber,
+                    GameId = game.Id,
+                    PlatformNumber = localRom.PlatformNumber,
                     EpisodeFileId = localRom.Roms.First().EpisodeFileId,
                     RelativePath = game.Path.GetRelativePath(possibleExtraFile),
                     Extension = extension

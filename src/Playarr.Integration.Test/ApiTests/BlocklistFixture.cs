@@ -18,7 +18,7 @@ namespace Playarr.Integration.Test.ApiTests
 
             Blocklist.Post(new BlocklistResource
             {
-                SeriesId = _series.Id,
+                GameId = _series.Id,
                 SourceTitle = "Blacklist.S01E01.Brought.To.You.By-BoomBoxHD"
             });
         }

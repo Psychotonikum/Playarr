@@ -88,7 +88,7 @@ namespace Playarr.Core.Indexers.Newznab
         {
             releaseInfo = base.ProcessItem(item, releaseInfo);
 
-            releaseInfo.TvdbId = GetIgdbId(item);
+            releaseInfo.IgdbId = GetIgdbId(item);
             releaseInfo.MobyGamesId = GetMobyGamesId(item);
             releaseInfo.ImdbId = GetImdbId(item);
             releaseInfo.IndexerFlags = GetFlags(item);
@@ -162,7 +162,7 @@ namespace Playarr.Core.Indexers.Newznab
 
         protected virtual int GetIgdbId(XElement item)
         {
-            var igdbIdString = TryGetNewznabAttribute(item, "tvdbid");
+            var igdbIdString = TryGetNewznabAttribute(item, "igdbid");
 
             if (!igdbIdString.IsNullOrWhiteSpace() && int.TryParse(igdbIdString, out var igdbId))
             {

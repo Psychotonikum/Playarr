@@ -40,7 +40,7 @@ namespace Playarr.Core.Test.ParserTests
             var result = Parser.Parser.ParsePath(path.AsOsAgnostic());
 
             result.RomNumbers.Should().HaveCount(1);
-            result.SeasonNumber.Should().Be(platform);
+            result.PlatformNumber.Should().Be(platform);
             result.RomNumbers[0].Should().Be(rom);
             result.AbsoluteRomNumbers.Should().BeEmpty();
             result.FullSeason.Should().BeFalse();
@@ -56,7 +56,7 @@ namespace Playarr.Core.Test.ParserTests
 
             result.GameTitle.Should().Be(title);
             result.RomNumbers.Should().HaveCount(roms.Length);
-            result.SeasonNumber.Should().Be(platform);
+            result.PlatformNumber.Should().Be(platform);
             result.RomNumbers.Should().BeEquivalentTo(roms);
             result.AbsoluteRomNumbers.Should().BeEmpty();
             result.FullSeason.Should().BeFalse();

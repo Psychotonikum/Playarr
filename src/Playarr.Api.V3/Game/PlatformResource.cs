@@ -7,7 +7,7 @@ namespace Playarr.Api.V3.Game
 {
     public class SeasonResource
     {
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public bool Monitored { get; set; }
         public SeasonStatisticsResource Statistics { get; set; }
         public List<MediaCover> Images { get; set; }
@@ -24,7 +24,7 @@ namespace Playarr.Api.V3.Game
 
             return new SeasonResource
             {
-                SeasonNumber = model.SeasonNumber,
+                PlatformNumber = model.PlatformNumber,
                 Monitored = model.Monitored,
                 Images = includeImages ? model.Images : null
             };
@@ -39,7 +39,7 @@ namespace Playarr.Api.V3.Game
 
             return new Platform
             {
-                SeasonNumber = resource.SeasonNumber,
+                PlatformNumber = resource.PlatformNumber,
                 Monitored = resource.Monitored
             };
         }

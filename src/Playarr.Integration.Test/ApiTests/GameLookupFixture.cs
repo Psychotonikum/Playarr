@@ -17,9 +17,9 @@ namespace Playarr.Integration.Test.ApiTests
         }
 
         [Test]
-        public void lookup_new_series_by_tvdbid()
+        public void lookup_new_series_by_igdbid()
         {
-            var game = Game.Lookup("tvdb:266189");
+            var game = Game.Lookup("igdb:266189");
 
             game.Should().NotBeEmpty();
             game.Should().Contain(c => c.Title == "The Blacklist");

@@ -2,11 +2,11 @@ namespace Playarr.Core.IndexerSearch.Definitions
 {
     public class AnimeSeasonSearchCriteria : SearchCriteriaBase
     {
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
 
         public override string ToString()
         {
-            return $"[{Game.Title} : S{SeasonNumber:00}]";
+            return $"[{Game.Title} : S{PlatformNumber:00}]";
         }
     }
 }

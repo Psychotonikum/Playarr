@@ -98,7 +98,7 @@ namespace Playarr.Core.Download
             {
                 if (historyItem != null)
                 {
-                    game = _seriesService.GetSeries(historyItem.SeriesId);
+                    game = _seriesService.GetSeries(historyItem.GameId);
                 }
 
                 if (game == null)
@@ -256,7 +256,7 @@ namespace Playarr.Core.Download
                 {
                     _logger.ForDebugEvent()
                            .Message("No Roms were just imported, but all roms were previously imported, possible issue with download history.")
-                           .Property("SeriesId", trackedDownload.RemoteEpisode.Game.Id)
+                           .Property("GameId", trackedDownload.RemoteEpisode.Game.Id)
                            .Property("DownloadId", trackedDownload.DownloadItem.DownloadId)
                            .Property("Title", trackedDownload.DownloadItem.Title)
                            .Property("Path", trackedDownload.ImportItem.OutputPath.ToString())

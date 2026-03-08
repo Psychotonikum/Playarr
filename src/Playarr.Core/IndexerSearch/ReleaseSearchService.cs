@@ -58,7 +58,7 @@ namespace Playarr.Core.IndexerSearch
 
         public async Task<List<DownloadDecision>> EpisodeSearch(Rom rom, bool userInvokedSearch, bool interactiveSearch)
         {
-            var game = _seriesService.GetSeries(rom.SeriesId);
+            var game = _seriesService.GetSeries(rom.GameId);
 
             if (game.SeriesType == GameTypes.Daily)
             {
@@ -73,7 +73,7 @@ namespace Playarr.Core.IndexerSearch
 
             if (game.SeriesType == GameTypes.Anime)
             {
-                if (rom.SeasonNumber == 0 &&
+                if (rom.PlatformNumber == 0 &&
                     rom.SceneAbsoluteEpisodeNumber == null &&
                     rom.AbsoluteEpisodeNumber == null)
                 {
@@ -84,7 +84,7 @@ namespace Playarr.Core.IndexerSearch
                 return await SearchAnime(game, rom, false, userInvokedSearch, interactiveSearch);
             }
 
-            if (rom.SeasonNumber == 0)
+            if (rom.PlatformNumber == 0)
             {
                 // Search for special roms in platform 0
                 return await SearchSpecial(game, new List<Rom> { rom }, false, userInvokedSearch, interactiveSearch);
@@ -131,7 +131,7 @@ namespace Playarr.Core.IndexerSearch
 
             foreach (var mapping in mappings)
             {
-                if (mapping.SeasonNumber == 0)
+                if (mapping.PlatformNumber == 0)
                 {
                     // search for special roms in platform 0
                     downloadDecisions.AddRange(await SearchSpecial(game, mapping.Roms, monitoredOnly, userInvokedSearch, interactiveSearch));
@@ -141,7 +141,7 @@ namespace Playarr.Core.IndexerSearch
                 if (mapping.Roms.Count == 1)
                 {
                     var searchSpec = Get<SingleEpisodeSearchCriteria>(game, mapping, monitoredOnly, userInvokedSearch, interactiveSearch);
-                    searchSpec.SeasonNumber = mapping.SeasonNumber;
+                    searchSpec.PlatformNumber = mapping.PlatformNumber;
                     searchSpec.EpisodeNumber = mapping.EpisodeMapping.EpisodeNumber;
 
                     var decisions = await Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
@@ -150,7 +150,7 @@ namespace Playarr.Core.IndexerSearch
                 else
                 {
                     var searchSpec = Get<SeasonSearchCriteria>(game, mapping, monitoredOnly, userInvokedSearch, interactiveSearch);
-                    searchSpec.SeasonNumber = mapping.SeasonNumber;
+                    searchSpec.PlatformNumber = mapping.PlatformNumber;
 
                     var decisions = await Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
                     downloadDecisions.AddRange(decisions);
@@ -164,10 +164,10 @@ namespace Playarr.Core.IndexerSearch
         {
             var dict = new Dictionary<SceneSeasonMapping, SceneSeasonMapping>();
 
-            var sceneMappings = _sceneMapping.FindByIgdbId(game.TvdbId);
+            var sceneMappings = _sceneMapping.FindByIgdbId(game.IgdbId);
 
-            // Group the rom by SceneSeasonNumber/SeasonNumber, in 99% of cases this will result in 1 groupedEpisode
-            var groupedEpisodes = roms.ToLookup(v => ((v.SceneSeasonNumber ?? v.SeasonNumber) * 100000) + v.SeasonNumber);
+            // Group the rom by ScenePlatformNumber/PlatformNumber, in 99% of cases this will result in 1 groupedEpisode
+            var groupedEpisodes = roms.ToLookup(v => ((v.ScenePlatformNumber ?? v.PlatformNumber) * 100000) + v.PlatformNumber);
 
             foreach (var groupedEpisode in groupedEpisodes)
             {
@@ -181,7 +181,7 @@ namespace Playarr.Core.IndexerSearch
                         EpisodeMapping = episodeMapping,
                         SceneTitles = episodeMapping.SceneTitles,
                         SearchMode = episodeMapping.SearchMode,
-                        SeasonNumber = episodeMapping.SeasonNumber
+                        PlatformNumber = episodeMapping.PlatformNumber
                     };
 
                     if (dict.TryGetValue(seasonMapping, out var existing))
@@ -209,7 +209,7 @@ namespace Playarr.Core.IndexerSearch
         {
             var dict = new Dictionary<SceneEpisodeMapping, SceneEpisodeMapping>();
 
-            var sceneMappings = _sceneMapping.FindByIgdbId(game.TvdbId);
+            var sceneMappings = _sceneMapping.FindByIgdbId(game.IgdbId);
 
             var episodeMappings = GetSceneEpisodeMappings(game, rom, sceneMappings);
 
@@ -240,21 +240,21 @@ namespace Playarr.Core.IndexerSearch
             foreach (var sceneMapping in sceneMappings)
             {
                 // There are two kinds of mappings:
-                // - Mapped on Release Platform Number with sceneMapping.SceneSeasonNumber specified and optionally sceneMapping.SeasonNumber. This translates via rom.SceneSeasonNumber/SeasonNumber to specific roms.
-                // - Mapped on Rom Platform Number with optionally sceneMapping.SeasonNumber. This translates from rom.SceneSeasonNumber/SeasonNumber to specific releases. (Filter by rom.SeasonNumber or globally)
+                // - Mapped on Release Platform Number with sceneMapping.ScenePlatformNumber specified and optionally sceneMapping.PlatformNumber. This translates via rom.ScenePlatformNumber/PlatformNumber to specific roms.
+                // - Mapped on Rom Platform Number with optionally sceneMapping.PlatformNumber. This translates from rom.ScenePlatformNumber/PlatformNumber to specific releases. (Filter by rom.PlatformNumber or globally)
 
-                var ignoreSceneNumbering = sceneMapping.SceneOrigin == "tvdb" || sceneMapping.SceneOrigin == "unknown:tvdb";
-                var mappingScenePlatformNumber = sceneMapping.SceneSeasonNumber.NonNegative();
-                var mappingPlatformNumber = sceneMapping.SeasonNumber.NonNegative();
+                var ignoreSceneNumbering = sceneMapping.SceneOrigin == "igdb" || sceneMapping.SceneOrigin == "unknown:igdb";
+                var mappingScenePlatformNumber = sceneMapping.ScenePlatformNumber.NonNegative();
+                var mappingPlatformNumber = sceneMapping.PlatformNumber.NonNegative();
 
-                // Select scene or tvdb on the rom
-                var mappedPlatformNumber = ignoreSceneNumbering ? rom.SeasonNumber : (rom.SceneSeasonNumber ?? rom.SeasonNumber);
-                var releasePlatformNumber = sceneMapping.SceneSeasonNumber.NonNegative() ?? mappedPlatformNumber;
+                // Select scene or igdb on the rom
+                var mappedPlatformNumber = ignoreSceneNumbering ? rom.PlatformNumber : (rom.ScenePlatformNumber ?? rom.PlatformNumber);
+                var releasePlatformNumber = sceneMapping.ScenePlatformNumber.NonNegative() ?? mappedPlatformNumber;
 
                 if (mappingScenePlatformNumber.HasValue)
                 {
-                    // Apply the alternative mapping (release to scene/tvdb)
-                    var mappedAltPlatformNumber = sceneMapping.SeasonNumber.NonNegative() ?? sceneMapping.SceneSeasonNumber.NonNegative() ?? mappedPlatformNumber;
+                    // Apply the alternative mapping (release to scene/igdb)
+                    var mappedAltPlatformNumber = sceneMapping.PlatformNumber.NonNegative() ?? sceneMapping.ScenePlatformNumber.NonNegative() ?? mappedPlatformNumber;
 
                     // Check if the mapping applies to the current platform
                     if (mappedAltPlatformNumber != mappedPlatformNumber)
@@ -265,7 +265,7 @@ namespace Playarr.Core.IndexerSearch
                 else
                 {
                     // Check if the mapping applies to the current platform
-                    if (mappingPlatformNumber.HasValue && mappingPlatformNumber.Value != rom.SeasonNumber)
+                    if (mappingPlatformNumber.HasValue && mappingPlatformNumber.Value != rom.PlatformNumber)
                     {
                         continue;
                     }
@@ -287,7 +287,7 @@ namespace Playarr.Core.IndexerSearch
                         Rom = rom,
                         SearchMode = searchMode,
                         SceneTitles = new List<string> { sceneMapping.SearchTerm },
-                        SeasonNumber = releasePlatformNumber,
+                        PlatformNumber = releasePlatformNumber,
                         EpisodeNumber = rom.EpisodeNumber,
                         AbsoluteEpisodeNumber = rom.AbsoluteEpisodeNumber
                     };
@@ -299,7 +299,7 @@ namespace Playarr.Core.IndexerSearch
                         Rom = rom,
                         SearchMode = searchMode,
                         SceneTitles = new List<string> { sceneMapping.SearchTerm },
-                        SeasonNumber = releasePlatformNumber,
+                        PlatformNumber = releasePlatformNumber,
                         EpisodeNumber = rom.SceneEpisodeNumber ?? rom.EpisodeNumber,
                         AbsoluteEpisodeNumber = rom.SceneAbsoluteEpisodeNumber ?? rom.AbsoluteEpisodeNumber
                     };
@@ -313,9 +313,9 @@ namespace Playarr.Core.IndexerSearch
                     Rom = rom,
                     SearchMode = SearchMode.Default,
                     SceneTitles = new List<string> { game.Title },
-                    SeasonNumber = rom.SceneSeasonNumber ?? rom.SeasonNumber,
+                    PlatformNumber = rom.ScenePlatformNumber ?? rom.PlatformNumber,
                     EpisodeNumber = rom.SceneEpisodeNumber ?? rom.EpisodeNumber,
-                    AbsoluteEpisodeNumber = rom.SceneSeasonNumber ?? rom.AbsoluteEpisodeNumber
+                    AbsoluteEpisodeNumber = rom.ScenePlatformNumber ?? rom.AbsoluteEpisodeNumber
                 };
             }
         }
@@ -329,7 +329,7 @@ namespace Playarr.Core.IndexerSearch
             foreach (var mapping in mappings)
             {
                 var searchSpec = Get<SingleEpisodeSearchCriteria>(game, mapping, monitoredOnly, userInvokedSearch, interactiveSearch);
-                searchSpec.SeasonNumber = mapping.SeasonNumber;
+                searchSpec.PlatformNumber = mapping.PlatformNumber;
                 searchSpec.EpisodeNumber = mapping.EpisodeNumber;
 
                 var decisions = await Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
@@ -356,7 +356,7 @@ namespace Playarr.Core.IndexerSearch
 
             searchSpec.IsSeasonSearch = isSeasonSearch;
 
-            searchSpec.SeasonNumber = rom.SceneSeasonNumber ?? rom.SeasonNumber;
+            searchSpec.PlatformNumber = rom.ScenePlatformNumber ?? rom.PlatformNumber;
             searchSpec.EpisodeNumber = rom.SceneEpisodeNumber ?? rom.EpisodeNumber;
             searchSpec.AbsoluteEpisodeNumber = rom.SceneAbsoluteEpisodeNumber ?? rom.AbsoluteEpisodeNumber ?? 0;
 
@@ -409,13 +409,13 @@ namespace Playarr.Core.IndexerSearch
                 .ToList();
 
             var seasonsToSearch = GetSceneSeasonMappings(game, episodesToSearch)
-                .GroupBy(ep => ep.SeasonNumber)
+                .GroupBy(ep => ep.PlatformNumber)
                 .Select(epList => epList.First())
                 .ToList();
 
             foreach (var platform in seasonsToSearch)
             {
-                searchSpec.SeasonNumber = platform.SeasonNumber;
+                searchSpec.PlatformNumber = platform.PlatformNumber;
 
                 var decisions = await Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
                 downloadDecisions.AddRange(decisions);
@@ -466,9 +466,9 @@ namespace Playarr.Core.IndexerSearch
             var spec = new TSpec();
 
             spec.Game = game;
-            spec.SceneTitles = _sceneMapping.GetSceneNames(game.TvdbId,
-                                                           roms.Select(e => e.SeasonNumber).Distinct().ToList(),
-                                                           roms.Select(e => e.SceneSeasonNumber ?? e.SeasonNumber).Distinct().ToList());
+            spec.SceneTitles = _sceneMapping.GetSceneNames(game.IgdbId,
+                                                           roms.Select(e => e.PlatformNumber).Distinct().ToList(),
+                                                           roms.Select(e => e.ScenePlatformNumber ?? e.PlatformNumber).Distinct().ToList());
 
             spec.Roms = roms;
             spec.MonitoredEpisodesOnly = monitoredOnly;

@@ -51,14 +51,14 @@ namespace Playarr.Core.Test.HistoryTests
             var historyBluray = Builder<EpisodeHistory>.CreateNew()
                 .With(c => c.Languages = new List<Language> { Language.English })
                 .With(c => c.Quality = new QualityModel(Quality.Bluray1080p))
-                .With(c => c.SeriesId = 12)
+                .With(c => c.GameId = 12)
                 .With(c => c.EventType = EpisodeHistoryEventType.Grabbed)
                 .BuildNew();
 
             var historyDvd = Builder<EpisodeHistory>.CreateNew()
                 .With(c => c.Languages = new List<Language> { Language.English })
                 .With(c => c.Quality = new QualityModel(Quality.DVD))
-                .With(c => c.SeriesId = 12)
+                .With(c => c.GameId = 12)
                 .With(c => c.EventType = EpisodeHistoryEventType.Grabbed)
              .BuildNew();
 
@@ -75,9 +75,9 @@ namespace Playarr.Core.Test.HistoryTests
         {
             var items = Builder<EpisodeHistory>.CreateListOfSize(5)
                 .TheFirst(1)
-                .With(c => c.SeriesId = _series2.Id)
+                .With(c => c.GameId = _series2.Id)
                 .TheRest()
-                .With(c => c.SeriesId = _series1.Id)
+                .With(c => c.GameId = _series1.Id)
                 .All()
                 .With(c => c.Id = 0)
                 .With(c => c.Quality = new QualityModel(Quality.Bluray1080p))
@@ -90,8 +90,8 @@ namespace Playarr.Core.Test.HistoryTests
             Subject.DeleteForSeries(new List<int> { _series1.Id });
 
             var dbItems = Subject.All();
-            var removedItems = dbItems.Where(h => h.SeriesId == _series1.Id);
-            var nonRemovedItems = dbItems.Where(h => h.SeriesId == _series2.Id);
+            var removedItems = dbItems.Where(h => h.GameId == _series1.Id);
+            var nonRemovedItems = dbItems.Where(h => h.GameId == _series2.Id);
 
             removedItems.Should().HaveCount(0);
             nonRemovedItems.Should().HaveCount(1);

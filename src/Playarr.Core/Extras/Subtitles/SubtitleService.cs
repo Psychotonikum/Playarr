@@ -140,7 +140,7 @@ namespace Playarr.Core.Extras.Subtitles
                         continue;
                     }
 
-                    if (fileRomInfo.SeasonNumber == localRom.FileRomInfo.SeasonNumber &&
+                    if (fileRomInfo.PlatformNumber == localRom.FileRomInfo.PlatformNumber &&
                         fileRomInfo.RomNumbers.SequenceEqual(localRom.FileRomInfo.RomNumbers))
                     {
                         matchingFiles.Add(file);

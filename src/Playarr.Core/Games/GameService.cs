@@ -204,11 +204,11 @@ namespace Playarr.Core.Games
             {
                 foreach (var platform in game.Platforms)
                 {
-                    var storedSeason = storedSeries.Platforms.SingleOrDefault(s => s.SeasonNumber == platform.SeasonNumber);
+                    var storedSeason = storedSeries.Platforms.SingleOrDefault(s => s.PlatformNumber == platform.PlatformNumber);
 
                     if (storedSeason != null && platform.Monitored != storedSeason.Monitored)
                     {
-                        _episodeService.SetEpisodeMonitoredBySeason(game.Id, platform.SeasonNumber, platform.Monitored);
+                        _episodeService.SetEpisodeMonitoredBySeason(game.Id, platform.PlatformNumber, platform.Monitored);
                         episodeMonitoredChanged = true;
                     }
                 }

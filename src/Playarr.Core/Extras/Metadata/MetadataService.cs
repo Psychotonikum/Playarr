@@ -257,7 +257,7 @@ namespace Playarr.Core.Extras.Metadata
             var metadata = GetMetadataFile(game, existingMetadataFiles, e => e.Type == MetadataType.SeriesMetadata) ??
                                new MetadataFile
                                {
-                                   SeriesId = game.Id,
+                                   GameId = game.Id,
                                    Consumer = consumer.GetType().Name,
                                    Type = MetadataType.SeriesMetadata
                                };
@@ -317,8 +317,8 @@ namespace Playarr.Core.Extras.Metadata
             var metadata = existingMetadata ??
                            new MetadataFile
                            {
-                               SeriesId = game.Id,
-                               SeasonNumber = romFile.SeasonNumber,
+                               GameId = game.Id,
+                               PlatformNumber = romFile.PlatformNumber,
                                EpisodeFileId = romFile.Id,
                                Consumer = consumer.GetType().Name,
                                Type = MetadataType.EpisodeMetadata,
@@ -359,7 +359,7 @@ namespace Playarr.Core.Extras.Metadata
                                                                               c.RelativePath == image.RelativePath) ??
                                new MetadataFile
                                {
-                                   SeriesId = game.Id,
+                                   GameId = game.Id,
                                    Consumer = consumer.GetType().Name,
                                    Type = MetadataType.GameImage,
                                    RelativePath = image.RelativePath,
@@ -393,12 +393,12 @@ namespace Playarr.Core.Extras.Metadata
                     _otherExtraFileRenamer.RenameOtherExtraFile(game, fullPath);
 
                     var metadata = GetMetadataFile(game, existingMetadataFiles, c => c.Type == MetadataType.SeasonImage &&
-                                                                                  c.SeasonNumber == platform.SeasonNumber &&
+                                                                                  c.PlatformNumber == platform.PlatformNumber &&
                                                                                   c.RelativePath == image.RelativePath) ??
                                 new MetadataFile
                                 {
-                                    SeriesId = game.Id,
-                                    SeasonNumber = platform.SeasonNumber,
+                                    GameId = game.Id,
+                                    PlatformNumber = platform.PlatformNumber,
                                     Consumer = consumer.GetType().Name,
                                     Type = MetadataType.SeasonImage,
                                     RelativePath = image.RelativePath,
@@ -448,8 +448,8 @@ namespace Playarr.Core.Extras.Metadata
                 var metadata = existingMetadata ??
                                new MetadataFile
                                {
-                                   SeriesId = game.Id,
-                                   SeasonNumber = romFile.SeasonNumber,
+                                   GameId = game.Id,
+                                   PlatformNumber = romFile.PlatformNumber,
                                    EpisodeFileId = romFile.Id,
                                    Consumer = consumer.GetType().Name,
                                    Type = MetadataType.EpisodeImage,

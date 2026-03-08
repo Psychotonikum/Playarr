@@ -27,12 +27,12 @@ namespace Playarr.Core.Extras.Files
 
         public void DeleteForGameIds(List<int> gameIds)
         {
-            Delete(c => gameIds.Contains(c.SeriesId));
+            Delete(c => gameIds.Contains(c.GameId));
         }
 
         public void DeleteForSeason(int gameId, int platformNumber)
         {
-            Delete(c => c.SeriesId == gameId && c.SeasonNumber == platformNumber);
+            Delete(c => c.GameId == gameId && c.PlatformNumber == platformNumber);
         }
 
         public void DeleteForRomFile(int romFileId)
@@ -42,12 +42,12 @@ namespace Playarr.Core.Extras.Files
 
         public List<TExtraFile> GetFilesBySeries(int gameId)
         {
-            return Query(c => c.SeriesId == gameId);
+            return Query(c => c.GameId == gameId);
         }
 
         public List<TExtraFile> GetFilesBySeason(int gameId, int platformNumber)
         {
-            return Query(c => c.SeriesId == gameId && c.SeasonNumber == platformNumber);
+            return Query(c => c.GameId == gameId && c.PlatformNumber == platformNumber);
         }
 
         public List<TExtraFile> GetFilesByRomFile(int romFileId)
@@ -57,7 +57,7 @@ namespace Playarr.Core.Extras.Files
 
         public TExtraFile FindByPath(int gameId, string path)
         {
-            return Query(c => c.SeriesId == gameId && c.RelativePath == path).SingleOrDefault();
+            return Query(c => c.GameId == gameId && c.RelativePath == path).SingleOrDefault();
         }
     }
 }

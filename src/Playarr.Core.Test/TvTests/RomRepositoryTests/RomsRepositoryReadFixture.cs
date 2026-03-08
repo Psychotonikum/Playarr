@@ -37,7 +37,7 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
 
             var rom = Builder<Rom>.CreateListOfSize(2)
                                         .All()
-                                        .With(e => e.SeriesId = _series.Id)
+                                        .With(e => e.GameId = _series.Id)
                                         .With(e => e.EpisodeFileId = romFile.Id)
                                         .BuildListOfNew();
 

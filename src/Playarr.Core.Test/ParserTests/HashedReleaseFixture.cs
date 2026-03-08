@@ -147,7 +147,7 @@ namespace Playarr.Core.Test.ParserTests
             new object[]
             {
                 @"C:\Test\Fake.Dir.S01E01-Test\11E-20S seires.mkv".AsOsAgnostic(),
-                "game",
+                "series",
                 Quality.HDTV720p,
                 null
             },

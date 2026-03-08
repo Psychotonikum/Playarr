@@ -90,7 +90,7 @@ namespace Playarr.Core.Test.ParserTests
         public void should_parse_multiple_episodes(string postTitle, string title, int platform, int[] roms)
         {
             var result = Parser.Parser.ParseTitle(postTitle);
-            result.SeasonNumber.Should().Be(platform);
+            result.PlatformNumber.Should().Be(platform);
             result.RomNumbers.Should().BeEquivalentTo(roms);
             result.GameTitle.Should().Be(title);
             result.AbsoluteRomNumbers.Should().BeEmpty();

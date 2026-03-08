@@ -51,7 +51,7 @@ namespace Playarr.Core.Indexers.BroadcastheNet
                     parameters = parameters.Clone();
 
                     parameters.Category = "Rom";
-                    parameters.Name = $"S{rom.SeasonNumber:00}%E{rom.EpisodeNumber:00}%";
+                    parameters.Name = $"S{rom.PlatformNumber:00}%E{rom.EpisodeNumber:00}%";
 
                     pageableRequests.Add(GetPagedRequests(MaxPages, parameters));
                 }
@@ -67,7 +67,7 @@ namespace Playarr.Core.Indexers.BroadcastheNet
 
             if (AddGameSearchParameters(parameters, searchCriteria))
             {
-                foreach (var platformNumber in searchCriteria.Roms.Select(v => v.SeasonNumber).Distinct())
+                foreach (var platformNumber in searchCriteria.Roms.Select(v => v.PlatformNumber).Distinct())
                 {
                     parameters.Category = "Platform";
                     parameters.Name = $"Platform {platformNumber}%";
@@ -105,7 +105,7 @@ namespace Playarr.Core.Indexers.BroadcastheNet
                     parameters = parameters.Clone();
 
                     parameters.Category = "Rom";
-                    parameters.Name = $"S{rom.SeasonNumber:00}E{rom.EpisodeNumber:00}";
+                    parameters.Name = $"S{rom.PlatformNumber:00}E{rom.EpisodeNumber:00}";
 
                     pageableRequests.Add(GetPagedRequests(MaxPages, parameters));
                 }
@@ -133,7 +133,7 @@ namespace Playarr.Core.Indexers.BroadcastheNet
                     parameters = parameters.Clone();
 
                     parameters.Category = "Rom";
-                    parameters.Name = $"S{rom.SeasonNumber:00}E{rom.EpisodeNumber:00}";
+                    parameters.Name = $"S{rom.PlatformNumber:00}E{rom.EpisodeNumber:00}";
 
                     pageableRequests.Add(GetPagedRequests(MaxPages, parameters));
                 }
@@ -154,12 +154,12 @@ namespace Playarr.Core.Indexers.BroadcastheNet
                     parameters = parameters.Clone();
 
                     parameters.Category = "Rom";
-                    parameters.Name = $"S{rom.SeasonNumber:00}E{rom.EpisodeNumber:00}";
+                    parameters.Name = $"S{rom.PlatformNumber:00}E{rom.EpisodeNumber:00}";
 
                     pageableRequests.Add(GetPagedRequests(MaxPages, parameters));
                 }
 
-                foreach (var platformNumber in searchCriteria.Roms.Select(v => v.SeasonNumber).Distinct())
+                foreach (var platformNumber in searchCriteria.Roms.Select(v => v.PlatformNumber).Distinct())
                 {
                     parameters = parameters.Clone();
 
@@ -180,7 +180,7 @@ namespace Playarr.Core.Indexers.BroadcastheNet
 
             if (AddGameSearchParameters(parameters, searchCriteria))
             {
-                foreach (var platformNumber in searchCriteria.Roms.Select(v => v.SeasonNumber).Distinct())
+                foreach (var platformNumber in searchCriteria.Roms.Select(v => v.PlatformNumber).Distinct())
                 {
                     parameters.Category = "Platform";
                     parameters.Name = $"Platform {platformNumber}%";
@@ -226,9 +226,9 @@ namespace Playarr.Core.Indexers.BroadcastheNet
 
         private bool AddGameSearchParameters(BroadcastheNetTorrentQuery parameters, SearchCriteriaBase searchCriteria)
         {
-            if (searchCriteria.Game.TvdbId != 0)
+            if (searchCriteria.Game.IgdbId != 0)
             {
-                parameters.Tvdb = $"{searchCriteria.Game.TvdbId}";
+                parameters.Igdb = $"{searchCriteria.Game.IgdbId}";
                 return true;
             }
 
@@ -238,7 +238,7 @@ namespace Playarr.Core.Indexers.BroadcastheNet
                 return true;
             }
 
-            // BTN is very neatly managed, so it's unlikely they map tvrage/tvdb wrongly.
+            // BTN is very neatly managed, so it's unlikely they map tvrage/igdb wrongly.
             return false;
         }
 

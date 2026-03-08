@@ -194,7 +194,7 @@ namespace Playarr.Core.Notifications.Trakt
             var payloadSeasons = new List<TraktSeasonResource>();
             payloadSeasons.Add(new TraktSeasonResource
             {
-                Number = romFile.SeasonNumber,
+                Number = romFile.PlatformNumber,
                 Roms = payloadEpisodes
             });
 
@@ -204,7 +204,7 @@ namespace Playarr.Core.Notifications.Trakt
                 Year = game.Year,
                 Ids = new TraktShowIdsResource
                 {
-                    Tvdb = game.TvdbId,
+                    Igdb = game.IgdbId,
                     Imdb = game.ImdbId ?? "",
                 },
                 Platforms = payloadSeasons,
@@ -233,7 +233,7 @@ namespace Playarr.Core.Notifications.Trakt
             var payloadSeasons = new List<TraktSeasonResource>();
             payloadSeasons.Add(new TraktSeasonResource
             {
-                Number = romFile.SeasonNumber,
+                Number = romFile.PlatformNumber,
                 Roms = payloadEpisodes
             });
 
@@ -243,7 +243,7 @@ namespace Playarr.Core.Notifications.Trakt
                 Year = game.Year,
                 Ids = new TraktShowIdsResource
                 {
-                    Tvdb = game.TvdbId,
+                    Igdb = game.IgdbId,
                     Imdb = game.ImdbId ?? "",
                 },
                 Platforms = payloadSeasons,
@@ -265,7 +265,7 @@ namespace Playarr.Core.Notifications.Trakt
                 Year = game.Year,
                 Ids = new TraktShowIdsResource
                 {
-                    Tvdb = game.TvdbId,
+                    Igdb = game.IgdbId,
                     Imdb = game.ImdbId ?? "",
                 }
             });
@@ -286,7 +286,7 @@ namespace Playarr.Core.Notifications.Trakt
                 Year = game.Year,
                 Ids = new TraktShowIdsResource
                 {
-                    Tvdb = game.TvdbId,
+                    Igdb = game.IgdbId,
                     Imdb = game.ImdbId ?? "",
                 },
             });

@@ -58,8 +58,8 @@ namespace Playarr.Core.Download
                 return;
             }
 
-            var platformNumber = _episodeService.GetEpisode(message.RomIds.First()).SeasonNumber;
-            var episodesInSeason = _episodeService.GetEpisodesBySeason(message.SeriesId, platformNumber);
+            var platformNumber = _episodeService.GetEpisode(message.RomIds.First()).PlatformNumber;
+            var episodesInSeason = _episodeService.GetEpisodesBySeason(message.GameId, platformNumber);
 
             if (message.RomIds.Count == episodesInSeason.Count)
             {
@@ -67,8 +67,8 @@ namespace Playarr.Core.Download
 
                 _commandQueueManager.Push(new SeasonSearchCommand
                 {
-                    SeriesId = message.SeriesId,
-                    SeasonNumber = platformNumber
+                    GameId = message.GameId,
+                    PlatformNumber = platformNumber
                 });
 
                 return;

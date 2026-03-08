@@ -91,7 +91,7 @@ public class HistoryController : Controller
 
         if (gameIds != null && gameIds.Any())
         {
-            pagingSpec.FilterExpressions.Add(h => gameIds.Contains(h.SeriesId));
+            pagingSpec.FilterExpressions.Add(h => gameIds.Contains(h.GameId));
         }
 
         var includeSeries = includeSubresources.Contains(HistorySubresource.Game);
@@ -147,7 +147,7 @@ public class HistoryController : Controller
     public List<HistoryResource> GetEpisodeHistory(int romId, EpisodeHistoryEventType? eventType = null, [FromQuery] HistorySubresource[]? includeSubresources = null)
     {
         var rom = _episodeService.GetEpisode(romId);
-        var game = _seriesService.GetSeries(rom.SeriesId);
+        var game = _seriesService.GetSeries(rom.GameId);
         var includeSeries = includeSubresources.Contains(HistorySubresource.Game);
         var includeEpisode = includeSubresources.Contains(HistorySubresource.Rom);
 

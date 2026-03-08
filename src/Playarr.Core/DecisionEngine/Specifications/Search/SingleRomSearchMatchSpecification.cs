@@ -44,7 +44,7 @@ namespace Playarr.Core.DecisionEngine.Specifications.Search
 
         private DownloadSpecDecision IsSatisfiedBy(RemoteEpisode remoteRom, SingleEpisodeSearchCriteria singleEpisodeSpec)
         {
-            if (singleEpisodeSpec.SeasonNumber != remoteRom.ParsedRomInfo.SeasonNumber)
+            if (singleEpisodeSpec.PlatformNumber != remoteRom.ParsedRomInfo.PlatformNumber)
             {
                 _logger.Debug("Platform number does not match searched platform number, skipping.");
                 return DownloadSpecDecision.Reject(DownloadRejectionReason.WrongSeason, "Wrong platform");

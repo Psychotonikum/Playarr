@@ -78,8 +78,8 @@ namespace Playarr.Core.Extras.Files
 
             return new TExtraFile
             {
-                SeriesId = game.Id,
-                SeasonNumber = romFile.SeasonNumber,
+                GameId = game.Id,
+                PlatformNumber = romFile.PlatformNumber,
                 EpisodeFileId = romFile.Id,
                 RelativePath = game.Path.GetRelativePath(newFileName),
                 Extension = extension

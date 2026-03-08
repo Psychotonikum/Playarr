@@ -24,9 +24,9 @@ namespace Playarr.Core.Housekeeping.Housekeepers
             mapper.Execute(@"DELETE FROM ""History""
                                      WHERE ""Id"" IN (
                                      SELECT ""History"".""Id"" FROM ""History""
-                                     LEFT OUTER JOIN ""Series""
-                                     ON ""History"".""SeriesId"" = ""Series"".""Id""
-                                     WHERE ""Series"".""Id"" IS NULL)");
+                                     LEFT OUTER JOIN ""Games""
+                                     ON ""History"".""GameId"" = ""Games"".""Id""
+                                     WHERE ""Games"".""Id"" IS NULL)");
         }
 
         private void CleanupOrphanedByEpisode()
@@ -35,9 +35,9 @@ namespace Playarr.Core.Housekeeping.Housekeepers
             mapper.Execute(@"DELETE FROM ""History""
                                      WHERE ""Id"" IN (
                                      SELECT ""History"".""Id"" FROM ""History""
-                                     LEFT OUTER JOIN ""Episodes""
-                                     ON ""History"".""EpisodeId"" = ""Episodes"".""Id""
-                                     WHERE ""Episodes"".""Id"" IS NULL)");
+                                     LEFT OUTER JOIN ""Roms""
+                                     ON ""History"".""EpisodeId"" = ""Roms"".""Id""
+                                     WHERE ""Roms"".""Id"" IS NULL)");
         }
     }
 }

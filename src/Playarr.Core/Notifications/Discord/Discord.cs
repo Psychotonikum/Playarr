@@ -43,7 +43,7 @@ namespace Playarr.Core.Notifications.Discord
                     Name = Settings.Author.IsNullOrWhiteSpace() ? _configFileProvider.InstanceName : Settings.Author,
                     IconUrl = "https://raw.githubusercontent.com/Playarr/Playarr/develop/Logo/256.png"
                 },
-                Url = $"http://thetvdb.com/?tab=game&id={game.TvdbId}",
+                Url = $"http://theigdb.com/?tab=game&id={game.IgdbId}",
                 Description = "Rom Grabbed",
                 Title = GetTitle(game, roms),
                 Color = (int)DiscordColors.Standard,
@@ -146,7 +146,7 @@ namespace Playarr.Core.Notifications.Discord
                     Name = Settings.Author.IsNullOrWhiteSpace() ? _configFileProvider.InstanceName : Settings.Author,
                     IconUrl = "https://raw.githubusercontent.com/Playarr/Playarr/develop/Logo/256.png"
                 },
-                Url = $"http://thetvdb.com/?tab=game&id={game.TvdbId}",
+                Url = $"http://theigdb.com/?tab=game&id={game.IgdbId}",
                 Description = isUpgrade ? "Rom Upgraded" : "Rom Imported",
                 Title = GetTitle(game, roms),
                 Color = isUpgrade ? (int)DiscordColors.Upgrade : (int)DiscordColors.Success,
@@ -260,7 +260,7 @@ namespace Playarr.Core.Notifications.Discord
                     Name = Settings.Author.IsNullOrWhiteSpace() ? _configFileProvider.InstanceName : Settings.Author,
                     IconUrl = "https://raw.githubusercontent.com/Playarr/Playarr/develop/Logo/256.png"
                 },
-                Url = $"http://thetvdb.com/?tab=game&id={game.TvdbId}",
+                Url = $"http://theigdb.com/?tab=game&id={game.IgdbId}",
                 Description = "Import Complete",
                 Title = GetTitle(game, roms),
                 Color = (int)DiscordColors.Success,
@@ -367,7 +367,7 @@ namespace Playarr.Core.Notifications.Discord
                     Name = Settings.Author.IsNullOrWhiteSpace() ? _configFileProvider.InstanceName : Settings.Author,
                     IconUrl = "https://raw.githubusercontent.com/Playarr/Playarr/develop/Logo/256.png"
                 },
-                Url = $"http://thetvdb.com/?tab=game&id={game.TvdbId}",
+                Url = $"http://theigdb.com/?tab=game&id={game.IgdbId}",
                 Title = GetTitle(game, roms),
                 Description = "Rom Deleted",
                 Color = (int)DiscordColors.Danger,
@@ -394,7 +394,7 @@ namespace Playarr.Core.Notifications.Discord
                     Name = Settings.Author.IsNullOrWhiteSpace() ? _configFileProvider.InstanceName : Settings.Author,
                     IconUrl = "https://raw.githubusercontent.com/Playarr/Playarr/develop/Logo/256.png"
                 },
-                Url = $"http://thetvdb.com/?tab=game&id={game.TvdbId}",
+                Url = $"http://theigdb.com/?tab=game&id={game.IgdbId}",
                 Title = game.Title,
                 Description = "Game Added",
                 Color = (int)DiscordColors.Success,
@@ -433,7 +433,7 @@ namespace Playarr.Core.Notifications.Discord
                     Name = Settings.Author.IsNullOrWhiteSpace() ? _configFileProvider.InstanceName : Settings.Author,
                     IconUrl = "https://raw.githubusercontent.com/Playarr/Playarr/develop/Logo/256.png"
                 },
-                Url = $"http://thetvdb.com/?tab=game&id={game.TvdbId}",
+                Url = $"http://theigdb.com/?tab=game&id={game.IgdbId}",
                 Title = game.Title,
                 Description = deleteMessage.DeletedFilesMessage,
                 Color = (int)DiscordColors.Danger,
@@ -545,7 +545,7 @@ namespace Playarr.Core.Notifications.Discord
                     Name = Settings.Author.IsNullOrWhiteSpace() ? _configFileProvider.InstanceName : Settings.Author,
                     IconUrl = "https://raw.githubusercontent.com/Playarr/Playarr/develop/Logo/256.png"
                 },
-                Url = game?.TvdbId > 0 ? $"http://thetvdb.com/?tab=game&id={game.TvdbId}" : null,
+                Url = game?.IgdbId > 0 ? $"http://theigdb.com/?tab=game&id={game.IgdbId}" : null,
                 Description = "Manual interaction needed",
                 Title = GetTitle(game, roms),
                 Color = (int)DiscordColors.Standard,
@@ -696,8 +696,8 @@ namespace Playarr.Core.Notifications.Discord
 
             var links = new List<string>
             {
-                $"[The IGDB](https://thetvdb.com/?tab=game&id={game.TvdbId})",
-                $"[Trakt](https://trakt.tv/search/tvdb/{game.TvdbId}?id_type=show)"
+                $"[The IGDB](https://theigdb.com/?tab=game&id={game.IgdbId})",
+                $"[Trakt](https://trakt.tv/search/igdb/{game.IgdbId}?id_type=show)"
             };
 
             if (game.ImdbId.IsNotNullOrWhiteSpace())
@@ -731,7 +731,7 @@ namespace Playarr.Core.Notifications.Discord
 
             var romTitles = string.Join(" + ", roms.Select(e => e.Title));
 
-            var title = $"{game.Title} - {roms.First().SeasonNumber}{romNumbers} - {romTitles}".Replace("`", "\\`");
+            var title = $"{game.Title} - {roms.First().PlatformNumber}{romNumbers} - {romTitles}".Replace("`", "\\`");
 
             return title.Length > 256 ? $"{title.AsSpan(0, 253).TrimEnd('\\')}..." : title;
         }

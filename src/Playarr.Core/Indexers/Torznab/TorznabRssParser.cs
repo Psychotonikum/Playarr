@@ -81,7 +81,7 @@ namespace Playarr.Core.Indexers.Torznab
 
             if (torrentInfo != null)
             {
-                torrentInfo.TvdbId = GetIgdbId(item);
+                torrentInfo.IgdbId = GetIgdbId(item);
                 torrentInfo.MobyGamesId = GetMobyGamesId(item);
                 releaseInfo.ImdbId = GetImdbId(item);
                 torrentInfo.IndexerFlags = GetFlags(item);
@@ -156,7 +156,7 @@ namespace Playarr.Core.Indexers.Torznab
 
         protected virtual int GetIgdbId(XElement item)
         {
-            var igdbIdString = TryGetTorznabAttribute(item, "tvdbid");
+            var igdbIdString = TryGetTorznabAttribute(item, "igdbid");
 
             if (!igdbIdString.IsNullOrWhiteSpace() && int.TryParse(igdbIdString, out var igdbId))
             {

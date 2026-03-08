@@ -39,7 +39,7 @@ namespace Playarr.Core.Test.Download
             var roms = Builder<Rom>.CreateListOfSize(2)
                 .TheFirst(1).With(s => s.Id = 12)
                 .TheNext(1).With(s => s.Id = 99)
-                .All().With(s => s.SeriesId = 5)
+                .All().With(s => s.GameId = 5)
                 .Build().ToList();
 
             var releaseInfo = Builder<ReleaseInfo>.CreateNew()

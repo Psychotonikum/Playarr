@@ -9,8 +9,8 @@ namespace Playarr.Core.GameStats
 {
     public class SeasonStatistics : ResultSet
     {
-        public int SeriesId { get; set; }
-        public int SeasonNumber { get; set; }
+        public int GameId { get; set; }
+        public int PlatformNumber { get; set; }
         public string NextAiringString { get; set; }
         public string PreviousAiringString { get; set; }
         public string LastAiredString { get; set; }

@@ -26,7 +26,7 @@ namespace Playarr.Core.Housekeeping.Housekeepers
                                      WHERE ""Id"" IN (
                                      SELECT ""SubtitleFiles"".""Id"" FROM ""SubtitleFiles""
                                      LEFT OUTER JOIN ""Series""
-                                     ON ""SubtitleFiles"".""SeriesId"" = ""Series"".""Id""
+                                     ON ""SubtitleFiles"".""GameId"" = ""Series"".""Id""
                                      WHERE ""Series"".""Id"" IS NULL)");
         }
 

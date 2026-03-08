@@ -100,7 +100,7 @@ namespace Playarr.Core.Organizer
 
         private bool ValidateSeasonAndRomNumbers(List<Rom> roms, ParsedRomInfo parsedRomInfo)
         {
-            if (parsedRomInfo.SeasonNumber != roms.First().SeasonNumber ||
+            if (parsedRomInfo.PlatformNumber != roms.First().PlatformNumber ||
                 !parsedRomInfo.RomNumbers.OrderBy(e => e).SequenceEqual(roms.Select(e => e.EpisodeNumber).OrderBy(e => e)))
             {
                 return false;

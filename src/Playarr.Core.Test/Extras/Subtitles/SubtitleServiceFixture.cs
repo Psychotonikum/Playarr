@@ -39,7 +39,7 @@ namespace Playarr.Core.Test.Extras.Subtitles
 
             var roms = Builder<Rom>.CreateListOfSize(1)
                                            .All()
-                                           .With(e => e.SeasonNumber = 1)
+                                           .With(e => e.PlatformNumber = 1)
                                            .Build()
                                            .ToList();
 
@@ -54,7 +54,7 @@ namespace Playarr.Core.Test.Extras.Subtitles
                                                  .With(l => l.Path = Path.Combine(_episodeFolder, "Game.Title.S01E01.mkv").AsOsAgnostic())
                                                  .With(l => l.FileRomInfo = new ParsedRomInfo
                                                  {
-                                                     SeasonNumber = 1,
+                                                     PlatformNumber = 1,
                                                      RomNumbers = new[] { 1 }
                                                  })
                                                  .Build();

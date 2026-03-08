@@ -162,9 +162,9 @@ namespace Playarr.Core.Organizer
 
             var pattern = namingConfig.StandardEpisodeFormat;
 
-            roms = roms.OrderBy(e => e.SeasonNumber).ThenBy(e => e.EpisodeNumber).ToList();
+            roms = roms.OrderBy(e => e.PlatformNumber).ThenBy(e => e.EpisodeNumber).ToList();
 
-            if (game.SeriesType == GameTypes.Daily && roms.First().SeasonNumber > 0)
+            if (game.SeriesType == GameTypes.Daily && roms.First().PlatformNumber > 0)
             {
                 pattern = namingConfig.DailyEpisodeFormat;
             }
@@ -232,7 +232,7 @@ namespace Playarr.Core.Organizer
         {
             Ensure.That(extension, () => extension).IsNotNullOrWhiteSpace();
 
-            var seasonPath = BuildSeasonPath(game, roms.First().SeasonNumber);
+            var seasonPath = BuildSeasonPath(game, roms.First().PlatformNumber);
             var remainingPathLength = LongPathSupport.MaxFilePathLength - seasonPath.GetByteCount() - 1;
             var fileName = BuildFileName(roms, game, romFile, extension, remainingPathLength, namingConfig, customFormats);
 
@@ -515,7 +515,7 @@ namespace Playarr.Core.Organizer
                 tokenHandlers[token] = m => seasonEpisodePattern;
             }
 
-            AddSeasonTokens(tokenHandlers, roms.First().SeasonNumber);
+            AddSeasonTokens(tokenHandlers, roms.First().PlatformNumber);
 
             if (roms.Count > 1)
             {
@@ -716,7 +716,7 @@ namespace Playarr.Core.Organizer
         private void AddIdTokens(Dictionary<string, Func<TokenMatch, string>> tokenHandlers, Game game)
         {
             tokenHandlers["{ImdbId}"] = m => game.ImdbId ?? string.Empty;
-            tokenHandlers["{TvdbId}"] = m => game.TvdbId.ToString();
+            tokenHandlers["{IgdbId}"] = m => game.IgdbId.ToString();
             tokenHandlers["{RawgId}"] = m => game.RawgId > 0 ? game.RawgId.ToString() : string.Empty;
             tokenHandlers["{TmdbId}"] = m => game.TmdbId > 0 ? game.TmdbId.ToString() : string.Empty;
         }
@@ -923,7 +923,7 @@ namespace Playarr.Core.Organizer
                 pattern += EpisodeRegex.Replace(patternToReplace, match => ReplaceNumberToken(match.Groups["rom"].Value, roms[i].EpisodeNumber));
             }
 
-            return ReplaceSeasonTokens(pattern, roms.First().SeasonNumber);
+            return ReplaceSeasonTokens(pattern, roms.First().PlatformNumber);
         }
 
         private string FormatAbsoluteNumberTokens(string basePattern, string formatPattern, List<Rom> roms)
@@ -937,7 +937,7 @@ namespace Playarr.Core.Organizer
                 pattern += AbsoluteEpisodeRegex.Replace(patternToReplace, match => ReplaceNumberToken(match.Groups["absolute"].Value, roms[i].AbsoluteEpisodeNumber.Value));
             }
 
-            return ReplaceSeasonTokens(pattern, roms.First().SeasonNumber);
+            return ReplaceSeasonTokens(pattern, roms.First().PlatformNumber);
         }
 
         private string FormatRangeNumberTokens(string seasonEpisodePattern, string formatPattern, List<Rom> roms)

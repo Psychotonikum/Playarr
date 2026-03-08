@@ -13,7 +13,7 @@ namespace Playarr.Core.Test.ParserTests
             var parsedRomInfo = new ParsedRomInfo
                                     {
                                         RomNumbers = new[] { 7 },
-                                        SeasonNumber = 1,
+                                        PlatformNumber = 1,
                                         GameTitle = ""
                                     };
 
@@ -25,7 +25,7 @@ namespace Playarr.Core.Test.ParserTests
         {
             var parsedRomInfo = new ParsedRomInfo
             {
-                SeasonNumber = 1,
+                PlatformNumber = 1,
                 GameTitle = ""
             };
 

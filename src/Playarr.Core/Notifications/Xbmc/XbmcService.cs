@@ -72,7 +72,7 @@ namespace Playarr.Core.Notifications.Xbmc
             {
                 int.TryParse(s.ImdbNumber, out var igdbId);
 
-                return igdbId == game.TvdbId || s.Label == game.Title;
+                return igdbId == game.IgdbId || s.Label == game.Title;
             });
 
             if (matchingSeries != null)

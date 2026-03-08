@@ -43,8 +43,8 @@ namespace Playarr.Core.ImportLists.Custom
                 {
                     game.Add(new ImportListItemInfo
                     {
-                        Title = item.Title.IsNullOrWhiteSpace() ? $"TvdbId: {item.TvdbId}" : item.Title,
-                        TvdbId = item.TvdbId,
+                        Title = item.Title.IsNullOrWhiteSpace() ? $"IgdbId: {item.IgdbId}" : item.Title,
+                        IgdbId = item.IgdbId,
                         TmdbId = item.TmdbId,
                         ImdbId = item.ImdbId
                     });

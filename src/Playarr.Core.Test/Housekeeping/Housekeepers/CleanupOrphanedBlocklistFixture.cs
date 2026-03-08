@@ -39,7 +39,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
                 .With(h => h.Languages = new List<Language> { Language.English })
                 .With(h => h.RomIds = new List<int>())
                 .With(h => h.Quality = new QualityModel())
-                .With(b => b.SeriesId = game.Id)
+                .With(b => b.GameId = game.Id)
                 .BuildNew();
 
             Db.Insert(blocklist);

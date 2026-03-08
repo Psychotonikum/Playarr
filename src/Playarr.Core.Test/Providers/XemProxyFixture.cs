@@ -29,26 +29,26 @@ namespace Playarr.Core.Test.Providers
         [TestCase(279042, Description = "no single connection")]
         public void should_return_empty_when_known_error(int id)
         {
-            Subject.GetSceneTvdbMappings(id).Should().BeEmpty();
+            Subject.GetSceneIgdbMappings(id).Should().BeEmpty();
         }
 
         [TestCase(82807)]
         [TestCase(73141, Description = "American Dad!")]
         public void should_get_mapping(int gameId)
         {
-            var result = Subject.GetSceneTvdbMappings(gameId);
+            var result = Subject.GetSceneIgdbMappings(gameId);
 
             result.Should().NotBeEmpty();
             result.Should().OnlyContain(c => c.Scene != null);
-            result.Should().OnlyContain(c => c.Tvdb != null);
+            result.Should().OnlyContain(c => c.Igdb != null);
         }
 
         [TestCase(78916)]
         public void should_filter_out_episodes_without_scene_mapping(int gameId)
         {
-            var result = Subject.GetSceneTvdbMappings(gameId);
+            var result = Subject.GetSceneIgdbMappings(gameId);
 
-            result.Should().NotContain(c => c.Tvdb == null);
+            result.Should().NotContain(c => c.Igdb == null);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
             {
                 GameTitle = _series.Title,
                 GameTitleInfo = new GameTitleInfo(),
-                SeasonNumber = 1,
+                PlatformNumber = 1,
                 RomNumbers = new[] { 1 },
                 Languages = new List<Language> { Language.English }
             };
@@ -50,7 +50,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
             {
                 Game = _series,
                 EpisodeNumber = _episodes.First().EpisodeNumber,
-                SeasonNumber = _episodes.First().SeasonNumber,
+                PlatformNumber = _episodes.First().PlatformNumber,
                 Roms = _episodes
             };
         }
@@ -86,18 +86,18 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         {
             GivenMatchByGameTitle();
 
-            Subject.Map(_parsedRomInfo, _series.TvdbId, _series.MobyGamesId, _series.ImdbId);
+            Subject.Map(_parsedRomInfo, _series.IgdbId, _series.MobyGamesId, _series.ImdbId);
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.FindByTitle(It.IsAny<string>()), Times.Once());
         }
 
         [Test]
-        public void should_use_tvdbid_when_series_title_lookup_fails()
+        public void should_use_igdbid_when_series_title_lookup_fails()
         {
             GivenMatchByIgdbId();
 
-            Subject.Map(_parsedRomInfo, _series.TvdbId, _series.MobyGamesId, _series.ImdbId);
+            Subject.Map(_parsedRomInfo, _series.IgdbId, _series.MobyGamesId, _series.ImdbId);
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.FindByIgdbId(It.IsAny<int>()), Times.Once());
@@ -121,9 +121,9 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
 
             Mocker.GetMock<ISceneMappingService>()
                   .Setup(v => v.FindSceneMapping(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
-                  .Returns(new SceneMapping { TvdbId = 10 });
+                  .Returns(new SceneMapping { IgdbId = 10 });
 
-            var result = Subject.Map(_parsedRomInfo, _series.TvdbId, _series.MobyGamesId, _series.ImdbId);
+            var result = Subject.Map(_parsedRomInfo, _series.IgdbId, _series.MobyGamesId, _series.ImdbId);
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.FindByMobyGamesId(It.IsAny<int>()), Times.Never());
@@ -136,7 +136,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         {
             GivenMatchByGameTitle();
 
-            Subject.Map(_parsedRomInfo, _series.TvdbId, _series.MobyGamesId, _series.ImdbId, _singleEpisodeSearchCriteria);
+            Subject.Map(_parsedRomInfo, _series.IgdbId, _series.MobyGamesId, _series.ImdbId, _singleEpisodeSearchCriteria);
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.FindByTitle(It.IsAny<string>()), Times.Never());
@@ -198,7 +198,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         }
 
         [Test]
-        public void should_not_FindByMobyGamesId_when_search_criteria_and_FindByTitle_matching_fails_and_tvdb_id_is_specified()
+        public void should_not_FindByMobyGamesId_when_search_criteria_and_FindByTitle_matching_fails_and_igdb_id_is_specified()
         {
             GivenParseResultSeriesDoesntMatchSearchCriteria();
 
@@ -220,7 +220,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         }
 
         [Test]
-        public void should_not_FindByImdbId_when_search_criteria_and_FindByTitle_matching_fails_and_tvdb_id_is_specified()
+        public void should_not_FindByImdbId_when_search_criteria_and_FindByTitle_matching_fails_and_igdb_id_is_specified()
         {
             GivenParseResultSeriesDoesntMatchSearchCriteria();
 
@@ -231,13 +231,13 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         }
 
         [Test]
-        public void should_use_tvdbid_matching_when_alias_is_found()
+        public void should_use_igdbid_matching_when_alias_is_found()
         {
             Mocker.GetMock<ISceneMappingService>()
                   .Setup(s => s.FindIgdbId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
-                  .Returns(_series.TvdbId);
+                  .Returns(_series.IgdbId);
 
-            Subject.Map(_parsedRomInfo, _series.TvdbId, _series.MobyGamesId, _series.ImdbId, _singleEpisodeSearchCriteria);
+            Subject.Map(_parsedRomInfo, _series.IgdbId, _series.MobyGamesId, _series.ImdbId, _singleEpisodeSearchCriteria);
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.FindByTitle(It.IsAny<string>()), Times.Never());
@@ -248,7 +248,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         {
             GivenParseResultSeriesDoesntMatchSearchCriteria();
 
-            Subject.Map(_parsedRomInfo, _series.TvdbId, _series.MobyGamesId, _series.ImdbId, _singleEpisodeSearchCriteria);
+            Subject.Map(_parsedRomInfo, _series.IgdbId, _series.MobyGamesId, _series.ImdbId, _singleEpisodeSearchCriteria);
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.FindByTitle(It.IsAny<string>()), Times.Never());
@@ -257,45 +257,45 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         [Test]
         public void should_use_scene_season_number_from_xem_mapping_if_alias_matches_a_specific_season_number()
         {
-            _parsedRomInfo.SeasonNumber = 1;
+            _parsedRomInfo.PlatformNumber = 1;
 
             var sceneMapping = new SceneMapping
             {
                 Type = "XemService",
-                SceneSeasonNumber = 2
+                ScenePlatformNumber = 2
             };
 
             Mocker.GetMock<ISceneMappingService>()
-                .Setup(s => s.FindSceneMapping(_parsedRomInfo.GameTitle, _parsedRomInfo.ReleaseTitle, _parsedRomInfo.SeasonNumber))
+                .Setup(s => s.FindSceneMapping(_parsedRomInfo.GameTitle, _parsedRomInfo.ReleaseTitle, _parsedRomInfo.PlatformNumber))
                 .Returns(sceneMapping);
 
             var result = Subject.Map(_parsedRomInfo, _series);
 
-            result.MappedPlatformNumber.Should().Be(sceneMapping.SceneSeasonNumber);
+            result.MappedPlatformNumber.Should().Be(sceneMapping.ScenePlatformNumber);
         }
 
         [Test]
         public void should_not_use_scene_season_number_from_xem_mapping_if_alias_matches_a_specific_season_number_but_did_not_parse_season_1()
         {
-            _parsedRomInfo.SeasonNumber = 2;
+            _parsedRomInfo.PlatformNumber = 2;
 
             var sceneMapping = new SceneMapping
             {
                 Type = "XemService",
-                SceneSeasonNumber = 2
+                ScenePlatformNumber = 2
             };
 
             Mocker.GetMock<ISceneMappingService>()
-                .Setup(s => s.FindSceneMapping(_parsedRomInfo.GameTitle, _parsedRomInfo.ReleaseTitle, _parsedRomInfo.SeasonNumber))
+                .Setup(s => s.FindSceneMapping(_parsedRomInfo.GameTitle, _parsedRomInfo.ReleaseTitle, _parsedRomInfo.PlatformNumber))
                 .Returns(sceneMapping);
 
             var result = Subject.Map(_parsedRomInfo, _series);
 
-            result.MappedPlatformNumber.Should().Be(sceneMapping.SceneSeasonNumber);
+            result.MappedPlatformNumber.Should().Be(sceneMapping.ScenePlatformNumber);
         }
 
         [Test]
-        public void should_use_tvdbid_matching_when_alias_without_year_is_found()
+        public void should_use_igdbid_matching_when_alias_without_year_is_found()
         {
             var alias = "Game Alias";
 
@@ -305,13 +305,13 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
 
             Mocker.GetMock<ISceneMappingService>()
                 .Setup(s => s.FindIgdbId(alias, It.IsAny<string>(), It.IsAny<int>()))
-                .Returns(_series.TvdbId);
+                .Returns(_series.IgdbId);
 
             Mocker.GetMock<IGameService>()
                 .Setup(s => s.FindByIgdbId(_series.Id))
                 .Returns(_series);
 
-            var result = Subject.Map(_parsedRomInfo, _series.TvdbId, _series.MobyGamesId, _series.ImdbId, null);
+            var result = Subject.Map(_parsedRomInfo, _series.IgdbId, _series.MobyGamesId, _series.ImdbId, null);
 
             result.Game.Should().Be(_series);
 
@@ -320,7 +320,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         }
 
         [Test]
-        public void should_not_use_tvdbid_matching_when_alias_without_year_is_found_with_wrong_year()
+        public void should_not_use_igdbid_matching_when_alias_without_year_is_found_with_wrong_year()
         {
             var alias = "Game Alias";
 
@@ -330,7 +330,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
 
             Mocker.GetMock<ISceneMappingService>()
                 .Setup(s => s.FindIgdbId(alias, It.IsAny<string>(), It.IsAny<int>()))
-                .Returns(_series.TvdbId);
+                .Returns(_series.IgdbId);
 
             Mocker.GetMock<IGameService>()
                 .Setup(s => s.FindByIgdbId(_series.Id))

@@ -32,7 +32,7 @@ namespace Playarr.Core.IndexerSearch
 
         public void Execute(SeriesSearchCommand message)
         {
-            var game = _seriesService.GetSeries(message.SeriesId);
+            var game = _seriesService.GetSeries(message.GameId);
             var downloadedCount = 0;
             var userInvokedSearch = message.Trigger == CommandTrigger.Manual;
             var profile = game.QualityProfile.Value;
@@ -57,15 +57,15 @@ namespace Playarr.Core.IndexerSearch
             }
             else
             {
-                foreach (var platform in game.Platforms.OrderBy(s => s.SeasonNumber))
+                foreach (var platform in game.Platforms.OrderBy(s => s.PlatformNumber))
                 {
                     if (!platform.Monitored)
                     {
-                        _logger.Debug("Platform {0} of {1} is not monitored, skipping search", platform.SeasonNumber, game.Title);
+                        _logger.Debug("Platform {0} of {1} is not monitored, skipping search", platform.PlatformNumber, game.Title);
                         continue;
                     }
 
-                    var decisions = _releaseSearchService.SeasonSearch(message.SeriesId, platform.SeasonNumber, !profile.UpgradeAllowed, true, userInvokedSearch, false).GetAwaiter().GetResult();
+                    var decisions = _releaseSearchService.SeasonSearch(message.GameId, platform.PlatformNumber, !profile.UpgradeAllowed, true, userInvokedSearch, false).GetAwaiter().GetResult();
                     var processDecisions = _processDownloadDecisions.ProcessDecisions(decisions).GetAwaiter().GetResult();
                     downloadedCount += processDecisions.Grabbed.Count;
                 }

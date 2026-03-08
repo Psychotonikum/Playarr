@@ -100,7 +100,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
                         RelativePath = game.Path.GetRelativePath(file),
                         Name = Path.GetFileNameWithoutExtension(file),
                         Game = game,
-                        SeasonNumber = null,
+                        PlatformNumber = null,
                         Roms = new List<Rom>(),
                         ReleaseGroup = string.Empty,
                         Quality = new QualityModel(Quality.Unknown),
@@ -421,9 +421,9 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
             item.Name = Path.GetFileNameWithoutExtension(decision.LocalEpisode.Path);
             item.DownloadId = downloadId;
 
-            if (decision.LocalEpisode.Roms.Any() && decision.LocalEpisode.Roms.Select(c => c.SeasonNumber).Distinct().Count() == 1)
+            if (decision.LocalEpisode.Roms.Any() && decision.LocalEpisode.Roms.Select(c => c.PlatformNumber).Distinct().Count() == 1)
             {
-                var platforms = decision.LocalEpisode.Roms.Select(c => c.SeasonNumber).Distinct().ToList();
+                var platforms = decision.LocalEpisode.Roms.Select(c => c.PlatformNumber).Distinct().ToList();
 
                 if (platforms.Empty())
                 {
@@ -435,7 +435,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
                 }
                 else
                 {
-                    item.SeasonNumber = decision.LocalEpisode.SeasonNumber;
+                    item.PlatformNumber = decision.LocalEpisode.PlatformNumber;
                     item.Roms = decision.LocalEpisode.Roms;
                 }
             }
@@ -467,7 +467,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
             item.RelativePath = romFile.RelativePath;
             item.Name = Path.GetFileNameWithoutExtension(romFile.Path);
             item.Game = game;
-            item.SeasonNumber = romFile.SeasonNumber;
+            item.PlatformNumber = romFile.PlatformNumber;
             item.Roms = roms.Where(e => e.EpisodeFileId == romFile.Id).ToList();
             item.ReleaseGroup = romFile.ReleaseGroup;
             item.Quality = romFile.Quality;
@@ -495,7 +495,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
                 _logger.ProgressTrace("Processing file {0} of {1}", i + 1, message.Files.Count);
 
                 var file = message.Files[i];
-                var game = _seriesService.GetSeries(file.SeriesId);
+                var game = _seriesService.GetSeries(file.GameId);
                 var roms = _episodeService.GetEpisodes(file.RomIds);
                 var fileRomInfo = Parser.Parser.ParsePath(file.Path) ?? new ParsedRomInfo();
                 var existingFile = game.Path.IsParentPath(file.Path);
@@ -578,7 +578,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
 
             if (untrackedImports.Any())
             {
-                foreach (var groupedUntrackedImport in untrackedImports.GroupBy(i => new { i.RomFile.SeriesId, i.RomFile.SeasonNumber }))
+                foreach (var groupedUntrackedImport in untrackedImports.GroupBy(i => new { i.RomFile.GameId, i.RomFile.PlatformNumber }))
                 {
                     var localRoms = groupedUntrackedImport.Select(u => u.ImportDecision.LocalEpisode).ToList();
                     var romFiles = groupedUntrackedImport.Select(u => u.RomFile).ToList();

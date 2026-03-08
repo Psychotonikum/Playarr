@@ -9,13 +9,13 @@ namespace Playarr.Core.IndexerSearch.Definitions
         public Rom Rom { get; set; }
         public SearchMode SearchMode { get; set; }
         public List<string> SceneTitles { get; set; }
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public int EpisodeNumber { get; set; }
         public int? AbsoluteEpisodeNumber { get; set; }
 
         public override int GetHashCode()
         {
-            return SearchMode.GetHashCode() ^ SeasonNumber.GetHashCode() ^ EpisodeNumber.GetHashCode();
+            return SearchMode.GetHashCode() ^ PlatformNumber.GetHashCode() ^ EpisodeNumber.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -27,7 +27,7 @@ namespace Playarr.Core.IndexerSearch.Definitions
                 return false;
             }
 
-            return SeasonNumber == other.SeasonNumber && EpisodeNumber == other.EpisodeNumber && SearchMode == other.SearchMode;
+            return PlatformNumber == other.PlatformNumber && EpisodeNumber == other.EpisodeNumber && SearchMode == other.SearchMode;
         }
     }
 }

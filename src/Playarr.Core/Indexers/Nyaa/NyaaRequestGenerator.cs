@@ -22,11 +22,11 @@ namespace Playarr.Core.Indexers.Nyaa
         {
             var pageableRequests = new IndexerPageableRequestChain();
 
-            if (Settings.AnimeStandardFormatSearch && searchCriteria.SeasonNumber > 0 && searchCriteria.EpisodeNumber > 0)
+            if (Settings.AnimeStandardFormatSearch && searchCriteria.PlatformNumber > 0 && searchCriteria.EpisodeNumber > 0)
             {
                 foreach (var searchTitle in searchCriteria.SceneTitles.Select(PrepareQuery))
                 {
-                    pageableRequests.Add(GetPagedRequests($"{searchTitle}+s{searchCriteria.SeasonNumber:00}e{searchCriteria.EpisodeNumber:00}"));
+                    pageableRequests.Add(GetPagedRequests($"{searchTitle}+s{searchCriteria.PlatformNumber:00}e{searchCriteria.EpisodeNumber:00}"));
                 }
             }
 
@@ -37,11 +37,11 @@ namespace Playarr.Core.Indexers.Nyaa
         {
             var pageableRequests = new IndexerPageableRequestChain();
 
-            if (Settings.AnimeStandardFormatSearch && searchCriteria.SeasonNumber > 0)
+            if (Settings.AnimeStandardFormatSearch && searchCriteria.PlatformNumber > 0)
             {
                 foreach (var searchTitle in searchCriteria.SceneTitles.Select(PrepareQuery))
                 {
-                    pageableRequests.Add(GetPagedRequests($"{searchTitle}+s{searchCriteria.SeasonNumber:00}"));
+                    pageableRequests.Add(GetPagedRequests($"{searchTitle}+s{searchCriteria.PlatformNumber:00}"));
                 }
             }
 
@@ -74,9 +74,9 @@ namespace Playarr.Core.Indexers.Nyaa
                     }
                 }
 
-                if (Settings.AnimeStandardFormatSearch && searchCriteria.SeasonNumber > 0 && searchCriteria.EpisodeNumber > 0)
+                if (Settings.AnimeStandardFormatSearch && searchCriteria.PlatformNumber > 0 && searchCriteria.EpisodeNumber > 0)
                 {
-                    pageableRequests.Add(GetPagedRequests($"{searchTitle}+s{searchCriteria.SeasonNumber:00}e{searchCriteria.EpisodeNumber:00}"));
+                    pageableRequests.Add(GetPagedRequests($"{searchTitle}+s{searchCriteria.PlatformNumber:00}e{searchCriteria.EpisodeNumber:00}"));
                 }
             }
 
@@ -89,9 +89,9 @@ namespace Playarr.Core.Indexers.Nyaa
 
             foreach (var searchTitle in searchCriteria.SceneTitles.Select(PrepareQuery))
             {
-                if (Settings.AnimeStandardFormatSearch && searchCriteria.SeasonNumber > 0)
+                if (Settings.AnimeStandardFormatSearch && searchCriteria.PlatformNumber > 0)
                 {
-                    pageableRequests.Add(GetPagedRequests($"{searchTitle}+s{searchCriteria.SeasonNumber:00}"));
+                    pageableRequests.Add(GetPagedRequests($"{searchTitle}+s{searchCriteria.PlatformNumber:00}"));
                 }
             }
 

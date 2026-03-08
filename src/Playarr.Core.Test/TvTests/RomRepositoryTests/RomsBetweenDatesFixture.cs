@@ -23,7 +23,7 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
 
             var rom = Builder<Rom>.CreateNew()
                                           .With(e => e.Id = 0)
-                                          .With(e => e.SeriesId = game.Id)
+                                          .With(e => e.GameId = game.Id)
                                           .With(e => e.Monitored = true)
                                           .Build();
 

@@ -202,7 +202,7 @@ namespace Playarr.Core.Parser
                     RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                 // Multi-platform pack
-                new Regex(@"^(?<title>.+?)(Complete Game)?[-_. ]+(?:S|(?:Platform|Saison|Game|Stagione)[_. ])(?<platform>(?<!\d+)(?:\d{1,2})(?!\d+))(?:[-_. ]{1}|[-_. ]{3})(?:S|(?:Platform|Saison|Game|Stagione)[_. ])?(?<platform>(?<!\d+)(?:\d{1,2})(?!\d+))",
+                new Regex(@"^(?<title>.+?)(Complete (?:Game|Series))?[-_. ]+(?:S|(?:Season|Platform|Saison|Series|Game|Stagione)[_. ])(?<platform>(?<!\d+)(?:\d{1,2})(?!\d+))(?:[-_. ]{1}|[-_. ]{3})(?:S|(?:Season|Platform|Saison|Series|Game|Stagione)[_. ])?(?<platform>(?<!\d+)(?:\d{1,2})(?!\d+))",
                     RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                 // Partial platform pack
@@ -314,15 +314,15 @@ namespace Playarr.Core.Parser
                     RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                 // Platform only releases followed by year
-                new Regex(@"^(?<title>.+?)[-_. ]+?(?:S|Platform|Saison|Game|Stagione)[-_. ]?(?<platform>\d{1,2}(?=[-_. ]\d{4}[-_. ]+))(?<extras>EXTRAS|SUBPACK)?(?!\\)",
+                new Regex(@"^(?<title>.+?)[-_. ]+?(?:S|Season|Platform|Saison|Series|Game|Stagione)[-_. ]?(?<platform>\d{1,2}(?=[-_. ]\d{4}[-_. ]+))(?<extras>EXTRAS|SUBPACK)?(?!\\)",
                     RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                 // Platform only releases
-                new Regex(@"^(?<title>.+?)[-_. ]+?(?:S|Platform|Saison|Game|Stagione)[-_. ]?(?<platform>\d{1,2}(?![-_. ]?\d+))(?:[-_. ]|$)+(?<extras>EXTRAS|SUBPACK)?(?!\\)",
+                new Regex(@"^(?<title>.+?)[-_. ]+?(?:S|Season|Platform|Saison|Series|Game|Stagione)[-_. ]?(?<platform>\d{1,2}(?![-_. ]?\d+))(?:[-_. ]|$)+(?<extras>EXTRAS|SUBPACK)?(?!\\)",
                           RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                 // 4 digit platform only releases
-                new Regex(@"^(?<title>.+?)[-_. ]+?(?:S|Platform|Saison|Game|Stagione)[-_. ]?(?<platform>\d{4}(?![-_. ]?\d+))(\W+|_|$)(?<extras>EXTRAS|SUBPACK)?(?!\\)",
+                new Regex(@"^(?<title>.+?)[-_. ]+?(?:S|Season|Platform|Saison|Series|Game|Stagione)[-_. ]?(?<platform>\d{4}(?![-_. ]?\d+))(\W+|_|$)(?<extras>EXTRAS|SUBPACK)?(?!\\)",
                           RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                 // Spanish tracker releases
@@ -439,7 +439,7 @@ namespace Playarr.Core.Parser
                           RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                 // Platform only releases for poorly named anime
-                new Regex(@"^(?:\[(?<subgroup>.+?)\][-_. ])?(?<title>.+?)[-_. ]+?[\[(](?:S|Platform|Saison|Game|Stagione)[-_. ]?(?<platform>\d{1,2}(?![-_. ]?\d+))(?:[-_. )\]]|$)+(?<extras>EXTRAS|SUBPACK)?(?!\\)",
+                new Regex(@"^(?:\[(?<subgroup>.+?)\][-_. ])?(?<title>.+?)[-_. ]+?[\[(](?:S|Season|Platform|Saison|Series|Game|Stagione)[-_. ]?(?<platform>\d{1,2}(?![-_. ]?\d+))(?:[-_. )\]]|$)+(?<extras>EXTRAS|SUBPACK)?(?!\\)",
                     RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                 // Roms without a title, Single rom numbers (S1E1, 1x1)
@@ -541,7 +541,7 @@ namespace Playarr.Core.Parser
         private static readonly Regex ArticleWordRegex = new Regex(@"^(a|an|the)\s", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static readonly Regex SpecialEpisodeWordRegex = new Regex(@"\b(part|special|edition|christmas)\b\s?", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static readonly Regex DuplicateSpacesRegex = new Regex(@"\s{2,}", RegexOptions.Compiled);
-        private static readonly Regex PlatformFolderRegex = new Regex(@"^(?:S|Platform|Saison|Game|Stagione)[-_. ]*(?<platform>(?<!\d+)\d{1,4}(?!\d+))(?:[_. ]+(?!\d+)|$)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex PlatformFolderRegex = new Regex(@"^(?:S|Season|Platform|Saison|Series|Game|Stagione)[-_. ]*(?<platform>(?<!\d+)\d{1,4}(?!\d+))(?:[_. ]+(?!\d+)|$)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static readonly Regex SimpleRomNumberRegex = new Regex(@"^[ex]?(?<rom>(?<!\d+)\d{1,3}(?!\d+))(?:[ex-](?<rom>(?<!\d+)\d{1,3}(?!\d+)))?(?:[_. ](?!\d+)(?<remaining>.+)|$)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private static readonly Regex RequestInfoRegex = new Regex(@"^(?:\[.+?\])+", RegexOptions.Compiled);
@@ -1063,12 +1063,12 @@ namespace Playarr.Core.Parser
                 if (platforms.Any())
                 {
                     // If at least one platform was parsed use the first platform as the platform
-                    result.SeasonNumber = platforms.First();
+                    result.PlatformNumber = platforms.First();
                 }
                 else if (!result.AbsoluteRomNumbers.Any() && result.RomNumbers.Any())
                 {
                     // If no platform was found and it's not an absolute only release it should be treated as a mini game and platform 1
-                    result.SeasonNumber = 1;
+                    result.PlatformNumber = 1;
                     result.IsMiniSeries = true;
                 }
             }

@@ -11,7 +11,7 @@ namespace Playarr.Core.Blocklisting
 {
     public class Blocklist : ModelBase
     {
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public Game Game { get; set; }
         public List<int> RomIds { get; set; }
         public string SourceTitle { get; set; }

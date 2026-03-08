@@ -41,7 +41,7 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
         {
             _series = new Game
                           {
-                              TvdbId = IGDB_ID,
+                              IgdbId = IGDB_ID,
                               Title = "TV Show"
                           };
         }
@@ -50,7 +50,7 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
         {
             _series = new Game
             {
-                TvdbId = 1000,
+                IgdbId = 1000,
                 Title = _xbmcSeries.First().Label
             };
         }
@@ -59,7 +59,7 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
         {
             _series = new Game
             {
-                TvdbId = 1000,
+                IgdbId = 1000,
                 Title = "Does not exist"
             };
         }

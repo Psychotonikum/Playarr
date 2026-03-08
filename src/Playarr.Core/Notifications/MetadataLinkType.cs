@@ -8,7 +8,7 @@ namespace Playarr.Core.Notifications
         Imdb = 0,
 
         [FieldOption(Label = "TVDb")]
-        Tvdb = 1,
+        Igdb = 1,
 
         [FieldOption(Label = "TVMaze")]
         Tvmaze = 2,

@@ -95,7 +95,7 @@ namespace Playarr.Core.ImportLists
 
             Task.WaitAll(taskList.ToArray());
 
-            result.Game = result.Game.DistinctBy(r => new { r.TvdbId, r.ImdbId, r.Title }).ToList();
+            result.Game = result.Game.DistinctBy(r => new { r.IgdbId, r.ImdbId, r.Title }).ToList();
 
             _logger.Debug("Found {0} total reports from {1} lists", result.Game.Count, importLists.Count);
 

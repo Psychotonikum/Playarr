@@ -6,7 +6,7 @@ namespace Playarr.Core.DataAugmentation.Scene
 {
     public interface ISceneMappingRepository : IBasicRepository<SceneMapping>
     {
-        List<SceneMapping> FindByTvdbid(int igdbId);
+        List<SceneMapping> FindByIgdbid(int igdbId);
         void Clear(string type);
     }
 
@@ -17,9 +17,9 @@ namespace Playarr.Core.DataAugmentation.Scene
         {
         }
 
-        public List<SceneMapping> FindByTvdbid(int igdbId)
+        public List<SceneMapping> FindByIgdbid(int igdbId)
         {
-            return Query(x => x.TvdbId == igdbId);
+            return Query(x => x.IgdbId == igdbId);
         }
 
         public void Clear(string type)

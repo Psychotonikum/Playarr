@@ -248,18 +248,18 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             var roms = Builder<Rom>.CreateListOfSize(2)
                 .All()
-                .With(v => v.SeriesId, game.Id)
+                .With(v => v.GameId, game.Id)
                 .With(v => v.Game, game)
-                .With(v => v.SeasonNumber, 1)
-                .With(v => v.SceneSeasonNumber, 2)
+                .With(v => v.PlatformNumber, 1)
+                .With(v => v.ScenePlatformNumber, 2)
                 .BuildList();
 
-            var criteria = new SeasonSearchCriteria { Roms = roms.Take(1).ToList(), SeasonNumber = 1 };
+            var criteria = new SeasonSearchCriteria { Roms = roms.Take(1).ToList(), PlatformNumber = 1 };
 
             var reports = roms.Select(v =>
                 new ReleaseInfo()
                 {
-                    Title = string.Format("{0}.S{1:00}E{2:00}.720p.WEB-DL-DRONE", game.Title, v.SceneSeasonNumber, v.SceneEpisodeNumber)
+                    Title = string.Format("{0}.S{1:00}E{2:00}.720p.WEB-DL-DRONE", game.Title, v.ScenePlatformNumber, v.SceneEpisodeNumber)
                 }).ToList();
 
             Mocker.GetMock<IParsingService>()

@@ -41,13 +41,13 @@ namespace Playarr.Core.Test.ParserTests
         [TestCase("[Underwater-FFF] Game Title - 01 (720p) [27AAA0A0]", "Game Title", 1, 0, 0)]
         [TestCase("[S-T-D] Game Title! - 06 (1280x720 10bit AAC) [59B3F2EA].mkv", "Game Title!", 6, 0, 0)]
         [TestCase("Game Title - 010 (720p) [27AAA0A0].mkv", "Game Title", 10, 0, 0)]
-        [TestCase("Initial_Series_Title - 01 DVD - Central Anime", "Initial Game Title", 1, 0, 0)]
-        [TestCase("Initial_Series_Title_-_01(DVD)_-_(Central_Anime)[5AF6F1E4].mkv", "Initial Game Title", 1, 0, 0)]
-        [TestCase("Initial_Series_Title_-_02(DVD)_-_(Central_Anime)[0CA65F00].mkv", "Initial Game Title", 2, 0, 0)]
-        [TestCase("Initial_Series_Title - 03 DVD - Central Anime", "Initial Game Title", 3, 0, 0)]
-        [TestCase("Initial_Series_Title_-_03(DVD)_-_(Central_Anime)[629BD592].mkv", "Initial Game Title", 3, 0, 0)]
-        [TestCase("Initial_Series_Title - 14 DVD - Central Anime", "Initial Game Title", 14, 0, 0)]
-        [TestCase("Initial_Series_Title_-_14(DVD)_-_(Central_Anime)[0183D922].mkv", "Initial Game Title", 14, 0, 0)]
+        [TestCase("Initial_Game_Title - 01 DVD - Central Anime", "Initial Game Title", 1, 0, 0)]
+        [TestCase("Initial_Game_Title_-_01(DVD)_-_(Central_Anime)[5AF6F1E4].mkv", "Initial Game Title", 1, 0, 0)]
+        [TestCase("Initial_Game_Title_-_02(DVD)_-_(Central_Anime)[0CA65F00].mkv", "Initial Game Title", 2, 0, 0)]
+        [TestCase("Initial_Game_Title - 03 DVD - Central Anime", "Initial Game Title", 3, 0, 0)]
+        [TestCase("Initial_Game_Title_-_03(DVD)_-_(Central_Anime)[629BD592].mkv", "Initial Game Title", 3, 0, 0)]
+        [TestCase("Initial_Game_Title - 14 DVD - Central Anime", "Initial Game Title", 14, 0, 0)]
+        [TestCase("Initial_Game_Title_-_14(DVD)_-_(Central_Anime)[0183D922].mkv", "Initial Game Title", 14, 0, 0)]
 
 // [TestCase("Initial D - 4th Stage Ep 01.mkv", "Initial D - 4th Stage", 1, 0, 0)]
         [TestCase("[ChihiroDesuYo].Game.Title.-.09.1280x720.10bit.AAC.[24CCE81D]", "Game Title", 9, 0, 0)]
@@ -61,8 +61,8 @@ namespace Playarr.Core.Test.ParserTests
         [TestCase("[Exiled-Destiny] Game Title Ep01 (D2201EC5).mkv", "Game Title", 1, 0, 0)]
         [TestCase("[Commie] Game Title - 23 [5396CA24].mkv", "Game Title", 23, 0, 0)]
         [TestCase("[FFF] Game Title - 01 [1FB538B5].mkv", "Game Title", 1, 0, 0)]
-        [TestCase("[Hatsuyuki]Series_Title-01[1280x720][122E6EF8]", "Game Title", 1, 0, 0)]
-        [TestCase("[CBM]_Series_Title_-_11_-_511_Kinderheim_[6C70C4E4].mkv", "Game Title", 11, 0, 0)]
+        [TestCase("[Hatsuyuki]Game_Title-01[1280x720][122E6EF8]", "Game Title", 1, 0, 0)]
+        [TestCase("[CBM]_Game_Title_-_11_-_511_Kinderheim_[6C70C4E4].mkv", "Game Title", 11, 0, 0)]
         [TestCase("[HorribleSubs] Game Title 2 - 05 [720p].mkv", "Game Title 2", 5, 0, 0)]
         [TestCase("[Commie] Game Title 2 - 05 [FCE4D070].mkv", "Game Title 2", 5, 0, 0)]
         [TestCase("[DRONE]Game.Title.100", "Game Title", 100, 0, 0)]
@@ -70,8 +70,8 @@ namespace Playarr.Core.Test.ParserTests
         [TestCase("Game Title - 130 - Found You, Gohan! Harsh Training in the Kaioshin Realm! [Baaro][720p][5A1AD35B].mkv", "Game Title", 130, 0, 0)]
         [TestCase("Game Title - 131 - A Merged Super-Warrior Is Born, His Name Is Gotenks!! [Baaro][720p][32E03F96].mkv", "Game Title", 131, 0, 0)]
         [TestCase("[HorribleSubs] Game Title - 01 [1080p]", "Game Title", 1, 0, 0)]
-        [TestCase("[Jumonji-Giri]_[F-B]_Series_Title_Ep04_(0b0e2c10).mkv", "Game Title", 4, 0, 0)]
-        [TestCase("[Jumonji-Giri]_[F-B]_Series_Title_Ep08_(8246e542).mkv", "Game Title", 8, 0, 0)]
+        [TestCase("[Jumonji-Giri]_[F-B]_Game_Title_Ep04_(0b0e2c10).mkv", "Game Title", 4, 0, 0)]
+        [TestCase("[Jumonji-Giri]_[F-B]_Game_Title_Ep08_(8246e542).mkv", "Game Title", 8, 0, 0)]
         [TestCase("Knights Game Title - 01 [1080p 10b DTSHD-MA eng sub].mkv", "Knights Game Title", 1, 0, 0)]
         [TestCase("Game Title (2010) {01} Rom Title (1).hdtv-720p", "Game Title (2010)", 1, 0, 0)]
         [TestCase("[HorribleSubs] Game Title - 20 [720p].mkv", "Game Title", 20, 0, 0)]
@@ -134,7 +134,7 @@ namespace Playarr.Core.Test.ParserTests
         [TestCase("[Naruto-Kun.Hu] Anime Triangle - 08 [1080p].mkv", "Anime Triangle", 8, 0, 0)]
         [TestCase("[Mystic Z-Team] Game Title Super - Rom 013 VF - Non-censuré [720p].mp4", "Game Title Super", 13, 0, 0)]
         [TestCase("Game Title Kai Episodio 13 Audio Latino", "Game Title Kai", 13, 0, 0)]
-        [TestCase("Series_Title_2_[01]_[AniLibria_TV]_[WEBRip_1080p]", "Game Title 2", 1, 0, 0)]
+        [TestCase("Game_Title_2_[01]_[AniLibria_TV]_[WEBRip_1080p]", "Game Title 2", 1, 0, 0)]
         [TestCase("[SubsPlease] Game Title - 100 Years Quest - 01 (1080p) [1107F3A9].mkv", "Game Title - 100 Years Quest", 1, 0, 0)]
         [TestCase("[SubsPlease] Game Title 100 Years Quest - 01 (1080p) [1107F3A9].mkv", "Game Title 100 Years Quest", 1, 0, 0)]
         [TestCase("[Dae-P9] Anime Game - 05 - S01E05 - Marrying by Contesting (BD 1080p HEVC FLAC AAC) [Dual Audio] [5BCD56B8]", "Anime Game", 5, 1, 5)]
@@ -146,7 +146,7 @@ namespace Playarr.Core.Test.ParserTests
             var result = Parser.Parser.ParseTitle(postTitle);
             result.Should().NotBeNull();
             result.AbsoluteRomNumbers.Single().Should().Be(absoluteRomNumber);
-            result.SeasonNumber.Should().Be(platformNumber);
+            result.PlatformNumber.Should().Be(platformNumber);
             result.RomNumbers.SingleOrDefault().Should().Be(romNumber);
             result.GameTitle.Should().Be(title);
             result.FullSeason.Should().BeFalse();
@@ -160,7 +160,7 @@ namespace Playarr.Core.Test.ParserTests
             var result = Parser.Parser.ParseTitle(postTitle);
             result.Should().NotBeNull();
             result.AbsoluteRomNumbers.Single().Should().Be(absoluteRomNumber);
-            result.SeasonNumber.Should().Be(0);
+            result.PlatformNumber.Should().Be(0);
             result.RomNumbers.SingleOrDefault().Should().Be(0);
             result.GameTitle.Should().Be(title);
             result.FullSeason.Should().BeFalse();
@@ -175,7 +175,7 @@ namespace Playarr.Core.Test.ParserTests
             var result = Parser.Parser.ParseTitle(postTitle);
             result.Should().NotBeNull();
             result.AbsoluteRomNumbers.Should().BeEmpty();
-            result.SeasonNumber.Should().Be(0);
+            result.PlatformNumber.Should().Be(0);
             result.RomNumbers.Should().BeEmpty();
             result.GameTitle.Should().Be(title);
             result.FullSeason.Should().BeFalse();
@@ -199,7 +199,7 @@ namespace Playarr.Core.Test.ParserTests
         [TestCase("[Erai-raws] Game-Title! 2 - 01~10 [1080p][Multiple Subtitle]", "Game-Title! 2", 1, 10)]
         [TestCase("[Erai-raws] Game Title! - 01 ~ 10 [1080p][Multiple Subtitle]", "Game Title!", 1, 10)]
         [TestCase("[Erai-raws] Game-Title! 2 - 01 ~ 10 [1080p][Multiple Subtitle]", "Game-Title! 2", 1, 10)]
-        [TestCase("Series_Title_2_[01-05]_[AniLibria_TV]_[WEBRip_1080p]", "Game Title 2", 1, 5)]
+        [TestCase("Game_Title_2_[01-05]_[AniLibria_TV]_[WEBRip_1080p]", "Game Title 2", 1, 5)]
         [TestCase("[Moxie] One Game - The Country (892-916) (BD Remux 1080p AAC FLAC) [Dual Audio]", "One Game - The Country", 892, 916)]
         [TestCase("[HatSubs] One Game (1017-1088) (WEB 1080p)", "One Game", 1017, 1088)]
         [TestCase("[HatSubs] One Game 1017-1088 (WEB 1080p)", "One Game", 1017, 1088)]
@@ -227,7 +227,7 @@ namespace Playarr.Core.Test.ParserTests
             result.AbsoluteRomNumbers.Should().BeEmpty();
             result.GameTitle.Should().Be(title);
             result.FullSeason.Should().BeTrue();
-            result.SeasonNumber.Should().Be(platformNumber);
+            result.PlatformNumber.Should().Be(platformNumber);
         }
 
         [TestCase("[Anime Time] Game no Mayo - 12.5.mkv", "Game no Mayo", 12.5)]
@@ -250,7 +250,7 @@ namespace Playarr.Core.Test.ParserTests
             var result = Parser.Parser.ParsePath(Path.Combine(@"C:\Test".AsOsAgnostic(), releaseName, filename));
             result.Should().NotBeNull();
             result.AbsoluteRomNumbers.Single().Should().Be(absoluteRomNumber);
-            result.SeasonNumber.Should().Be(0);
+            result.PlatformNumber.Should().Be(0);
             result.RomNumbers.Should().BeEmpty();
             result.GameTitle.Should().Be(title);
             result.FullSeason.Should().BeFalse();
@@ -266,7 +266,7 @@ namespace Playarr.Core.Test.ParserTests
 
             result.Should().NotBeNull();
             result.RomNumbers.Should().HaveCount(1);
-            result.SeasonNumber.Should().Be(platformNumber);
+            result.PlatformNumber.Should().Be(platformNumber);
             result.RomNumbers.First().Should().Be(romNumber);
             result.GameTitle.Should().Be(title);
             result.SpecialAbsoluteRomNumbers.Should().HaveCount(1);

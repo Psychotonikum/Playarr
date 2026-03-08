@@ -83,7 +83,7 @@ namespace Playarr.Api.V3.Indexers
             {
                 if (release.ShouldOverride == true)
                 {
-                    Ensure.That(release.SeriesId, () => release.SeriesId).IsNotNull();
+                    Ensure.That(release.GameId, () => release.GameId).IsNotNull();
                     Ensure.That(release.RomIds, () => release.RomIds).IsNotNull();
                     Ensure.That(release.RomIds, () => release.RomIds).HasItems();
                     Ensure.That(release.Quality, () => release.Quality).IsNotNull();
@@ -105,7 +105,7 @@ namespace Playarr.Api.V3.Indexers
                         ReleaseSource = remoteRom.ReleaseSource
                     };
 
-                    remoteRom.Game = _seriesService.GetSeries(release.SeriesId!.Value);
+                    remoteRom.Game = _seriesService.GetSeries(release.GameId!.Value);
                     remoteRom.Roms = _episodeService.GetEpisodes(release.RomIds);
                     remoteRom.ParsedRomInfo.Quality = release.Quality;
                     remoteRom.Languages = release.Languages;
@@ -117,12 +117,12 @@ namespace Playarr.Api.V3.Indexers
                     {
                         var rom = _episodeService.GetEpisode(release.EpisodeId.Value);
 
-                        remoteRom.Game = _seriesService.GetSeries(rom.SeriesId);
+                        remoteRom.Game = _seriesService.GetSeries(rom.GameId);
                         remoteRom.Roms = new List<Rom> { rom };
                     }
-                    else if (release.SeriesId.HasValue)
+                    else if (release.GameId.HasValue)
                     {
-                        var game = _seriesService.GetSeries(release.SeriesId.Value);
+                        var game = _seriesService.GetSeries(release.GameId.Value);
                         var roms = _parsingService.GetEpisodes(remoteRom.ParsedRomInfo, game, true);
 
                         if (roms.Empty())

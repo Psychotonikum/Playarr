@@ -76,22 +76,22 @@ namespace Playarr.Core.Games
                     var game = AddSkyhookData(s);
                     game = SetPropertiesAndValidate(game);
                     game.Added = added;
-                    if (existingGameIgdbIds.Any(f => f == game.TvdbId))
+                    if (existingGameIgdbIds.Any(f => f == game.IgdbId))
                     {
-                        _logger.Debug("IGDB ID {0} was not added due to validation failure: Game {1} already exists in database", s.TvdbId, s);
+                        _logger.Debug("IGDB ID {0} was not added due to validation failure: Game {1} already exists in database", s.IgdbId, s);
                         continue;
                     }
 
-                    if (gamesToAdd.Any(f => f.TvdbId == game.TvdbId))
+                    if (gamesToAdd.Any(f => f.IgdbId == game.IgdbId))
                     {
-                        _logger.Trace("IGDB ID {0} was already added from another import list, not adding game {1} again", s.TvdbId, s);
+                        _logger.Trace("IGDB ID {0} was already added from another import list, not adding game {1} again", s.IgdbId, s);
                         continue;
                     }
 
                     var duplicateSlug = gamesToAdd.FirstOrDefault(f => f.TitleSlug == game.TitleSlug);
                     if (duplicateSlug != null)
                     {
-                        _logger.Debug("IGDB ID {0} was not added due to validation failure: Duplicate Slug {1} used by game {2}", s.TvdbId, s.TitleSlug, duplicateSlug.TvdbId);
+                        _logger.Debug("IGDB ID {0} was not added due to validation failure: Duplicate Slug {1} used by game {2}", s.IgdbId, s.TitleSlug, duplicateSlug.IgdbId);
                         continue;
                     }
 
@@ -104,7 +104,7 @@ namespace Playarr.Core.Games
                         throw;
                     }
 
-                    _logger.Debug("Game {0} with IGDB ID {1} was not added due to validation failures. {2}", s, s.TvdbId, ex.Message);
+                    _logger.Debug("Game {0} with IGDB ID {1} was not added due to validation failures. {2}", s, s.IgdbId, ex.Message);
                 }
             }
 
@@ -117,16 +117,22 @@ namespace Playarr.Core.Games
 
             try
             {
-                tuple = _seriesInfo.GetSeriesInfo(newGame.TvdbId);
+                tuple = _seriesInfo.GetSeriesInfo(newGame.IgdbId);
             }
             catch (SeriesNotFoundException)
             {
-                _logger.Error("Game {0} with IGDB ID {1} was not found, it may have been removed from TheIGDB. Path: {2}", newGame, newGame.TvdbId, newGame.Path);
+                _logger.Error("Game {0} with IGDB ID {1} was not found, it may have been removed from TheIGDB. Path: {2}", newGame, newGame.IgdbId, newGame.Path);
 
                 throw new ValidationException(new List<ValidationFailure>
                                               {
-                                                  new ValidationFailure("TvdbId", $"A game with this ID was not found. Path: {newGame.Path}", newGame.TvdbId)
+                                                  new ValidationFailure("IgdbId", $"A game with this ID was not found. Path: {newGame.Path}", newGame.IgdbId)
                                               });
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn(ex, "Failed to fetch metadata from SkyHook for Game {0} with IGDB ID {1}. Adding game with local data only.", newGame, newGame.IgdbId);
+
+                return newGame;
             }
 
             var game = tuple.Item1;
@@ -148,8 +154,13 @@ namespace Playarr.Core.Games
             }
 
             newGame.CleanTitle = newGame.Title.CleanGameTitle();
-            newGame.SortTitle = GameTitleNormalizer.Normalize(newGame.Title, newGame.TvdbId);
+            newGame.SortTitle = GameTitleNormalizer.Normalize(newGame.Title, newGame.IgdbId);
             newGame.Added = DateTime.UtcNow;
+
+            if (newGame.OriginalLanguage == null)
+            {
+                newGame.OriginalLanguage = Languages.Language.English;
+            }
 
             if (newGame.AddOptions != null && newGame.AddOptions.Monitor == MonitorTypes.None)
             {

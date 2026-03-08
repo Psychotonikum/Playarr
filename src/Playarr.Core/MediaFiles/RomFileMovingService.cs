@@ -73,7 +73,7 @@ namespace Playarr.Core.MediaFiles
         {
             var filePath = _buildFileNames.BuildFilePath(roms, game, romFile, Path.GetExtension(romFile.RelativePath));
 
-            EnsureEpisodeFolder(romFile, game, roms.Select(v => v.SeasonNumber).First(), filePath);
+            EnsureEpisodeFolder(romFile, game, roms.Select(v => v.PlatformNumber).First(), filePath);
 
             _logger.Debug("Renaming rom file: {0} to {1}", romFile, filePath);
 
@@ -176,7 +176,7 @@ namespace Playarr.Core.MediaFiles
 
         private void EnsureEpisodeFolder(RomFile romFile, LocalEpisode localRom, string filePath)
         {
-            EnsureEpisodeFolder(romFile, localRom.Game, localRom.SeasonNumber, filePath);
+            EnsureEpisodeFolder(romFile, localRom.Game, localRom.PlatformNumber, filePath);
         }
 
         private void EnsureEpisodeFolder(RomFile romFile, Game game, int platformNumber, string filePath)

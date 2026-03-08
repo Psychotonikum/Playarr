@@ -45,9 +45,9 @@ namespace Playarr.Api.V3.ManualImport
 
             foreach (var item in items)
             {
-                var processedItem = _manualImportService.ReprocessItem(item.Path, item.DownloadId, item.SeriesId, item.SeasonNumber, item.RomIds ?? new List<int>(), item.ReleaseGroup, item.Quality, item.Languages, item.IndexerFlags, item.ReleaseType);
+                var processedItem = _manualImportService.ReprocessItem(item.Path, item.DownloadId, item.GameId, item.PlatformNumber, item.RomIds ?? new List<int>(), item.ReleaseGroup, item.Quality, item.Languages, item.IndexerFlags, item.ReleaseType);
 
-                item.SeasonNumber = processedItem.SeasonNumber;
+                item.PlatformNumber = processedItem.PlatformNumber;
                 item.Roms = processedItem.Roms.ToResource();
                 item.ReleaseType = processedItem.ReleaseType;
                 item.IndexerFlags = processedItem.IndexerFlags;

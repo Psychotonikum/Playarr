@@ -32,8 +32,8 @@ namespace Playarr.Core.Indexers.HDBits
                 {
                     var query = queryBase.Clone();
 
-                    query.TvdbInfo.Platform = rom.SeasonNumber;
-                    query.TvdbInfo.Rom = rom.EpisodeNumber;
+                    query.IgdbInfo.Platform = rom.PlatformNumber;
+                    query.IgdbInfo.Rom = rom.EpisodeNumber;
                 }
             }
 
@@ -47,11 +47,11 @@ namespace Playarr.Core.Indexers.HDBits
 
             if (TryAddSearchParameters(queryBase, searchCriteria))
             {
-                foreach (var platformNumber in searchCriteria.Roms.Select(e => e.SeasonNumber).Distinct())
+                foreach (var platformNumber in searchCriteria.Roms.Select(e => e.PlatformNumber).Distinct())
                 {
                     var query = queryBase.Clone();
 
-                    query.TvdbInfo.Platform = platformNumber;
+                    query.IgdbInfo.Platform = platformNumber;
 
                     pageableRequests.Add(GetRequest(query));
                 }
@@ -102,11 +102,11 @@ namespace Playarr.Core.Indexers.HDBits
 
             if (TryAddSearchParameters(queryBase, searchCriteria))
             {
-                foreach (var platformNumber in searchCriteria.Roms.Select(e => e.SeasonNumber).Distinct())
+                foreach (var platformNumber in searchCriteria.Roms.Select(e => e.PlatformNumber).Distinct())
                 {
                     var query = queryBase.Clone();
 
-                    query.TvdbInfo.Platform = platformNumber;
+                    query.IgdbInfo.Platform = platformNumber;
 
                     pageableRequests.Add(GetRequest(query));
                 }
@@ -126,8 +126,8 @@ namespace Playarr.Core.Indexers.HDBits
                 {
                     var query = queryBase.Clone();
 
-                    query.TvdbInfo.Platform = rom.SeasonNumber;
-                    query.TvdbInfo.Rom = rom.EpisodeNumber;
+                    query.IgdbInfo.Platform = rom.PlatformNumber;
+                    query.IgdbInfo.Rom = rom.EpisodeNumber;
 
                     pageableRequests.Add(GetRequest(query));
                 }
@@ -138,10 +138,10 @@ namespace Playarr.Core.Indexers.HDBits
 
         private bool TryAddSearchParameters(TorrentQuery query, SearchCriteriaBase searchCriteria)
         {
-            if (searchCriteria.Game.TvdbId != 0)
+            if (searchCriteria.Game.IgdbId != 0)
             {
-                query.TvdbInfo ??= new TvdbInfo();
-                query.TvdbInfo.Id = searchCriteria.Game.TvdbId;
+                query.IgdbInfo ??= new IgdbInfo();
+                query.IgdbInfo.Id = searchCriteria.Game.IgdbId;
 
                 return true;
             }

@@ -37,7 +37,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(game);
 
             var metadataFile = Builder<MetadataFile>.CreateNew()
-                                                    .With(m => m.SeriesId = game.Id)
+                                                    .With(m => m.GameId = game.Id)
                                                     .With(m => m.EpisodeFileId = null)
                                                     .BuildNew();
 
@@ -55,7 +55,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(game);
 
             var metadataFile = Builder<MetadataFile>.CreateNew()
-                                                    .With(m => m.SeriesId = game.Id)
+                                                    .With(m => m.GameId = game.Id)
                                                     .With(m => m.EpisodeFileId = 10)
                                                     .BuildNew();
 
@@ -79,7 +79,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(romFile);
 
             var metadataFile = Builder<MetadataFile>.CreateNew()
-                                                    .With(m => m.SeriesId = game.Id)
+                                                    .With(m => m.GameId = game.Id)
                                                     .With(m => m.EpisodeFileId = romFile.Id)
                                                     .BuildNew();
 
@@ -97,7 +97,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(game);
 
             var metadataFile = Builder<MetadataFile>.CreateNew()
-                                                 .With(m => m.SeriesId = game.Id)
+                                                 .With(m => m.GameId = game.Id)
                                                  .With(m => m.Type = MetadataType.EpisodeMetadata)
                                                  .With(m => m.EpisodeFileId = 0)
                                                  .BuildNew();
@@ -116,7 +116,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(game);
 
             var metadataFile = Builder<MetadataFile>.CreateNew()
-                                                    .With(m => m.SeriesId = game.Id)
+                                                    .With(m => m.GameId = game.Id)
                                                     .With(m => m.Type = MetadataType.EpisodeImage)
                                                     .With(m => m.EpisodeFileId = 0)
                                                     .BuildNew();

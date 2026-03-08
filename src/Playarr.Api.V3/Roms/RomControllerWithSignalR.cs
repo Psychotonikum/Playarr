@@ -64,7 +64,7 @@ namespace Playarr.Api.V3.Roms
 
             if (includeSeries || includeRomFile || includeImages)
             {
-                var game = rom.Game ?? _seriesService.GetSeries(rom.SeriesId);
+                var game = rom.Game ?? _seriesService.GetSeries(rom.GameId);
 
                 if (includeSeries)
                 {
@@ -97,7 +97,7 @@ namespace Playarr.Api.V3.Roms
                     var rom = roms[i];
                     var resource = result[i];
 
-                    var game = rom.Game ?? seriesDict.GetValueOrDefault(roms[i].SeriesId) ?? _seriesService.GetSeries(roms[i].SeriesId);
+                    var game = rom.Game ?? seriesDict.GetValueOrDefault(roms[i].GameId) ?? _seriesService.GetSeries(roms[i].GameId);
                     seriesDict[game.Id] = game;
 
                     if (includeSeries)

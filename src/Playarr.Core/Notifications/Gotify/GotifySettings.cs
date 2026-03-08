@@ -49,7 +49,7 @@ namespace Playarr.Core.Notifications.Gotify
         {
             Priority = 5;
             MetadataLinks = Enumerable.Empty<int>();
-            PreferredMetadataLink = (int)MetadataLinkType.Tvdb;
+            PreferredMetadataLink = (int)MetadataLinkType.Igdb;
         }
 
         [FieldDefinition(0, Label = "NotificationsGotifySettingsServer", HelpText = "NotificationsGotifySettingsServerHelpText")]

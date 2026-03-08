@@ -13,7 +13,7 @@ public class ReleaseInfoResource
     public int IndexerId { get; set; }
     public string? Indexer { get; set; }
     public string? Title { get; set; }
-    public int TvdbId { get; set; }
+    public int IgdbId { get; set; }
     public int MobyGamesId { get; set; }
     public string? ImdbId { get; set; }
     public IEnumerable<string> Rejections { get; set; } = [];
@@ -46,7 +46,7 @@ public static class ReleaseInfoResourceMapper
             IndexerId = releaseInfo.IndexerId,
             Indexer = releaseInfo.Indexer,
             Title = releaseInfo.Title,
-            TvdbId = releaseInfo.TvdbId,
+            IgdbId = releaseInfo.IgdbId,
             MobyGamesId = releaseInfo.MobyGamesId,
             ImdbId = releaseInfo.ImdbId,
             PublishDate = releaseInfo.PublishDate,

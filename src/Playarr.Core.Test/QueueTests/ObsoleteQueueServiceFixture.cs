@@ -33,7 +33,7 @@ namespace Playarr.Core.Test.QueueTests
 
             var roms = Builder<Rom>.CreateListOfSize(3)
                                           .All()
-                                          .With(e => e.SeriesId = game.Id)
+                                          .With(e => e.GameId = game.Id)
                                           .Build();
 
             var remoteRom = Builder<RemoteEpisode>.CreateNew()

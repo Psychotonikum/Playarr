@@ -18,7 +18,7 @@ namespace Playarr.Core.ImportLists.Exclusions
 
         public ImportListExclusion FindByIgdbId(int igdbId)
         {
-            return Query(m => m.TvdbId == igdbId).SingleOrDefault();
+            return Query(m => m.IgdbId == igdbId).SingleOrDefault();
         }
     }
 }

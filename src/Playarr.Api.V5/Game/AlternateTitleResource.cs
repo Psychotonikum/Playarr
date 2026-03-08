@@ -6,8 +6,8 @@ namespace Playarr.Api.V5.Game;
 public class AlternateTitleResource
 {
     public string? Title { get; set; }
-    public int? SeasonNumber { get; set; }
-    public int? SceneSeasonNumber { get; set; }
+    public int? PlatformNumber { get; set; }
+    public int? ScenePlatformNumber { get; set; }
     public string? SceneOrigin { get; set; }
     public string? Comment { get; set; }
 }
@@ -26,8 +26,8 @@ public static class AlternateTitleResourceMapper
         return new AlternateTitleResource
         {
             Title = sceneMapping.Title,
-            SeasonNumber = sceneMapping.SeasonNumber,
-            SceneSeasonNumber = sceneMapping.SceneSeasonNumber,
+            PlatformNumber = sceneMapping.PlatformNumber,
+            ScenePlatformNumber = sceneMapping.ScenePlatformNumber,
             SceneOrigin = sceneMapping.SceneOrigin,
             Comment = comment
         };

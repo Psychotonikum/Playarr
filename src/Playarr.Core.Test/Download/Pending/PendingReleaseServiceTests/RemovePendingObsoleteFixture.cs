@@ -58,7 +58,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
              {
                  Id = id,
                  Title = "Game.Title.S01E05.abc-Playarr",
-                 ParsedRomInfo = new ParsedRomInfo { SeasonNumber = platformNumber, RomNumbers = roms },
+                 ParsedRomInfo = new ParsedRomInfo { PlatformNumber = platformNumber, RomNumbers = roms },
                  Release = Builder<ReleaseInfo>.CreateNew().Build()
              });
         }

@@ -20,7 +20,7 @@ namespace Playarr.Integration.Test.ApiTests
 
         private GameResource GivenSeriesWithEpisodes()
         {
-            var newGame = Game.Lookup("archer").Single(c => c.TvdbId == 110381);
+            var newGame = Game.Lookup("archer").Single(c => c.IgdbId == 110381);
 
             newGame.QualityProfileId = 1;
             newGame.Path = @"C:\Test\Archer".AsOsAgnostic();

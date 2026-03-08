@@ -50,7 +50,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Specifications
 
         private string FormatEpisode(List<Rom> roms)
         {
-            return string.Join(", ", roms.Select(e => $"{e.SeasonNumber}x{e.EpisodeNumber:00}"));
+            return string.Join(", ", roms.Select(e => $"{e.PlatformNumber}x{e.EpisodeNumber:00}"));
         }
     }
 }

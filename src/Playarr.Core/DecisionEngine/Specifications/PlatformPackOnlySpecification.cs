@@ -33,7 +33,7 @@ namespace Playarr.Core.DecisionEngine.Specifications
                 if (subject.Game.SeriesType == GameTypes.Standard && !subject.ParsedRomInfo.FullSeason && subject.Roms.Count >= 1)
                 {
                     // test against roms of the same platform in the current search, and make sure they have an air date
-                    var subset = searchCriteria.Roms.Where(e => e.AirDateUtc.HasValue && e.SeasonNumber == subject.Roms.First().SeasonNumber).ToList();
+                    var subset = searchCriteria.Roms.Where(e => e.AirDateUtc.HasValue && e.PlatformNumber == subject.Roms.First().PlatformNumber).ToList();
 
                     if (subset.Count > 0 && subset.Max(e => e.AirDateUtc).Value.Before(DateTime.UtcNow - TimeSpan.FromDays(subject.Release.SeasonSearchMaximumSingleEpisodeAge)))
                     {

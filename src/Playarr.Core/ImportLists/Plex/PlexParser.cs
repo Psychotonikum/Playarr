@@ -32,7 +32,7 @@ namespace Playarr.Core.ImportLists.Plex
 
             foreach (var item in items)
             {
-                var igdbIdString = FindGuid(item.Guids, "tvdb");
+                var igdbIdString = FindGuid(item.Guids, "igdb");
                 var tmdbIdString = FindGuid(item.Guids, "tmdb");
                 var imdbId = FindGuid(item.Guids, "imdb");
 
@@ -41,7 +41,7 @@ namespace Playarr.Core.ImportLists.Plex
 
                 game.Add(new ImportListItemInfo
                 {
-                    TvdbId = igdbId,
+                    IgdbId = igdbId,
                     TmdbId = tmdbId,
                     ImdbId = imdbId,
                     Title = item.Title,

@@ -9,9 +9,9 @@ namespace Playarr.Core.Test.ParserTests
     public class NormalizeGameTitleFixture : CoreTest
     {
         [TestCase("Game", "game")]
-        [TestCase("Game (2009)", "series2009")]
-        [TestCase("Game.2010", "series2010")]
-        [TestCase("Series_and_Title_Playarr", "seriestitleplayarr")]
+        [TestCase("Game (2009)", "game2009")]
+        [TestCase("Game.2010", "game2010")]
+        [TestCase("Game_and_Title_Playarr", "gametitleplayarr")]
         public void should_normalize_series_title(string parsedGameName, string seriesName)
         {
             var result = parsedGameName.CleanGameTitle();
@@ -117,9 +117,9 @@ namespace Playarr.Core.Test.ParserTests
             }
         }
 
-        [TestCase("The Game", "theseries")]
-        [TestCase("The Game Show With Playarr Dev", "theseriesshowwithplayarrdev")]
-        [TestCase("The.Game.Show", "theseriesshow")]
+        [TestCase("The Game", "thegame")]
+        [TestCase("The Game Show With Playarr Dev", "thegameshowwithplayarrdev")]
+        [TestCase("The.Game.Show", "thegameshow")]
         public void should_not_remove_from_the_beginning_of_the_title(string parsedGameName, string seriesName)
         {
             var result = parsedGameName.CleanGameTitle();
@@ -151,12 +151,12 @@ namespace Playarr.Core.Test.ParserTests
         [Test]
         public void should_not_clean_trailing_a()
         {
-            "Game Title A".CleanGameTitle().Should().Be("seriestitlea");
+            "Game Title A".CleanGameTitle().Should().Be("gametitlea");
         }
 
         [TestCase("3%", "3percent")]
-        [TestCase("Game Top & 100% Coding Developers", "seriestop100percentcodingdevelopers")]
-        [TestCase("Game Title What's Your F@%king Deal?!", "seriestitlewhatsyourfkingdeal")]
+        [TestCase("Game Top & 100% Coding Developers", "gametop100percentcodingdevelopers")]
+        [TestCase("Game Title What's Your F@%king Deal?!", "gametitlewhatsyourfkingdeal")]
         public void should_replace_percent_sign_with_percent_following_numbers(string input, string expected)
         {
             input.CleanGameTitle().Should().Be(expected);

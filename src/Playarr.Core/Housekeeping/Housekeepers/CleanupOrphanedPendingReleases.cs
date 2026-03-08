@@ -19,7 +19,7 @@ namespace Playarr.Core.Housekeeping.Housekeepers
                                      WHERE ""Id"" IN (
                                      SELECT ""PendingReleases"".""Id"" FROM ""PendingReleases""
                                      LEFT OUTER JOIN ""Series""
-                                     ON ""PendingReleases"".""SeriesId"" = ""Series"".""Id""
+                                     ON ""PendingReleases"".""GameId"" = ""Series"".""Id""
                                      WHERE ""Series"".""Id"" IS NULL)");
         }
     }

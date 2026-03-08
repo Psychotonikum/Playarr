@@ -47,7 +47,7 @@ namespace Playarr.Core.Test.HealthCheck.Checks
         }
 
         [Test]
-        public void should_return_error_if_series_no_longer_on_tvdb()
+        public void should_return_error_if_series_no_longer_on_igdb()
         {
             GivenSeries(4, 1);
 
@@ -55,7 +55,7 @@ namespace Playarr.Core.Test.HealthCheck.Checks
         }
 
         [Test]
-        public void should_return_error_if_multiple_series_no_longer_on_tvdb()
+        public void should_return_error_if_multiple_series_no_longer_on_igdb()
         {
             GivenSeries(4, 2);
 
@@ -63,7 +63,7 @@ namespace Playarr.Core.Test.HealthCheck.Checks
         }
 
         [Test]
-        public void should_return_ok_if_all_series_still_on_tvdb()
+        public void should_return_ok_if_all_series_still_on_igdb()
         {
             GivenSeries(4, 0);
 

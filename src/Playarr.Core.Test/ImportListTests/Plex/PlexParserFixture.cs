@@ -28,7 +28,7 @@ namespace Playarr.Core.Test.ImportList.Plex
 
             result.First().Title.Should().Be("30 Rock");
             result.First().Year.Should().Be(2006);
-            result.First().TvdbId.Should().Be(79488);
+            result.First().IgdbId.Should().Be(79488);
 
             result[1].TmdbId.Should().Be(4533);
             result[1].ImdbId.Should().Be("tt0475900");

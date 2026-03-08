@@ -47,16 +47,16 @@ namespace Playarr.Core.Test.ParserTests
         [TestCase("game.2009.416.hdtv-lol", "game 2009", 4, 16)]
         [TestCase("game.six-0.2010.217.hdtv-lol", "game six-0 2010", 2, 17)]
         [TestCase("Game Title - S1936E18 - I Love to Singa", "Game Title", 1936, 18)]
-        [TestCase("Series_Title!_-_7x6_-_The_Scarlett_Getter_[SDTV]", "Game Title!", 7, 6)]
-        [TestCase("Series_Title_-_1x1_-_Live_and_Learn_[HDTV-720p]", "Game Title", 1, 1)]
+        [TestCase("Game_Title!_-_7x6_-_The_Scarlett_Getter_[SDTV]", "Game Title!", 7, 6)]
+        [TestCase("Game_Title_-_1x1_-_Live_and_Learn_[HDTV-720p]", "Game Title", 1, 1)]
         [TestCase("Top Game - 07x03 - 2005.11.70", "Top Game", 7, 3)]
         [TestCase("Game.S04E09.Swan.Song.1080p.WEB-DL.DD5.1.H.264-ECI", "Game", 4, 9)]
         [TestCase("S08E20 50-50 Carla [DVD]", "", 8, 20)]
         [TestCase("Game S08E20 50-50 Carla [DVD]", "Game", 8, 20)]
         [TestCase("S02E10 6-50 to SLC [SDTV]", "", 2, 10)]
         [TestCase("Developers & Coders S02E10 6-50 to SLC [SDTV]", "Developers & Coders", 2, 10)]
-        [TestCase("The_Big_Series_Title_-_6x12_-_The_Code_Review_Equivalency_[HDTV-720p]", "The Big Game Title", 6, 12)]
-        [TestCase("Series_Title.19x06.720p_HDTV_x264-FoV", "Game Title", 19, 6)]
+        [TestCase("The_Big_Game_Title_-_6x12_-_The_Code_Review_Equivalency_[HDTV-720p]", "The Big Game Title", 6, 12)]
+        [TestCase("Game_Title.19x06.720p_HDTV_x264-FoV", "Game Title", 19, 6)]
         [TestCase("Game.S03E10.Alexandra.720p.WEB-DL.AAC2.0.H.264-CROM.mkv", "Game", 3, 10)]
         [TestCase("(Game of Title s03 e - \"Game of Title Platform 3 Rom 10\"", "Game of Title", 3, 10)]
         [TestCase("Game.Hunters.Galatic.S05E607.720p.hdtv.x264", "Game Hunters Galatic", 5, 607)]
@@ -76,12 +76,12 @@ namespace Playarr.Core.Test.ParserTests
         [TestCase("Game - 2x12 - The Choice [HDTV-1080p].mkv", "Game", 2, 12)]
         [TestCase("Game - 2x4 - New Car Smell [HDTV-1080p].mkv", "Game", 2, 4)]
         [TestCase("Top Game - 06x11 - 2005.08.07", "Top Game", 6, 11)]
-        [TestCase("The_Series_US_s06e19_04.28.2014_hdtv.x264.Poke.mp4", "The Game US", 6, 19)]
+        [TestCase("The_Game_US_s06e19_04.28.2014_hdtv.x264.Poke.mp4", "The Game US", 6, 19)]
         [TestCase("the.Game.110.hdtv-lol", "the Game", 1, 10)]
         [TestCase("2009x09 [SDTV].avi", "", 2009, 9)]
         [TestCase("S2009E09 [SDTV].avi", "", 2009, 9)]
         [TestCase("Game Week S2009E09 [SDTV].avi", "Game Week", 2009, 9)]
-        [TestCase("St_Series_209_Aids_And_Comfort", "St Game", 2, 9)]
+        [TestCase("St_Game_209_Aids_And_Comfort", "St Game", 2, 9)]
         [TestCase("[Impatience] Game - 0x01 [720p][34073169].mkv", "Game", 0, 1)]
         [TestCase("Game.Title.S15.E06.City.Sushi", "Game Title", 15, 6)]
         [TestCase("Game Title - S15 E06 - City Code", "Game Title", 15, 6)]
@@ -192,7 +192,7 @@ namespace Playarr.Core.Test.ParserTests
             var result = Parser.Parser.ParseTitle(postTitle);
             result.Should().NotBeNull();
             result.RomNumbers.Should().HaveCount(1);
-            result.SeasonNumber.Should().Be(platformNumber);
+            result.PlatformNumber.Should().Be(platformNumber);
             result.RomNumbers.First().Should().Be(romNumber);
             result.GameTitle.Should().Be(title);
             result.AbsoluteRomNumbers.Should().BeEmpty();
@@ -211,7 +211,7 @@ namespace Playarr.Core.Test.ParserTests
             var result = Parser.Parser.ParseTitle(postTitle);
             result.Should().NotBeNull();
             result.RomNumbers.Should().HaveCount(1);
-            result.SeasonNumber.Should().Be(platformNumber);
+            result.PlatformNumber.Should().Be(platformNumber);
             result.RomNumbers.First().Should().Be(romNumber);
             result.GameTitle.Should().Be(title);
             result.AbsoluteRomNumbers.Should().BeEmpty();
@@ -224,7 +224,7 @@ namespace Playarr.Core.Test.ParserTests
             var result = Parser.Parser.ParseTitle(postTitle);
             result.Should().NotBeNull();
             result.RomNumbers.Should().HaveCount(1);
-            result.SeasonNumber.Should().Be(platformNumber);
+            result.PlatformNumber.Should().Be(platformNumber);
             result.RomNumbers.First().Should().Be(romNumber);
             result.GameTitle.Should().Be(title);
             result.AbsoluteRomNumbers.Should().BeEmpty();
@@ -238,7 +238,7 @@ namespace Playarr.Core.Test.ParserTests
             var result = Parser.Parser.ParseTitle(postTitle);
             result.Should().NotBeNull();
             result.RomNumbers.Should().HaveCount(1);
-            result.SeasonNumber.Should().Be(platformNumber);
+            result.PlatformNumber.Should().Be(platformNumber);
             result.RomNumbers.First().Should().Be(romNumber);
             result.GameTitle.Should().Be(title);
             result.AbsoluteRomNumbers.Should().BeEmpty();

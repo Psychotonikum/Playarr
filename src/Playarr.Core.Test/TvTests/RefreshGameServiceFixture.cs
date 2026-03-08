@@ -26,7 +26,7 @@ namespace Playarr.Core.Test.TvTests
         public void Setup()
         {
             var season1 = Builder<Platform>.CreateNew()
-                                         .With(s => s.SeasonNumber = 1)
+                                         .With(s => s.PlatformNumber = 1)
                                          .Build();
 
             _series = Builder<Game>.CreateNew()
@@ -53,7 +53,7 @@ namespace Playarr.Core.Test.TvTests
         private void GivenNewSeriesInfo(Game game)
         {
             Mocker.GetMock<IProvideSeriesInfo>()
-                  .Setup(s => s.GetSeriesInfo(_series.TvdbId))
+                  .Setup(s => s.GetSeriesInfo(_series.IgdbId))
                   .Returns(new Tuple<Game, List<Rom>>(game, new List<Rom>()));
         }
 
@@ -64,7 +64,7 @@ namespace Playarr.Core.Test.TvTests
 
             var newGameInfo = _series.JsonClone();
             newGameInfo.Platforms.Add(Builder<Platform>.CreateNew()
-                                         .With(s => s.SeasonNumber = 2)
+                                         .With(s => s.PlatformNumber = 2)
                                          .Build());
 
             GivenNewSeriesInfo(newGameInfo);
@@ -72,7 +72,7 @@ namespace Playarr.Core.Test.TvTests
             Subject.Execute(new RefreshSeriesCommand(new List<int> { _series.Id }));
 
             Mocker.GetMock<IGameService>()
-                .Verify(v => v.UpdateSeries(It.Is<Game>(s => s.Platforms.Count == 2 && s.Platforms.Single(platform => platform.SeasonNumber == 2).Monitored == true), It.IsAny<bool>(), It.IsAny<bool>()));
+                .Verify(v => v.UpdateSeries(It.Is<Game>(s => s.Platforms.Count == 2 && s.Platforms.Single(platform => platform.PlatformNumber == 2).Monitored == true), It.IsAny<bool>(), It.IsAny<bool>()));
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Playarr.Core.Test.TvTests
 
             var newGameInfo = _series.JsonClone();
             newGameInfo.Platforms.Add(Builder<Platform>.CreateNew()
-                .With(s => s.SeasonNumber = 2)
+                .With(s => s.PlatformNumber = 2)
                 .Build());
 
             GivenNewSeriesInfo(newGameInfo);
@@ -90,7 +90,7 @@ namespace Playarr.Core.Test.TvTests
             Subject.Execute(new RefreshSeriesCommand(new List<int> { _series.Id }));
 
             Mocker.GetMock<IGameService>()
-                .Verify(v => v.UpdateSeries(It.Is<Game>(s => s.Platforms.Count == 2 && s.Platforms.Single(platform => platform.SeasonNumber == 2).Monitored == false), It.IsAny<bool>(), It.IsAny<bool>()));
+                .Verify(v => v.UpdateSeries(It.Is<Game>(s => s.Platforms.Count == 2 && s.Platforms.Single(platform => platform.PlatformNumber == 2).Monitored == false), It.IsAny<bool>(), It.IsAny<bool>()));
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace Playarr.Core.Test.TvTests
         {
             var game = _series.JsonClone();
             game.Platforms.Add(Builder<Platform>.CreateNew()
-                                         .With(s => s.SeasonNumber = 0)
+                                         .With(s => s.PlatformNumber = 0)
                                          .Build());
 
             GivenNewSeriesInfo(game);
@@ -106,7 +106,7 @@ namespace Playarr.Core.Test.TvTests
             Subject.Execute(new RefreshSeriesCommand(new List<int> { _series.Id }));
 
             Mocker.GetMock<IGameService>()
-                .Verify(v => v.UpdateSeries(It.Is<Game>(s => s.Platforms.Count == 2 && s.Platforms.Single(platform => platform.SeasonNumber == 0).Monitored == false), It.IsAny<bool>(), It.IsAny<bool>()));
+                .Verify(v => v.UpdateSeries(It.Is<Game>(s => s.Platforms.Count == 2 && s.Platforms.Single(platform => platform.PlatformNumber == 0).Monitored == false), It.IsAny<bool>(), It.IsAny<bool>()));
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace Playarr.Core.Test.TvTests
         }
 
         [Test]
-        public void should_log_error_if_tvdb_id_not_found()
+        public void should_log_error_if_igdb_id_not_found()
         {
             Subject.Execute(new RefreshSeriesCommand(new List<int> { _series.Id }));
 
@@ -163,7 +163,7 @@ namespace Playarr.Core.Test.TvTests
         }
 
         [Test]
-        public void should_mark_as_deleted_if_tvdb_id_not_found()
+        public void should_mark_as_deleted_if_igdb_id_not_found()
         {
             Subject.Execute(new RefreshSeriesCommand(new List<int> { _series.Id }));
 
@@ -174,7 +174,7 @@ namespace Playarr.Core.Test.TvTests
         }
 
         [Test]
-        public void should_not_remark_as_deleted_if_tvdb_id_not_found()
+        public void should_not_remark_as_deleted_if_igdb_id_not_found()
         {
             _series.Status = GameStatusType.Deleted;
 
@@ -187,17 +187,17 @@ namespace Playarr.Core.Test.TvTests
         }
 
         [Test]
-        public void should_update_if_tvdb_id_changed()
+        public void should_update_if_igdb_id_changed()
         {
             var newGameInfo = _series.JsonClone();
-            newGameInfo.TvdbId = _series.TvdbId + 1;
+            newGameInfo.IgdbId = _series.IgdbId + 1;
 
             GivenNewSeriesInfo(newGameInfo);
 
             Subject.Execute(new RefreshSeriesCommand(new List<int> { _series.Id }));
 
             Mocker.GetMock<IGameService>()
-                .Verify(v => v.UpdateSeries(It.Is<Game>(s => s.TvdbId == newGameInfo.TvdbId), It.IsAny<bool>(), It.IsAny<bool>()));
+                .Verify(v => v.UpdateSeries(It.Is<Game>(s => s.IgdbId == newGameInfo.IgdbId), It.IsAny<bool>(), It.IsAny<bool>()));
 
             ExceptionVerification.ExpectedWarns(1);
         }
@@ -207,15 +207,15 @@ namespace Playarr.Core.Test.TvTests
         {
             var newGameInfo = _series.JsonClone();
             newGameInfo.Platforms.Add(Builder<Platform>.CreateNew()
-                                         .With(s => s.SeasonNumber = 2)
+                                         .With(s => s.PlatformNumber = 2)
                                          .Build());
 
             _series.Platforms.Add(Builder<Platform>.CreateNew()
-                                         .With(s => s.SeasonNumber = 2)
+                                         .With(s => s.PlatformNumber = 2)
                                          .Build());
 
             _series.Platforms.Add(Builder<Platform>.CreateNew()
-                                         .With(s => s.SeasonNumber = 2)
+                                         .With(s => s.PlatformNumber = 2)
                                          .Build());
 
             GivenNewSeriesInfo(newGameInfo);
@@ -231,11 +231,11 @@ namespace Playarr.Core.Test.TvTests
         {
             var newGameInfo = _series.JsonClone();
             newGameInfo.Platforms.Add(Builder<Platform>.CreateNew()
-                                         .With(s => s.SeasonNumber = 2)
+                                         .With(s => s.PlatformNumber = 2)
                                          .Build());
 
             newGameInfo.Platforms.Add(Builder<Platform>.CreateNew()
-                                         .With(s => s.SeasonNumber = 2)
+                                         .With(s => s.PlatformNumber = 2)
                                          .Build());
 
             GivenNewSeriesInfo(newGameInfo);

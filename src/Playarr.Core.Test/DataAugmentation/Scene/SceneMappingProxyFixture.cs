@@ -26,7 +26,7 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
 
             mappings.Should().NotContain(c => c.SearchTerm.IsNullOrWhiteSpace());
             mappings.Should().NotContain(c => c.Title.IsNullOrWhiteSpace());
-            mappings.Should().Contain(c => c.SeasonNumber > 0);
+            mappings.Should().Contain(c => c.PlatformNumber > 0);
         }
     }
 }

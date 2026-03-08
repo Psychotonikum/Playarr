@@ -31,7 +31,7 @@ namespace Playarr.Api.V3.Indexers
         public string Title { get; set; }
         public bool FullSeason { get; set; }
         public bool SceneSource { get; set; }
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public List<Language> Languages { get; set; }
         public int LanguageWeight { get; set; }
         public string AirDate { get; set; }
@@ -46,7 +46,7 @@ namespace Playarr.Api.V3.Indexers
         public bool Approved { get; set; }
         public bool TemporarilyRejected { get; set; }
         public bool Rejected { get; set; }
-        public int TvdbId { get; set; }
+        public int IgdbId { get; set; }
         public int MobyGamesId { get; set; }
         public string ImdbId { get; set; }
         public IEnumerable<string> Rejections { get; set; }
@@ -76,7 +76,7 @@ namespace Playarr.Api.V3.Indexers
         // Sent when queuing an unknown release
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public int? SeriesId { get; set; }
+        public int? GameId { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int? EpisodeId { get; set; }
@@ -120,21 +120,21 @@ namespace Playarr.Api.V3.Indexers
                 ReleaseHash = parsedRomInfo.ReleaseHash,
                 Title = releaseInfo.Title,
                 FullSeason = parsedRomInfo.FullSeason,
-                SeasonNumber = parsedRomInfo.SeasonNumber,
+                PlatformNumber = parsedRomInfo.PlatformNumber,
                 Languages = remoteRom.Languages,
                 AirDate = parsedRomInfo.AirDate,
                 GameTitle = parsedRomInfo.GameTitle,
                 RomNumbers = parsedRomInfo.RomNumbers,
                 AbsoluteRomNumbers = parsedRomInfo.AbsoluteRomNumbers,
                 MappedGameId = remoteRom.Game?.Id,
-                MappedPlatformNumber = remoteRom.Roms.FirstOrDefault()?.SeasonNumber,
+                MappedPlatformNumber = remoteRom.Roms.FirstOrDefault()?.PlatformNumber,
                 MappedRomNumbers = remoteRom.Roms.Select(v => v.EpisodeNumber).ToArray(),
                 MappedAbsoluteRomNumbers = remoteRom.Roms.Where(v => v.AbsoluteEpisodeNumber.HasValue).Select(v => v.AbsoluteEpisodeNumber.Value).ToArray(),
                 MappedRomInfo = remoteRom.Roms.Select(v => new ReleaseRomResource(v)),
                 Approved = model.Approved,
                 TemporarilyRejected = model.TemporarilyRejected,
                 Rejected = model.Rejected,
-                TvdbId = releaseInfo.TvdbId,
+                IgdbId = releaseInfo.IgdbId,
                 MobyGamesId = releaseInfo.MobyGamesId,
                 ImdbId = releaseInfo.ImdbId,
                 Rejections = model.Rejections.Select(r => r.Message).ToList(),
@@ -193,7 +193,7 @@ namespace Playarr.Api.V3.Indexers
             model.IndexerId = resource.IndexerId;
             model.Indexer = resource.Indexer;
             model.DownloadProtocol = resource.Protocol;
-            model.TvdbId = resource.TvdbId;
+            model.IgdbId = resource.IgdbId;
             model.MobyGamesId = resource.MobyGamesId;
             model.ImdbId = resource.ImdbId;
             model.PublishDate = resource.PublishDate.ToUniversalTime();
@@ -205,7 +205,7 @@ namespace Playarr.Api.V3.Indexers
     public class ReleaseRomResource
     {
         public int Id { get; set; }
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public int EpisodeNumber { get; set; }
         public int? AbsoluteEpisodeNumber { get; set; }
         public string Title { get; set; }
@@ -217,7 +217,7 @@ namespace Playarr.Api.V3.Indexers
         public ReleaseRomResource(Rom rom)
         {
             Id = rom.Id;
-            SeasonNumber = rom.SeasonNumber;
+            PlatformNumber = rom.PlatformNumber;
             EpisodeNumber = rom.EpisodeNumber;
             AbsoluteEpisodeNumber = rom.AbsoluteEpisodeNumber;
             Title = rom.Title;

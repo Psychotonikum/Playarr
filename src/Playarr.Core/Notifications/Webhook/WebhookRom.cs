@@ -12,26 +12,26 @@ namespace Playarr.Core.Notifications.Webhook
         public WebhookEpisode(Rom rom)
         {
             Id = rom.Id;
-            SeasonNumber = rom.SeasonNumber;
+            PlatformNumber = rom.PlatformNumber;
             EpisodeNumber = rom.EpisodeNumber;
             Title = rom.Title;
             Overview = rom.Overview;
             AirDate = rom.AirDate;
             AirDateUtc = rom.AirDateUtc;
-            SeriesId = rom.SeriesId;
-            TvdbId = rom.TvdbId;
+            GameId = rom.GameId;
+            IgdbId = rom.IgdbId;
             FinaleType = rom.FinaleType;
         }
 
         public int Id { get; set; }
         public int EpisodeNumber { get; set; }
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public string Title { get; set; }
         public string Overview { get; set; }
         public string AirDate { get; set; }
         public DateTime? AirDateUtc { get; set; }
-        public int SeriesId { get; set; }
-        public int TvdbId { get; set; }
+        public int GameId { get; set; }
+        public int IgdbId { get; set; }
         public string FinaleType { get; set; }
     }
 }

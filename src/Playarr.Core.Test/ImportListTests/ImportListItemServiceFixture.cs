@@ -20,23 +20,23 @@ namespace Playarr.Core.Test.ImportListTests
         }
 
         [Test]
-        public void should_insert_new_update_existing_and_delete_missing_based_on_tvdb_id()
+        public void should_insert_new_update_existing_and_delete_missing_based_on_igdb_id()
         {
             var existing = Builder<ImportListItemInfo>.CreateListOfSize(2)
                 .All()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 0)
                 .With(s => s.AniListId = 0)
                 .TheFirst(1)
-                .With(s => s.TvdbId = 6)
+                .With(s => s.IgdbId = 6)
                 .TheNext(1)
-                .With(s => s.TvdbId = 7)
+                .With(s => s.IgdbId = 7)
                 .Build().ToList();
 
             var newItem = Builder<ImportListItemInfo>.CreateNew()
-                .With(s => s.TvdbId = 5)
+                .With(s => s.IgdbId = 5)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 0)
@@ -44,7 +44,7 @@ namespace Playarr.Core.Test.ImportListTests
                 .Build();
 
             var updatedItem = Builder<ImportListItemInfo>.CreateNew()
-                .With(s => s.TvdbId = 6)
+                .With(s => s.IgdbId = 6)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 0)
@@ -59,13 +59,13 @@ namespace Playarr.Core.Test.ImportListTests
             numDeleted.Should().Be(1);
 
             Mocker.GetMock<IImportListItemRepository>()
-                .Verify(v => v.InsertMany(It.Is<List<ImportListItemInfo>>(s => s.Count == 1 && s[0].TvdbId == newItem.TvdbId)), Times.Once());
+                .Verify(v => v.InsertMany(It.Is<List<ImportListItemInfo>>(s => s.Count == 1 && s[0].IgdbId == newItem.IgdbId)), Times.Once());
 
             Mocker.GetMock<IImportListItemRepository>()
-                .Verify(v => v.UpdateMany(It.Is<List<ImportListItemInfo>>(s => s.Count == 1 && s[0].TvdbId == updatedItem.TvdbId)), Times.Once());
+                .Verify(v => v.UpdateMany(It.Is<List<ImportListItemInfo>>(s => s.Count == 1 && s[0].IgdbId == updatedItem.IgdbId)), Times.Once());
 
             Mocker.GetMock<IImportListItemRepository>()
-                .Verify(v => v.DeleteMany(It.Is<List<ImportListItemInfo>>(s => s.Count == 1 && s[0].TvdbId != newItem.TvdbId && s[0].TvdbId != updatedItem.TvdbId)), Times.Once());
+                .Verify(v => v.DeleteMany(It.Is<List<ImportListItemInfo>>(s => s.Count == 1 && s[0].IgdbId != newItem.IgdbId && s[0].IgdbId != updatedItem.IgdbId)), Times.Once());
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace Playarr.Core.Test.ImportListTests
         {
             var existing = Builder<ImportListItemInfo>.CreateListOfSize(2)
                 .All()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 0)
@@ -85,7 +85,7 @@ namespace Playarr.Core.Test.ImportListTests
                 .Build().ToList();
 
             var newItem = Builder<ImportListItemInfo>.CreateNew()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = "5")
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 0)
@@ -93,7 +93,7 @@ namespace Playarr.Core.Test.ImportListTests
                 .Build();
 
             var updatedItem = Builder<ImportListItemInfo>.CreateNew()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = "6")
                 .With(s => s.TmdbId = 6)
                 .With(s => s.MalId = 0)
@@ -122,7 +122,7 @@ namespace Playarr.Core.Test.ImportListTests
         {
             var existing = Builder<ImportListItemInfo>.CreateListOfSize(2)
                 .All()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 0)
@@ -134,7 +134,7 @@ namespace Playarr.Core.Test.ImportListTests
                 .Build().ToList();
 
             var newItem = Builder<ImportListItemInfo>.CreateNew()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 5)
                 .With(s => s.MalId = 0)
@@ -142,7 +142,7 @@ namespace Playarr.Core.Test.ImportListTests
                 .Build();
 
             var updatedItem = Builder<ImportListItemInfo>.CreateNew()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 6)
                 .With(s => s.MalId = 0)
@@ -171,7 +171,7 @@ namespace Playarr.Core.Test.ImportListTests
         {
             var existing = Builder<ImportListItemInfo>.CreateListOfSize(2)
                 .All()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 0)
@@ -183,7 +183,7 @@ namespace Playarr.Core.Test.ImportListTests
                 .Build().ToList();
 
             var newItem = Builder<ImportListItemInfo>.CreateNew()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 5)
@@ -191,7 +191,7 @@ namespace Playarr.Core.Test.ImportListTests
                 .Build();
 
             var updatedItem = Builder<ImportListItemInfo>.CreateNew()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 6)
@@ -220,7 +220,7 @@ namespace Playarr.Core.Test.ImportListTests
         {
             var existing = Builder<ImportListItemInfo>.CreateListOfSize(2)
                 .All()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 0)
@@ -232,7 +232,7 @@ namespace Playarr.Core.Test.ImportListTests
                 .Build().ToList();
 
             var newItem = Builder<ImportListItemInfo>.CreateNew()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 0)
@@ -240,7 +240,7 @@ namespace Playarr.Core.Test.ImportListTests
                 .Build();
 
             var updatedItem = Builder<ImportListItemInfo>.CreateNew()
-                .With(s => s.TvdbId = 0)
+                .With(s => s.IgdbId = 0)
                 .With(s => s.ImdbId = null)
                 .With(s => s.TmdbId = 0)
                 .With(s => s.MalId = 0)

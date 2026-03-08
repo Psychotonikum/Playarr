@@ -12,8 +12,8 @@ namespace Playarr.Core.MediaFiles
 {
     public class RomFile : ModelBase
     {
-        public int SeriesId { get; set; }
-        public int SeasonNumber { get; set; }
+        public int GameId { get; set; }
+        public int PlatformNumber { get; set; }
         public string RelativePath { get; set; }
         public string Path { get; set; }
         public long Size { get; set; }
@@ -29,6 +29,10 @@ namespace Playarr.Core.MediaFiles
         public LazyLoaded<Game> Game { get; set; }
         public List<Language> Languages { get; set; }
         public ReleaseType ReleaseType { get; set; }
+        public RomFileType RomFileType { get; set; }
+        public string PatchVersion { get; set; }
+        public string DlcIndex { get; set; }
+        public int? LinkedGameId { get; set; }
 
         public override string ToString()
         {

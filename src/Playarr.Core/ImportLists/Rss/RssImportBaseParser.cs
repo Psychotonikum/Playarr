@@ -128,10 +128,10 @@ namespace Playarr.Core.ImportLists.Rss
 
             if (guid != null && int.TryParse(guid, out var igdbId))
             {
-                info.TvdbId = igdbId;
+                info.IgdbId = igdbId;
             }
 
-            if (info.TvdbId == 0)
+            if (info.IgdbId == 0)
             {
                 throw new UnsupportedFeedException("Each item in the RSS feed must have a guid element with a IGDB ID");
             }

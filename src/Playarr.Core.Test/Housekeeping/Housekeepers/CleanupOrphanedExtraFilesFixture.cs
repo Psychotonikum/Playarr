@@ -49,7 +49,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(romFile);
 
             var extraFile = Builder<OtherExtraFile>.CreateNew()
-                                                    .With(m => m.SeriesId = game.Id)
+                                                    .With(m => m.GameId = game.Id)
                                                     .With(m => m.EpisodeFileId = romFile.Id)
                                                     .BuildNew();
 
@@ -67,7 +67,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(game);
 
             var extraFile = Builder<OtherExtraFile>.CreateNew()
-                                                    .With(m => m.SeriesId = game.Id)
+                                                    .With(m => m.GameId = game.Id)
                                                     .With(m => m.EpisodeFileId = 10)
                                                     .BuildNew();
 
@@ -91,7 +91,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(romFile);
 
             var extraFile = Builder<OtherExtraFile>.CreateNew()
-                                                    .With(m => m.SeriesId = game.Id)
+                                                    .With(m => m.GameId = game.Id)
                                                     .With(m => m.EpisodeFileId = romFile.Id)
                                                     .BuildNew();
 
@@ -109,7 +109,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(game);
 
             var extraFile = Builder<OtherExtraFile>.CreateNew()
-                                                 .With(m => m.SeriesId = game.Id)
+                                                 .With(m => m.GameId = game.Id)
                                                  .With(m => m.EpisodeFileId = 0)
                                                  .BuildNew();
 

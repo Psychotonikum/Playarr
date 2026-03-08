@@ -9,7 +9,7 @@ public class ParsedRomInfoResource
     public string? ReleaseGroup { get; set; }
     public string? ReleaseHash { get; set; }
     public bool FullSeason { get; set; }
-    public int SeasonNumber { get; set; }
+    public int PlatformNumber { get; set; }
     public string? AirDate { get; set; }
     public string? GameTitle { get; set; }
     public int[] RomNumbers { get; set; } = [];
@@ -30,7 +30,7 @@ public static class ParsedRomInfoResourceMapper
             ReleaseGroup = parsedRomInfo.ReleaseGroup,
             ReleaseHash = parsedRomInfo.ReleaseHash,
             FullSeason = parsedRomInfo.FullSeason,
-            SeasonNumber = parsedRomInfo.SeasonNumber,
+            PlatformNumber = parsedRomInfo.PlatformNumber,
             AirDate = parsedRomInfo.AirDate,
             GameTitle = parsedRomInfo.GameTitle,
             RomNumbers = parsedRomInfo.RomNumbers,

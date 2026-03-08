@@ -25,21 +25,21 @@ namespace Playarr.Core.Test.IndexerTests.NyaaTests
             _seasonSearchCriteria = new SeasonSearchCriteria()
             {
                 SceneTitles = new List<string>() { "Naruto Shippuuden" },
-                SeasonNumber = 1,
+                PlatformNumber = 1,
             };
 
             _animeSearchCriteria = new AnimeEpisodeSearchCriteria()
             {
                 SceneTitles = new List<string>() { "Naruto Shippuuden" },
                 AbsoluteEpisodeNumber = 9,
-                SeasonNumber = 1,
+                PlatformNumber = 1,
                 EpisodeNumber = 9
             };
 
             _animeSeasonSearchCriteria = new AnimeSeasonSearchCriteria()
             {
                 SceneTitles = new List<string>() { "Naruto Shippuuden" },
-                SeasonNumber = 3
+                PlatformNumber = 3
             };
         }
 

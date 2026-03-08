@@ -46,46 +46,46 @@ namespace Playarr.Core.Games
                 return;
             }
 
-            var firstSeason = game.Platforms.Select(s => s.SeasonNumber).Where(s => s > 0).MinOrDefault();
-            var lastSeason = game.Platforms.Select(s => s.SeasonNumber).MaxOrDefault();
+            var firstSeason = game.Platforms.Select(s => s.PlatformNumber).Where(s => s > 0).MinOrDefault();
+            var lastSeason = game.Platforms.Select(s => s.PlatformNumber).MaxOrDefault();
             var roms = _episodeService.GetEpisodeBySeries(game.Id);
 
             switch (monitoringOptions.Monitor)
             {
                 case MonitorTypes.All:
                     _logger.Debug("[{0}] Monitoring all roms", game.Title);
-                    ToggleEpisodesMonitoredState(roms, e => e.SeasonNumber > 0);
+                    ToggleEpisodesMonitoredState(roms, e => e.PlatformNumber > 0);
 
                     break;
 
                 case MonitorTypes.Future:
                     _logger.Debug("[{0}] Monitoring future roms", game.Title);
-                    ToggleEpisodesMonitoredState(roms, e => e.SeasonNumber > 0 && (!e.AirDateUtc.HasValue || e.AirDateUtc >= DateTime.UtcNow));
+                    ToggleEpisodesMonitoredState(roms, e => e.PlatformNumber > 0 && (!e.AirDateUtc.HasValue || e.AirDateUtc >= DateTime.UtcNow));
 
                     break;
 
                 case MonitorTypes.Missing:
                     _logger.Debug("[{0}] Monitoring missing roms", game.Title);
-                    ToggleEpisodesMonitoredState(roms, e => e.SeasonNumber > 0 && !e.HasFile);
+                    ToggleEpisodesMonitoredState(roms, e => e.PlatformNumber > 0 && !e.HasFile);
 
                     break;
 
                 case MonitorTypes.Existing:
                     _logger.Debug("[{0}] Monitoring existing roms", game.Title);
-                    ToggleEpisodesMonitoredState(roms, e => e.SeasonNumber > 0 && e.HasFile);
+                    ToggleEpisodesMonitoredState(roms, e => e.PlatformNumber > 0 && e.HasFile);
 
                     break;
 
                 case MonitorTypes.Pilot:
                     _logger.Debug("[{0}] Monitoring first rom roms", game.Title);
                     ToggleEpisodesMonitoredState(roms,
-                        e => e.SeasonNumber > 0 && e.SeasonNumber == firstSeason && e.EpisodeNumber == 1);
+                        e => e.PlatformNumber > 0 && e.PlatformNumber == firstSeason && e.EpisodeNumber == 1);
 
                     break;
 
                 case MonitorTypes.FirstSeason:
                     _logger.Debug("[{0}] Monitoring first platform roms", game.Title);
-                    ToggleEpisodesMonitoredState(roms, e => e.SeasonNumber > 0 && e.SeasonNumber == firstSeason);
+                    ToggleEpisodesMonitoredState(roms, e => e.PlatformNumber > 0 && e.PlatformNumber == firstSeason);
 
                     break;
 
@@ -95,14 +95,14 @@ namespace Playarr.Core.Games
                 #pragma warning restore CS0612
                     _logger.Debug("[{0}] Monitoring latest platform roms", game.Title);
 
-                    ToggleEpisodesMonitoredState(roms, e => e.SeasonNumber > 0 && e.SeasonNumber == lastSeason);
+                    ToggleEpisodesMonitoredState(roms, e => e.PlatformNumber > 0 && e.PlatformNumber == lastSeason);
 
                     break;
 
                 case MonitorTypes.Recent:
                     _logger.Debug("[{0}] Monitoring recent and future roms", game.Title);
 
-                    ToggleEpisodesMonitoredState(roms, e => e.SeasonNumber > 0 &&
+                    ToggleEpisodesMonitoredState(roms, e => e.PlatformNumber > 0 &&
                                                                 (!e.AirDateUtc.HasValue || (
                                                                         e.AirDateUtc.Value.Before(DateTime.UtcNow) &&
                                                                         e.AirDateUtc.Value.InLastDays(90))
@@ -112,13 +112,13 @@ namespace Playarr.Core.Games
 
                 case MonitorTypes.MonitorSpecials:
                     _logger.Debug("[{0}] Monitoring special roms", game.Title);
-                    ToggleEpisodesMonitoredState(roms.Where(e => e.SeasonNumber == 0), true);
+                    ToggleEpisodesMonitoredState(roms.Where(e => e.PlatformNumber == 0), true);
 
                     break;
 
                 case MonitorTypes.UnmonitorSpecials:
                     _logger.Debug("[{0}] Unmonitoring special roms", game.Title);
-                    ToggleEpisodesMonitoredState(roms.Where(e => e.SeasonNumber == 0), false);
+                    ToggleEpisodesMonitoredState(roms.Where(e => e.PlatformNumber == 0), false);
 
                     break;
 
@@ -130,13 +130,13 @@ namespace Playarr.Core.Games
             }
 
             var monitoredSeasons = roms.Where(e => e.Monitored)
-                                           .Select(e => e.SeasonNumber)
+                                           .Select(e => e.PlatformNumber)
                                            .Distinct()
                                            .ToList();
 
             foreach (var platform in game.Platforms)
             {
-                var platformNumber = platform.SeasonNumber;
+                var platformNumber = platform.PlatformNumber;
 
                 // Monitor the last platform when:
                 // - Not specials
@@ -200,7 +200,7 @@ namespace Playarr.Core.Games
                 ToggleEpisodesMonitoredState(roms.Where(e => !e.HasFile && e.AirDateUtc.HasValue && e.AirDateUtc.Value.Before(DateTime.UtcNow)), true);
             }
 
-            var lastSeason = game.Platforms.Select(s => s.SeasonNumber).MaxOrDefault();
+            var lastSeason = game.Platforms.Select(s => s.PlatformNumber).MaxOrDefault();
 
             foreach (var s in game.Platforms)
             {
@@ -210,17 +210,17 @@ namespace Playarr.Core.Games
 
                 if (!platform.Monitored)
                 {
-                    _logger.Debug("Unmonitoring all roms in platform {0}", platform.SeasonNumber);
-                    ToggleEpisodesMonitoredState(roms.Where(e => e.SeasonNumber == platform.SeasonNumber), false);
+                    _logger.Debug("Unmonitoring all roms in platform {0}", platform.PlatformNumber);
+                    ToggleEpisodesMonitoredState(roms.Where(e => e.PlatformNumber == platform.PlatformNumber), false);
                 }
 
                 // If the platform is not the latest platform and all it's roms are unmonitored the platform will be unmonitored
 
-                if (platform.SeasonNumber < lastSeason)
+                if (platform.PlatformNumber < lastSeason)
                 {
-                    if (roms.Where(e => e.SeasonNumber == platform.SeasonNumber).All(e => !e.Monitored))
+                    if (roms.Where(e => e.PlatformNumber == platform.PlatformNumber).All(e => !e.Monitored))
                     {
-                        _logger.Debug("Unmonitoring platform {0} because all roms are not monitored", platform.SeasonNumber);
+                        _logger.Debug("Unmonitoring platform {0} because all roms are not monitored", platform.PlatformNumber);
                         platform.Monitored = false;
                     }
                 }

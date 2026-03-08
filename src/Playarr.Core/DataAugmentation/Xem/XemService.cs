@@ -28,7 +28,7 @@ namespace Playarr.Core.DataAugmentation.Xem
             _xemProxy = xemProxy;
             _seriesService = seriesService;
             _logger = logger;
-            _cache = cacheManager.GetCacheDictionary<bool>(GetType(), "mappedTvdbid");
+            _cache = cacheManager.GetCacheDictionary<bool>(GetType(), "mappedIgdbid");
         }
 
         private void PerformUpdate(Game game)
@@ -37,7 +37,7 @@ namespace Playarr.Core.DataAugmentation.Xem
 
             try
             {
-                var mappings = _xemProxy.GetSceneTvdbMappings(game.TvdbId);
+                var mappings = _xemProxy.GetSceneIgdbMappings(game.IgdbId);
 
                 if (!mappings.Any() && !game.UseSceneNumbering)
                 {
@@ -50,16 +50,16 @@ namespace Playarr.Core.DataAugmentation.Xem
                 foreach (var rom in roms)
                 {
                     rom.SceneAbsoluteEpisodeNumber = null;
-                    rom.SceneSeasonNumber = null;
+                    rom.ScenePlatformNumber = null;
                     rom.SceneEpisodeNumber = null;
                     rom.UnverifiedSceneNumbering = false;
                 }
 
                 foreach (var mapping in mappings)
                 {
-                    _logger.Debug("Setting scene numbering mappings for {0} S{1:00}E{2:00}", game, mapping.Tvdb.Platform, mapping.Tvdb.Rom);
+                    _logger.Debug("Setting scene numbering mappings for {0} S{1:00}E{2:00}", game, mapping.Igdb.Platform, mapping.Igdb.Rom);
 
-                    var rom = roms.SingleOrDefault(e => e.SeasonNumber == mapping.Tvdb.Platform && e.EpisodeNumber == mapping.Tvdb.Rom);
+                    var rom = roms.SingleOrDefault(e => e.PlatformNumber == mapping.Igdb.Platform && e.EpisodeNumber == mapping.Igdb.Rom);
 
                     if (rom == null)
                     {
@@ -71,16 +71,16 @@ namespace Playarr.Core.DataAugmentation.Xem
                         mapping.Scene.Platform == 0 &&
                         mapping.Scene.Rom == 0)
                     {
-                        _logger.Debug("Mapping for {0} S{1:00}E{2:00} is invalid, skipping", game, mapping.Tvdb.Platform, mapping.Tvdb.Rom);
+                        _logger.Debug("Mapping for {0} S{1:00}E{2:00} is invalid, skipping", game, mapping.Igdb.Platform, mapping.Igdb.Rom);
                         continue;
                     }
 
                     rom.SceneAbsoluteEpisodeNumber = mapping.Scene.Absolute;
-                    rom.SceneSeasonNumber = mapping.Scene.Platform;
+                    rom.ScenePlatformNumber = mapping.Scene.Platform;
                     rom.SceneEpisodeNumber = mapping.Scene.Rom;
                 }
 
-                if (roms.Any(v => v.SceneEpisodeNumber.HasValue && v.SceneSeasonNumber != 0))
+                if (roms.Any(v => v.SceneEpisodeNumber.HasValue && v.ScenePlatformNumber != 0))
                 {
                     ExtrapolateMappings(game, roms, mappings);
                 }
@@ -97,24 +97,24 @@ namespace Playarr.Core.DataAugmentation.Xem
             }
         }
 
-        private void ExtrapolateMappings(Game game, List<Rom> roms, List<Model.XemSceneTvdbMapping> mappings)
+        private void ExtrapolateMappings(Game game, List<Rom> roms, List<Model.XemSceneIgdbMapping> mappings)
         {
-            var mappedEpisodes = roms.Where(v => v.SeasonNumber != 0 && v.SceneEpisodeNumber.HasValue).ToList();
-            var mappedSeasons = new HashSet<int>(mappedEpisodes.Select(v => v.SeasonNumber).Distinct());
+            var mappedEpisodes = roms.Where(v => v.PlatformNumber != 0 && v.SceneEpisodeNumber.HasValue).ToList();
+            var mappedSeasons = new HashSet<int>(mappedEpisodes.Select(v => v.PlatformNumber).Distinct());
 
             var sceneEpisodeMappings = mappings.ToLookup(v => v.Scene.Platform)
                                                .ToDictionary(v => v.Key, e => new HashSet<int>(e.Select(v => v.Scene.Rom)));
 
-            var firstTvdbEpisodeBySeason = mappings.ToLookup(v => v.Tvdb.Platform)
-                                                   .ToDictionary(v => v.Key, e => e.Min(v => v.Tvdb.Rom));
+            var firstIgdbEpisodeBySeason = mappings.ToLookup(v => v.Igdb.Platform)
+                                                   .ToDictionary(v => v.Key, e => e.Min(v => v.Igdb.Rom));
 
             var lastSceneSeason = mappings.Select(v => v.Scene.Platform).Max();
-            var lastTvdbSeason = mappings.Select(v => v.Tvdb.Platform).Max();
+            var lastIgdbSeason = mappings.Select(v => v.Igdb.Platform).Max();
 
             // Mark all roms not on the xem as unverified.
             foreach (var rom in roms)
             {
-                if (rom.SeasonNumber == 0)
+                if (rom.PlatformNumber == 0)
                 {
                     continue;
                 }
@@ -124,24 +124,24 @@ namespace Playarr.Core.DataAugmentation.Xem
                     continue;
                 }
 
-                if (mappedSeasons.Contains(rom.SeasonNumber))
+                if (mappedSeasons.Contains(rom.PlatformNumber))
                 {
                     // Mark if a mapping exists for an earlier rom in this platform.
-                    if (firstTvdbEpisodeBySeason[rom.SeasonNumber] <= rom.EpisodeNumber)
+                    if (firstIgdbEpisodeBySeason[rom.PlatformNumber] <= rom.EpisodeNumber)
                     {
                         rom.UnverifiedSceneNumbering = true;
                         continue;
                     }
 
                     // Mark if a mapping exists with a scene number to this rom.
-                    if (sceneEpisodeMappings.ContainsKey(rom.SeasonNumber) &&
-                        sceneEpisodeMappings[rom.SeasonNumber].Contains(rom.EpisodeNumber))
+                    if (sceneEpisodeMappings.ContainsKey(rom.PlatformNumber) &&
+                        sceneEpisodeMappings[rom.PlatformNumber].Contains(rom.EpisodeNumber))
                     {
                         rom.UnverifiedSceneNumbering = true;
                         continue;
                     }
                 }
-                else if (lastSceneSeason != lastTvdbSeason && rom.SeasonNumber > lastTvdbSeason)
+                else if (lastSceneSeason != lastIgdbSeason && rom.PlatformNumber > lastIgdbSeason)
                 {
                     rom.UnverifiedSceneNumbering = true;
                 }
@@ -149,7 +149,7 @@ namespace Playarr.Core.DataAugmentation.Xem
 
             foreach (var rom in roms)
             {
-                if (rom.SeasonNumber == 0)
+                if (rom.PlatformNumber == 0)
                 {
                     continue;
                 }
@@ -159,7 +159,7 @@ namespace Playarr.Core.DataAugmentation.Xem
                     continue;
                 }
 
-                if (rom.SeasonNumber < lastTvdbSeason)
+                if (rom.PlatformNumber < lastIgdbSeason)
                 {
                     continue;
                 }
@@ -169,33 +169,33 @@ namespace Playarr.Core.DataAugmentation.Xem
                     continue;
                 }
 
-                var seasonMappings = mappings.Where(v => v.Tvdb.Platform == rom.SeasonNumber).ToList();
-                if (seasonMappings.Any(v => v.Tvdb.Rom >= rom.EpisodeNumber))
+                var seasonMappings = mappings.Where(v => v.Igdb.Platform == rom.PlatformNumber).ToList();
+                if (seasonMappings.Any(v => v.Igdb.Rom >= rom.EpisodeNumber))
                 {
                     continue;
                 }
 
                 if (seasonMappings.Any())
                 {
-                    var lastEpisodeMapping = seasonMappings.OrderBy(v => v.Tvdb.Rom).Last();
+                    var lastEpisodeMapping = seasonMappings.OrderBy(v => v.Igdb.Rom).Last();
                     var lastSceneSeasonMapping = mappings.Where(v => v.Scene.Platform == lastEpisodeMapping.Scene.Platform).OrderBy(v => v.Scene.Rom).Last();
 
-                    if (lastSceneSeasonMapping.Tvdb.Platform == 0)
+                    if (lastSceneSeasonMapping.Igdb.Platform == 0)
                     {
                         continue;
                     }
 
-                    var offset = rom.EpisodeNumber - lastEpisodeMapping.Tvdb.Rom;
+                    var offset = rom.EpisodeNumber - lastEpisodeMapping.Igdb.Rom;
 
-                    rom.SceneSeasonNumber = lastEpisodeMapping.Scene.Platform;
+                    rom.ScenePlatformNumber = lastEpisodeMapping.Scene.Platform;
                     rom.SceneEpisodeNumber = lastEpisodeMapping.Scene.Rom + offset;
                     rom.SceneAbsoluteEpisodeNumber = lastEpisodeMapping.Scene.Absolute + offset;
                 }
-                else if (lastTvdbSeason != lastSceneSeason)
+                else if (lastIgdbSeason != lastSceneSeason)
                 {
-                    var offset = rom.SeasonNumber - lastTvdbSeason;
+                    var offset = rom.PlatformNumber - lastIgdbSeason;
 
-                    rom.SceneSeasonNumber = lastSceneSeason + offset;
+                    rom.ScenePlatformNumber = lastSceneSeason + offset;
                     rom.SceneEpisodeNumber = rom.EpisodeNumber;
 
                     // TODO: SceneAbsoluteEpisodeNumber.
@@ -227,7 +227,7 @@ namespace Playarr.Core.DataAugmentation.Xem
 
         public List<SceneMapping> GetSceneMappings()
         {
-            var mappings = _xemProxy.GetSceneTvdbNames();
+            var mappings = _xemProxy.GetSceneIgdbNames();
 
             return mappings;
         }
@@ -245,9 +245,9 @@ namespace Playarr.Core.DataAugmentation.Xem
                 return;
             }
 
-            if (!_cache.Find(message.Game.TvdbId.ToString()) && !message.Game.UseSceneNumbering)
+            if (!_cache.Find(message.Game.IgdbId.ToString()) && !message.Game.UseSceneNumbering)
             {
-                _logger.Debug("Scene numbering is not available for {0} [{1}]", message.Game.Title, message.Game.TvdbId);
+                _logger.Debug("Scene numbering is not available for {0} [{1}]", message.Game.Title, message.Game.IgdbId);
                 return;
             }
 

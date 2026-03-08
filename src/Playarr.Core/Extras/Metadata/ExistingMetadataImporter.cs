@@ -90,7 +90,7 @@ namespace Playarr.Core.Extras.Metadata
                             continue;
                         }
 
-                        metadata.SeasonNumber = localRom.SeasonNumber;
+                        metadata.PlatformNumber = localRom.PlatformNumber;
                         metadata.EpisodeFileId = localRom.Roms.First().EpisodeFileId;
                     }
 

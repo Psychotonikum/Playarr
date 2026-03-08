@@ -135,7 +135,7 @@ namespace Playarr.Core.Test.ParserTests
             result.FullSeason.Should().BeFalse();
         }
 
-        [TestCase("[BeanSub][Anime_Series_Title][01][GB][1080P][x264_AAC]", "Anime Game Title", "BeanSub", 1)]
+        [TestCase("[BeanSub][Anime_Game_Title][01][GB][1080P][x264_AAC]", "Anime Game Title", "BeanSub", 1)]
         public void should_parse_false_positive_chinese_anime_releases(string postTitle, string title, string subgroup, int absoluteRomNumber)
         {
             postTitle = XmlCleaner.ReplaceUnicode(postTitle);
@@ -160,7 +160,7 @@ namespace Playarr.Core.Test.ParserTests
             result.AbsoluteRomNumbers.Should().BeEmpty();
             result.GameTitle.Should().Be(title);
             result.FullSeason.Should().BeTrue();
-            result.SeasonNumber.Should().Be(platform);
+            result.PlatformNumber.Should().Be(platform);
         }
 
         [TestCase("【高清剧集网发布 www.DDHDTV.com】当我飞奔向你[第01-15集][国语配音+中文字幕].Game.Towards.You.S01.2023.2160p.YK.WEB-DL.H265.AAC-BlackTV", "Game Towards You", "BlackTV", 1, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 })]
@@ -169,7 +169,7 @@ namespace Playarr.Core.Test.ParserTests
             postTitle = XmlCleaner.ReplaceUnicode(postTitle);
 
             var result = Parser.Parser.ParseTitle(postTitle);
-            result.SeasonNumber.Should().Be(platform);
+            result.PlatformNumber.Should().Be(platform);
             result.RomNumbers.Should().BeEquivalentTo(roms);
             result.GameTitle.Should().Be(title);
             result.AbsoluteRomNumbers.Should().BeEmpty();

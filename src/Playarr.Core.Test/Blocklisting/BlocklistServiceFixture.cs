@@ -19,7 +19,7 @@ namespace Playarr.Core.Test.Blocklisting
         {
             _event = new DownloadFailedEvent
                      {
-                         SeriesId = 12345,
+                         GameId = 12345,
                          RomIds = new List<int> { 1 },
                          Quality = new QualityModel(Quality.Bluray720p),
                          SourceTitle = "game.title.s01e01",

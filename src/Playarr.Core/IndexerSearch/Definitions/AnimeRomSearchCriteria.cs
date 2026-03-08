@@ -4,12 +4,12 @@ namespace Playarr.Core.IndexerSearch.Definitions
     {
         public int AbsoluteEpisodeNumber { get; set; }
         public int EpisodeNumber { get; set; }
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public bool IsSeasonSearch { get; set; }
 
         public override string ToString()
         {
-            return $"[{Game.Title} : S{SeasonNumber:00}E{EpisodeNumber:00} ({AbsoluteEpisodeNumber:00})]";
+            return $"[{Game.Title} : S{PlatformNumber:00}E{EpisodeNumber:00} ({AbsoluteEpisodeNumber:00})]";
         }
     }
 }

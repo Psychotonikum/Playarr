@@ -15,10 +15,10 @@ namespace Playarr.Core.Games
 
         public const string AIR_DATE_FORMAT = "yyyy-MM-dd";
 
-        public int SeriesId { get; set; }
-        public int TvdbId { get; set; }
+        public int GameId { get; set; }
+        public int IgdbId { get; set; }
         public int EpisodeFileId { get; set; }
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public int EpisodeNumber { get; set; }
         public string Title { get; set; }
         public string AirDate { get; set; }
@@ -27,7 +27,7 @@ namespace Playarr.Core.Games
         public bool Monitored { get; set; }
         public int? AbsoluteEpisodeNumber { get; set; }
         public int? SceneAbsoluteEpisodeNumber { get; set; }
-        public int? SceneSeasonNumber { get; set; }
+        public int? ScenePlatformNumber { get; set; }
         public int? SceneEpisodeNumber { get; set; }
         public int? AiredAfterPlatformNumber { get; set; }
         public int? AiredBeforePlatformNumber { get; set; }
@@ -57,12 +57,12 @@ namespace Playarr.Core.Games
         {
             var other = (Rom)obj;
 
-            if (SeasonNumber > other.SeasonNumber)
+            if (PlatformNumber > other.PlatformNumber)
             {
                 return 1;
             }
 
-            if (SeasonNumber < other.SeasonNumber)
+            if (PlatformNumber < other.PlatformNumber)
             {
                 return -1;
             }

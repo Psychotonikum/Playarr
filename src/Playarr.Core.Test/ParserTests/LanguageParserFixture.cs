@@ -77,7 +77,7 @@ namespace Playarr.Core.Test.ParserTests
         [TestCase("Game Title S01 AVC.1080p.Blu-ray Remux HD.VOSTFR.VFF")]
         [TestCase("Game Title S01 x264.720p.Blu-ray Rip HD.VOSTFR.VFF. ONLY")]
         [TestCase("Game Title S01 HEVC.2160p.Blu-ray 4K.VOSTFR.VFF. JATO")]
-        [TestCase("Series_Title_S01_ENG_ITA_FRA_AAC_1080p_WebDL_x264")]
+        [TestCase("Game_Title_S01_ENG_ITA_FRA_AAC_1080p_WebDL_x264")]
         [TestCase("Game.Title.S01.ENG-ITA-FRA.AAC.1080p.WebDL.x264")]
         [TestCase("Game Title S01 (BDrip 1080p ENG-ITA-FRA) Multisub x264")]
         [TestCase("Game.Title.S01.ENG-ITA-FRE.AAC.1080p.WebDL.x264")]

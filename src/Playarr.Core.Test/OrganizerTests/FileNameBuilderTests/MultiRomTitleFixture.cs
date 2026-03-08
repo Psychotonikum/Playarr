@@ -38,14 +38,14 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             _episode1 = Builder<Rom>.CreateNew()
                             .With(e => e.Title = "Rom Title")
-                            .With(e => e.SeasonNumber = 15)
+                            .With(e => e.PlatformNumber = 15)
                             .With(e => e.EpisodeNumber = 6)
                             .With(e => e.AbsoluteEpisodeNumber = 100)
                             .Build();
 
             _episode2 = Builder<Rom>.CreateNew()
                             .With(e => e.Title = "Rom Title")
-                            .With(e => e.SeasonNumber = 15)
+                            .With(e => e.PlatformNumber = 15)
                             .With(e => e.EpisodeNumber = 7)
                             .With(e => e.AbsoluteEpisodeNumber = 101)
                             .Build();

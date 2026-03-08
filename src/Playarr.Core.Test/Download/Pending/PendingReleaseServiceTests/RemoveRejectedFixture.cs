@@ -99,7 +99,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
 
             var heldReleases = Builder<PendingRelease>.CreateListOfSize(1)
                                                    .All()
-                                                   .With(h => h.SeriesId = _series.Id)
+                                                   .With(h => h.GameId = _series.Id)
                                                    .With(h => h.Title = title)
                                                    .With(h => h.Release = release)
                                                    .With(h => h.ParsedRomInfo = new ParsedRomInfo())

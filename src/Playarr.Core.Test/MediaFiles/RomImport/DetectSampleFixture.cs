@@ -30,7 +30,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport
 
             var roms = Builder<Rom>.CreateListOfSize(1)
                                            .All()
-                                           .With(e => e.SeasonNumber = 1)
+                                           .With(e => e.PlatformNumber = 1)
                                            .Build()
                                            .ToList();
 
@@ -57,7 +57,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport
         [Test]
         public void should_return_false_if_season_zero()
         {
-            _localRom.Roms[0].SeasonNumber = 0;
+            _localRom.Roms[0].PlatformNumber = 0;
 
             Subject.IsSample(_localRom.Game,
                 _localRom.Path,
@@ -172,7 +172,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport
         {
             GivenRuntime(600);
             _series.SeriesType = GameTypes.Daily;
-            _localRom.Roms[0].SeasonNumber = 0;
+            _localRom.Roms[0].PlatformNumber = 0;
 
             Subject.IsSample(_localRom.Game,
                 _localRom.Path,
@@ -183,7 +183,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport
         public void should_return_false_for_anime_special()
         {
             _series.SeriesType = GameTypes.Anime;
-            _localRom.Roms[0].SeasonNumber = 0;
+            _localRom.Roms[0].PlatformNumber = 0;
 
             Subject.IsSample(_localRom.Game,
                 _localRom.Path,

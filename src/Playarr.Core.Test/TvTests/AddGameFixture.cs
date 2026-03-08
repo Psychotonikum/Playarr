@@ -53,11 +53,11 @@ namespace Playarr.Core.Test.TvTests
         {
             var newGame = new Game
             {
-                TvdbId = 1,
+                IgdbId = 1,
                 RootFolderPath = @"C:\Test\TV"
             };
 
-            GivenValidSeries(newGame.TvdbId);
+            GivenValidSeries(newGame.IgdbId);
             GivenValidPath();
 
             var game = Subject.AddGame(newGame);
@@ -70,11 +70,11 @@ namespace Playarr.Core.Test.TvTests
         {
             var newGame = new Game
                             {
-                                TvdbId = 1,
+                                IgdbId = 1,
                                 RootFolderPath = @"C:\Test\TV"
                             };
 
-            GivenValidSeries(newGame.TvdbId);
+            GivenValidSeries(newGame.IgdbId);
             GivenValidPath();
 
             var game = Subject.AddGame(newGame);
@@ -87,11 +87,11 @@ namespace Playarr.Core.Test.TvTests
         {
             var newGame = new Game
             {
-                TvdbId = 1,
+                IgdbId = 1,
                 Path = @"C:\Test\TV\Title1"
             };
 
-            GivenValidSeries(newGame.TvdbId);
+            GivenValidSeries(newGame.IgdbId);
 
             Mocker.GetMock<IAddGameValidator>()
                   .Setup(s => s.Validate(It.IsAny<Game>()))
@@ -108,13 +108,13 @@ namespace Playarr.Core.Test.TvTests
         {
             var newGame = new Game
             {
-                TvdbId = 1,
+                IgdbId = 1,
                 Path = @"C:\Test\TV\Title1"
             };
 
             Mocker.GetMock<IProvideSeriesInfo>()
-                  .Setup(s => s.GetSeriesInfo(newGame.TvdbId))
-                  .Throws(new SeriesNotFoundException(newGame.TvdbId));
+                  .Setup(s => s.GetSeriesInfo(newGame.IgdbId))
+                  .Throws(new SeriesNotFoundException(newGame.IgdbId));
 
             Mocker.GetMock<IAddGameValidator>()
                   .Setup(s => s.Validate(It.IsAny<Game>()))

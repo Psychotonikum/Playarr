@@ -24,17 +24,17 @@ namespace Playarr.Core.MediaFiles
 
         public List<RomFile> GetFilesBySeries(int gameId)
         {
-            return Query(c => c.SeriesId == gameId).ToList();
+            return Query(c => c.GameId == gameId).ToList();
         }
 
         public List<RomFile> GetFilesByGameIds(List<int> gameIds)
         {
-            return Query(c => gameIds.Contains(c.SeriesId)).ToList();
+            return Query(c => gameIds.Contains(c.GameId)).ToList();
         }
 
         public List<RomFile> GetFilesBySeason(int gameId, int platformNumber)
         {
-            return Query(c => c.SeriesId == gameId && c.SeasonNumber == platformNumber).ToList();
+            return Query(c => c.GameId == gameId && c.PlatformNumber == platformNumber).ToList();
         }
 
         public List<RomFile> GetFilesWithoutMediaInfo()
@@ -44,13 +44,13 @@ namespace Playarr.Core.MediaFiles
 
         public List<RomFile> GetFilesWithRelativePath(int gameId, string relativePath)
         {
-            return Query(c => c.SeriesId == gameId && c.RelativePath == relativePath)
+            return Query(c => c.GameId == gameId && c.RelativePath == relativePath)
                         .ToList();
         }
 
         public void DeleteForSeries(List<int> gameIds)
         {
-            Delete(x => gameIds.Contains(x.SeriesId));
+            Delete(x => gameIds.Contains(x.GameId));
         }
     }
 }

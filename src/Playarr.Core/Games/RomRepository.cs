@@ -52,39 +52,39 @@ namespace Playarr.Core.Games
 
         public Rom Find(int gameId, int platform, int romNumber)
         {
-            return Query(s => s.SeriesId == gameId && s.SeasonNumber == platform && s.EpisodeNumber == romNumber)
+            return Query(s => s.GameId == gameId && s.PlatformNumber == platform && s.EpisodeNumber == romNumber)
                                .SingleOrDefault();
         }
 
         public Rom Find(int gameId, int absoluteRomNumber)
         {
-            return Query(s => s.SeriesId == gameId && s.AbsoluteEpisodeNumber == absoluteRomNumber)
+            return Query(s => s.GameId == gameId && s.AbsoluteEpisodeNumber == absoluteRomNumber)
                         .SingleOrDefault();
         }
 
         public List<Rom> Find(int gameId, string date)
         {
-            return Query(s => s.SeriesId == gameId && s.AirDate == date).ToList();
+            return Query(s => s.GameId == gameId && s.AirDate == date).ToList();
         }
 
         public List<Rom> GetEpisodes(int gameId)
         {
-            return Query(s => s.SeriesId == gameId).ToList();
+            return Query(s => s.GameId == gameId).ToList();
         }
 
         public List<Rom> GetEpisodes(int gameId, int platformNumber)
         {
-            return Query(s => s.SeriesId == gameId && s.SeasonNumber == platformNumber).ToList();
+            return Query(s => s.GameId == gameId && s.PlatformNumber == platformNumber).ToList();
         }
 
         public List<Rom> GetEpisodesByGameIds(List<int> gameIds)
         {
-            return Query(s => gameIds.Contains(s.SeriesId)).ToList();
+            return Query(s => gameIds.Contains(s.GameId)).ToList();
         }
 
         public List<Rom> GetEpisodesBySceneSeason(int gameId, int platformNumber)
         {
-            return Query(s => s.SeriesId == gameId && s.SceneSeasonNumber == platformNumber).ToList();
+            return Query(s => s.GameId == gameId && s.ScenePlatformNumber == platformNumber).ToList();
         }
 
         public List<Rom> GetEpisodeByFileId(int fileId)
@@ -96,7 +96,7 @@ namespace Playarr.Core.Games
         {
             var builder = Builder()
                 .Join<Rom, RomFile>((e, ef) => e.EpisodeFileId == ef.Id)
-                .Where<Rom>(e => e.SeriesId == gameId);
+                .Where<Rom>(e => e.GameId == gameId);
 
             return _database.QueryJoined<Rom, RomFile>(
                 builder,
@@ -142,12 +142,12 @@ namespace Playarr.Core.Games
 
         public List<Rom> FindEpisodesBySceneNumbering(int gameId, int platformNumber, int romNumber)
         {
-            return Query(s => s.SeriesId == gameId && s.SceneSeasonNumber == platformNumber && s.SceneEpisodeNumber == romNumber).ToList();
+            return Query(s => s.GameId == gameId && s.ScenePlatformNumber == platformNumber && s.SceneEpisodeNumber == romNumber).ToList();
         }
 
         public List<Rom> FindEpisodesBySceneNumbering(int gameId, int sceneAbsoluteRomNumber)
         {
-            return Query(s => s.SeriesId == gameId && s.SceneAbsoluteEpisodeNumber == sceneAbsoluteRomNumber).ToList();
+            return Query(s => s.GameId == gameId && s.SceneAbsoluteEpisodeNumber == sceneAbsoluteRomNumber).ToList();
         }
 
         public List<Rom> EpisodesBetweenDates(DateTime startDate, DateTime endDate, bool includeUnmonitored, bool includeSpecials)
@@ -156,13 +156,13 @@ namespace Playarr.Core.Games
 
             if (!includeSpecials)
             {
-                builder = builder.Where<Rom>(e => e.SeasonNumber != 0);
+                builder = builder.Where<Rom>(e => e.PlatformNumber != 0);
             }
 
             if (!includeUnmonitored)
             {
                 builder = builder.Where<Rom>(e => e.Monitored == true)
-                    .Join<Rom, Game>((l, r) => l.SeriesId == r.Id)
+                    .Join<Rom, Game>((l, r) => l.GameId == r.Id)
                     .Where<Game>(e => e.Monitored == true);
             }
 
@@ -181,7 +181,7 @@ namespace Playarr.Core.Games
         {
             using (var conn = _database.OpenConnection())
             {
-                conn.Execute("UPDATE \"Roms\" SET \"Monitored\" = @monitored WHERE \"SeriesId\" = @gameId AND \"SeasonNumber\" = @platformNumber AND \"Monitored\" != @monitored",
+                conn.Execute("UPDATE \"Roms\" SET \"Monitored\" = @monitored WHERE \"GameId\" = @gameId AND \"PlatformNumber\" = @platformNumber AND \"Monitored\" != @monitored",
                     new { gameId = gameId, platformNumber = platformNumber, monitored = monitored });
             }
         }
@@ -212,9 +212,9 @@ namespace Playarr.Core.Games
         }
 
         private SqlBuilder EpisodesWithoutFilesBuilder(DateTime currentTime, int startingPlatformNumber) => Builder()
-            .Join<Rom, Game>((l, r) => l.SeriesId == r.Id)
+            .Join<Rom, Game>((l, r) => l.GameId == r.Id)
             .Where<Rom>(f => f.EpisodeFileId == 0)
-            .Where<Rom>(f => f.SeasonNumber >= startingPlatformNumber)
+            .Where<Rom>(f => f.PlatformNumber >= startingPlatformNumber)
             .Where(BuildAirDateUtcCutoffWhereClause(currentTime));
 
         private string BuildAirDateUtcCutoffWhereClause(DateTime currentTime)
@@ -230,10 +230,10 @@ namespace Playarr.Core.Games
         }
 
         private SqlBuilder EpisodesWhereCutoffUnmetBuilder(List<QualitiesBelowCutoff> qualitiesBelowCutoff, int startingPlatformNumber) => Builder()
-            .Join<Rom, Game>((e, s) => e.SeriesId == s.Id)
+            .Join<Rom, Game>((e, s) => e.GameId == s.Id)
             .LeftJoin<Rom, RomFile>((e, ef) => e.EpisodeFileId == ef.Id)
             .Where<Rom>(e => e.EpisodeFileId != 0)
-            .Where<Rom>(e => e.SeasonNumber >= startingPlatformNumber)
+            .Where<Rom>(e => e.PlatformNumber >= startingPlatformNumber)
             .Where(
                 string.Format("({0})",
                     BuildQualityCutoffWhereClause(qualitiesBelowCutoff)))
@@ -257,7 +257,7 @@ namespace Playarr.Core.Games
 
         private Rom FindOneByAirDate(int gameId, string date)
         {
-            var roms = Query(s => s.SeriesId == gameId && s.AirDate == date).ToList();
+            var roms = Query(s => s.GameId == gameId && s.AirDate == date).ToList();
 
             if (!roms.Any())
             {
@@ -271,7 +271,7 @@ namespace Playarr.Core.Games
 
             _logger.Debug("Multiple roms with the same air date were found, will exclude specials");
 
-            var regularEpisodes = roms.Where(e => e.SeasonNumber > 0).ToList();
+            var regularEpisodes = roms.Where(e => e.PlatformNumber > 0).ToList();
 
             if (regularEpisodes.Count == 1)
             {

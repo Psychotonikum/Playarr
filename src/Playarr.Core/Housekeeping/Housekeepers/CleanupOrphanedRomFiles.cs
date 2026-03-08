@@ -15,12 +15,12 @@ namespace Playarr.Core.Housekeeping.Housekeepers
         public void Clean()
         {
             using var mapper = _database.OpenConnection();
-            mapper.Execute(@"DELETE FROM ""EpisodeFiles""
+            mapper.Execute(@"DELETE FROM ""RomFiles""
                                      WHERE ""Id"" IN (
-                                     SELECT ""EpisodeFiles"".""Id"" FROM ""EpisodeFiles""
-                                     LEFT OUTER JOIN ""Episodes""
-                                     ON ""EpisodeFiles"".""Id"" = ""Episodes"".""EpisodeFileId""
-                                     WHERE ""Episodes"".""Id"" IS NULL)");
+                                     SELECT ""RomFiles"".""Id"" FROM ""RomFiles""
+                                     LEFT OUTER JOIN ""Roms""
+                                     ON ""RomFiles"".""Id"" = ""Roms"".""EpisodeFileId""
+                                     WHERE ""Roms"".""Id"" IS NULL)");
         }
     }
 }

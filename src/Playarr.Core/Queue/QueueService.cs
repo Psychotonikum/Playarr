@@ -60,7 +60,7 @@ namespace Playarr.Core.Queue
             var queue = new Queue
             {
                 Game = trackedDownload.RemoteEpisode?.Game,
-                SeasonNumber = trackedDownload.RemoteEpisode?.MappedPlatformNumber,
+                PlatformNumber = trackedDownload.RemoteEpisode?.MappedPlatformNumber,
                 Roms = roms,
                 Languages = trackedDownload.RemoteEpisode?.Languages ?? new List<Language> { Language.Unknown },
                 Quality = trackedDownload.RemoteEpisode?.ParsedRomInfo.Quality ?? new QualityModel(Quality.Unknown),

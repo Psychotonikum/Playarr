@@ -93,7 +93,7 @@ namespace Playarr.Core.Games
 
         public void Execute(MoveGameCommand message)
         {
-            var game = _seriesService.GetSeries(message.SeriesId);
+            var game = _seriesService.GetSeries(message.GameId);
             MoveSingleSeries(game, message.SourcePath, message.DestinationPath);
         }
 
@@ -107,7 +107,7 @@ namespace Playarr.Core.Games
             for (var index = 0; index < seriesToMove.Count; index++)
             {
                 var s = seriesToMove[index];
-                var game = _seriesService.GetSeries(s.SeriesId);
+                var game = _seriesService.GetSeries(s.GameId);
                 var destinationPath = Path.Combine(destinationRootFolder, _filenameBuilder.GetGameFolder(game));
 
                 MoveSingleSeries(game, s.SourcePath, destinationPath, index, seriesToMove.Count);

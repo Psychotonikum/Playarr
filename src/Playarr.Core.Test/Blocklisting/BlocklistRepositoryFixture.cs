@@ -24,7 +24,7 @@ namespace Playarr.Core.Test.Blocklisting
         {
             _blocklist = new Blocklist
                      {
-                         SeriesId = 12345,
+                         GameId = 12345,
                          RomIds = new List<int> { 1 },
                          Quality = new QualityModel(Quality.Bluray720p),
                          Languages = new List<Language> { Language.English },
@@ -61,7 +61,7 @@ namespace Playarr.Core.Test.Blocklisting
         {
             Subject.Insert(_blocklist);
 
-            Subject.BlocklistedByTitle(_blocklist.SeriesId, _blocklist.SourceTitle.ToUpperInvariant()).Should().HaveCount(1);
+            Subject.BlocklistedByTitle(_blocklist.GameId, _blocklist.SourceTitle.ToUpperInvariant()).Should().HaveCount(1);
         }
 
         [Test]
@@ -69,9 +69,9 @@ namespace Playarr.Core.Test.Blocklisting
         {
             var blocklistItems = Builder<Blocklist>.CreateListOfSize(5)
                 .TheFirst(1)
-                .With(c => c.SeriesId = _series2.Id)
+                .With(c => c.GameId = _series2.Id)
                 .TheRest()
-                .With(c => c.SeriesId = _series1.Id)
+                .With(c => c.GameId = _series1.Id)
                 .All()
                 .With(c => c.Quality = new QualityModel())
                 .With(c => c.Languages = new List<Language>())

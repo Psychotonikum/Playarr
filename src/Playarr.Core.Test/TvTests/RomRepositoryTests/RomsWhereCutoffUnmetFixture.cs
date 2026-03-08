@@ -47,7 +47,7 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
                                               .BuildNew();
 
             _unmonitoredSeries = Builder<Game>.CreateNew()
-                                                .With(s => s.TvdbId = RandomNumber)
+                                                .With(s => s.IgdbId = RandomNumber)
                                                 .With(s => s.Runtime = 30)
                                                 .With(s => s.Monitored = false)
                                                 .With(s => s.TitleSlug = "Title2")
@@ -95,7 +95,7 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
             var monitoredSeriesEpisodes = Builder<Rom>.CreateListOfSize(4)
                                            .All()
                                            .With(e => e.Id = 0)
-                                           .With(e => e.SeriesId = _monitoredSeries.Id)
+                                           .With(e => e.GameId = _monitoredSeries.Id)
                                            .With(e => e.AirDateUtc = DateTime.Now.AddDays(-5))
                                            .With(e => e.Monitored = true)
                                            .With(e => e.EpisodeFileId = qualityUnmetLanguageUnmet.Id)
@@ -105,13 +105,13 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
                                            .TheNext(1)
                                            .With(e => e.EpisodeFileId = qualityRawHDLanguageExceed.Id)
                                            .TheLast(1)
-                                           .With(e => e.SeasonNumber = 0)
+                                           .With(e => e.PlatformNumber = 0)
                                            .Build();
 
             var unmonitoredSeriesEpisodes = Builder<Rom>.CreateListOfSize(3)
                                            .All()
                                            .With(e => e.Id = 0)
-                                           .With(e => e.SeriesId = _unmonitoredSeries.Id)
+                                           .With(e => e.GameId = _unmonitoredSeries.Id)
                                            .With(e => e.AirDateUtc = DateTime.Now.AddDays(-5))
                                            .With(e => e.Monitored = true)
                                            .With(e => e.EpisodeFileId = qualityRawHDLanguageUnmet.Id)
@@ -119,13 +119,13 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
                                            .With(e => e.Monitored = false)
                                            .With(e => e.EpisodeFileId = qualityMetLanguageMet.Id)
                                            .TheLast(1)
-                                           .With(e => e.SeasonNumber = 0)
+                                           .With(e => e.PlatformNumber = 0)
                                            .Build();
 
             _unairedEpisodes             = Builder<Rom>.CreateListOfSize(1)
                                            .All()
                                            .With(e => e.Id = 0)
-                                           .With(e => e.SeriesId = _monitoredSeries.Id)
+                                           .With(e => e.GameId = _monitoredSeries.Id)
                                            .With(e => e.AirDateUtc = DateTime.Now.AddDays(5))
                                            .With(e => e.Monitored = true)
                                            .With(e => e.EpisodeFileId = qualityUnmetLanguageUnmet.Id)

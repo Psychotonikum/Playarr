@@ -4,7 +4,7 @@ namespace Playarr.Core.Games.Commands
 {
     public class MoveGameCommand : Command
     {
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public string SourcePath { get; set; }
         public string DestinationPath { get; set; }
 

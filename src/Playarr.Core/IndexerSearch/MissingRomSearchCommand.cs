@@ -4,7 +4,7 @@ namespace Playarr.Core.IndexerSearch
 {
     public class MissingEpisodeSearchCommand : Command
     {
-        public int? SeriesId { get; set; }
+        public int? GameId { get; set; }
         public bool Monitored { get; set; }
 
         public override bool SendUpdatesToClient => true;
@@ -16,7 +16,7 @@ namespace Playarr.Core.IndexerSearch
 
         public MissingEpisodeSearchCommand(int gameId)
         {
-            SeriesId = gameId;
+            GameId = gameId;
             Monitored = true;
         }
     }

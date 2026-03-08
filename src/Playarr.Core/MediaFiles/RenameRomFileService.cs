@@ -61,7 +61,7 @@ namespace Playarr.Core.MediaFiles
             var files = _mediaFileService.GetFilesBySeries(gameId);
 
             return GetPreviews(game, roms, files)
-                .OrderByDescending(e => e.SeasonNumber)
+                .OrderByDescending(e => e.PlatformNumber)
                 .ThenByDescending(e => e.RomNumbers.First())
                 .ToList();
         }
@@ -79,8 +79,8 @@ namespace Playarr.Core.MediaFiles
         public List<RenameRomFilePreview> GetRenamePreviews(List<int> gameIds)
         {
             var seriesList = _seriesService.GetSeries(gameIds);
-            var episodesList = _episodeService.GetEpisodesBySeries(gameIds).ToLookup(e => e.SeriesId);
-            var filesList = _mediaFileService.GetFilesByGameIds(gameIds).ToLookup(f => f.SeriesId);
+            var episodesList = _episodeService.GetEpisodesBySeries(gameIds).ToLookup(e => e.GameId);
+            var filesList = _mediaFileService.GetFilesByGameIds(gameIds).ToLookup(f => f.GameId);
 
             return seriesList.SelectMany(game =>
                 {
@@ -89,8 +89,8 @@ namespace Playarr.Core.MediaFiles
 
                     return GetPreviews(game, roms, files);
                 })
-                .OrderByDescending(e => e.SeriesId)
-                .ThenByDescending(e => e.SeasonNumber)
+                .OrderByDescending(e => e.GameId)
+                .ThenByDescending(e => e.PlatformNumber)
                 .ThenByDescending(e => e.RomNumbers.First())
                 .ToList();
         }
@@ -109,15 +109,15 @@ namespace Playarr.Core.MediaFiles
                     continue;
                 }
 
-                var platformNumber = episodesInFile.First().SeasonNumber;
+                var platformNumber = episodesInFile.First().PlatformNumber;
                 var newPath = _filenameBuilder.BuildFilePath(episodesInFile, game, file, Path.GetExtension(romFilePath));
 
                 if (!romFilePath.PathEquals(newPath, StringComparison.Ordinal))
                 {
                     yield return new RenameRomFilePreview
                     {
-                        SeriesId = game.Id,
-                        SeasonNumber = platformNumber,
+                        GameId = game.Id,
+                        PlatformNumber = platformNumber,
                         RomNumbers = episodesInFile.Select(e => e.EpisodeNumber).ToList(),
                         EpisodeFileId = file.Id,
                         ExistingPath = file.RelativePath,
@@ -180,7 +180,7 @@ namespace Playarr.Core.MediaFiles
 
         public void Execute(RenameFilesCommand message)
         {
-            var game = _seriesService.GetSeries(message.SeriesId);
+            var game = _seriesService.GetSeries(message.GameId);
             var romFiles = _mediaFileService.Get(message.Files);
 
             _logger.ProgressInfo("Renaming {0} files for {1}", romFiles.Count, game.Title);

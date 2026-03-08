@@ -239,11 +239,11 @@ namespace Playarr.Integration.Test
 
         public GameResource EnsureSeries(int igdbId, string gameTitle, bool? monitored = null)
         {
-            var result = Game.All().FirstOrDefault(v => v.TvdbId == igdbId);
+            var result = Game.All().FirstOrDefault(v => v.IgdbId == igdbId);
 
             if (result == null)
             {
-                var lookup = Game.Lookup("tvdb:" + igdbId);
+                var lookup = Game.Lookup("igdb:" + igdbId);
                 var game = lookup.First();
                 game.QualityProfileId = 1;
                 game.Path = Path.Combine(SeriesRootFolder, game.Title);
@@ -288,7 +288,7 @@ namespace Playarr.Integration.Test
 
         public void EnsureNoGame(int igdbId, string gameTitle)
         {
-            var result = Game.All().FirstOrDefault(v => v.TvdbId == igdbId);
+            var result = Game.All().FirstOrDefault(v => v.IgdbId == igdbId);
 
             if (result != null)
             {
@@ -298,7 +298,7 @@ namespace Playarr.Integration.Test
 
         public RomFileResource EnsureRomFile(GameResource game, int platform, int rom, Quality quality)
         {
-            var result = Roms.GetEpisodesInSeries(game.Id).Single(v => v.SeasonNumber == platform && v.EpisodeNumber == rom);
+            var result = Roms.GetEpisodesInSeries(game.Id).Single(v => v.PlatformNumber == platform && v.EpisodeNumber == rom);
 
             if (result.RomFile == null)
             {
@@ -311,7 +311,7 @@ namespace Playarr.Integration.Test
 
                 Commands.WaitAll();
 
-                result = Roms.GetEpisodesInSeries(game.Id).Single(v => v.SeasonNumber == platform && v.EpisodeNumber == rom);
+                result = Roms.GetEpisodesInSeries(game.Id).Single(v => v.PlatformNumber == platform && v.EpisodeNumber == rom);
 
                 result.EpisodeFileId.Should().NotBe(0);
             }

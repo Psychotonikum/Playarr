@@ -24,14 +24,14 @@ namespace Playarr.Core.Test.TvTests.GameServiceTests
 
             _fakeSeries.Platforms = new List<Platform>
             {
-                new Platform { SeasonNumber = 1, Monitored = true },
-                new Platform { SeasonNumber = 2, Monitored = true }
+                new Platform { PlatformNumber = 1, Monitored = true },
+                new Platform { PlatformNumber = 2, Monitored = true }
             };
 
             _existingGame.Platforms = new List<Platform>
             {
-                new Platform { SeasonNumber = 1, Monitored = true },
-                new Platform { SeasonNumber = 2, Monitored = true }
+                new Platform { PlatformNumber = 1, Monitored = true },
+                new Platform { PlatformNumber = 2, Monitored = true }
             };
 
             Mocker.GetMock<IAutoTaggingService>()
@@ -68,7 +68,7 @@ namespace Playarr.Core.Test.TvTests.GameServiceTests
             var platformNumber = 1;
             var monitored = false;
 
-            _fakeSeries.Platforms.Single(s => s.SeasonNumber == platformNumber).Monitored = monitored;
+            _fakeSeries.Platforms.Single(s => s.PlatformNumber == platformNumber).Monitored = monitored;
 
             Subject.UpdateSeries(_fakeSeries);
 
@@ -87,7 +87,7 @@ namespace Playarr.Core.Test.TvTests.GameServiceTests
             var monitored = false;
 
             _fakeSeries.Tags = new HashSet<int> { 1, 2 };
-            _fakeSeries.Platforms.Single(s => s.SeasonNumber == platformNumber).Monitored = monitored;
+            _fakeSeries.Platforms.Single(s => s.PlatformNumber == platformNumber).Monitored = monitored;
 
             Mocker.GetMock<IAutoTaggingService>()
                 .Setup(s => s.GetTagChanges(_fakeSeries))

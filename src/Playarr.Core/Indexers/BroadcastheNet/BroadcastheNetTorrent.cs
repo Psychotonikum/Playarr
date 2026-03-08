@@ -24,7 +24,7 @@ namespace Playarr.Core.Indexers.BroadcastheNet
         public string ReleaseName { get; set; }
         public long Size { get; set; }
         public long Time { get; set; }
-        public int? TvdbID { get; set; }
+        public int? IgdbID { get; set; }
         public int? TvrageID { get; set; }
         public string ImdbID { get; set; }
         public string InfoHash { get; set; }

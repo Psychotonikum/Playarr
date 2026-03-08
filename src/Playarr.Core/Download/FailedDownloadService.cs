@@ -128,7 +128,7 @@ namespace Playarr.Core.Download
 
             var downloadFailedEvent = new DownloadFailedEvent
             {
-                SeriesId = historyItem.SeriesId,
+                GameId = historyItem.GameId,
                 RomIds = romIds,
                 Quality = historyItem.Quality,
                 SourceTitle = historyItem.SourceTitle,

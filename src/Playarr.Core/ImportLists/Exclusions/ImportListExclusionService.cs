@@ -76,9 +76,9 @@ namespace Playarr.Core.ImportLists.Exclusions
 
             var exclusionsToAdd = new List<ImportListExclusion>();
 
-            foreach (var game in message.Game.DistinctBy(s => s.TvdbId))
+            foreach (var game in message.Game.DistinctBy(s => s.IgdbId))
             {
-                var existingExclusion = _repo.FindByIgdbId(game.TvdbId);
+                var existingExclusion = _repo.FindByIgdbId(game.IgdbId);
 
                 if (existingExclusion != null)
                 {
@@ -87,7 +87,7 @@ namespace Playarr.Core.ImportLists.Exclusions
 
                 exclusionsToAdd.Add(new ImportListExclusion
                 {
-                    TvdbId = game.TvdbId,
+                    IgdbId = game.IgdbId,
                     Title = game.Title
                 });
             }

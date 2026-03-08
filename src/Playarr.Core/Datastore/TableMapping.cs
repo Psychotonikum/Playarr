@@ -114,18 +114,18 @@ namespace Playarr.Core.Datastore
 
             Mapper.Entity<EpisodeHistory>("History").RegisterModel();
 
-            Mapper.Entity<Game>("Series").RegisterModel()
+            Mapper.Entity<Game>("Games").RegisterModel()
                   .Ignore(s => s.RootFolderPath)
                   .HasOne(s => s.QualityProfile, s => s.QualityProfileId);
 
-            Mapper.Entity<RomFile>("EpisodeFiles").RegisterModel()
-                  .HasOne(f => f.Game, f => f.SeriesId)
+            Mapper.Entity<RomFile>("RomFiles").RegisterModel()
+                  .HasOne(f => f.Game, f => f.GameId)
                   .LazyLoad(x => x.Roms,
                             (db, parent) => db.Query<Rom>(new SqlBuilder(db.DatabaseType).Where<Rom>(c => c.EpisodeFileId == parent.Id)).ToList(),
                             t => t.Id > 0)
                   .Ignore(f => f.Path);
 
-            Mapper.Entity<Rom>("Episodes").RegisterModel()
+            Mapper.Entity<Rom>("Roms").RegisterModel()
                   .Ignore(e => e.GameTitle)
                   .Ignore(e => e.Game)
                   .Ignore(e => e.HasFile)
@@ -140,6 +140,8 @@ namespace Playarr.Core.Datastore
                   .Ignore(d => d.PreferredSize);
 
             Mapper.Entity<CustomFormat>("CustomFormats").RegisterModel();
+
+            Mapper.Entity<GameSystem>("GameSystems").RegisterModel();
 
             Mapper.Entity<QualityProfile>("QualityProfiles").RegisterModel();
             Mapper.Entity<Log>("Logs").RegisterModel();

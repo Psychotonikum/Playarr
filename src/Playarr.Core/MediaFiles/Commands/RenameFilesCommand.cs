@@ -5,7 +5,7 @@ namespace Playarr.Core.MediaFiles.Commands
 {
     public class RenameFilesCommand : Command
     {
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public List<int> Files { get; set; }
 
         public override bool SendUpdatesToClient => true;
@@ -17,7 +17,7 @@ namespace Playarr.Core.MediaFiles.Commands
 
         public RenameFilesCommand(int gameId, List<int> files)
         {
-            SeriesId = gameId;
+            GameId = gameId;
             Files = files;
         }
     }

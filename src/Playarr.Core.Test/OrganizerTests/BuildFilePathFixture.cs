@@ -37,7 +37,7 @@ namespace Playarr.Core.Test.OrganizerTests
             var fakeEpisodes = Builder<Rom>.CreateListOfSize(1)
                 .All()
                 .With(s => s.Title = "Rom Title")
-                .With(s => s.SeasonNumber = platformNumber)
+                .With(s => s.PlatformNumber = platformNumber)
                 .With(s => s.EpisodeNumber = 5)
                 .Build().ToList();
             var fakeSeries = Builder<Game>.CreateNew()
@@ -66,7 +66,7 @@ namespace Playarr.Core.Test.OrganizerTests
             var fakeEpisodes = Builder<Rom>.CreateListOfSize(1)
                 .All()
                 .With(s => s.Title = "Rom Title")
-                .With(s => s.SeasonNumber = platformNumber)
+                .With(s => s.PlatformNumber = platformNumber)
                 .With(s => s.EpisodeNumber = 5)
                 .Build().ToList();
             var fakeSeries = Builder<Game>.CreateNew()

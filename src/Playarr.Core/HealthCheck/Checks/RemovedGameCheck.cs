@@ -29,7 +29,7 @@ namespace Playarr.Core.HealthCheck.Checks
                 return new HealthCheck(GetType());
             }
 
-            var seriesText = deletedSeries.Select(s => $"{s.Title} (tvdbid {s.TvdbId})").Join(", ");
+            var seriesText = deletedSeries.Select(s => $"{s.Title} (igdbid {s.IgdbId})").Join(", ");
 
             if (deletedSeries.Count == 1)
             {
@@ -40,7 +40,7 @@ namespace Playarr.Core.HealthCheck.Checks
                     {
                         { "game", seriesText }
                     }),
-                    "#game-removed-from-thetvdb");
+                    "#game-removed-from-theigdb");
             }
 
             return new HealthCheck(GetType(),
@@ -50,7 +50,7 @@ namespace Playarr.Core.HealthCheck.Checks
                 {
                     { "game", seriesText }
                 }),
-                "#game-removed-from-thetvdb");
+                "#game-removed-from-theigdb");
         }
 
         public bool ShouldCheckOnEvent(SeriesDeletedEvent deletedEvent)

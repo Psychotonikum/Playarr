@@ -29,7 +29,7 @@ namespace Playarr.Core.Test.TvTests.RomServiceTests
 
             _romFile = Builder<RomFile>
                 .CreateNew()
-                .With(e => e.SeriesId = _series.Id)
+                .With(e => e.GameId = _series.Id)
                 .Build();
         }
 
@@ -38,7 +38,7 @@ namespace Playarr.Core.Test.TvTests.RomServiceTests
             _episodes = Builder<Rom>
                 .CreateListOfSize(1)
                 .All()
-                .With(e => e.SeriesId = _series.Id)
+                .With(e => e.GameId = _series.Id)
                 .With(e => e.Monitored = true)
                 .Build()
                 .ToList();
@@ -53,7 +53,7 @@ namespace Playarr.Core.Test.TvTests.RomServiceTests
             _episodes = Builder<Rom>
                 .CreateListOfSize(2)
                 .All()
-                .With(e => e.SeriesId = _series.Id)
+                .With(e => e.GameId = _series.Id)
                 .With(e => e.Monitored = true)
                 .Build()
                 .ToList();

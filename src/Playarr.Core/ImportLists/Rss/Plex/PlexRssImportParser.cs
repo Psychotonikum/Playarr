@@ -41,9 +41,9 @@ namespace Playarr.Core.ImportLists.Rss.Plex
                     info.ImdbId = ParseImdbId(guid.Replace("imdb://", ""));
                 }
 
-                if (int.TryParse(guid.Replace("tvdb://", ""), out var igdbId))
+                if (int.TryParse(guid.Replace("igdb://", ""), out var igdbId))
                 {
-                    info.TvdbId = igdbId;
+                    info.IgdbId = igdbId;
                 }
 
                 if (int.TryParse(guid.Replace("tmdb://", ""), out var tmdbId))
@@ -52,7 +52,7 @@ namespace Playarr.Core.ImportLists.Rss.Plex
                 }
             }
 
-            if (info.ImdbId.IsNullOrWhiteSpace() && info.TvdbId == 0 && info.TmdbId == 0)
+            if (info.ImdbId.IsNullOrWhiteSpace() && info.IgdbId == 0 && info.TmdbId == 0)
             {
                 _logger.Warn("Each item in the RSS feed must have a guid element with a IMDB ID, IGDB ID or TMDB ID: '{0}'", info.Title);
 

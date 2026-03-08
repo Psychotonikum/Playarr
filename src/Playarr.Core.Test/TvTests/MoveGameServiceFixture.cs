@@ -29,7 +29,7 @@ namespace Playarr.Core.Test.TvTests
 
             _command = new MoveGameCommand
                        {
-                           SeriesId = 1,
+                           GameId = 1,
                            SourcePath = @"C:\Test\TV\Game".AsOsAgnostic(),
                            DestinationPath = @"C:\Test\TV2\Game".AsOsAgnostic()
                        };
@@ -40,7 +40,7 @@ namespace Playarr.Core.Test.TvTests
                                     {
                                         new BulkMoveGame
                                         {
-                                            SeriesId = 1,
+                                            GameId = 1,
                                             SourcePath = @"C:\Test\TV\Game".AsOsAgnostic()
                                         }
                                     },

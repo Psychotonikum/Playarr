@@ -40,7 +40,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
                         {
                             Builder<Rom>.CreateNew()
                                             .With(e => e.Title = "Rom Title 1")
-                                            .With(e => e.SeasonNumber = 1)
+                                            .With(e => e.PlatformNumber = 1)
                                             .With(e => e.EpisodeNumber = 1)
                                             .Build()
                         };

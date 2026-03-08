@@ -54,11 +54,11 @@ namespace Playarr.Core.Games
 
         public List<Game> FindByTitleInexact(string cleanTitle)
         {
-            var builder = Builder().Where($"instr(@cleanTitle, \"Game\".\"CleanTitle\")", new { cleanTitle = cleanTitle });
+            var builder = Builder().Where($"instr(@cleanTitle, \"Games\".\"CleanTitle\")", new { cleanTitle = cleanTitle });
 
             if (_database.DatabaseType == DatabaseType.PostgreSQL)
             {
-                builder = Builder().Where($"(strpos(@cleanTitle, \"Game\".\"CleanTitle\") > 0)", new { cleanTitle = cleanTitle });
+                builder = Builder().Where($"(strpos(@cleanTitle, \"Games\".\"CleanTitle\") > 0)", new { cleanTitle = cleanTitle });
             }
 
             return Query(builder).ToList();
@@ -66,7 +66,7 @@ namespace Playarr.Core.Games
 
         public Game FindByIgdbId(int igdbId)
         {
-            return Query(s => s.TvdbId == igdbId).SingleOrDefault();
+            return Query(s => s.IgdbId == igdbId).SingleOrDefault();
         }
 
         public Game FindByMobyGamesId(int mobyGamesId)
@@ -89,7 +89,7 @@ namespace Playarr.Core.Games
         {
             using (var conn = _database.OpenConnection())
             {
-                return conn.Query<int>("SELECT \"TvdbId\" FROM \"Game\"").ToList();
+                return conn.Query<int>("SELECT \"IgdbId\" FROM \"Games\"").ToList();
             }
         }
 
@@ -97,7 +97,7 @@ namespace Playarr.Core.Games
         {
             using (var conn = _database.OpenConnection())
             {
-                var strSql = "SELECT \"Id\" AS Key, \"Path\" AS Value FROM \"Game\"";
+                var strSql = "SELECT \"Id\" AS Key, \"Path\" AS Value FROM \"Games\"";
                 return conn.Query<KeyValuePair<int, string>>(strSql).ToDictionary(x => x.Key, x => x.Value);
             }
         }
@@ -106,7 +106,7 @@ namespace Playarr.Core.Games
         {
             using (var conn = _database.OpenConnection())
             {
-                var strSql = "SELECT \"Id\" AS Key, \"Tags\" AS Value FROM \"Game\" WHERE \"Tags\" IS NOT NULL";
+                var strSql = "SELECT \"Id\" AS Key, \"Tags\" AS Value FROM \"Games\" WHERE \"Tags\" IS NOT NULL";
                 return conn.Query<KeyValuePair<int, List<int>>>(strSql).ToDictionary(x => x.Key, x => x.Value);
             }
         }

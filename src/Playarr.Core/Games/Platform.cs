@@ -10,7 +10,7 @@ namespace Playarr.Core.Games
             Images = new List<MediaCover.MediaCover>();
         }
 
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public bool Monitored { get; set; }
         public List<MediaCover.MediaCover> Images { get; set; }
     }

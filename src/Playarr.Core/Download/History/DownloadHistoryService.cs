@@ -103,7 +103,7 @@ namespace Playarr.Core.Download.History
             var history = new DownloadHistory
             {
                 EventType = DownloadHistoryEventType.DownloadGrabbed,
-                SeriesId = message.Rom.Game.Id,
+                GameId = message.Rom.Game.Id,
                 DownloadId = message.DownloadId,
                 SourceTitle = message.Rom.Release.Title,
                 Date = DateTime.UtcNow,
@@ -146,7 +146,7 @@ namespace Playarr.Core.Download.History
             var history = new DownloadHistory
             {
                 EventType = DownloadHistoryEventType.FileImported,
-                SeriesId = message.ImportedEpisode.SeriesId,
+                GameId = message.ImportedEpisode.GameId,
                 DownloadId = downloadId,
                 SourceTitle = message.RomInfo.Path,
                 Date = DateTime.UtcNow,
@@ -169,7 +169,7 @@ namespace Playarr.Core.Download.History
             var history = new DownloadHistory
             {
                 EventType = DownloadHistoryEventType.DownloadImported,
-                SeriesId = message.SeriesId,
+                GameId = message.GameId,
                 DownloadId = downloadItem.DownloadId,
                 SourceTitle = downloadItem.Title,
                 Date = DateTime.UtcNow,
@@ -194,7 +194,7 @@ namespace Playarr.Core.Download.History
             var history = new DownloadHistory
             {
                 EventType = DownloadHistoryEventType.DownloadFailed,
-                SeriesId = message.SeriesId,
+                GameId = message.GameId,
                 DownloadId = message.DownloadId,
                 SourceTitle = message.SourceTitle,
                 Date = DateTime.UtcNow,
@@ -213,7 +213,7 @@ namespace Playarr.Core.Download.History
             var history = new DownloadHistory
             {
                 EventType = DownloadHistoryEventType.DownloadIgnored,
-                SeriesId = message.SeriesId,
+                GameId = message.GameId,
                 DownloadId = message.DownloadId,
                 SourceTitle = message.SourceTitle,
                 Date = DateTime.UtcNow,

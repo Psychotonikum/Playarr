@@ -12,7 +12,7 @@ namespace Playarr.Api.V5.Queue
 {
     public class QueueResource : RestResource
     {
-        public int? SeriesId { get; set; }
+        public int? GameId { get; set; }
         public IEnumerable<int> RomIds { get; set; } = [];
         public List<int> PlatformNumbers { get; set; } = [];
         public GameResource? Game { get; set; }
@@ -52,9 +52,9 @@ namespace Playarr.Api.V5.Queue
             return new QueueResource
             {
                 Id = model.Id,
-                SeriesId = model.Game?.Id,
+                GameId = model.Game?.Id,
                 RomIds = model.Roms?.Select(e => e.Id).ToList() ?? [],
-                PlatformNumbers = model.SeasonNumber.HasValue ? [model.SeasonNumber.Value] : [],
+                PlatformNumbers = model.PlatformNumber.HasValue ? [model.PlatformNumber.Value] : [],
                 Game = includeSeries && model.Game != null ? model.Game.ToResource() : null,
                 Roms = includeEpisodes ? model.Roms?.ToResource() : null,
                 Languages = model.Languages,

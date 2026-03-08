@@ -17,7 +17,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             var files = Builder<MetadataFile>.CreateListOfSize(2)
                                              .All()
                                              .With(m => m.Type = MetadataType.SeriesMetadata)
-                                             .With(m => m.SeriesId = 1)
+                                             .With(m => m.GameId = 1)
                                              .BuildListOfNew();
 
             Db.InsertMany(files);
@@ -45,7 +45,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             var files = Builder<MetadataFile>.CreateListOfSize(2)
                                              .All()
                                              .With(m => m.Type = MetadataType.SeriesMetadata)
-                                             .With(m => m.SeriesId = 1)
+                                             .With(m => m.GameId = 1)
                                              .With(m => m.Consumer = "XbmcMetadata")
                                              .BuildListOfNew();
 

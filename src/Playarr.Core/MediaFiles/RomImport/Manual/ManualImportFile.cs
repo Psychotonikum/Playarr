@@ -11,7 +11,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
     {
         public string Path { get; set; }
         public string FolderName { get; set; }
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public List<int> RomIds { get; set; }
         public int? EpisodeFileId { get; set; }
         public QualityModel Quality { get; set; }

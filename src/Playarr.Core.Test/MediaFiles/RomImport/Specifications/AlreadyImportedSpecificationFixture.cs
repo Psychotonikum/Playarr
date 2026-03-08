@@ -32,7 +32,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
                                      .Build();
 
             _episode = Builder<Rom>.CreateNew()
-                .With(e => e.SeasonNumber = 1)
+                .With(e => e.PlatformNumber = 1)
                 .With(e => e.AirDateUtc = DateTime.UtcNow)
                 .Build();
 

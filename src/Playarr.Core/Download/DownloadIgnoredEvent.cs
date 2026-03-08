@@ -8,7 +8,7 @@ namespace Playarr.Core.Download
 {
     public class DownloadIgnoredEvent : IEvent
     {
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public List<int> RomIds { get; set; }
         public List<Language> Languages { get; set; }
         public QualityModel Quality { get; set; }

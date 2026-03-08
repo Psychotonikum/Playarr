@@ -13,7 +13,7 @@ public class ReleaseGrabResource
 
 public class OverrideReleaseResource
 {
-    public int? SeriesId { get; set; }
+    public int? GameId { get; set; }
     public List<int> RomIds { get; set; } = [];
     public int? DownloadClientId { get; set; }
     public QualityModel? Quality { get; set; }
@@ -22,7 +22,7 @@ public class OverrideReleaseResource
 
 public class SearchInfoResource
 {
-    public int? SeriesId { get; set; }
-    public int? SeasonNumber { get; set; }
+    public int? GameId { get; set; }
+    public int? PlatformNumber { get; set; }
     public int? EpisodeId { get; set; }
 }

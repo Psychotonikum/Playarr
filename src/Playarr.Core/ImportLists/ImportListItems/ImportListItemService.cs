@@ -46,7 +46,7 @@ namespace Playarr.Core.ImportLists.ImportListItems
 
                 existingItem.Title = item.Title;
                 existingItem.Year = item.Year;
-                existingItem.TvdbId = item.TvdbId;
+                existingItem.IgdbId = item.IgdbId;
                 existingItem.ImdbId = item.ImdbId;
                 existingItem.TmdbId = item.TmdbId;
                 existingItem.MalId = item.MalId;
@@ -81,7 +81,7 @@ namespace Playarr.Core.ImportLists.ImportListItems
         {
             return existingItems.FirstOrDefault(e =>
             {
-                if (e.TvdbId > 0 && item.TvdbId > 0 && e.TvdbId == item.TvdbId)
+                if (e.IgdbId > 0 && item.IgdbId > 0 && e.IgdbId == item.IgdbId)
                 {
                     return true;
                 }

@@ -11,8 +11,8 @@ namespace Playarr.Api.V3.ManualImport
     public class ManualImportReprocessResource : RestResource
     {
         public string Path { get; set; }
-        public int SeriesId { get; set; }
-        public int? SeasonNumber { get; set; }
+        public int GameId { get; set; }
+        public int? PlatformNumber { get; set; }
         public List<RomResource> Roms { get; set; }
         public List<int> RomIds { get; set; }
         public QualityModel Quality { get; set; }

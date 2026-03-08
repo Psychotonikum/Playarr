@@ -4,7 +4,7 @@ namespace Playarr.Core.MediaFiles.Commands
 {
     public class RescanSeriesCommand : Command
     {
-        public int? SeriesId { get; set; }
+        public int? GameId { get; set; }
 
         public override bool SendUpdatesToClient => true;
 
@@ -14,7 +14,7 @@ namespace Playarr.Core.MediaFiles.Commands
 
         public RescanSeriesCommand(int gameId)
         {
-            SeriesId = gameId;
+            GameId = gameId;
         }
     }
 }

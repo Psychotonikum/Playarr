@@ -62,7 +62,7 @@ namespace Playarr.Core.ImportLists.Trakt.User
                 listItems.AddIfNotNull(new ImportListItemInfo()
                 {
                     Title = game.Title,
-                    TvdbId = game.Ids.Tvdb.GetValueOrDefault(),
+                    IgdbId = game.Ids.Igdb.GetValueOrDefault(),
                 });
             }
 

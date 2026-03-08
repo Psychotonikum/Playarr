@@ -48,7 +48,7 @@ public class GameLookupController : Controller
 
             resource.Folder = _fileNameBuilder.GetGameFolder(currentSeries);
             resource.Statistics = new SeriesStatistics().ToResource(resource.Platforms);
-            resource.IsExcluded = _importListExclusionService.FindByIgdbId(currentSeries.TvdbId) is not null;
+            resource.IsExcluded = _importListExclusionService.FindByIgdbId(currentSeries.IgdbId) is not null;
 
             yield return resource;
         }

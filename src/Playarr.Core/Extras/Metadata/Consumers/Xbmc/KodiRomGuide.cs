@@ -5,8 +5,8 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Xbmc
 {
     public class KodiEpisodeGuide
     {
-        [JsonPropertyName("tvdb")]
-        public string Tvdb { get; set; }
+        [JsonPropertyName("igdb")]
+        public string Igdb { get; set; }
 
         [JsonPropertyName("tvmaze")]
         public string TvMaze { get; set; }
@@ -26,7 +26,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Xbmc
 
         public KodiEpisodeGuide(Game game)
         {
-            Tvdb = game.TvdbId.ToString();
+            Igdb = game.IgdbId.ToString();
             TvMaze = game.RawgId > 0 ? game.RawgId.ToString() : null;
             TvRage = game.MobyGamesId > 0 ? game.RawgId.ToString() : null;
             Tmdb = game.TmdbId > 0 ? game.TmdbId.ToString() : null;

@@ -4,7 +4,7 @@ namespace Playarr.Core.IndexerSearch
 {
     public class CutoffUnmetEpisodeSearchCommand : Command
     {
-        public int? SeriesId { get; set; }
+        public int? GameId { get; set; }
         public bool Monitored { get; set; }
 
         public override bool SendUpdatesToClient
@@ -22,7 +22,7 @@ namespace Playarr.Core.IndexerSearch
 
         public CutoffUnmetEpisodeSearchCommand(int gameId)
         {
-            SeriesId = gameId;
+            GameId = gameId;
             Monitored = true;
         }
     }

@@ -22,8 +22,8 @@ namespace Playarr.Core.Indexers.HDBits
         [JsonProperty(PropertyName = "imdb")]
         public ImdbInfo ImdbInfo { get; set; }
 
-        [JsonProperty(PropertyName = "tvdb")]
-        public TvdbInfo TvdbInfo { get; set; }
+        [JsonProperty(PropertyName = "igdb")]
+        public IgdbInfo IgdbInfo { get; set; }
 
         [JsonProperty(PropertyName = "file_in_torrent")]
         public string FileInTorrent { get; set; }
@@ -93,8 +93,8 @@ namespace Playarr.Core.Indexers.HDBits
         [JsonProperty(PropertyName = "imdb")]
         public ImdbInfo ImdbInfo { get; set; }
 
-        [JsonProperty(PropertyName = "tvdb")]
-        public TvdbInfo TvdbInfo { get; set; }
+        [JsonProperty(PropertyName = "igdb")]
+        public IgdbInfo IgdbInfo { get; set; }
     }
 
     public class ImdbInfo
@@ -107,7 +107,7 @@ namespace Playarr.Core.Indexers.HDBits
         public float? Rating { get; set; }
     }
 
-    public class TvdbInfo
+    public class IgdbInfo
     {
         public int? Id { get; set; }
         public int? Platform { get; set; }

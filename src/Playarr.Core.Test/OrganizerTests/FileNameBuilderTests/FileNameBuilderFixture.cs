@@ -42,7 +42,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             _episode1 = Builder<Rom>.CreateNew()
                             .With(e => e.Title = "City Sushi")
-                            .With(e => e.SeasonNumber = 15)
+                            .With(e => e.PlatformNumber = 15)
                             .With(e => e.EpisodeNumber = 6)
                             .With(e => e.AbsoluteEpisodeNumber = 100)
                             .Build();
@@ -162,7 +162,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_season_number_with_single_digit()
         {
-            _episode1.SeasonNumber = 1;
+            _episode1.PlatformNumber = 1;
             _namingConfig.StandardEpisodeFormat = "{platform}x{rom}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
@@ -172,7 +172,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_season00_number_with_two_digits()
         {
-            _episode1.SeasonNumber = 1;
+            _episode1.PlatformNumber = 1;
             _namingConfig.StandardEpisodeFormat = "{platform:00}x{rom}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
@@ -182,7 +182,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_episode_number_with_single_digit()
         {
-            _episode1.SeasonNumber = 1;
+            _episode1.PlatformNumber = 1;
             _namingConfig.StandardEpisodeFormat = "{platform}x{rom}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
@@ -192,7 +192,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_episode00_number_with_two_digits()
         {
-            _episode1.SeasonNumber = 1;
+            _episode1.PlatformNumber = 1;
             _namingConfig.StandardEpisodeFormat = "{platform}x{rom:00}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
@@ -315,10 +315,10 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             _episode1.AirDate = "2012-12-13";
             _episode1.Title = "Kristen Stewart";
-            _episode1.SeasonNumber = 1;
+            _episode1.PlatformNumber = 1;
             _episode1.EpisodeNumber = 5;
 
-            _romFile.SeasonNumber = 1;
+            _romFile.PlatformNumber = 1;
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
                    .Should().Be("The Daily Show with Jon Stewart - 2012-12-13 - Kristen Stewart");
@@ -334,10 +334,10 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             _episode1.AirDate = "2012-12-13";
             _episode1.Title = "Kristen Stewart";
-            _episode1.SeasonNumber = 0;
+            _episode1.PlatformNumber = 0;
             _episode1.EpisodeNumber = 5;
 
-            _romFile.SeasonNumber = 0;
+            _romFile.PlatformNumber = 0;
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
                    .Should().Be("The Daily Show with Jon Stewart - S00E05 - Kristen Stewart");
@@ -353,10 +353,10 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             _episode1.AirDate = null;
             _episode1.Title = "Kristen Stewart";
-            _episode1.SeasonNumber = 1;
+            _episode1.PlatformNumber = 1;
             _episode1.EpisodeNumber = 5;
 
-            _romFile.SeasonNumber = 1;
+            _romFile.PlatformNumber = 1;
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
                    .Should().Be("The Daily Show with Jon Stewart - Unknown - Kristen Stewart");
@@ -404,7 +404,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             var rom = Builder<Rom>.CreateNew()
                             .With(e => e.Title = "Part 1.")
-                            .With(e => e.SeasonNumber = 6)
+                            .With(e => e.PlatformNumber = 6)
                             .With(e => e.EpisodeNumber = 6)
                             .Build();
 
@@ -420,7 +420,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             var rom = Builder<Rom>.CreateNew()
                             .With(e => e.Title = "Part 1?")
-                            .With(e => e.SeasonNumber = 6)
+                            .With(e => e.PlatformNumber = 6)
                             .With(e => e.EpisodeNumber = 6)
                             .Build();
 
@@ -435,7 +435,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             var rom = Builder<Rom>.CreateNew()
                             .With(e => e.Title = "Part 1")
-                            .With(e => e.SeasonNumber = 6)
+                            .With(e => e.PlatformNumber = 6)
                             .With(e => e.EpisodeNumber = 6)
                             .Build();
 
@@ -450,7 +450,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             var rom = Builder<Rom>.CreateNew()
                             .With(e => e.Title = "Part 1")
-                            .With(e => e.SeasonNumber = 6)
+                            .With(e => e.PlatformNumber = 6)
                             .With(e => e.EpisodeNumber = 6)
                             .Build();
 

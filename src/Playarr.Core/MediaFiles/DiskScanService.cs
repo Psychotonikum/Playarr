@@ -300,9 +300,9 @@ namespace Playarr.Core.MediaFiles
 
         public void Execute(RescanSeriesCommand message)
         {
-            if (message.SeriesId.HasValue)
+            if (message.GameId.HasValue)
             {
-                var game = _seriesService.GetSeries(message.SeriesId.Value);
+                var game = _seriesService.GetSeries(message.GameId.Value);
                 Scan(game);
             }
             else

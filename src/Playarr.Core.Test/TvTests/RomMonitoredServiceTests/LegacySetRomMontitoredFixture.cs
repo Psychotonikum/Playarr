@@ -63,10 +63,10 @@ namespace Playarr.Core.Test.TvTests.EpisodeMonitoredServiceTests
         {
             foreach (var rom in _episodes)
             {
-                rom.SeasonNumber = 0;
+                rom.PlatformNumber = 0;
             }
 
-            _series.Platforms = new List<Platform> { new Platform { Monitored = false, SeasonNumber = 0 } };
+            _series.Platforms = new List<Platform> { new Platform { Monitored = false, PlatformNumber = 0 } };
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace Playarr.Core.Test.TvTests.EpisodeMonitoredServiceTests
 
             Subject.SetEpisodeMonitoredStatus(_series, monitoringOptions);
 
-            VerifyNotMonitored(e => e.SeasonNumber == 0);
+            VerifyNotMonitored(e => e.PlatformNumber == 0);
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace Playarr.Core.Test.TvTests.EpisodeMonitoredServiceTests
 
             Subject.SetEpisodeMonitoredStatus(_series, monitoringOptions);
 
-            VerifyNotMonitored(e => e.SeasonNumber == 0);
+            VerifyNotMonitored(e => e.PlatformNumber == 0);
         }
 
         [Test]
@@ -164,11 +164,11 @@ namespace Playarr.Core.Test.TvTests.EpisodeMonitoredServiceTests
 
             _episodes = Builder<Rom>.CreateListOfSize(5)
                                         .All()
-                                        .With(e => e.SeasonNumber = 1)
+                                        .With(e => e.PlatformNumber = 1)
                                         .With(e => e.EpisodeFileId = 0)
                                         .With(e => e.AirDateUtc = DateTime.UtcNow.AddDays(-5))
                                         .TheLast(1)
-                                        .With(e => e.SeasonNumber = 2)
+                                        .With(e => e.PlatformNumber = 2)
                                         .Build()
                                         .ToList();
 
@@ -183,8 +183,8 @@ namespace Playarr.Core.Test.TvTests.EpisodeMonitoredServiceTests
 
             Subject.SetEpisodeMonitoredStatus(_series, monitoringOptions);
 
-            VerifySeasonMonitored(n => n.SeasonNumber == 2);
-            VerifySeasonNotMonitored(n => n.SeasonNumber == 1);
+            VerifySeasonMonitored(n => n.PlatformNumber == 2);
+            VerifySeasonNotMonitored(n => n.PlatformNumber == 1);
         }
 
         [Test]
@@ -217,9 +217,9 @@ namespace Playarr.Core.Test.TvTests.EpisodeMonitoredServiceTests
                                            .With(e => e.EpisodeFileId = 0)
                                            .With(e => e.AirDateUtc = DateTime.UtcNow.AddDays(-7))
                                            .TheFirst(5)
-                                           .With(e => e.SeasonNumber = 1)
+                                           .With(e => e.PlatformNumber = 1)
                                            .TheLast(5)
-                                           .With(e => e.SeasonNumber = 2)
+                                           .With(e => e.PlatformNumber = 2)
                                            .BuildList();
 
             Mocker.GetMock<IRomService>()
@@ -232,10 +232,10 @@ namespace Playarr.Core.Test.TvTests.EpisodeMonitoredServiceTests
                                                            IgnoreEpisodesWithoutFiles = false
                                                        });
 
-            VerifyMonitored(e => e.SeasonNumber == 1);
-            VerifyNotMonitored(e => e.SeasonNumber == 2);
-            VerifySeasonMonitored(s => s.SeasonNumber == 1);
-            VerifySeasonNotMonitored(s => s.SeasonNumber == 2);
+            VerifyMonitored(e => e.PlatformNumber == 1);
+            VerifyNotMonitored(e => e.PlatformNumber == 2);
+            VerifySeasonMonitored(s => s.PlatformNumber == 1);
+            VerifySeasonNotMonitored(s => s.PlatformNumber == 2);
         }
 
         private void VerifyMonitored(Func<Rom, bool> predicate)

@@ -111,7 +111,7 @@ namespace Playarr.Core.Extras.Files
             }
             else
             {
-                var game = _seriesService.GetSeries(message.RomFile.SeriesId);
+                var game = _seriesService.GetSeries(message.RomFile.GameId);
 
                 foreach (var extra in _repository.GetFilesByRomFile(romFile.Id))
                 {

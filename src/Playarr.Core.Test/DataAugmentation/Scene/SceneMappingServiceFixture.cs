@@ -107,7 +107,7 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         }
 
         [Test]
-        public void should_refresh_cache_if_cache_is_empty_when_looking_for_tvdb_id()
+        public void should_refresh_cache_if_cache_is_empty_when_looking_for_igdb_id()
         {
             Subject.FindIgdbId("title", null, -1);
 
@@ -116,7 +116,7 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         }
 
         [Test]
-        public void should_not_refresh_cache_if_cache_is_not_empty_when_looking_for_tvdb_id()
+        public void should_not_refresh_cache_if_cache_is_not_empty_when_looking_for_igdb_id()
         {
             GivenProviders(new[] { _provider1 });
 
@@ -186,9 +186,9 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Working!!", ParseTerm = "working", SearchTerm = "Working!!", TvdbId = 100, SceneSeasonNumber = 1 },
-                new SceneMapping { Title = "Working`!!", ParseTerm = "working", SearchTerm = "Working`!!", TvdbId = 100, SceneSeasonNumber = 2 },
-                new SceneMapping { Title = "Working!!!", ParseTerm = "working", SearchTerm = "Working!!!", TvdbId = 100, SceneSeasonNumber = 3 },
+                new SceneMapping { Title = "Working!!", ParseTerm = "working", SearchTerm = "Working!!", IgdbId = 100, ScenePlatformNumber = 1 },
+                new SceneMapping { Title = "Working`!!", ParseTerm = "working", SearchTerm = "Working`!!", IgdbId = 100, ScenePlatformNumber = 2 },
+                new SceneMapping { Title = "Working!!!", ParseTerm = "working", SearchTerm = "Working!!!", IgdbId = 100, ScenePlatformNumber = 3 },
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -205,10 +205,10 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Fudanshi Koukou Seikatsu 1", ParseTerm = "fudanshikoukouseikatsu1", SearchTerm = "Fudanshi Koukou Seikatsu 1", TvdbId = 100, SeasonNumber = null, SceneSeasonNumber = null },
-                new SceneMapping { Title = "Fudanshi Koukou Seikatsu 2", ParseTerm = "fudanshikoukouseikatsu2", SearchTerm = "Fudanshi Koukou Seikatsu 2", TvdbId = 100, SeasonNumber = -1, SceneSeasonNumber = null },
-                new SceneMapping { Title = "Fudanshi Koukou Seikatsu 3", ParseTerm = "fudanshikoukouseikatsu3", SearchTerm = "Fudanshi Koukou Seikatsu 3", TvdbId = 100, SeasonNumber = null, SceneSeasonNumber = -1 },
-                new SceneMapping { Title = "Fudanshi Koukou Seikatsu 4", ParseTerm = "fudanshikoukouseikatsu4", SearchTerm = "Fudanshi Koukou Seikatsu 4", TvdbId = 100, SeasonNumber = -1, SceneSeasonNumber = -1 },
+                new SceneMapping { Title = "Fudanshi Koukou Seikatsu 1", ParseTerm = "fudanshikoukouseikatsu1", SearchTerm = "Fudanshi Koukou Seikatsu 1", IgdbId = 100, PlatformNumber = null, ScenePlatformNumber = null },
+                new SceneMapping { Title = "Fudanshi Koukou Seikatsu 2", ParseTerm = "fudanshikoukouseikatsu2", SearchTerm = "Fudanshi Koukou Seikatsu 2", IgdbId = 100, PlatformNumber = -1, ScenePlatformNumber = null },
+                new SceneMapping { Title = "Fudanshi Koukou Seikatsu 3", ParseTerm = "fudanshikoukouseikatsu3", SearchTerm = "Fudanshi Koukou Seikatsu 3", IgdbId = 100, PlatformNumber = null, ScenePlatformNumber = -1 },
+                new SceneMapping { Title = "Fudanshi Koukou Seikatsu 4", ParseTerm = "fudanshikoukouseikatsu4", SearchTerm = "Fudanshi Koukou Seikatsu 4", IgdbId = 100, PlatformNumber = -1, ScenePlatformNumber = -1 },
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -222,7 +222,7 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Fudanshi Koukou Seikatsu", ParseTerm = "fudanshikoukouseikatsu", SearchTerm = "Fudanshi Koukou Seikatsu", TvdbId = 100, SeasonNumber = 1, SceneSeasonNumber = null }
+                new SceneMapping { Title = "Fudanshi Koukou Seikatsu", ParseTerm = "fudanshikoukouseikatsu", SearchTerm = "Fudanshi Koukou Seikatsu", IgdbId = 100, PlatformNumber = 1, ScenePlatformNumber = null }
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -236,7 +236,7 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Fudanshi Koukou Seikatsu", ParseTerm = "fudanshikoukouseikatsu", SearchTerm = "Fudanshi Koukou Seikatsu", TvdbId = 100, SeasonNumber = 1, SceneSeasonNumber = null }
+                new SceneMapping { Title = "Fudanshi Koukou Seikatsu", ParseTerm = "fudanshikoukouseikatsu", SearchTerm = "Fudanshi Koukou Seikatsu", IgdbId = 100, PlatformNumber = 1, ScenePlatformNumber = null }
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -250,7 +250,7 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Fudanshi Koukou Seikatsu", ParseTerm = "fudanshikoukouseikatsu", SearchTerm = "Fudanshi Koukou Seikatsu", TvdbId = 100, SeasonNumber = null, SceneSeasonNumber = 1 }
+                new SceneMapping { Title = "Fudanshi Koukou Seikatsu", ParseTerm = "fudanshikoukouseikatsu", SearchTerm = "Fudanshi Koukou Seikatsu", IgdbId = 100, PlatformNumber = null, ScenePlatformNumber = 1 }
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -264,7 +264,7 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Fudanshi Koukou Seikatsu", ParseTerm = "fudanshikoukouseikatsu", SearchTerm = "Fudanshi Koukou Seikatsu", TvdbId = 100, SeasonNumber = null, SceneSeasonNumber = 1 }
+                new SceneMapping { Title = "Fudanshi Koukou Seikatsu", ParseTerm = "fudanshikoukouseikatsu", SearchTerm = "Fudanshi Koukou Seikatsu", IgdbId = 100, PlatformNumber = null, ScenePlatformNumber = 1 }
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -278,7 +278,7 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Fairy Tail S2", ParseTerm = "fairytails2", SearchTerm = "Fairy Tail S2", TvdbId = 100, SeasonNumber = null, SceneSeasonNumber = 2 }
+                new SceneMapping { Title = "Fairy Tail S2", ParseTerm = "fairytails2", SearchTerm = "Fairy Tail S2", IgdbId = 100, PlatformNumber = null, ScenePlatformNumber = 2 }
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -299,7 +299,7 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Fudanshi Koukou Seikatsu", ParseTerm = "fudanshikoukouseikatsu", SearchTerm = "Fudanshi Koukou Seikatsu", TvdbId = 100, SeasonNumber = null, SceneSeasonNumber = 1 }
+                new SceneMapping { Title = "Fudanshi Koukou Seikatsu", ParseTerm = "fudanshikoukouseikatsu", SearchTerm = "Fudanshi Koukou Seikatsu", IgdbId = 100, PlatformNumber = null, ScenePlatformNumber = 1 }
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -320,8 +320,8 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", TvdbId = 100 },
-                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", TvdbId = 101, FilterRegex = "-Viva$" }
+                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", IgdbId = 100 },
+                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", IgdbId = 101, FilterRegex = "-Viva$" }
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -335,8 +335,8 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", TvdbId = 100 },
-                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", TvdbId = 101 }
+                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", IgdbId = 100 },
+                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", IgdbId = 101 }
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -345,12 +345,12 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         }
 
         [Test]
-        public void should_not_throw_if_multiple_mappings_with_same_tvdbid()
+        public void should_not_throw_if_multiple_mappings_with_same_igdbid()
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", TvdbId = 100 },
-                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", TvdbId = 100 }
+                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", IgdbId = 100 },
+                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", IgdbId = 100 }
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -363,8 +363,8 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
         {
             var mappings = new List<SceneMapping>
             {
-                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", SceneSeasonNumber = 2, SeasonNumber = 3, TvdbId = 100 },
-                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", SceneSeasonNumber = 3, SeasonNumber = 3, TvdbId = 101 }
+                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", ScenePlatformNumber = 2, PlatformNumber = 3, IgdbId = 100 },
+                new SceneMapping { Title = "Amareto", ParseTerm = "amareto", SearchTerm = "Amareto", ScenePlatformNumber = 3, PlatformNumber = 3, IgdbId = 101 }
             };
 
             Mocker.GetMock<ISceneMappingRepository>().Setup(c => c.All()).Returns(mappings);
@@ -387,8 +387,8 @@ namespace Playarr.Core.Test.DataAugmentation.Scene
 
             foreach (var sceneMapping in _fakeMappings)
             {
-                Subject.GetSceneNames(sceneMapping.TvdbId, _fakeMappings.Select(m => m.SeasonNumber.Value).Distinct().ToList(), new List<int>()).Should().Contain(sceneMapping.SearchTerm);
-                Subject.FindIgdbId(sceneMapping.ParseTerm, null, sceneMapping.SceneSeasonNumber ?? -1).Should().Be(sceneMapping.TvdbId);
+                Subject.GetSceneNames(sceneMapping.IgdbId, _fakeMappings.Select(m => m.PlatformNumber.Value).Distinct().ToList(), new List<int>()).Should().Contain(sceneMapping.SearchTerm);
+                Subject.FindIgdbId(sceneMapping.ParseTerm, null, sceneMapping.ScenePlatformNumber ?? -1).Should().Be(sceneMapping.IgdbId);
             }
         }
     }

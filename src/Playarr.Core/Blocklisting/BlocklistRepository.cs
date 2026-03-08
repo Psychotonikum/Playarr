@@ -22,22 +22,22 @@ namespace Playarr.Core.Blocklisting
 
         public List<Blocklist> BlocklistedByTitle(int gameId, string sourceTitle)
         {
-            return Query(e => e.SeriesId == gameId && e.SourceTitle.Contains(sourceTitle));
+            return Query(e => e.GameId == gameId && e.SourceTitle.Contains(sourceTitle));
         }
 
         public List<Blocklist> BlocklistedByTorrentInfoHash(int gameId, string torrentInfoHash)
         {
-            return Query(e => e.SeriesId == gameId && e.TorrentInfoHash.Contains(torrentInfoHash));
+            return Query(e => e.GameId == gameId && e.TorrentInfoHash.Contains(torrentInfoHash));
         }
 
         public List<Blocklist> BlocklistedBySeries(int gameId)
         {
-            return Query(b => b.SeriesId == gameId);
+            return Query(b => b.GameId == gameId);
         }
 
         public void DeleteForGameIds(List<int> gameIds)
         {
-            Delete(x => gameIds.Contains(x.SeriesId));
+            Delete(x => gameIds.Contains(x.GameId));
         }
 
         public override PagingSpec<Blocklist> GetPaged(PagingSpec<Blocklist> pagingSpec)
@@ -53,7 +53,7 @@ namespace Playarr.Core.Blocklisting
         protected override SqlBuilder PagedBuilder()
         {
             var builder = Builder()
-                .Join<Blocklist, Game>((b, m) => b.SeriesId == m.Id);
+                .Join<Blocklist, Game>((b, m) => b.GameId == m.Id);
 
             return builder;
         }

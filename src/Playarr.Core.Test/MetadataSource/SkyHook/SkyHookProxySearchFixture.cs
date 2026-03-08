@@ -29,9 +29,9 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
         [TestCase("M*A*S*H", "M*A*S*H")]
 
         // [TestCase("imdb:tt0436992", "Doctor Who (2005)")]
-        [TestCase("tvdb:78804", "Doctor Who (2005)")]
-        [TestCase("tvdbid:78804", "Doctor Who (2005)")]
-        [TestCase("tvdbid: 78804 ", "Doctor Who (2005)")]
+        [TestCase("igdb:78804", "Doctor Who (2005)")]
+        [TestCase("igdbid:78804", "Doctor Who (2005)")]
+        [TestCase("igdbid: 78804 ", "Doctor Who (2005)")]
         public void successful_search(string title, string expected)
         {
             var result = Subject.SearchForNewSeries(title);
@@ -67,11 +67,11 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
             ExceptionVerification.IgnoreWarns();
         }
 
-        [TestCase("tvdbid:")]
-        [TestCase("tvdbid: 99999999999999999999")]
-        [TestCase("tvdbid: 0")]
-        [TestCase("tvdbid: -12")]
-        [TestCase("tvdbid:289578")]
+        [TestCase("igdbid:")]
+        [TestCase("igdbid: 99999999999999999999")]
+        [TestCase("igdbid: 0")]
+        [TestCase("igdbid: -12")]
+        [TestCase("igdbid:289578")]
         [TestCase("adjalkwdjkalwdjklawjdlKAJD")]
         public void no_search_result(string term)
         {
@@ -81,22 +81,22 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
             ExceptionVerification.IgnoreWarns();
         }
 
-        [TestCase("tvdbid:78804")]
+        [TestCase("igdbid:78804")]
         [TestCase("Doctor Who")]
         public void should_return_existing_series_if_found(string term)
         {
             const int igdbId = 78804;
             var existingGame = new Game
             {
-                TvdbId = igdbId
+                IgdbId = igdbId
             };
 
             Mocker.GetMock<IGameService>().Setup(c => c.FindByIgdbId(igdbId)).Returns(existingGame);
 
-            var result = Subject.SearchForNewSeries("tvdbid: " + igdbId);
+            var result = Subject.SearchForNewSeries("igdbid: " + igdbId);
 
             result.Should().Contain(existingGame);
-            result.Should().ContainSingle(c => c.TvdbId == igdbId);
+            result.Should().ContainSingle(c => c.IgdbId == igdbId);
         }
     }
 }

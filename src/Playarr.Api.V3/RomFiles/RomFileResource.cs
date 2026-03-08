@@ -14,8 +14,8 @@ namespace Playarr.Api.V3.RomFiles
 {
     public class RomFileResource : RestResource
     {
-        public int SeriesId { get; set; }
-        public int SeasonNumber { get; set; }
+        public int GameId { get; set; }
+        public int PlatformNumber { get; set; }
         public string RelativePath { get; set; }
         public string Path { get; set; }
         public long Size { get; set; }
@@ -50,8 +50,8 @@ namespace Playarr.Api.V3.RomFiles
             {
                 Id = model.Id,
 
-                SeriesId = model.SeriesId,
-                SeasonNumber = model.SeasonNumber,
+                GameId = model.GameId,
+                PlatformNumber = model.PlatformNumber,
                 RelativePath = model.RelativePath,
                 Path = Path.Combine(game.Path, model.RelativePath),
                 Size = model.Size,

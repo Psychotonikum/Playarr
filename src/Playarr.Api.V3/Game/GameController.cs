@@ -102,7 +102,7 @@ namespace Playarr.Api.V3.Game
                 .SetValidator(qualityProfileExistsValidator);
 
             PostValidator.RuleFor(s => s.Title).NotEmpty();
-            PostValidator.RuleFor(s => s.TvdbId).GreaterThan(0).SetValidator(seriesExistsValidator);
+            PostValidator.RuleFor(s => s.IgdbId).GreaterThan(0).SetValidator(seriesExistsValidator);
         }
 
         [HttpGet]
@@ -122,7 +122,7 @@ namespace Playarr.Api.V3.Game
             }
 
             MapCoversToLocal(seriesResources.ToArray());
-            LinkSeriesStatistics(seriesResources, seriesStats.ToDictionary(x => x.SeriesId));
+            LinkSeriesStatistics(seriesResources, seriesStats.ToDictionary(x => x.GameId));
             PopulateAlternateTitles(seriesResources);
             seriesResources.ForEach(LinkRootFolderPath);
 
@@ -189,7 +189,7 @@ namespace Playarr.Api.V3.Game
 
                 _commandQueueManager.Push(new MoveGameCommand
                 {
-                    SeriesId = game.Id,
+                    GameId = game.Id,
                     SourcePath = sourcePath,
                     DestinationPath = destinationPath
                 },
@@ -264,7 +264,7 @@ namespace Playarr.Api.V3.Game
             {
                 foreach (var platform in resource.Platforms)
                 {
-                    platform.Statistics = seriesStatistics.SeasonStatistics.SingleOrDefault(s => s.SeasonNumber == platform.SeasonNumber).ToResource();
+                    platform.Statistics = seriesStatistics.SeasonStatistics.SingleOrDefault(s => s.PlatformNumber == platform.PlatformNumber).ToResource();
                 }
             }
         }
@@ -279,7 +279,7 @@ namespace Playarr.Api.V3.Game
 
         private void PopulateAlternateTitles(GameResource resource)
         {
-            var mappings = _sceneMappingService.FindByIgdbId(resource.TvdbId);
+            var mappings = _sceneMappingService.FindByIgdbId(resource.IgdbId);
 
             if (mappings == null)
             {
@@ -297,7 +297,7 @@ namespace Playarr.Api.V3.Game
         [NonAction]
         public void Handle(EpisodeImportedEvent message)
         {
-            BroadcastResourceChange(ModelAction.Updated, message.ImportedEpisode.SeriesId);
+            BroadcastResourceChange(ModelAction.Updated, message.ImportedEpisode.GameId);
         }
 
         [NonAction]
@@ -308,7 +308,7 @@ namespace Playarr.Api.V3.Game
                 return;
             }
 
-            BroadcastResourceChange(ModelAction.Updated, message.RomFile.SeriesId);
+            BroadcastResourceChange(ModelAction.Updated, message.RomFile.GameId);
         }
 
         [NonAction]

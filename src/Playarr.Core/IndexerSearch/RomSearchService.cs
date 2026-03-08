@@ -46,14 +46,14 @@ namespace Playarr.Core.IndexerSearch
             var downloadedCount = 0;
             var groups = new List<EpisodeSearchGroup>();
 
-            foreach (var game in roms.GroupBy(e => e.SeriesId))
+            foreach (var game in roms.GroupBy(e => e.GameId))
             {
-                foreach (var platform in game.Select(e => e).GroupBy(e => e.SeasonNumber))
+                foreach (var platform in game.Select(e => e).GroupBy(e => e.PlatformNumber))
                 {
                     groups.Add(new EpisodeSearchGroup
                     {
-                        SeriesId = game.Key,
-                        SeasonNumber = platform.Key,
+                        GameId = game.Key,
+                        PlatformNumber = platform.Key,
                         Roms = platform.ToList()
                     });
                 }
@@ -63,8 +63,8 @@ namespace Playarr.Core.IndexerSearch
             {
                 List<DownloadDecision> decisions;
 
-                var gameId = group.SeriesId;
-                var platformNumber = group.SeasonNumber;
+                var gameId = group.GameId;
+                var platformNumber = group.PlatformNumber;
                 var groupEpisodes = group.Roms;
 
                 if (groupEpisodes.Count > 1)
@@ -123,9 +123,9 @@ namespace Playarr.Core.IndexerSearch
             var monitored = message.Monitored;
             List<Rom> roms;
 
-            if (message.SeriesId.HasValue)
+            if (message.GameId.HasValue)
             {
-                roms = _episodeService.GetEpisodeBySeries(message.SeriesId.Value)
+                roms = _episodeService.GetEpisodeBySeries(message.GameId.Value)
                                           .Where(e => e.Monitored == monitored &&
                                                  !e.HasFile &&
                                                  e.AirDateUtc.HasValue &&
@@ -172,10 +172,10 @@ namespace Playarr.Core.IndexerSearch
                                  SortKey = "Id"
                              };
 
-            if (message.SeriesId.HasValue)
+            if (message.GameId.HasValue)
             {
-                var gameId = message.SeriesId.Value;
-                pagingSpec.FilterExpressions.Add(v => v.SeriesId == gameId);
+                var gameId = message.GameId.Value;
+                pagingSpec.FilterExpressions.Add(v => v.GameId == gameId);
             }
 
             if (monitored)

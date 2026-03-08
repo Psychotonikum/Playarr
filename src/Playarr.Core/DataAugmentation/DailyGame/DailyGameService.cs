@@ -7,7 +7,7 @@ namespace Playarr.Core.DataAugmentation.DailySeries
 {
     public interface IDailyGameService
     {
-        bool IsDailySeries(int tvdbid);
+        bool IsDailySeries(int igdbid);
     }
 
     public class DailyGameService : IDailyGameService
@@ -21,10 +21,10 @@ namespace Playarr.Core.DataAugmentation.DailySeries
             _cache = cacheManager.GetCache<List<int>>(GetType());
         }
 
-        public bool IsDailySeries(int tvdbid)
+        public bool IsDailySeries(int igdbid)
         {
             var dailySeries = _cache.Get("all", () => _proxy.GetDailyGameIds().ToList(), TimeSpan.FromHours(1));
-            return dailySeries.Any(i => i == tvdbid);
+            return dailySeries.Any(i => i == igdbid);
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Playarr.Core.Parser
                 return _seriesService.FindByTitle(title);
             }
 
-            var igdbId = _sceneMappingService.FindIgdbId(parsedRomInfo.GameTitle, parsedRomInfo.ReleaseTitle, parsedRomInfo.SeasonNumber);
+            var igdbId = _sceneMappingService.FindIgdbId(parsedRomInfo.GameTitle, parsedRomInfo.ReleaseTitle, parsedRomInfo.PlatformNumber);
 
             if (igdbId.HasValue)
             {
@@ -78,7 +78,7 @@ namespace Playarr.Core.Parser
             Game foundSeries = null;
             int? foundIgdbId = null;
 
-            // Match each title individually, they must all resolve to the same tvdbid
+            // Match each title individually, they must all resolve to the same igdbid
             foreach (var title in parsedRomInfo.GameTitleInfo.AllTitles)
             {
                 Game game = null;
@@ -99,11 +99,11 @@ namespace Playarr.Core.Parser
                     game = _seriesService.FindByTitle(title);
                 }
 
-                var igdbId = game?.TvdbId;
+                var igdbId = game?.IgdbId;
 
                 if (game == null)
                 {
-                    igdbId = _sceneMappingService.FindIgdbId(title, parsedRomInfo.ReleaseTitle, parsedRomInfo.SeasonNumber);
+                    igdbId = _sceneMappingService.FindIgdbId(title, parsedRomInfo.ReleaseTitle, parsedRomInfo.PlatformNumber);
                 }
 
                 if (!igdbId.HasValue)
@@ -114,7 +114,7 @@ namespace Playarr.Core.Parser
 
                 if (foundIgdbId.HasValue && igdbId != foundIgdbId)
                 {
-                    _logger.Trace("Title {0} both matches tvdbid {1} and {2}, no game selected.", parsedRomInfo.GameTitle, foundIgdbId, igdbId);
+                    _logger.Trace("Title {0} both matches igdbid {1} and {2}, no game selected.", parsedRomInfo.GameTitle, foundIgdbId, igdbId);
                     return null;
                 }
 
@@ -138,7 +138,7 @@ namespace Playarr.Core.Parser
         {
             var year = parsedRomInfo.GameTitleInfo.Year;
             var titleWithoutyear = parsedRomInfo.GameTitleInfo.TitleWithoutYear;
-            var igdbId = _sceneMappingService.FindIgdbId(titleWithoutyear, parsedRomInfo.ReleaseTitle, parsedRomInfo.SeasonNumber);
+            var igdbId = _sceneMappingService.FindIgdbId(titleWithoutyear, parsedRomInfo.ReleaseTitle, parsedRomInfo.PlatformNumber);
 
             if (igdbId.HasValue)
             {
@@ -175,35 +175,35 @@ namespace Playarr.Core.Parser
 
         private RemoteEpisode Map(ParsedRomInfo parsedRomInfo, int igdbId, int mobyGamesId, string imdbId, Game game, SearchCriteriaBase searchCriteria)
         {
-            var sceneMapping = _sceneMappingService.FindSceneMapping(parsedRomInfo.GameTitle, parsedRomInfo.ReleaseTitle, parsedRomInfo.SeasonNumber);
+            var sceneMapping = _sceneMappingService.FindSceneMapping(parsedRomInfo.GameTitle, parsedRomInfo.ReleaseTitle, parsedRomInfo.PlatformNumber);
 
             var remoteRom = new RemoteEpisode
             {
                 ParsedRomInfo = parsedRomInfo,
                 SceneMapping = sceneMapping,
-                MappedPlatformNumber = parsedRomInfo.SeasonNumber
+                MappedPlatformNumber = parsedRomInfo.PlatformNumber
             };
 
-            // For now we just detect tvdb vs scene, but we can do multiple 'origins' in the future.
+            // For now we just detect igdb vs scene, but we can do multiple 'origins' in the future.
             var sceneSource = true;
             if (sceneMapping != null)
             {
-                if (sceneMapping.SeasonNumber.HasValue && sceneMapping.SeasonNumber.Value >= 0 &&
-                    sceneMapping.SceneSeasonNumber <= parsedRomInfo.SeasonNumber)
+                if (sceneMapping.PlatformNumber.HasValue && sceneMapping.PlatformNumber.Value >= 0 &&
+                    sceneMapping.ScenePlatformNumber <= parsedRomInfo.PlatformNumber)
                 {
-                    remoteRom.MappedPlatformNumber += sceneMapping.SeasonNumber.Value - sceneMapping.SceneSeasonNumber.Value;
+                    remoteRom.MappedPlatformNumber += sceneMapping.PlatformNumber.Value - sceneMapping.ScenePlatformNumber.Value;
                 }
 
-                if (sceneMapping.SceneOrigin == "tvdb")
+                if (sceneMapping.SceneOrigin == "igdb")
                 {
                     sceneSource = false;
                 }
                 else if (sceneMapping.Type == "XemService" &&
-                         sceneMapping.SceneSeasonNumber.NonNegative().HasValue &&
-                         parsedRomInfo.SeasonNumber == 1 &&
-                         sceneMapping.SceneSeasonNumber != parsedRomInfo.SeasonNumber)
+                         sceneMapping.ScenePlatformNumber.NonNegative().HasValue &&
+                         parsedRomInfo.PlatformNumber == 1 &&
+                         sceneMapping.ScenePlatformNumber != parsedRomInfo.PlatformNumber)
                 {
-                    remoteRom.MappedPlatformNumber = sceneMapping.SceneSeasonNumber.Value;
+                    remoteRom.MappedPlatformNumber = sceneMapping.ScenePlatformNumber.Value;
                 }
             }
 
@@ -253,7 +253,7 @@ namespace Playarr.Core.Parser
                 return remoteRom.Roms;
             }
 
-            return GetEpisodes(parsedRomInfo, game, parsedRomInfo.SeasonNumber, sceneSource, searchCriteria);
+            return GetEpisodes(parsedRomInfo, game, parsedRomInfo.PlatformNumber, sceneSource, searchCriteria);
         }
 
         private List<Rom> GetEpisodes(ParsedRomInfo parsedRomInfo, Game game, int mappedPlatformNumber, bool sceneSource, SearchCriteriaBase searchCriteria)
@@ -298,7 +298,7 @@ namespace Playarr.Core.Parser
                 if (parsedSpecialRomInfo != null)
                 {
                     // Use the platform number and disable scene source since the platform/rom numbers that were returned are not scene numbers
-                    return GetStandardEpisodes(game, parsedSpecialRomInfo, parsedSpecialRomInfo.SeasonNumber, false, searchCriteria);
+                    return GetStandardEpisodes(game, parsedSpecialRomInfo, parsedSpecialRomInfo.PlatformNumber, false, searchCriteria);
                 }
             }
 
@@ -314,7 +314,7 @@ namespace Playarr.Core.Parser
         {
             if (searchCriteria != null)
             {
-                if (igdbId != 0 && igdbId == searchCriteria.Game.TvdbId)
+                if (igdbId != 0 && igdbId == searchCriteria.Game.IgdbId)
                 {
                     return ParseSpecialRomTitle(parsedRomInfo, releaseTitle, searchCriteria.Game);
                 }
@@ -366,7 +366,7 @@ namespace Playarr.Core.Parser
             // SxxE00 roms are sometimes mapped via TheXEM, don't use rom title parsing in that case.
             if (parsedRomInfo != null && parsedRomInfo.IsPossibleSceneSeasonSpecial && game.UseSceneNumbering)
             {
-                if (_episodeService.FindEpisodesBySceneNumbering(game.Id, parsedRomInfo.SeasonNumber, 0).Any())
+                if (_episodeService.FindEpisodesBySceneNumbering(game.Id, parsedRomInfo.PlatformNumber, 0).Any())
                 {
                     return parsedRomInfo;
                 }
@@ -386,7 +386,7 @@ namespace Playarr.Core.Parser
                         {
                             Title = game.Title
                         },
-                    SeasonNumber = rom.SeasonNumber,
+                    PlatformNumber = rom.PlatformNumber,
                     RomNumbers = new int[1] { rom.EpisodeNumber },
                     FullSeason = false,
                     Quality = QualityParser.ParseQuality(releaseTitle),
@@ -408,12 +408,12 @@ namespace Playarr.Core.Parser
 
             if (sceneMapping != null)
             {
-                if (searchCriteria != null && searchCriteria.Game.TvdbId == sceneMapping.TvdbId)
+                if (searchCriteria != null && searchCriteria.Game.IgdbId == sceneMapping.IgdbId)
                 {
                     return new FindSeriesResult(searchCriteria.Game, SeriesMatchType.Alias);
                 }
 
-                game = _seriesService.FindByIgdbId(sceneMapping.TvdbId);
+                game = _seriesService.FindByIgdbId(sceneMapping.IgdbId);
 
                 if (game == null)
                 {
@@ -431,11 +431,11 @@ namespace Playarr.Core.Parser
                     return new FindSeriesResult(searchCriteria.Game, SeriesMatchType.Title);
                 }
 
-                if (igdbId > 0 && igdbId == searchCriteria.Game.TvdbId)
+                if (igdbId > 0 && igdbId == searchCriteria.Game.IgdbId)
                 {
                     _logger.ForDebugEvent()
                            .Message("Found matching game by IGDB ID {0}, an alias may be needed for: {1}", igdbId, parsedRomInfo.GameTitle)
-                           .Property("TvdbId", igdbId)
+                           .Property("IgdbId", igdbId)
                            .Property("ParsedRomInfo", parsedRomInfo)
                            .WriteSentryWarn("IgdbIdMatch", igdbId.ToString(), parsedRomInfo.GameTitle)
                            .Log();
@@ -502,7 +502,7 @@ namespace Playarr.Core.Parser
                 {
                     _logger.ForDebugEvent()
                            .Message("Found matching game by IGDB ID {0}, an alias may be needed for: {1}", igdbId, parsedRomInfo.GameTitle)
-                           .Property("TvdbId", igdbId)
+                           .Property("IgdbId", igdbId)
                            .Property("ParsedRomInfo", parsedRomInfo)
                            .WriteSentryWarn("IgdbIdMatch", igdbId.ToString(), parsedRomInfo.GameTitle)
                            .Log();
@@ -602,13 +602,13 @@ namespace Playarr.Core.Parser
                             roms.AddIfNotNull(rom);
                         }
                     }
-                    else if (parsedRomInfo.SeasonNumber > 1 && parsedRomInfo.RomNumbers.Empty())
+                    else if (parsedRomInfo.PlatformNumber > 1 && parsedRomInfo.RomNumbers.Empty())
                     {
-                        roms = _episodeService.FindEpisodesBySceneNumbering(game.Id, parsedRomInfo.SeasonNumber, absoluteRomNumber);
+                        roms = _episodeService.FindEpisodesBySceneNumbering(game.Id, parsedRomInfo.PlatformNumber, absoluteRomNumber);
 
                         if (roms.Empty())
                         {
-                            var rom = _episodeService.FindEpisode(game.Id, parsedRomInfo.SeasonNumber, absoluteRomNumber);
+                            var rom = _episodeService.FindEpisode(game.Id, parsedRomInfo.PlatformNumber, absoluteRomNumber);
                             roms.AddIfNotNull(rom);
                         }
                     }
@@ -635,7 +635,7 @@ namespace Playarr.Core.Parser
                     _logger.Debug("Using absolute rom number {0} for: {1} - IGDB: {2}x{3:00}",
                                 absoluteRomNumber,
                                 game.Title,
-                                rom.SeasonNumber,
+                                rom.PlatformNumber,
                                 rom.EpisodeNumber);
 
                     result.Add(rom);
@@ -662,7 +662,7 @@ namespace Playarr.Core.Parser
 
                     if (searchCriteria != null)
                     {
-                        roms = searchCriteria.Roms.Where(e => e.SceneSeasonNumber == parsedRomInfo.SeasonNumber &&
+                        roms = searchCriteria.Roms.Where(e => e.ScenePlatformNumber == parsedRomInfo.PlatformNumber &&
                                                                       e.SceneEpisodeNumber == romNumber).ToList();
                     }
 
@@ -675,9 +675,9 @@ namespace Playarr.Core.Parser
                     {
                         _logger.Debug("Using Scene to IGDB Mapping for: {0} - Scene: {1}x{2:00} - IGDB: {3}",
                                     game.Title,
-                                    roms.First().SceneSeasonNumber,
+                                    roms.First().ScenePlatformNumber,
                                     roms.First().SceneEpisodeNumber,
-                                    string.Join(", ", roms.Select(e => string.Format("{0}x{1:00}", e.SeasonNumber, e.EpisodeNumber))));
+                                    string.Join(", ", roms.Select(e => string.Format("{0}x{1:00}", e.PlatformNumber, e.EpisodeNumber))));
 
                         result.AddRange(roms);
                         continue;
@@ -688,7 +688,7 @@ namespace Playarr.Core.Parser
 
                 if (searchCriteria != null)
                 {
-                    romInfo = searchCriteria.Roms.SingleOrDefault(e => e.SeasonNumber == mappedPlatformNumber && e.EpisodeNumber == romNumber);
+                    romInfo = searchCriteria.Roms.SingleOrDefault(e => e.PlatformNumber == mappedPlatformNumber && e.EpisodeNumber == romNumber);
                 }
 
                 if (romInfo == null)

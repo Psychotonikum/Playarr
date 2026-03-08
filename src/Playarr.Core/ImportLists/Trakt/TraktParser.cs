@@ -35,7 +35,7 @@ namespace Playarr.Core.ImportLists.Trakt
                 game.AddIfNotNull(new ImportListItemInfo()
                 {
                     Title = traktResponse.Show.Title,
-                    TvdbId = traktResponse.Show.Ids.Tvdb.GetValueOrDefault(),
+                    IgdbId = traktResponse.Show.Ids.Igdb.GetValueOrDefault(),
                     ImdbId = traktResponse.Show.Ids.Imdb
                 });
             }

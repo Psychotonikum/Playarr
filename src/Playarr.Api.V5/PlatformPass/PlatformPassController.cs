@@ -35,7 +35,7 @@ public class PlatformPassController : Controller
             {
                 foreach (var seriesSeason in game.Platforms)
                 {
-                    var platform = s.Platforms.FirstOrDefault(c => c.SeasonNumber == seriesSeason.SeasonNumber);
+                    var platform = s.Platforms.FirstOrDefault(c => c.PlatformNumber == seriesSeason.PlatformNumber);
 
                     if (platform != null)
                     {

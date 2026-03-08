@@ -33,12 +33,12 @@ namespace Playarr.Core.Test.GameStatsTests
             _episode = Builder<Rom>.CreateNew()
                                           .With(e => e.EpisodeFileId = 0)
                                           .With(e => e.Monitored = false)
-                                          .With(e => e.SeriesId = _series.Id)
+                                          .With(e => e.GameId = _series.Id)
                                           .With(e => e.AirDateUtc = DateTime.Today.AddDays(5))
                                           .BuildNew();
 
             _romFile = Builder<RomFile>.CreateNew()
-                                           .With(e => e.SeriesId = _series.Id)
+                                           .With(e => e.GameId = _series.Id)
                                            .With(e => e.Quality = new QualityModel(Quality.HDTV720p))
                                            .With(e => e.Languages = new List<Language> { Language.English })
                                            .BuildNew();

@@ -12,7 +12,7 @@ namespace Playarr.Api.V5.History;
 public class HistoryResource : RestResource
 {
     public int EpisodeId { get; set; }
-    public int SeriesId { get; set; }
+    public int GameId { get; set; }
     public required string SourceTitle { get; set; }
     public required List<Language> Languages { get; set; }
     public required QualityModel Quality { get; set; }
@@ -38,7 +38,7 @@ public static class HistoryResourceMapper
         {
             Id = model.Id,
             EpisodeId = model.EpisodeId,
-            SeriesId = model.SeriesId,
+            GameId = model.GameId,
             SourceTitle = model.SourceTitle,
             Languages = model.Languages,
             Quality = model.Quality,

@@ -30,7 +30,7 @@ namespace Playarr.Integration.Test.ApiTests
             request.AddParameter("end", new DateTime(2015, 10, 3).ToString("s") + "Z");
             var items = Calendar.Get<List<RomResource>>(request);
 
-            items = items.Where(v => v.SeriesId == game.Id).ToList();
+            items = items.Where(v => v.GameId == game.Id).ToList();
 
             items.Should().HaveCount(1);
             items.First().Title.Should().Be("The Troll Farmer");
@@ -47,7 +47,7 @@ namespace Playarr.Integration.Test.ApiTests
             request.AddParameter("unmonitored", "false");
             var items = Calendar.Get<List<RomResource>>(request);
 
-            items = items.Where(v => v.SeriesId == game.Id).ToList();
+            items = items.Where(v => v.GameId == game.Id).ToList();
 
             items.Should().BeEmpty();
         }
@@ -63,7 +63,7 @@ namespace Playarr.Integration.Test.ApiTests
             request.AddParameter("unmonitored", "true");
             var items = Calendar.Get<List<RomResource>>(request);
 
-            items = items.Where(v => v.SeriesId == game.Id).ToList();
+            items = items.Where(v => v.GameId == game.Id).ToList();
 
             items.Should().HaveCount(1);
             items.First().Title.Should().Be("The Troll Farmer");

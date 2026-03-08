@@ -50,7 +50,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(romFile);
 
             var subtitleFile = Builder<SubtitleFile>.CreateNew()
-                                                    .With(m => m.SeriesId = game.Id)
+                                                    .With(m => m.GameId = game.Id)
                                                     .With(m => m.EpisodeFileId = romFile.Id)
                                                     .With(m => m.Language = Language.English)
                                                     .BuildNew();
@@ -69,7 +69,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(game);
 
             var subtitleFile = Builder<SubtitleFile>.CreateNew()
-                                                    .With(m => m.SeriesId = game.Id)
+                                                    .With(m => m.GameId = game.Id)
                                                     .With(m => m.EpisodeFileId = 10)
                                                     .With(m => m.Language = Language.English)
                                                     .BuildNew();
@@ -94,7 +94,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(romFile);
 
             var subtitleFile = Builder<SubtitleFile>.CreateNew()
-                                                    .With(m => m.SeriesId = game.Id)
+                                                    .With(m => m.GameId = game.Id)
                                                     .With(m => m.EpisodeFileId = romFile.Id)
                                                     .With(m => m.Language = Language.English)
                                                     .BuildNew();
@@ -113,7 +113,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Db.Insert(game);
 
             var subtitleFile = Builder<SubtitleFile>.CreateNew()
-                                                 .With(m => m.SeriesId = game.Id)
+                                                 .With(m => m.GameId = game.Id)
                                                  .With(m => m.EpisodeFileId = 0)
                                                  .With(m => m.Language = Language.English)
                                                  .BuildNew();

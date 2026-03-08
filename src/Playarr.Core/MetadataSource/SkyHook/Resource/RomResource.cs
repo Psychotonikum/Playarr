@@ -4,8 +4,8 @@ namespace Playarr.Core.MetadataSource.SkyHook.Resource
 {
     public class RomResource
     {
-        public int TvdbId { get; set; }
-        public int SeasonNumber { get; set; }
+        public int IgdbId { get; set; }
+        public int PlatformNumber { get; set; }
         public int EpisodeNumber { get; set; }
         public int? AbsoluteEpisodeNumber { get; set; }
         public int? AiredAfterPlatformNumber { get; set; }

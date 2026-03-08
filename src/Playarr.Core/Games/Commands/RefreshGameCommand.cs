@@ -8,7 +8,7 @@ namespace Playarr.Core.Games.Commands
     public class RefreshSeriesCommand : Command
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public int SeriesId
+        public int GameId
         {
             get => 0;
             set

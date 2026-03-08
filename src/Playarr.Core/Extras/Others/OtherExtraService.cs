@@ -126,7 +126,7 @@ namespace Playarr.Core.Extras.Others
                         continue;
                     }
 
-                    if (fileRomInfo.SeasonNumber == localRom.FileRomInfo.SeasonNumber &&
+                    if (fileRomInfo.PlatformNumber == localRom.FileRomInfo.PlatformNumber &&
                         fileRomInfo.RomNumbers.SequenceEqual(localRom.FileRomInfo.RomNumbers))
                     {
                         matchingFiles.Add(file);

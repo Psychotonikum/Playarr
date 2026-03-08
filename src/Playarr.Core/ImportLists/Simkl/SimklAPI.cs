@@ -11,7 +11,7 @@ namespace Playarr.Core.ImportLists.Simkl
         public string Slug { get; set; }
         public string Imdb { get; set; }
         public string Tmdb { get; set; }
-        public string Tvdb { get; set; }
+        public string Igdb { get; set; }
         public string Mal { get; set; }
     }
 

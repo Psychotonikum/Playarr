@@ -63,7 +63,7 @@ namespace Playarr.Core.Games
 
             try
             {
-                var tuple = _seriesInfo.GetSeriesInfo(game.TvdbId);
+                var tuple = _seriesInfo.GetSeriesInfo(game.IgdbId);
                 seriesInfo = tuple.Item1;
                 roms = tuple.Item2;
             }
@@ -73,17 +73,17 @@ namespace Playarr.Core.Games
                 {
                     game.Status = GameStatusType.Deleted;
                     _seriesService.UpdateSeries(game, publishUpdatedEvent: false);
-                    _logger.Debug("Game marked as deleted on tvdb for {0}", game.Title);
+                    _logger.Debug("Game marked as deleted on igdb for {0}", game.Title);
                     _eventAggregator.PublishEvent(new SeriesUpdatedEvent(game));
                 }
 
                 throw;
             }
 
-            if (game.TvdbId != seriesInfo.TvdbId)
+            if (game.IgdbId != seriesInfo.IgdbId)
             {
-                _logger.Warn("Game '{0}' (tvdbid {1}) was replaced with '{2}' (tvdbid {3}), because the original was a duplicate.", game.Title, game.TvdbId, seriesInfo.Title, seriesInfo.TvdbId);
-                game.TvdbId = seriesInfo.TvdbId;
+                _logger.Warn("Game '{0}' (igdbid {1}) was replaced with '{2}' (igdbid {3}), because the original was a duplicate.", game.Title, game.IgdbId, seriesInfo.Title, seriesInfo.IgdbId);
+                game.IgdbId = seriesInfo.IgdbId;
             }
 
             game.Title = seriesInfo.Title;
@@ -136,24 +136,24 @@ namespace Playarr.Core.Games
 
         private List<Platform> UpdateSeasons(Game game, Game seriesInfo)
         {
-            var platforms = seriesInfo.Platforms.DistinctBy(s => s.SeasonNumber).ToList();
+            var platforms = seriesInfo.Platforms.DistinctBy(s => s.PlatformNumber).ToList();
 
             foreach (var platform in platforms)
             {
-                var existingSeason = game.Platforms.FirstOrDefault(s => s.SeasonNumber == platform.SeasonNumber);
+                var existingSeason = game.Platforms.FirstOrDefault(s => s.PlatformNumber == platform.PlatformNumber);
 
                 if (existingSeason == null)
                 {
-                    if (platform.SeasonNumber == 0)
+                    if (platform.PlatformNumber == 0)
                     {
-                        _logger.Debug("Ignoring platform 0 for game [{0}] {1} by default", game.TvdbId, game.Title);
+                        _logger.Debug("Ignoring platform 0 for game [{0}] {1} by default", game.IgdbId, game.Title);
                         platform.Monitored = false;
                         continue;
                     }
 
                     var monitorNewSeasons = game.MonitorNewItems == NewItemMonitorTypes.All;
 
-                    _logger.Debug("New platform ({0}) for game: [{1}] {2}, setting monitored to {3}", platform.SeasonNumber, game.TvdbId, game.Title, monitorNewSeasons.ToString().ToLowerInvariant());
+                    _logger.Debug("New platform ({0}) for game: [{1}] {2}, setting monitored to {3}", platform.PlatformNumber, game.IgdbId, game.Title, monitorNewSeasons.ToString().ToLowerInvariant());
                     platform.Monitored = monitorNewSeasons;
                 }
                 else
@@ -228,7 +228,7 @@ namespace Playarr.Core.Games
                     }
                     catch (SeriesNotFoundException)
                     {
-                        _logger.Error("Game '{0}' (tvdbid {1}) was not found, it may have been removed from TheIGDB.", game.Title, game.TvdbId);
+                        _logger.Error("Game '{0}' (igdbid {1}) was not found, it may have been removed from TheIGDB.", game.Title, game.IgdbId);
 
                         // Mark the result as indeterminate so it's not marked as a full success,
                         // // but we can still process other game if needed.
@@ -261,7 +261,7 @@ namespace Playarr.Core.Games
                         }
                         catch (SeriesNotFoundException)
                         {
-                            _logger.Error("Game '{0}' (tvdbid {1}) was not found, it may have been removed from TheIGDB.", seriesLocal.Title, seriesLocal.TvdbId);
+                            _logger.Error("Game '{0}' (igdbid {1}) was not found, it may have been removed from TheIGDB.", seriesLocal.Title, seriesLocal.IgdbId);
                             continue;
                         }
                         catch (Exception e)

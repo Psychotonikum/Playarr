@@ -45,7 +45,7 @@ public static class ReleaseResourceMapper
 
             Languages = remoteRom.Languages,
             MappedGameId = remoteRom.Game?.Id,
-            MappedPlatformNumber = remoteRom.Roms.FirstOrDefault()?.SeasonNumber,
+            MappedPlatformNumber = remoteRom.Roms.FirstOrDefault()?.PlatformNumber,
             MappedRomNumbers = remoteRom.Roms.Select(v => v.EpisodeNumber).ToArray(),
             MappedAbsoluteRomNumbers = remoteRom.Roms.Where(v => v.AbsoluteEpisodeNumber.HasValue).Select(v => v.AbsoluteEpisodeNumber!.Value).ToArray(),
             MappedRomInfo = remoteRom.Roms.Select(v => new ReleaseRomResource(v)),
@@ -81,7 +81,7 @@ public static class ReleaseResourceMapper
 public class ReleaseRomResource
 {
     public int Id { get; set; }
-    public int SeasonNumber { get; set; }
+    public int PlatformNumber { get; set; }
     public int EpisodeNumber { get; set; }
     public int? AbsoluteEpisodeNumber { get; set; }
     public string? Title { get; set; }
@@ -93,7 +93,7 @@ public class ReleaseRomResource
     public ReleaseRomResource(Rom rom)
     {
         Id = rom.Id;
-        SeasonNumber = rom.SeasonNumber;
+        PlatformNumber = rom.PlatformNumber;
         EpisodeNumber = rom.EpisodeNumber;
         AbsoluteEpisodeNumber = rom.AbsoluteEpisodeNumber;
         Title = rom.Title;

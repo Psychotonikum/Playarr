@@ -229,7 +229,7 @@ namespace Playarr.Core.Notifications.Webhook
                     Id = 1,
                     Title = "Test Title",
                     Path = "C:\\testpath",
-                    TvdbId = 1234,
+                    IgdbId = 1234,
                     Tags = new List<string> { "test-tag" }
                 },
                 Roms = new List<WebhookEpisode>
@@ -238,7 +238,7 @@ namespace Playarr.Core.Notifications.Webhook
                     {
                         Id = 123,
                         EpisodeNumber = 1,
-                        SeasonNumber = 1,
+                        PlatformNumber = 1,
                         Title = "Test title"
                     }
                 }

@@ -106,7 +106,7 @@ namespace Playarr.Core.Download.Pending
             foreach (var seriesDecisions in decisions.GroupBy(v => v.Item1.RemoteEpisode.Game.Id))
             {
                 var game = seriesDecisions.First().Item1.RemoteEpisode.Game;
-                var alreadyPending = _pendingReleases.Where(p => p.SeriesId == game.Id).SelectList(s => s.JsonClone());
+                var alreadyPending = _pendingReleases.Where(p => p.GameId == game.Id).SelectList(s => s.JsonClone());
 
                 // TODO: Do we need IncludeRemoteEpisodes?
                 alreadyPending = IncludeRemoteEpisodes(alreadyPending, seriesDecisions.ToDictionaryIgnoreDuplicates(v => v.Item1.RemoteEpisode.Release.Title, v => v.Item1.RemoteEpisode));
@@ -190,7 +190,7 @@ namespace Playarr.Core.Download.Pending
 
         public List<RemoteEpisode> GetPendingRemoteEpisodes(int gameId)
         {
-            return _pendingReleases.Where(p => p.SeriesId == gameId).Select(p => p.RemoteEpisode).ToList();
+            return _pendingReleases.Where(p => p.GameId == gameId).Select(p => p.RemoteEpisode).ToList();
         }
 
         public List<Queue.Queue> GetPendingQueue()
@@ -282,10 +282,10 @@ namespace Playarr.Core.Download.Pending
         public void RemovePendingQueueItems(int queueId)
         {
             var targetItem = FindPendingRelease(queueId);
-            var seriesReleases = _repository.AllByGameId(targetItem.SeriesId);
+            var seriesReleases = _repository.AllByGameId(targetItem.GameId);
 
             var releasesToRemove = seriesReleases.Where(
-                c => c.ParsedRomInfo.SeasonNumber == targetItem.ParsedRomInfo.SeasonNumber &&
+                c => c.ParsedRomInfo.PlatformNumber == targetItem.ParsedRomInfo.PlatformNumber &&
                      c.ParsedRomInfo.RomNumbers.SequenceEqual(targetItem.ParsedRomInfo.RomNumbers));
 
             _repository.DeleteMany(releasesToRemove.Select(c => c.Id));
@@ -294,10 +294,10 @@ namespace Playarr.Core.Download.Pending
         public void RemovePendingQueueItemsObsolete(int queueId)
         {
             var targetItem = FindPendingReleaseObsolete(queueId);
-            var seriesReleases = _repository.AllByGameId(targetItem.SeriesId);
+            var seriesReleases = _repository.AllByGameId(targetItem.GameId);
 
             var releasesToRemove = seriesReleases.Where(
-                c => c.ParsedRomInfo.SeasonNumber == targetItem.ParsedRomInfo.SeasonNumber &&
+                c => c.ParsedRomInfo.PlatformNumber == targetItem.ParsedRomInfo.PlatformNumber &&
                      c.ParsedRomInfo.RomNumbers.SequenceEqual(targetItem.ParsedRomInfo.RomNumbers));
 
             _repository.DeleteMany(releasesToRemove.Select(c => c.Id));
@@ -333,7 +333,7 @@ namespace Playarr.Core.Download.Pending
 
         private List<PendingRelease> GetPendingReleases(int gameId)
         {
-            return _pendingReleases.Where(p => p.SeriesId == gameId).ToList();
+            return _pendingReleases.Where(p => p.GameId == gameId).ToList();
         }
 
         private List<PendingRelease> IncludeRemoteEpisodes(List<PendingRelease> releases, Dictionary<string, RemoteEpisode> knownRemoteEpisodes = null)
@@ -350,14 +350,14 @@ namespace Playarr.Core.Download.Pending
                 }
             }
 
-            foreach (var game in _seriesService.GetSeries(releases.Select(v => v.SeriesId).Distinct().Where(v => !seriesMap.ContainsKey(v))))
+            foreach (var game in _seriesService.GetSeries(releases.Select(v => v.GameId).Distinct().Where(v => !seriesMap.ContainsKey(v))))
             {
                 seriesMap[game.Id] = game;
             }
 
             foreach (var release in releases)
             {
-                var game = seriesMap.GetValueOrDefault(release.SeriesId);
+                var game = seriesMap.GetValueOrDefault(release.GameId);
 
                 // Just in case the game was removed, but wasn't cleaned up yet (housekeeper will clean it up)
                 if (game == null)
@@ -398,13 +398,13 @@ namespace Playarr.Core.Download.Pending
                     {
                         _logger.Debug(ex, ex.Message);
 
-                        release.RemoteEpisode.MappedPlatformNumber = release.ParsedRomInfo.SeasonNumber;
+                        release.RemoteEpisode.MappedPlatformNumber = release.ParsedRomInfo.PlatformNumber;
                         release.RemoteEpisode.Roms = new List<Rom>();
                     }
                 }
                 else
                 {
-                    release.RemoteEpisode.MappedPlatformNumber = release.ParsedRomInfo.SeasonNumber;
+                    release.RemoteEpisode.MappedPlatformNumber = release.ParsedRomInfo.PlatformNumber;
                     release.RemoteEpisode.Roms = new List<Rom>();
                 }
 
@@ -531,7 +531,7 @@ namespace Playarr.Core.Download.Pending
         {
             _repository.Insert(new PendingRelease
             {
-                SeriesId = decision.RemoteEpisode.Game.Id,
+                GameId = decision.RemoteEpisode.Game.Id,
                 ParsedRomInfo = decision.RemoteEpisode.ParsedRomInfo,
                 Release = decision.RemoteEpisode.Release,
                 Title = decision.RemoteEpisode.Release.Title,

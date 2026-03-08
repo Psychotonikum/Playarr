@@ -43,10 +43,10 @@ namespace Playarr.Core.DecisionEngine.Specifications
 
             if (seriesRuntime == 0)
             {
-                var firstPlatformNumber = subject.Game.Platforms.Where(s => s.SeasonNumber > 0).Min(s => s.SeasonNumber);
+                var firstPlatformNumber = subject.Game.Platforms.Where(s => s.PlatformNumber > 0).Min(s => s.PlatformNumber);
                 var pilotEpisode = _episodeService.GetEpisodesBySeason(subject.Game.Id, firstPlatformNumber).First();
 
-                if (subject.Roms.First().SeasonNumber == pilotEpisode.SeasonNumber)
+                if (subject.Roms.First().PlatformNumber == pilotEpisode.PlatformNumber)
                 {
                     // If the first rom has an air date use it, otherwise use the release's publish date because like runtime it may not have updated yet.
                     var gracePeriodEnd = (pilotEpisode.AirDateUtc ?? subject.Release.PublishDate).AddHours(24);

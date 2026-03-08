@@ -100,7 +100,7 @@ public class ReleaseController : RestController<ReleaseResource>
             {
                 var overrideInfo = release.Override;
 
-                Ensure.That(overrideInfo.SeriesId, () => release.Override.SeriesId).IsNotNull();
+                Ensure.That(overrideInfo.GameId, () => release.Override.GameId).IsNotNull();
                 Ensure.That(overrideInfo.RomIds, () => overrideInfo.RomIds).IsNotNull();
                 Ensure.That(overrideInfo.RomIds, () => overrideInfo.RomIds).HasItems();
                 Ensure.That(overrideInfo.Quality, () => overrideInfo.Quality).IsNotNull();
@@ -122,7 +122,7 @@ public class ReleaseController : RestController<ReleaseResource>
                     ReleaseSource = remoteRom.ReleaseSource
                 };
 
-                remoteRom.Game = _seriesService.GetSeries(overrideInfo.SeriesId!.Value);
+                remoteRom.Game = _seriesService.GetSeries(overrideInfo.GameId!.Value);
                 remoteRom.Roms = _episodeService.GetEpisodes(overrideInfo.RomIds);
                 remoteRom.ParsedRomInfo.Quality = overrideInfo.Quality;
                 remoteRom.Languages = overrideInfo.Languages;
@@ -134,12 +134,12 @@ public class ReleaseController : RestController<ReleaseResource>
                 {
                     var rom = _episodeService.GetEpisode(release.SearchInfo.EpisodeId.Value);
 
-                    remoteRom.Game = _seriesService.GetSeries(rom.SeriesId);
+                    remoteRom.Game = _seriesService.GetSeries(rom.GameId);
                     remoteRom.Roms = new List<Rom> { rom };
                 }
-                else if (release.SearchInfo?.SeriesId.HasValue == true)
+                else if (release.SearchInfo?.GameId.HasValue == true)
                 {
-                    var game = _seriesService.GetSeries(release.SearchInfo.SeriesId.Value);
+                    var game = _seriesService.GetSeries(release.SearchInfo.GameId.Value);
                     var roms = _parsingService.GetEpisodes(remoteRom.ParsedRomInfo, game, true);
 
                     if (roms.Empty())

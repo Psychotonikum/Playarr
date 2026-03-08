@@ -33,7 +33,7 @@ public class GameResource : RestResource
     public NewItemMonitorTypes MonitorNewItems { get; set; }
     public bool UseSceneNumbering { get; set; }
     public int Runtime { get; set; }
-    public int TvdbId { get; set; }
+    public int IgdbId { get; set; }
     public int MobyGamesId { get; set; }
     public int RawgId { get; set; }
     public int TmdbId { get; set; }
@@ -53,6 +53,7 @@ public class GameResource : RestResource
     public HashSet<int>? Tags { get; set; }
     public DateTime Added { get; set; }
     public AddGameOptions? AddOptions { get; set; }
+    public int? GameSystemId { get; set; }
     public Ratings? Ratings { get; set; }
     public SeriesStatisticsResource? Statistics { get; set; }
     public bool? EpisodesChanged { get; set; }
@@ -86,7 +87,7 @@ public static class GameResourceMapper
             MonitorNewItems = model.MonitorNewItems,
             UseSceneNumbering = model.UseSceneNumbering,
             Runtime = model.Runtime,
-            TvdbId = model.TvdbId,
+            IgdbId = model.IgdbId,
             MobyGamesId = model.MobyGamesId,
             RawgId = model.RawgId,
             TmdbId = model.TmdbId,
@@ -103,7 +104,8 @@ public static class GameResourceMapper
             Tags = model.Tags,
             Added = model.Added,
             AddOptions = model.AddOptions,
-            Ratings = model.Ratings
+            Ratings = model.Ratings,
+            GameSystemId = model.GameSystemId
         };
     }
 
@@ -129,7 +131,7 @@ public static class GameResourceMapper
             MonitorNewItems = resource.MonitorNewItems,
             UseSceneNumbering = resource.UseSceneNumbering,
             Runtime = resource.Runtime,
-            TvdbId = resource.TvdbId,
+            IgdbId = resource.IgdbId,
             MobyGamesId = resource.MobyGamesId,
             RawgId = resource.RawgId,
             TmdbId = resource.TmdbId,
@@ -146,7 +148,8 @@ public static class GameResourceMapper
             Tags = resource.Tags,
             Added = resource.Added,
             AddOptions = resource.AddOptions,
-            Ratings = resource.Ratings
+            Ratings = resource.Ratings,
+            GameSystemId = resource.GameSystemId
         };
     }
 

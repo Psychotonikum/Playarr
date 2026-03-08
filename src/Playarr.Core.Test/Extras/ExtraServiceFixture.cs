@@ -42,7 +42,7 @@ namespace Playarr.Core.Test.Extras
 
             var roms = Builder<Rom>.CreateListOfSize(1)
                                            .All()
-                                           .With(e => e.SeasonNumber = 1)
+                                           .With(e => e.PlatformNumber = 1)
                                            .Build()
                                            .ToList();
 

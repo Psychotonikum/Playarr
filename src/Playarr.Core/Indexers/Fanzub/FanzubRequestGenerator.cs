@@ -38,9 +38,9 @@ namespace Playarr.Core.Indexers.Fanzub
         {
             var pageableRequests = new IndexerPageableRequestChain();
 
-            if (Settings.AnimeStandardFormatSearch && searchCriteria.SeasonNumber > 0)
+            if (Settings.AnimeStandardFormatSearch && searchCriteria.PlatformNumber > 0)
             {
-                var searchTitles = searchCriteria.CleanSceneTitles.SelectMany(v => GetSeasonSearchStrings(v, searchCriteria.SeasonNumber)).ToList();
+                var searchTitles = searchCriteria.CleanSceneTitles.SelectMany(v => GetSeasonSearchStrings(v, searchCriteria.PlatformNumber)).ToList();
                 pageableRequests.Add(GetPagedRequests(string.Join("|", searchTitles)));
             }
 
@@ -63,9 +63,9 @@ namespace Playarr.Core.Indexers.Fanzub
 
             var searchTitles = searchCriteria.CleanSceneTitles.SelectMany(v => GetTitleSearchStrings(v, searchCriteria.AbsoluteEpisodeNumber)).ToList();
 
-            if (Settings.AnimeStandardFormatSearch && searchCriteria.SeasonNumber > 0 && searchCriteria.EpisodeNumber > 0)
+            if (Settings.AnimeStandardFormatSearch && searchCriteria.PlatformNumber > 0 && searchCriteria.EpisodeNumber > 0)
             {
-                searchTitles.AddRange(searchCriteria.CleanSceneTitles.SelectMany(v => GetTitleSearchStrings(v, searchCriteria.SeasonNumber, searchCriteria.EpisodeNumber)).ToList());
+                searchTitles.AddRange(searchCriteria.CleanSceneTitles.SelectMany(v => GetTitleSearchStrings(v, searchCriteria.PlatformNumber, searchCriteria.EpisodeNumber)).ToList());
             }
 
             pageableRequests.Add(GetPagedRequests(string.Join("|", searchTitles)));
@@ -77,9 +77,9 @@ namespace Playarr.Core.Indexers.Fanzub
         {
             var pageableRequests = new IndexerPageableRequestChain();
 
-            if (Settings.AnimeStandardFormatSearch && searchCriteria.SeasonNumber > 0)
+            if (Settings.AnimeStandardFormatSearch && searchCriteria.PlatformNumber > 0)
             {
-                var searchTitles = searchCriteria.CleanSceneTitles.SelectMany(v => GetSeasonSearchStrings(v, searchCriteria.SeasonNumber)).ToList();
+                var searchTitles = searchCriteria.CleanSceneTitles.SelectMany(v => GetSeasonSearchStrings(v, searchCriteria.PlatformNumber)).ToList();
                 pageableRequests.Add(GetPagedRequests(string.Join("|", searchTitles)));
             }
 

@@ -30,7 +30,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
                 {
                      DownloadId = "35238",
                      SourceTitle = "TV Game S01",
-                     SeriesId = 5,
+                     GameId = 5,
                      EpisodeId = 4
                 }
                 });
@@ -48,13 +48,13 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
                 ParsedRomInfo = new ParsedRomInfo()
                 {
                     GameTitle = "TV Game",
-                    SeasonNumber = 1
+                    PlatformNumber = 1
                 },
                 MappedPlatformNumber = 1
             };
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.Map(It.Is<ParsedRomInfo>(i => i.SeasonNumber == 1 && i.GameTitle == "TV Game"), It.IsAny<int>(), It.IsAny<IEnumerable<int>>()))
+                  .Setup(s => s.Map(It.Is<ParsedRomInfo>(i => i.PlatformNumber == 1 && i.GameTitle == "TV Game"), It.IsAny<int>(), It.IsAny<IEnumerable<int>>()))
                   .Returns(remoteRom);
 
             var client = new DownloadClientDefinition()
@@ -82,7 +82,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
             trackedDownload.RemoteEpisode.Game.Should().NotBeNull();
             trackedDownload.RemoteEpisode.Game.Id.Should().Be(5);
             trackedDownload.RemoteEpisode.Roms.First().Id.Should().Be(4);
-            trackedDownload.RemoteEpisode.ParsedRomInfo.SeasonNumber.Should().Be(1);
+            trackedDownload.RemoteEpisode.ParsedRomInfo.PlatformNumber.Should().Be(1);
             trackedDownload.RemoteEpisode.MappedPlatformNumber.Should().Be(1);
         }
 
@@ -93,7 +93,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
             {
                 DownloadId = "35238",
                 SourceTitle = "TV Game S01",
-                SeriesId = 5,
+                GameId = 5,
                 EpisodeId = 4,
                 EventType = EpisodeHistoryEventType.Grabbed,
             };
@@ -125,7 +125,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
                 ParsedRomInfo = new ParsedRomInfo()
                 {
                     GameTitle = "TV Game",
-                    SeasonNumber = 1
+                    PlatformNumber = 1
                 },
                 MappedPlatformNumber = 1
             };
@@ -170,7 +170,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
                 ParsedRomInfo = new ParsedRomInfo()
                 {
                     GameTitle = "TV Game",
-                    SeasonNumber = 0,
+                    PlatformNumber = 0,
                     RomNumbers = new[] { 1 }
                 },
                 MappedPlatformNumber = 0
@@ -184,13 +184,13 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
                 {
                      DownloadId = "35238",
                      SourceTitle = "TV Game Special",
-                     SeriesId = 5,
+                     GameId = 5,
                      EpisodeId = 4
                 }
                 });
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.Map(It.Is<ParsedRomInfo>(i => i.SeasonNumber == 0 && i.GameTitle == "TV Game"), It.IsAny<int>(), It.IsAny<IEnumerable<int>>()))
+                  .Setup(s => s.Map(It.Is<ParsedRomInfo>(i => i.PlatformNumber == 0 && i.GameTitle == "TV Game"), It.IsAny<int>(), It.IsAny<IEnumerable<int>>()))
                   .Returns(remoteRom);
 
             Mocker.GetMock<IParsingService>()
@@ -222,7 +222,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
             trackedDownload.RemoteEpisode.Game.Should().NotBeNull();
             trackedDownload.RemoteEpisode.Game.Id.Should().Be(5);
             trackedDownload.RemoteEpisode.Roms.First().Id.Should().Be(4);
-            trackedDownload.RemoteEpisode.ParsedRomInfo.SeasonNumber.Should().Be(0);
+            trackedDownload.RemoteEpisode.ParsedRomInfo.PlatformNumber.Should().Be(0);
             trackedDownload.RemoteEpisode.MappedPlatformNumber.Should().Be(0);
         }
 
@@ -238,7 +238,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
                                     ParsedRomInfo = new ParsedRomInfo()
                                                         {
                                                             GameTitle = "TV Game",
-                                                            SeasonNumber = 1,
+                                                            PlatformNumber = 1,
                                                             RomNumbers = new[] { 1 }
                                                         },
                                     MappedPlatformNumber = 0
@@ -297,7 +297,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
                 ParsedRomInfo = new ParsedRomInfo()
                 {
                     GameTitle = "TV Game",
-                    SeasonNumber = 1,
+                    PlatformNumber = 1,
                     RomNumbers = new[] { 1 }
                 },
                 MappedPlatformNumber = 0
@@ -356,7 +356,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
                 ParsedRomInfo = new ParsedRomInfo()
                 {
                     GameTitle = "TV Game",
-                    SeasonNumber = 1,
+                    PlatformNumber = 1,
                     RomNumbers = new[] { 1 }
                 },
                 MappedPlatformNumber = 0

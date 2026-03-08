@@ -43,12 +43,12 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
 
             CustomFormatsTestHelpers.GivenCustomFormats();
 
-            var singleEpisodeList = new List<Rom> { new Rom { Id = FIRST_EPISODE_ID, SeasonNumber = 12, EpisodeNumber = 3 } };
+            var singleEpisodeList = new List<Rom> { new Rom { Id = FIRST_EPISODE_ID, PlatformNumber = 12, EpisodeNumber = 3 } };
             var doubleEpisodeList = new List<Rom>
             {
-                                                            new Rom { Id = FIRST_EPISODE_ID, SeasonNumber = 12, EpisodeNumber = 3 },
-                                                            new Rom { Id = SECOND_EPISODE_ID, SeasonNumber = 12, EpisodeNumber = 4 },
-                                                            new Rom { Id = 3, SeasonNumber = 12, EpisodeNumber = 5 }
+                                                            new Rom { Id = FIRST_EPISODE_ID, PlatformNumber = 12, EpisodeNumber = 3 },
+                                                            new Rom { Id = SECOND_EPISODE_ID, PlatformNumber = 12, EpisodeNumber = 4 },
+                                                            new Rom { Id = 3, PlatformNumber = 12, EpisodeNumber = 5 }
             };
 
             _fakeSeries = Builder<Game>.CreateNew()

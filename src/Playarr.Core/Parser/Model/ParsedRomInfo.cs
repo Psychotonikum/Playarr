@@ -13,7 +13,7 @@ namespace Playarr.Core.Parser.Model
         public string GameTitle { get; set; }
         public GameTitleInfo GameTitleInfo { get; set; }
         public QualityModel Quality { get; set; }
-        public int SeasonNumber { get; set; }
+        public int PlatformNumber { get; set; }
         public int[] RomNumbers { get; set; }
         public int[] AbsoluteRomNumbers { get; set; }
         public decimal[] SpecialAbsoluteRomNumbers { get; set; }
@@ -70,7 +70,7 @@ namespace Playarr.Core.Parser.Model
             {
                 return ((AirDate.IsNullOrWhiteSpace() &&
                        GameTitle.IsNullOrWhiteSpace() &&
-                       (RomNumbers.Length == 0 || SeasonNumber == 0)) || (!GameTitle.IsNullOrWhiteSpace() && Special)) ||
+                       (RomNumbers.Length == 0 || PlatformNumber == 0)) || (!GameTitle.IsNullOrWhiteSpace() && Special)) ||
                        (RomNumbers.Length == 1 && RomNumbers[0] == 0);
             }
 
@@ -83,7 +83,7 @@ namespace Playarr.Core.Parser.Model
         {
             get
             {
-                return SeasonNumber != 0 && RomNumbers.Length == 1 && RomNumbers[0] == 0;
+                return PlatformNumber != 0 && RomNumbers.Length == 1 && RomNumbers[0] == 0;
             }
 
             private set
@@ -124,11 +124,11 @@ namespace Playarr.Core.Parser.Model
             }
             else if (FullSeason)
             {
-                episodeString = string.Format("Platform {0:00}", SeasonNumber);
+                episodeString = string.Format("Platform {0:00}", PlatformNumber);
             }
             else if (RomNumbers != null && RomNumbers.Any())
             {
-                episodeString = string.Format("S{0:00}E{1}", SeasonNumber, string.Join("-", RomNumbers.Select(c => c.ToString("00"))));
+                episodeString = string.Format("S{0:00}E{1}", PlatformNumber, string.Join("-", RomNumbers.Select(c => c.ToString("00"))));
             }
             else if (AbsoluteRomNumbers != null && AbsoluteRomNumbers.Any())
             {
@@ -136,9 +136,9 @@ namespace Playarr.Core.Parser.Model
             }
             else if (Special)
             {
-                if (SeasonNumber != 0)
+                if (PlatformNumber != 0)
                 {
-                    episodeString = string.Format("[Unknown Platform {0:00} Special]", SeasonNumber);
+                    episodeString = string.Format("[Unknown Platform {0:00} Special]", PlatformNumber);
                 }
                 else
                 {

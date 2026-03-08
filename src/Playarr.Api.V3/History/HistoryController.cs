@@ -91,7 +91,7 @@ namespace Playarr.Api.V3.History
 
             if (gameIds != null && gameIds.Any())
             {
-                pagingSpec.FilterExpressions.Add(h => gameIds.Contains(h.SeriesId));
+                pagingSpec.FilterExpressions.Add(h => gameIds.Contains(h.GameId));
             }
 
             return pagingSpec.ApplyToPage(h => _historyService.Paged(pagingSpec, languages, quality), h => MapToResource(h, includeSeries, includeEpisode));

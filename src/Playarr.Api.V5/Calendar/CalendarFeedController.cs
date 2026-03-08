@@ -49,14 +49,14 @@ public class CalendarFeedController : Controller
 
         foreach (var rom in roms.OrderBy(v => v.AirDateUtc!.Value))
         {
-            var game = allGames.SingleOrDefault(s => s.Id == rom.SeriesId);
+            var game = allGames.SingleOrDefault(s => s.Id == rom.GameId);
 
             if (game == null)
             {
                 continue;
             }
 
-            if (premieresOnly && (rom.SeasonNumber == 0 || rom.EpisodeNumber != 1))
+            if (premieresOnly && (rom.PlatformNumber == 0 || rom.EpisodeNumber != 1))
             {
                 continue;
             }
@@ -88,7 +88,7 @@ public class CalendarFeedController : Controller
                     occurrence.Summary = $"{game.Title} - {rom.Title}";
                     break;
                 default:
-                    occurrence.Summary = $"{game.Title} - {rom.SeasonNumber}x{rom.EpisodeNumber:00} - {rom.Title}";
+                    occurrence.Summary = $"{game.Title} - {rom.PlatformNumber}x{rom.EpisodeNumber:00} - {rom.Title}";
                     break;
             }
         }

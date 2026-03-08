@@ -76,7 +76,7 @@ namespace Playarr.Core.Blocklisting
         {
             var blocklist = new Blocklist
                             {
-                                SeriesId = remoteRom.Game.Id,
+                                GameId = remoteRom.Game.Id,
                                 RomIds = remoteRom.Roms.Select(e => e.Id).ToList(),
                                 SourceTitle =  remoteRom.Release.Title,
                                 Quality = remoteRom.ParsedRomInfo.Quality,
@@ -127,7 +127,7 @@ namespace Playarr.Core.Blocklisting
         {
             var blocklist = new Blocklist
             {
-                SeriesId = message.SeriesId,
+                GameId = message.GameId,
                 RomIds = message.RomIds,
                 SourceTitle = message.SourceTitle,
                 Quality = message.Quality,

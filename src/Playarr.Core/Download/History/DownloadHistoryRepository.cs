@@ -25,7 +25,7 @@ namespace Playarr.Core.Download.History
 
         public void DeleteByGameIds(List<int> gameIds)
         {
-            Delete(r => gameIds.Contains(r.SeriesId));
+            Delete(r => gameIds.Contains(r.GameId));
         }
     }
 }

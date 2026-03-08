@@ -28,7 +28,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 },
                 Roms = Builder<Rom>.CreateListOfSize(3)
                                            .All()
-                                           .With(s => s.SeriesId = game.Id)
+                                           .With(s => s.GameId = game.Id)
                                            .BuildList(),
                 Game = game,
                 Release = new ReleaseInfo

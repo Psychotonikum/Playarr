@@ -40,21 +40,21 @@ namespace Playarr.Core.Test.ImportListTests
 
             _existingGame = Builder<Game>.CreateListOfSize(3)
                 .TheFirst(1)
-                .With(s => s.TvdbId = 6)
+                .With(s => s.IgdbId = 6)
                 .With(s => s.ImdbId = "6")
                 .With(s => s.TmdbId = 6)
                 .With(s => s.MalIds = new HashSet<int> { 6 })
                 .With(s => s.AniListIds = new HashSet<int> { 6 })
                 .With(s => s.Monitored = true)
                 .TheNext(1)
-                .With(s => s.TvdbId = 7)
+                .With(s => s.IgdbId = 7)
                 .With(s => s.ImdbId = "7")
                 .With(s => s.TmdbId = 7)
                 .With(s => s.MalIds = new HashSet<int> { 7 })
                 .With(s => s.AniListIds = new HashSet<int> { 7 })
                 .With(s => s.Monitored = true)
                 .TheNext(1)
-                .With(s => s.TvdbId = 8)
+                .With(s => s.IgdbId = 8)
                 .With(s => s.ImdbId = "8")
                 .With(s => s.TmdbId = 8)
                 .With(s => s.MalIds = new HashSet<int> { 8 })
@@ -64,19 +64,19 @@ namespace Playarr.Core.Test.ImportListTests
 
             _list2Series = Builder<ImportListItemInfo>.CreateListOfSize(3)
                 .TheFirst(1)
-                .With(s => s.TvdbId = 6)
+                .With(s => s.IgdbId = 6)
                 .With(s => s.ImdbId = "6")
                 .With(s => s.TmdbId = 6)
                 .With(s => s.MalId = 6)
                 .With(s => s.AniListId = 6)
                 .TheNext(1)
-                .With(s => s.TvdbId = 7)
+                .With(s => s.IgdbId = 7)
                 .With(s => s.ImdbId = "7")
                 .With(s => s.TmdbId = 7)
                 .With(s => s.MalId = 7)
                 .With(s => s.AniListId = 7)
                 .TheNext(1)
-                .With(s => s.TvdbId = 8)
+                .With(s => s.IgdbId = 8)
                 .With(s => s.ImdbId = "8")
                 .With(s => s.TmdbId = 8)
                 .With(s => s.MalId = 8)
@@ -139,7 +139,7 @@ namespace Playarr.Core.Test.ImportListTests
 
         private void WithIgdbId()
         {
-            _list1Series.First().TvdbId = 81189;
+            _list1Series.First().IgdbId = 81189;
         }
 
         private void WithImdbId()
@@ -153,7 +153,7 @@ namespace Playarr.Core.Test.ImportListTests
                         .CreateListOfSize(1)
                         .All()
                         .With(s => s.Title = "Breaking Bad")
-                        .With(s => s.TvdbId = 81189)
+                        .With(s => s.IgdbId = 81189)
                         .Build()
                         .ToList());
         }
@@ -162,7 +162,7 @@ namespace Playarr.Core.Test.ImportListTests
         {
             Mocker.GetMock<IGameService>()
                   .Setup(v => v.AllSeriesIgdbIds())
-                  .Returns(new List<int> { _list1Series.First().TvdbId });
+                  .Returns(new List<int> { _list1Series.First().IgdbId });
         }
 
         private void WithExcludedSeries()
@@ -173,7 +173,7 @@ namespace Playarr.Core.Test.ImportListTests
                     {
                       new ImportListExclusion
                         {
-                          TvdbId = _list1Series.First().TvdbId
+                          IgdbId = _list1Series.First().IgdbId
                         }
                     });
         }
@@ -249,7 +249,7 @@ namespace Playarr.Core.Test.ImportListTests
         [Test]
         public void should_not_clean_library_if_lists_have_not_removed_any_items()
         {
-            _importListFetch.Game = _existingGame.Select(x => new ImportListItemInfo() { TvdbId = x.TvdbId }).ToList();
+            _importListFetch.Game = _existingGame.Select(x => new ImportListItemInfo() { IgdbId = x.IgdbId }).ToList();
             _importListFetch.Game.ForEach(m => m.ImportListId = 1);
             WithList(1, true, pendingRemovals: false);
             WithCleanLevel(ListSyncLevelType.KeepAndUnmonitor);
@@ -319,7 +319,7 @@ namespace Playarr.Core.Test.ImportListTests
         }
 
         [Test]
-        public void should_not_clean_on_clean_library_if_tvdb_match()
+        public void should_not_clean_on_clean_library_if_igdb_match()
         {
             WithList(1, true);
             WithCleanLevel(ListSyncLevelType.KeepAndUnmonitor);
@@ -328,7 +328,7 @@ namespace Playarr.Core.Test.ImportListTests
 
             for (var i = 0; i < importListItems.Count; i++)
             {
-                importListItems[i].TvdbId = _existingGame[i].TvdbId;
+                importListItems[i].IgdbId = _existingGame[i].IgdbId;
             }
 
             Subject.Execute(_commandAll);
@@ -505,7 +505,7 @@ namespace Playarr.Core.Test.ImportListTests
             _list2Series.ForEach(m => m.ImportListId = 2);
             _importListFetch.Game.ForEach(m => m.ImportListId = 1);
             _importListFetch.Game.AddRange(_list2Series);
-            _importListFetch.Game[0].TvdbId = 6;
+            _importListFetch.Game[0].IgdbId = 6;
 
             WithList(1, true);
             WithList(2, true);
@@ -617,7 +617,7 @@ namespace Playarr.Core.Test.ImportListTests
         }
 
         [Test]
-        public void should_not_add_if_tvdbid_is_0()
+        public void should_not_add_if_igdbid_is_0()
         {
             _importListFetch.Game.ForEach(m => m.ImportListId = 1);
             WithList(1, true);

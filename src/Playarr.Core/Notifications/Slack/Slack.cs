@@ -287,7 +287,7 @@ namespace Playarr.Core.Notifications.Slack
 
             var romTitles = string.Join(" + ", roms.Select(e => e.Title));
 
-            return $"{game.Title} - {roms.First().SeasonNumber}{romNumbers} - {romTitles}";
+            return $"{game.Title} - {roms.First().PlatformNumber}{romNumbers} - {romTitles}";
         }
     }
 }

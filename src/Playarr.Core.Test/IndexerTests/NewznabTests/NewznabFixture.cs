@@ -92,7 +92,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
             releaseInfo.Indexer.Should().Be(Subject.Definition.Name);
             releaseInfo.PublishDate.Should().Be(DateTime.Parse("Mon, 15 May 2017 19:15:56 +0000").ToUniversalTime());
             releaseInfo.Size.Should().Be(473987489);
-            releaseInfo.TvdbId.Should().Be(0);
+            releaseInfo.IgdbId.Should().Be(0);
             releaseInfo.MobyGamesId.Should().Be(0);
         }
 

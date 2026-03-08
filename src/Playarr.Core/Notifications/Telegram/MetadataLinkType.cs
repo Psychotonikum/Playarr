@@ -14,7 +14,7 @@ namespace Playarr.Core.Notifications.Telegram
 
         // No preview data is supported for TheIGDB at this time
         // [FieldOption(Label = "TVDb")]
-        // Tvdb = 1,
+        // Igdb = 1,
 
         [FieldOption(Label = "TVMaze")]
         Tvmaze = 2,

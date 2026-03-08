@@ -11,12 +11,12 @@ namespace Playarr.Core.DataAugmentation.Scene
         [JsonProperty("searchTitle")]
         public string SearchTerm { get; set; }
 
-        public int TvdbId { get; set; }
+        public int IgdbId { get; set; }
 
         [JsonProperty("platform")]
-        public int? SeasonNumber { get; set; }
+        public int? PlatformNumber { get; set; }
 
-        public int? SceneSeasonNumber { get; set; }
+        public int? ScenePlatformNumber { get; set; }
 
         public string SceneOrigin { get; set; }
         public SearchMode? SearchMode { get; set; }

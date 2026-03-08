@@ -26,7 +26,7 @@ namespace Playarr.Api.V3.ImportLists
                 return true;
             }
 
-            return !_importListExclusionService.All().Exists(v => v.TvdbId == (int)context.PropertyValue && v.Id != listExclusionResource.Id);
+            return !_importListExclusionService.All().Exists(v => v.IgdbId == (int)context.PropertyValue && v.Id != listExclusionResource.Id);
         }
     }
 }

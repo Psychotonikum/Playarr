@@ -61,7 +61,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             var history = Builder<EpisodeHistory>.CreateNew()
                 .With(h => h.Languages = new List<Language> { Language.English })
                 .With(h => h.Quality = new QualityModel())
-                .With(h => h.SeriesId = _series.Id)
+                .With(h => h.GameId = _series.Id)
                 .BuildNew();
             Db.Insert(history);
 
@@ -81,14 +81,14 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
                 .With(h => h.Quality = new QualityModel())
                 .With(h => h.EpisodeId = _episode.Id)
                 .TheFirst(1)
-                .With(h => h.SeriesId = _series.Id)
+                .With(h => h.GameId = _series.Id)
                 .BuildListOfNew();
 
             Db.InsertMany(history);
 
             Subject.Clean();
             AllStoredModels.Should().HaveCount(1);
-            AllStoredModels.Should().Contain(h => h.SeriesId == _series.Id);
+            AllStoredModels.Should().Contain(h => h.GameId == _series.Id);
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
                 .All()
                 .With(h => h.Languages = new List<Language> { Language.English })
                 .With(h => h.Quality = new QualityModel())
-                .With(h => h.SeriesId = _series.Id)
+                .With(h => h.GameId = _series.Id)
                 .TheFirst(1)
                 .With(h => h.EpisodeId = _episode.Id)
                 .BuildListOfNew();

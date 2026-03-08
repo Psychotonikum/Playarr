@@ -12,8 +12,8 @@ namespace Playarr.Core.DataAugmentation.Xem
     public interface IXemProxy
     {
         List<int> GetXemGameIds();
-        List<XemSceneTvdbMapping> GetSceneTvdbMappings(int id);
-        List<SceneMapping> GetSceneTvdbNames();
+        List<XemSceneIgdbMapping> GetSceneIgdbMappings(int id);
+        List<SceneMapping> GetSceneIgdbNames();
     }
 
     public class XemProxy : IXemProxy
@@ -24,7 +24,7 @@ namespace Playarr.Core.DataAugmentation.Xem
         private readonly IHttpClient _httpClient;
         private readonly IHttpRequestBuilderFactory _xemRequestBuilder;
 
-        private static readonly string[] IgnoredErrors = { "no single connection", "no show with the tvdb_id" };
+        private static readonly string[] IgnoredErrors = { "no single connection", "no show with the igdb_id" };
 
         public XemProxy(IHttpClient httpClient, Logger logger)
         {
@@ -32,7 +32,7 @@ namespace Playarr.Core.DataAugmentation.Xem
             _logger = logger;
 
             _xemRequestBuilder = new HttpRequestBuilder(ROOT_URL)
-                .AddSuffixQueryParam("origin", "tvdb")
+                .AddSuffixQueryParam("origin", "igdb")
                 .CreateFactory();
         }
 
@@ -55,7 +55,7 @@ namespace Playarr.Core.DataAugmentation.Xem
             }).Where(t => t > 0).ToList();
         }
 
-        public List<XemSceneTvdbMapping> GetSceneTvdbMappings(int id)
+        public List<XemSceneIgdbMapping> GetSceneIgdbMappings(int id)
         {
             _logger.Debug("Fetching Mappings for: {0}", id);
 
@@ -64,12 +64,12 @@ namespace Playarr.Core.DataAugmentation.Xem
                                             .AddQueryParam("id", id)
                                             .Build();
 
-            var response = _httpClient.Get<XemResult<List<XemSceneTvdbMapping>>>(request).Resource;
+            var response = _httpClient.Get<XemResult<List<XemSceneIgdbMapping>>>(request).Resource;
 
             return response.Data.Where(c => c.Scene != null).ToList();
         }
 
-        public List<SceneMapping> GetSceneTvdbNames()
+        public List<SceneMapping> GetSceneIgdbNames()
         {
             _logger.Debug("Fetching alternate names");
 
@@ -103,8 +103,8 @@ namespace Playarr.Core.DataAugmentation.Xem
                                    {
                                        Title = n.Key,
                                        SearchTerm = n.Key,
-                                       SceneSeasonNumber = platformNumber,
-                                       TvdbId = game.Key
+                                       ScenePlatformNumber = platformNumber,
+                                       IgdbId = game.Key
                                    });
                     }
                 }

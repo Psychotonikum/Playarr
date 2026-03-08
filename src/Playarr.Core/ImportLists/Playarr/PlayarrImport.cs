@@ -64,7 +64,7 @@ namespace Playarr.Core.ImportLists.Playarr
 
                     var info = new ImportListItemInfo
                     {
-                        TvdbId = item.TvdbId,
+                        IgdbId = item.IgdbId,
                         Title = item.Title
                     };
 
@@ -72,7 +72,7 @@ namespace Playarr.Core.ImportLists.Playarr
                     {
                         info.Platforms = item.Platforms.Select(s => new Platform
                         {
-                            SeasonNumber = s.SeasonNumber,
+                            PlatformNumber = s.PlatformNumber,
                             Monitored = s.Monitored
                         }).ToList();
                     }

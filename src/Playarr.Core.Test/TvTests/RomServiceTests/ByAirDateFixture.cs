@@ -18,8 +18,8 @@ namespace Playarr.Core.Test.TvTests.RomServiceTests
         private Rom CreateEpisode(int platformNumber, int romNumber)
         {
             var rom = Builder<Rom>.CreateNew()
-                                          .With(e => e.SeriesId = 1)
-                                          .With(e => e.SeasonNumber = platformNumber)
+                                          .With(e => e.GameId = 1)
+                                          .With(e => e.PlatformNumber = platformNumber)
                                           .With(e => e.EpisodeNumber = romNumber)
                                           .With(e => e.AirDate = AIR_DATE)
                                           .BuildNew();

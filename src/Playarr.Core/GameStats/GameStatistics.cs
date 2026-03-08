@@ -6,7 +6,7 @@ namespace Playarr.Core.GameStats
 {
     public class SeriesStatistics : ResultSet
     {
-        public int SeriesId { get; set; }
+        public int GameId { get; set; }
         public DateTime? NextAiring { get; set; }
         public DateTime? PreviousAiring { get; set; }
         public DateTime? LastAired { get; set; }

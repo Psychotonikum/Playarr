@@ -67,7 +67,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Roksbox
 
             var metadata = new MetadataFile
                            {
-                               SeriesId = game.Id,
+                               GameId = game.Id,
                                Consumer = GetType().Name,
                                RelativePath = game.Path.GetRelativePath(path)
                            };
@@ -83,11 +83,11 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Roksbox
 
                     if (seasonMatch.Groups["specials"].Success)
                     {
-                        metadata.SeasonNumber = 0;
+                        metadata.PlatformNumber = 0;
                     }
                     else
                     {
-                        metadata.SeasonNumber = Convert.ToInt32(seasonMatch.Groups["platform"].Value);
+                        metadata.PlatformNumber = Convert.ToInt32(seasonMatch.Groups["platform"].Value);
                     }
 
                     return metadata;
@@ -152,7 +152,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Roksbox
                     var doc = new XDocument();
 
                     var details = new XElement("video");
-                    details.Add(new XElement("title", string.Format("{0} - {1}x{2} - {3}", game.Title, rom.SeasonNumber, rom.EpisodeNumber, rom.Title)));
+                    details.Add(new XElement("title", string.Format("{0} - {1}x{2} - {3}", game.Title, rom.PlatformNumber, rom.EpisodeNumber, rom.Title)));
                     details.Add(new XElement("year", rom.AirDate));
                     details.Add(new XElement("genre", string.Join(" / ", game.Genres)));
                     var actors = string.Join(" , ", game.Actors.ConvertAll(c => c.Name + " - " + c.Character).GetRange(0, Math.Min(3, game.Actors.Count)));
@@ -210,9 +210,9 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Roksbox
 
             var platformFolders = GetPlatformFolders(game);
 
-            if (!platformFolders.TryGetValue(platform.SeasonNumber, out var platformFolder))
+            if (!platformFolders.TryGetValue(platform.PlatformNumber, out var platformFolder))
             {
-                _logger.Trace("Failed to find platform folder for game {0}, platform {1}.", game.Title, platform.SeasonNumber);
+                _logger.Trace("Failed to find platform folder for game {0}, platform {1}.", game.Title, platform.PlatformNumber);
                 return new List<ImageFileResult>();
             }
 
@@ -220,7 +220,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Roksbox
             var image = platform.Images.SingleOrDefault(c => c.CoverType == MediaCoverTypes.Poster) ?? platform.Images.FirstOrDefault();
             if (image == null)
             {
-                _logger.Trace("Failed to find suitable platform image for game {0}, platform {1}.", game.Title, platform.SeasonNumber);
+                _logger.Trace("Failed to find suitable platform image for game {0}, platform {1}.", game.Title, platform.PlatformNumber);
                 return new List<ImageFileResult>();
             }
 

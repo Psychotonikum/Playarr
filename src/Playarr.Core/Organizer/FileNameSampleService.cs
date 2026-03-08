@@ -47,7 +47,7 @@ namespace Playarr.Core.Organizer
                 Title = "The Game Title's!",
                 Year = 2010,
                 ImdbId = "tt12345",
-                TvdbId = 12345,
+                IgdbId = 12345,
                 RawgId = 54321,
                 TmdbId = 11223
             };
@@ -58,7 +58,7 @@ namespace Playarr.Core.Organizer
                 Title = "The Game Title's!",
                 Year = 2010,
                 ImdbId = "tt12345",
-                TvdbId = 12345,
+                IgdbId = 12345,
                 RawgId = 54321,
                 TmdbId = 11223
             };
@@ -69,14 +69,14 @@ namespace Playarr.Core.Organizer
                 Title = "The Game Title's!",
                 Year = 2010,
                 ImdbId = "tt12345",
-                TvdbId = 12345,
+                IgdbId = 12345,
                 RawgId = 54321,
                 TmdbId = 11223
             };
 
             _episode1 = new Rom
             {
-                SeasonNumber = 1,
+                PlatformNumber = 1,
                 EpisodeNumber = 1,
                 Title = "Rom Title (1)",
                 AirDate = "2013-10-30",
@@ -85,7 +85,7 @@ namespace Playarr.Core.Organizer
 
             _episode2 = new Rom
             {
-                SeasonNumber = 1,
+                PlatformNumber = 1,
                 EpisodeNumber = 2,
                 Title = "Rom Title (2)",
                 AbsoluteEpisodeNumber = 2
@@ -93,7 +93,7 @@ namespace Playarr.Core.Organizer
 
             _episode3 = new Rom
             {
-                SeasonNumber = 1,
+                PlatformNumber = 1,
                 EpisodeNumber = 3,
                 Title = "Rom Title (3)",
                 AbsoluteEpisodeNumber = 3
@@ -280,7 +280,7 @@ namespace Playarr.Core.Organizer
 
         public string GetPlatformFolderSample(NamingConfig nameSpec)
         {
-            return _buildFileNames.GetPlatformFolder(_standardSeries, _episode1.SeasonNumber, nameSpec);
+            return _buildFileNames.GetPlatformFolder(_standardSeries, _episode1.PlatformNumber, nameSpec);
         }
 
         public string GetSpecialsFolderSample(NamingConfig nameSpec)

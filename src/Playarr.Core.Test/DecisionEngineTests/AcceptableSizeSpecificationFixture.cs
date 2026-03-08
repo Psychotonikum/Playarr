@@ -71,7 +71,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             _episodes = Builder<Rom>.CreateListOfSize(10)
                 .All()
-                .With(s => s.SeasonNumber = 1)
+                .With(s => s.PlatformNumber = 1)
                 .With(s => s.Runtime = 30)
                 .BuildList();
 
@@ -82,7 +82,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                         ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.SDTV, new Revision(version: 2)) },
                                         Roms = Builder<Rom>.CreateListOfSize(6)
                                             .All()
-                                            .With(s => s.SeasonNumber = 1)
+                                            .With(s => s.PlatformNumber = 1)
                                             .With(s => s.Runtime = 30)
                                             .BuildList()
                                     };
@@ -94,7 +94,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                         ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.SDTV, new Revision(version: 2)) },
                                         Roms = Builder<Rom>.CreateListOfSize(2)
                                             .All()
-                                            .With(s => s.SeasonNumber = 1)
+                                            .With(s => s.PlatformNumber = 1)
                                             .With(s => s.Runtime = 30)
                                             .BuildList()
                                     };
@@ -107,7 +107,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                         Roms = new List<Rom>
                                         {
                                             Builder<Rom>.CreateNew()
-                                                .With(s => s.SeasonNumber = 1)
+                                                .With(s => s.PlatformNumber = 1)
                                                 .With(s => s.EpisodeNumber = 1)
                                                 .With(s => s.Runtime = 30)
                                                 .Build()
@@ -302,7 +302,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _parseResultSingle.Game = _series;
             _parseResultSingle.Roms.First().Id = 5;
             _parseResultSingle.Release.Size = 200.Megabytes();
-            _parseResultSingle.Roms.First().SeasonNumber = 2;
+            _parseResultSingle.Roms.First().PlatformNumber = 2;
             _parseResultSingle.Roms.First().Runtime = 0;
 
             Subject.IsSatisfiedBy(_parseResultSingle, new()).Accepted.Should().Be(false);
@@ -316,7 +316,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _parseResultSingle.Game = _series;
             _parseResultSingle.Release.Size = 200.Megabytes();
             _parseResultSingle.Roms.First().Id = 5;
-            _parseResultSingle.Roms.First().SeasonNumber = 1;
+            _parseResultSingle.Roms.First().PlatformNumber = 1;
             _parseResultSingle.Roms.First().EpisodeNumber = 2;
             _parseResultSingle.Roms.First().AirDateUtc = _episodes.First().AirDateUtc.Value.AddDays(7);
             _parseResultSingle.Roms.First().Runtime = 0;
@@ -332,7 +332,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _parseResultSingle.Game = _series;
             _parseResultSingle.Release.Size = 200.Megabytes();
             _parseResultSingle.Roms.First().Id = 5;
-            _parseResultSingle.Roms.First().SeasonNumber = 1;
+            _parseResultSingle.Roms.First().PlatformNumber = 1;
             _parseResultSingle.Roms.First().EpisodeNumber = 2;
             _parseResultSingle.Roms.First().AirDateUtc = _episodes.First().AirDateUtc.Value.AddHours(1);
             _parseResultSingle.Roms.First().Runtime = 0;
@@ -348,7 +348,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _parseResultMulti.Release.Size = 200.Megabytes();
             _parseResultMulti.Roms.ForEach(e =>
             {
-                e.SeasonNumber = 2;
+                e.PlatformNumber = 2;
                 e.Runtime = 0;
             });
 
@@ -366,7 +366,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _parseResultMulti.Release.Size = 200.Megabytes();
             _parseResultMulti.Roms.ForEach(e =>
             {
-                e.SeasonNumber = 1;
+                e.PlatformNumber = 1;
                 e.AirDateUtc = airDateUtc;
                 e.Runtime = 0;
             });
@@ -385,7 +385,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _parseResultMulti.Release.Size = 200.Megabytes();
             _parseResultMulti.Roms.ForEach(e =>
             {
-                e.SeasonNumber = 1;
+                e.PlatformNumber = 1;
                 e.AirDateUtc = airDateUtc;
                 e.Runtime = 0;
             });
@@ -404,7 +404,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _parseResultSingle.Release.Size = 200.Megabytes();
             _parseResultSingle.Roms.ForEach(e =>
             {
-                e.SeasonNumber = 1;
+                e.PlatformNumber = 1;
                 e.AirDateUtc = airDateUtc;
                 e.Runtime = 0;
             });

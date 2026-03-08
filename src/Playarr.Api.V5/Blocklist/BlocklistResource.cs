@@ -10,7 +10,7 @@ namespace Playarr.Api.V5.Blocklist;
 
 public class BlocklistResource : RestResource
 {
-    public int SeriesId { get; set; }
+    public int GameId { get; set; }
     public required List<int> RomIds { get; set; }
     public required string SourceTitle { get; set; }
     public required List<Language> Languages { get; set; }
@@ -32,7 +32,7 @@ public static class BlocklistResourceMapper
         return new BlocklistResource
         {
             Id = model.Id,
-            SeriesId = model.SeriesId,
+            GameId = model.GameId,
             RomIds = model.RomIds,
             SourceTitle = model.SourceTitle,
             Languages = model.Languages,

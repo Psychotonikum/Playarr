@@ -241,7 +241,7 @@ namespace Playarr.Core.Games
 
             _logger.Debug("Multiple roms with the same air date were found, will exclude specials");
 
-            var regularEpisodes = roms.Where(e => e.SeasonNumber > 0).ToList();
+            var regularEpisodes = roms.Where(e => e.PlatformNumber > 0).ToList();
 
             if (regularEpisodes.Count == 1 && !part.HasValue)
             {
@@ -250,7 +250,7 @@ namespace Playarr.Core.Games
             }
             else if (part.HasValue && part.Value <= regularEpisodes.Count)
             {
-                var sortedEpisodes = regularEpisodes.OrderBy(e => e.SeasonNumber)
+                var sortedEpisodes = regularEpisodes.OrderBy(e => e.PlatformNumber)
                                                                .ThenBy(e => e.EpisodeNumber)
                                                                 .ToList();
 
@@ -277,7 +277,7 @@ namespace Playarr.Core.Games
                 {
                     lock (_cache)
                     {
-                        var ids = _cache.Get(rom.SeriesId.ToString(), () => new HashSet<int>());
+                        var ids = _cache.Get(rom.GameId.ToString(), () => new HashSet<int>());
 
                         ids.Add(rom.Id);
                     }
@@ -295,7 +295,7 @@ namespace Playarr.Core.Games
 
                 lock (_cache)
                 {
-                    var ids = _cache.Find(rom.SeriesId.ToString());
+                    var ids = _cache.Find(rom.GameId.ToString());
 
                     if (ids?.Contains(rom.Id) == true)
                     {

@@ -41,7 +41,7 @@ namespace Playarr.Core.ImportLists.Simkl
             {
                 foreach (var show in jsonResponse.Anime)
                 {
-                    var tentativeIgdbId = int.TryParse(show.Show.Ids.Tvdb, out var igdbId) ? igdbId : 0;
+                    var tentativeIgdbId = int.TryParse(show.Show.Ids.Igdb, out var igdbId) ? igdbId : 0;
 
                     if (tentativeIgdbId > 0 && (show.AnimeType is SimklAnimeType.Tv or SimklAnimeType.Ona or SimklAnimeType.Ova or SimklAnimeType.Special))
                     {
@@ -49,7 +49,7 @@ namespace Playarr.Core.ImportLists.Simkl
                         {
                             Title = show.Show.Title,
                             ImdbId = show.Show.Ids.Imdb,
-                            TvdbId = igdbId,
+                            IgdbId = igdbId,
                             MalId = int.TryParse(show.Show.Ids.Mal, out var malId) ? malId : 0
                         });
                     }
@@ -67,7 +67,7 @@ namespace Playarr.Core.ImportLists.Simkl
                     game.AddIfNotNull(new ImportListItemInfo()
                     {
                         Title = show.Show.Title,
-                        TvdbId = int.TryParse(show.Show.Ids.Tvdb, out var igdbId) ? igdbId : 0,
+                        IgdbId = int.TryParse(show.Show.Ids.Igdb, out var igdbId) ? igdbId : 0,
                         ImdbId = show.Show.Ids.Imdb
                     });
                 }

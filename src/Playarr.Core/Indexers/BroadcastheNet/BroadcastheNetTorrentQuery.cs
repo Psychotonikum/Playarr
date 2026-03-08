@@ -26,7 +26,7 @@ namespace Playarr.Core.Indexers.BroadcastheNet
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Hash { get; set; }
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Tvdb { get; set; }
+        public string Igdb { get; set; }
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Tvrage { get; set; }
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]

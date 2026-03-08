@@ -18,7 +18,7 @@ namespace Playarr.Core.Notifications.Emby
     public class MediaBrowserProviderIds
     {
         public string Imdb { get; set; }
-        public int Tvdb { get; set; }
+        public int Igdb { get; set; }
         public int TvMaze { get; set; }
         public int Tmdb { get; set; }
         public int TvRage { get; set; }

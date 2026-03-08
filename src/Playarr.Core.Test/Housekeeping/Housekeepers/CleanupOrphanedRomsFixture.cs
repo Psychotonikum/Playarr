@@ -31,13 +31,13 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
 
             var roms = Builder<Rom>.CreateListOfSize(2)
                                           .TheFirst(1)
-                                          .With(e => e.SeriesId = game.Id)
+                                          .With(e => e.GameId = game.Id)
                                           .BuildListOfNew();
 
             Db.InsertMany(roms);
             Subject.Clean();
             AllStoredModels.Should().HaveCount(1);
-            AllStoredModels.Should().Contain(e => e.SeriesId == game.Id);
+            AllStoredModels.Should().Contain(e => e.GameId == game.Id);
         }
     }
 }

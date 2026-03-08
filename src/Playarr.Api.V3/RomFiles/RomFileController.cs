@@ -51,7 +51,7 @@ namespace Playarr.Api.V3.RomFiles
         protected override RomFileResource GetResourceById(int id)
         {
             var romFile = _mediaFileService.Get(id);
-            var game = _seriesService.GetSeries(romFile.SeriesId);
+            var game = _seriesService.GetSeries(romFile.GameId);
 
             var resource = romFile.ToResource(game, _upgradableSpecification, _formatCalculator);
 
@@ -84,7 +84,7 @@ namespace Playarr.Api.V3.RomFiles
             {
                 var romFiles = _mediaFileService.Get(romFileIds);
 
-                return romFiles.GroupBy(e => e.SeriesId)
+                return romFiles.GroupBy(e => e.GameId)
                                    .SelectMany(f => f.ToList()
                                                      .ConvertAll(e => e.ToResource(_seriesService.GetSeries(f.Key), _upgradableSpecification, _formatCalculator)))
                                    .ToList();
@@ -144,7 +144,7 @@ namespace Playarr.Api.V3.RomFiles
 
             _mediaFileService.Update(romFiles);
 
-            var game = _seriesService.GetSeries(romFiles.First().SeriesId);
+            var game = _seriesService.GetSeries(romFiles.First().GameId);
 
             return Accepted(romFiles.ConvertAll(f => f.ToResource(game, _upgradableSpecification, _formatCalculator)));
         }
@@ -159,7 +159,7 @@ namespace Playarr.Api.V3.RomFiles
                 throw new PlayarrClientException(HttpStatusCode.NotFound, "Rom file not found");
             }
 
-            var game = _seriesService.GetSeries(romFile.SeriesId);
+            var game = _seriesService.GetSeries(romFile.GameId);
 
             _mediaFileDeletionService.DeleteRomFile(game, romFile);
         }
@@ -169,7 +169,7 @@ namespace Playarr.Api.V3.RomFiles
         public object DeleteRomFiles([FromBody] RomFileListResource resource)
         {
             var romFiles = _mediaFileService.GetFiles(resource.RomFileIds);
-            var game = _seriesService.GetSeries(romFiles.First().SeriesId);
+            var game = _seriesService.GetSeries(romFiles.First().GameId);
 
             foreach (var romFile in romFiles)
             {
@@ -223,7 +223,7 @@ namespace Playarr.Api.V3.RomFiles
 
             _mediaFileService.Update(romFiles);
 
-            var game = _seriesService.GetSeries(romFiles.First().SeriesId);
+            var game = _seriesService.GetSeries(romFiles.First().GameId);
 
             return Accepted(romFiles.ConvertAll(f => f.ToResource(game, _upgradableSpecification, _formatCalculator)));
         }

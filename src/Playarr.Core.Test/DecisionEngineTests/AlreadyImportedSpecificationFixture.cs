@@ -36,7 +36,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                         new Rom
                                         {
                                             Id = FIRST_EPISODE_ID,
-                                            SeasonNumber = 12,
+                                            PlatformNumber = 12,
                                             EpisodeNumber = 3,
                                             EpisodeFileId = 1
                                         }

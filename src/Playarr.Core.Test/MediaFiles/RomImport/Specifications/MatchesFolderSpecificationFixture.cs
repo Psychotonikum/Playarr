@@ -27,13 +27,13 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
                                                  .With(l => l.FileRomInfo =
                                                      Builder<ParsedRomInfo>.CreateNew()
                                                                                .With(p => p.RomNumbers = new[] { 5 })
-                                                                               .With(p => p.SeasonNumber == 1)
+                                                                               .With(p => p.PlatformNumber == 1)
                                                                                .With(p => p.FullSeason = false)
                                                                                .Build())
                                                  .With(l => l.FolderRomInfo =
                                                      Builder<ParsedRomInfo>.CreateNew()
                                                                                .With(p => p.RomNumbers = new[] { 1 })
-                                                                               .With(p => p.SeasonNumber == 1)
+                                                                               .With(p => p.PlatformNumber == 1)
                                                                                .With(p => p.FullSeason = false)
                                                                                .Build())
                                                  .Build();
@@ -41,12 +41,12 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
 
         private void GivenEpisodes(ParsedRomInfo parsedRomInfo, int[] romNumbers)
         {
-            var platformNumber = parsedRomInfo.SeasonNumber;
+            var platformNumber = parsedRomInfo.PlatformNumber;
 
             var roms = romNumbers.Select(n =>
                 Builder<Rom>.CreateNew()
                                 .With(e => e.Id = (platformNumber * 10) + n)
-                                .With(e => e.SeasonNumber = platformNumber)
+                                .With(e => e.PlatformNumber = platformNumber)
                                 .With(e => e.EpisodeNumber = n)
                                 .Build())
             .ToList();
@@ -161,11 +161,11 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
         [Test]
         public void should_be_rejected_if_file_and_folder_do_not_have_episodes_from_the_same_season()
         {
-            _localRom.FileRomInfo.SeasonNumber = 2;
+            _localRom.FileRomInfo.PlatformNumber = 2;
             _localRom.FileRomInfo.RomNumbers = new[] { 1 };
 
             _localRom.FolderRomInfo.FullSeason = true;
-            _localRom.FolderRomInfo.SeasonNumber = 1;
+            _localRom.FolderRomInfo.PlatformNumber = 1;
             _localRom.FolderRomInfo.RomNumbers = new[] { 1, 2 };
 
             GivenEpisodes(_localRom.FileRomInfo, _localRom.FileRomInfo.RomNumbers);
@@ -179,10 +179,10 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
         [Test]
         public void should_be_rejected_if_file_and_folder_do_not_have_episodes_from_the_same_partial_season()
         {
-            _localRom.FileRomInfo.SeasonNumber = 2;
+            _localRom.FileRomInfo.PlatformNumber = 2;
             _localRom.FileRomInfo.RomNumbers = new[] { 1 };
 
-            _localRom.FolderRomInfo.SeasonNumber = 1;
+            _localRom.FolderRomInfo.PlatformNumber = 1;
             _localRom.FolderRomInfo.RomNumbers = new[] { 1, 2 };
 
             GivenEpisodes(_localRom.FileRomInfo, _localRom.FileRomInfo.RomNumbers);
@@ -196,11 +196,11 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
         [Test]
         public void should_be_accepted_if_file_and_folder_have_episodes_from_the_same_season()
         {
-            _localRom.FileRomInfo.SeasonNumber = 1;
+            _localRom.FileRomInfo.PlatformNumber = 1;
             _localRom.FileRomInfo.RomNumbers = new[] { 1 };
 
             _localRom.FolderRomInfo.FullSeason = true;
-            _localRom.FolderRomInfo.SeasonNumber = 1;
+            _localRom.FolderRomInfo.PlatformNumber = 1;
             _localRom.FolderRomInfo.RomNumbers = new[] { 1, 2 };
 
             GivenEpisodes(_localRom.FileRomInfo, _localRom.FileRomInfo.RomNumbers);
@@ -246,10 +246,10 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
         [Test]
         public void should_be_accepted_if_file_has_absolute_episode_number_and_folder_uses_standard()
         {
-            _localRom.FileRomInfo.SeasonNumber = 1;
+            _localRom.FileRomInfo.PlatformNumber = 1;
             _localRom.FileRomInfo.AbsoluteRomNumbers = new[] { 1 };
 
-            _localRom.FolderRomInfo.SeasonNumber = 1;
+            _localRom.FolderRomInfo.PlatformNumber = 1;
             _localRom.FolderRomInfo.RomNumbers = new[] { 1, 2 };
 
             GivenEpisodes(_localRom.FileRomInfo, new[] { 1 });
@@ -269,8 +269,8 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
 
             var rom = Builder<Rom>.CreateNew()
                 .With(e => e.Id = (1 * 10) + 5)
-                .With(e => e.SeasonNumber = 5)
-                .With(e => e.SceneSeasonNumber = 1)
+                .With(e => e.PlatformNumber = 5)
+                .With(e => e.ScenePlatformNumber = 1)
                 .With(e => e.EpisodeNumber = 5)
                 .Build();
 

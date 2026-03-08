@@ -20,11 +20,11 @@ namespace Playarr.Core.Test.DecisionEngineTests.Search.SingleEpisodeSearchMatchS
         public void Setup()
         {
             _remoteRom.ParsedRomInfo = new ParsedRomInfo();
-            _remoteRom.ParsedRomInfo.SeasonNumber = 5;
+            _remoteRom.ParsedRomInfo.PlatformNumber = 5;
             _remoteRom.ParsedRomInfo.RomNumbers = new[] { 1 };
             _remoteRom.MappedPlatformNumber = 5;
 
-            _searchCriteria.SeasonNumber = 5;
+            _searchCriteria.PlatformNumber = 5;
             _searchCriteria.EpisodeNumber = 1;
             _information = new ReleaseDecisionInformation(false, _searchCriteria);
         }
@@ -32,7 +32,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.Search.SingleEpisodeSearchMatchS
         [Test]
         public void should_return_false_if_season_does_not_match()
         {
-            _remoteRom.ParsedRomInfo.SeasonNumber = 10;
+            _remoteRom.ParsedRomInfo.PlatformNumber = 10;
             _remoteRom.MappedPlatformNumber = 10;
 
             Subject.IsSatisfiedBy(_remoteRom, _information).Accepted.Should().BeFalse();
@@ -41,9 +41,9 @@ namespace Playarr.Core.Test.DecisionEngineTests.Search.SingleEpisodeSearchMatchS
         [Test]
         public void should_return_true_if_season_matches_after_scenemapping()
         {
-            _remoteRom.ParsedRomInfo.SeasonNumber = 10;
+            _remoteRom.ParsedRomInfo.PlatformNumber = 10;
             _remoteRom.MappedPlatformNumber = 5; // 10 -> 5 mapping
-            _searchCriteria.SeasonNumber = 10; // searching by tvdb 5 = 10 scene
+            _searchCriteria.PlatformNumber = 10; // searching by igdb 5 = 10 scene
 
             Subject.IsSatisfiedBy(_remoteRom, _information).Accepted.Should().BeTrue();
         }
@@ -51,9 +51,9 @@ namespace Playarr.Core.Test.DecisionEngineTests.Search.SingleEpisodeSearchMatchS
         [Test]
         public void should_return_false_if_season_does_not_match_after_scenemapping()
         {
-            _remoteRom.ParsedRomInfo.SeasonNumber = 10;
+            _remoteRom.ParsedRomInfo.PlatformNumber = 10;
             _remoteRom.MappedPlatformNumber = 6; // 9 -> 5 mapping
-            _searchCriteria.SeasonNumber = 9; // searching by tvdb 5 = 9 scene
+            _searchCriteria.PlatformNumber = 9; // searching by igdb 5 = 9 scene
 
             Subject.IsSatisfiedBy(_remoteRom, _information).Accepted.Should().BeFalse();
         }

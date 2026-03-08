@@ -37,7 +37,7 @@ namespace Playarr.Core.Test.MediaFiles
                 .With(c => c.Languages = new List<Language> { Language.English })
                 .With(c => c.Quality = new QualityModel(Quality.Bluray720p))
                 .Random(4)
-                .With(s => s.SeriesId = 12)
+                .With(s => s.GameId = 12)
                 .BuildListOfNew();
 
             Db.InsertMany(files);
@@ -45,7 +45,7 @@ namespace Playarr.Core.Test.MediaFiles
             var seriesFiles = Subject.GetFilesBySeries(12);
 
             seriesFiles.Should().HaveCount(4);
-            seriesFiles.Should().OnlyContain(c => c.SeriesId == 12);
+            seriesFiles.Should().OnlyContain(c => c.GameId == 12);
         }
 
         [Test]
@@ -53,9 +53,9 @@ namespace Playarr.Core.Test.MediaFiles
         {
             var items = Builder<RomFile>.CreateListOfSize(5)
                 .TheFirst(1)
-                .With(c => c.SeriesId = _series2.Id)
+                .With(c => c.GameId = _series2.Id)
                 .TheRest()
-                .With(c => c.SeriesId = _series1.Id)
+                .With(c => c.GameId = _series1.Id)
                 .All()
                 .With(c => c.Id = 0)
                 .With(c => c.Quality = new QualityModel(Quality.Bluray1080p))

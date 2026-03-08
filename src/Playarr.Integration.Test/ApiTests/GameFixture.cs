@@ -16,7 +16,7 @@ namespace Playarr.Integration.Test.ApiTests
             EnsureNoGame(266189, "The Blacklist");
             var tag = EnsureTag("abc");
 
-            var game = Game.Lookup("tvdb:266189").Single();
+            var game = Game.Lookup("igdb:266189").Single();
 
             game.QualityProfileId = 1;
             game.Path = Path.Combine(SeriesRootFolder, game.Title);
@@ -35,7 +35,7 @@ namespace Playarr.Integration.Test.ApiTests
         {
             EnsureNoGame(266189, "The Blacklist");
 
-            var game = Game.Lookup("tvdb:266189").Single();
+            var game = Game.Lookup("igdb:266189").Single();
 
             game.Path = Path.Combine(SeriesRootFolder, game.Title);
 
@@ -48,7 +48,7 @@ namespace Playarr.Integration.Test.ApiTests
         {
             EnsureNoGame(266189, "The Blacklist");
 
-            var game = Game.Lookup("tvdb:266189").Single();
+            var game = Game.Lookup("igdb:266189").Single();
 
             game.QualityProfileId = 1;
 
@@ -61,7 +61,7 @@ namespace Playarr.Integration.Test.ApiTests
         {
             EnsureNoGame(266189, "The Blacklist");
 
-            var game = Game.Lookup("tvdb:266189").Single();
+            var game = Game.Lookup("igdb:266189").Single();
 
             game.QualityProfileId = 1;
             game.Path = Path.Combine(SeriesRootFolder, game.Title);
@@ -82,8 +82,8 @@ namespace Playarr.Integration.Test.ApiTests
             EnsureSeries(73065, "Archer");
 
             Game.All().Should().NotBeNullOrEmpty();
-            Game.All().Should().Contain(v => v.TvdbId == 73065);
-            Game.All().Should().Contain(v => v.TvdbId == 266189);
+            Game.All().Should().Contain(v => v.IgdbId == 73065);
+            Game.All().Should().Contain(v => v.IgdbId == 266189);
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace Playarr.Integration.Test.ApiTests
 
             var result = Game.Get(game.Id);
 
-            result.TvdbId.Should().Be(266189);
+            result.IgdbId.Should().Be(266189);
         }
 
         [Test]
@@ -176,7 +176,7 @@ namespace Playarr.Integration.Test.ApiTests
 
             Game.Delete(game.Id);
 
-            Game.All().Should().NotContain(v => v.TvdbId == 266189);
+            Game.All().Should().NotContain(v => v.IgdbId == 266189);
         }
     }
 }

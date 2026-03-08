@@ -54,7 +54,7 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
             game.Should().NotBeNull();
             game.Title.Should().NotBeNullOrWhiteSpace();
             game.CleanTitle.Should().Be(Parser.Parser.CleanGameTitle(game.Title));
-            game.SortTitle.Should().Be(GameTitleNormalizer.Normalize(game.Title, game.TvdbId));
+            game.SortTitle.Should().Be(GameTitleNormalizer.Normalize(game.Title, game.IgdbId));
             game.Overview.Should().NotBeNullOrWhiteSpace();
             game.AirTime.Should().NotBeNullOrWhiteSpace();
             game.FirstAired.Should().HaveValue();
@@ -66,17 +66,17 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
             game.TitleSlug.Should().NotBeNullOrWhiteSpace();
 
             // game.MobyGamesId.Should().BeGreaterThan(0);
-            game.TvdbId.Should().BeGreaterThan(0);
+            game.IgdbId.Should().BeGreaterThan(0);
         }
 
         private void ValidateEpisodes(List<Rom> roms)
         {
             roms.Should().NotBeEmpty();
 
-            var episodeGroup = roms.GroupBy(e => e.SeasonNumber.ToString("000") + e.EpisodeNumber.ToString("000"));
+            var episodeGroup = roms.GroupBy(e => e.PlatformNumber.ToString("000") + e.EpisodeNumber.ToString("000"));
             episodeGroup.Should().OnlyContain(c => c.Count() == 1);
 
-            roms.Should().Contain(c => c.SeasonNumber > 0);
+            roms.Should().Contain(c => c.PlatformNumber > 0);
             roms.Should().Contain(c => !string.IsNullOrWhiteSpace(c.Overview));
 
             foreach (var rom in roms)
@@ -93,7 +93,7 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
             rom.Should().NotBeNull();
 
             // TODO: Is there a better way to validate that rom number or platform number is greater than zero?
-            (rom.EpisodeNumber + rom.SeasonNumber).Should().NotBe(0);
+            (rom.EpisodeNumber + rom.PlatformNumber).Should().NotBe(0);
 
             rom.Should().NotBeNull();
 
