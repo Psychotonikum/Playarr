@@ -75,8 +75,8 @@
     <Copyright>Copyright 2014-$([System.DateTime]::Now.ToString('yyyy')) playarr.tv (GNU General Public v3)</Copyright>
     
     <!-- Should be replaced by CI -->
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <AssemblyConfiguration>$(Configuration)-dev</AssemblyConfiguration>
+    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyConfiguration>$(Configuration)-alpha</AssemblyConfiguration>
     <NeutralLanguage>en</NeutralLanguage>
 
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>

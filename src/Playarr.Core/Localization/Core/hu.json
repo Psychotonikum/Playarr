@@ -1878,7 +1878,7 @@
     "ScriptPath": "Szkriptútvonal",
     "Search": "Keresés",
     "SearchAll": "Összes keresése",
-    "SearchByIgdbId": "Kereshet egy műsor IGDB azonosítójával is. például. tvdb:71663",
+    "SearchByIgdbId": "Kereshet egy műsor IGDB azonosítójával is. például. igdb:7346",
     "SearchFailedError": "A keresés sikertelen, próbálja újra később.",
     "SearchForAllMissingEpisodes": "Keresse meg az összes hiányzó epizódot",
     "SearchForAllMissingEpisodesConfirmationCount": "Biztosan megkeresi az összes {totalRecords} hiányzó epizódot?",

@@ -125,7 +125,7 @@
     "Queue": "Antrean",
     "Refresh": "Muat Ulang",
     "Search": "Cari",
-    "SearchByIgdbId": "Kamu juga bisa menelusuri dengan ID IGDB dari serialnya, misalnya tvdb:71663",
+    "SearchByIgdbId": "Kamu juga bisa menelusuri dengan ID IGDB dari serialnya, misalnya igdb:7346",
     "PlatformInformation": "Informasi Musim",
     "SelectSeries": "Pilih Serial",
     "GameDetailsCountRomFiles": "{romFileCount} file episode",

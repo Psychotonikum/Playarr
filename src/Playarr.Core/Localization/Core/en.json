@@ -1892,7 +1892,7 @@
   "ScriptPath": "Script Path",
   "Search": "Search",
   "SearchAll": "Search All",
-  "SearchByIgdbId": "You can also search using IGDB ID of a game. eg. tvdb:71663",
+  "SearchByIgdbId": "You can also search using IGDB ID of a game. eg. igdb:7346",
   "SearchFailedError": "Search failed, please try again later.",
   "SearchForAllMissingEpisodes": "Search for all missing roms",
   "SearchForAllMissingEpisodesConfirmationCount": "Are you sure you want to search for all {totalRecords} missing roms?",

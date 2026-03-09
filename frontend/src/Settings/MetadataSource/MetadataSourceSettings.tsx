@@ -11,6 +11,7 @@ import { inputTypes } from 'Helpers/Props';
 import SettingsToolbar from 'Settings/SettingsToolbar';
 import { InputChanged } from 'typings/inputs';
 import translate from 'Utilities/String/translate';
+import MetadataSourceProviders from './Providers/MetadataSourceProviders';
 import {
   MetadataSourceSettingsModel,
   useManageMetadataSourceSettings,
@@ -50,36 +51,13 @@ function MetadataSourceSettings() {
       />
 
       <PageContentBody>
+        <MetadataSourceProviders />
+
         {isFetching ? <LoadingIndicator /> : null}
 
         {!isFetching && isPopulated ? (
           <Form>
-            <FieldSet legend="IGDB / Twitch API">
-              <FormGroup>
-                <FormLabel>Twitch Client ID</FormLabel>
-                <FormInputGroup
-                  type={inputTypes.TEXT}
-                  name="twitchClientId"
-                  helpText="Client ID from your Twitch Developer Application (required for IGDB game search)"
-                  helpLink="https://dev.twitch.tv/console/apps"
-                  onChange={handleInputChange}
-                  {...settings.twitchClientId}
-                />
-              </FormGroup>
-
-              <FormGroup>
-                <FormLabel>Twitch Client Secret</FormLabel>
-                <FormInputGroup
-                  type={inputTypes.PASSWORD}
-                  name="twitchClientSecret"
-                  helpText="Client Secret from your Twitch Developer Application"
-                  onChange={handleInputChange}
-                  {...settings.twitchClientSecret}
-                />
-              </FormGroup>
-            </FieldSet>
-
-            <FieldSet legend="Rating Source">
+            <FieldSet legend="General Settings">
               <FormGroup>
                 <FormLabel>Score Source</FormLabel>
                 <FormInputGroup

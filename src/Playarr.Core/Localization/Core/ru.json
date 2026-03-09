@@ -1845,7 +1845,7 @@
     "ScriptPath": "Путь к скрипту",
     "Search": "Поиск",
     "SearchAll": "Искать все",
-    "SearchByIgdbId": "Вы также можете выполнить поиск, используя идентификатор сериала в IGDB. например: tvdb:71663",
+    "SearchByIgdbId": "Вы также можете выполнить поиск, используя идентификатор сериала в IGDB. например: igdb:7346",
     "SearchFailedError": "Не удалось выполнить поиск, повторите попытку позже.",
     "SearchForAllMissingEpisodes": "Искать все недостающие эпизоды",
     "SearchForAllMissingEpisodesConfirmationCount": "Вы уверены, что хотите найти все ({totalRecords}) недостающие эпизоды ?",

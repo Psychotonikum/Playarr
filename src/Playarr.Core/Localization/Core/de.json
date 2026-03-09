@@ -1825,7 +1825,7 @@
     "ScriptPath": "Skript-Pfad",
     "Search": "Suchen",
     "SearchAll": "Alle durchsuchen",
-    "SearchByIgdbId": "Du kannst auch mit der IGDB-ID einer Serie suchen, z. B. tvdb:71663",
+    "SearchByIgdbId": "Du kannst auch mit der IGDB-ID einer Serie suchen, z. B. igdb:7346",
     "SearchFailedError": "Suche fehlgeschlagen, versuche es später noch einmal.",
     "SearchForAllMissingEpisodes": "Suche nach allen fehlenden Episoden",
     "SearchForAllMissingEpisodesConfirmationCount": "Bist du sicher, dass du nach allen {totalRecords} fehlenden Episoden suchen möchtest?",

@@ -1851,7 +1851,7 @@
     "ScriptPath": "Шлях до сценарію",
     "Search": "Пошук",
     "SearchAll": "Пошук у всіх",
-    "SearchByIgdbId": "Ви також можете виконати пошук, використовуючи ідентифікатор серіалу в IGDB. наприклад: tvdb:71663",
+    "SearchByIgdbId": "Ви також можете виконати пошук, використовуючи ідентифікатор серіалу в IGDB. наприклад: igdb:7346",
     "SearchFailedError": "Не вдалося виконати пошук, спробуйте пізніше.",
     "SearchForAllMissingEpisodes": "Шукати всі відсутні епізоди",
     "SearchForAllMissingEpisodesConfirmationCount": "Ви впевнені, що хочете знайти всі ({totalRecords}) відсутні епізоди?",

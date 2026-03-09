@@ -5,6 +5,7 @@ using System.Linq;
 using FluentValidation;
 using FluentValidation.Results;
 using NLog;
+using Playarr.Common.Disk;
 using Playarr.Common.EnsureThat;
 using Playarr.Common.Extensions;
 using Playarr.Core.Exceptions;
@@ -26,18 +27,21 @@ namespace Playarr.Core.Games
         private readonly IProvideSeriesInfo _seriesInfo;
         private readonly IBuildFileNames _fileNameBuilder;
         private readonly IAddGameValidator _addGameValidator;
+        private readonly IDiskProvider _diskProvider;
         private readonly Logger _logger;
 
         public AddGameService(IGameService seriesService,
                                 IProvideSeriesInfo seriesInfo,
                                 IBuildFileNames fileNameBuilder,
                                 IAddGameValidator addGameValidator,
+                                IDiskProvider diskProvider,
                                 Logger logger)
         {
             _seriesService = seriesService;
             _seriesInfo = seriesInfo;
             _fileNameBuilder = fileNameBuilder;
             _addGameValidator = addGameValidator;
+            _diskProvider = diskProvider;
             _logger = logger;
         }
 
@@ -50,6 +54,8 @@ namespace Playarr.Core.Games
 
             _logger.Info("Adding Game {0} Path: [{1}]", newGame, newGame.Path);
             _seriesService.AddGame(newGame);
+
+            EnsureGameFolder(newGame);
 
             return newGame;
         }
@@ -175,6 +181,20 @@ namespace Playarr.Core.Games
             }
 
             return newGame;
+        }
+
+        private void EnsureGameFolder(Game game)
+        {
+            if (string.IsNullOrWhiteSpace(game.Path))
+            {
+                return;
+            }
+
+            if (!_diskProvider.FolderExists(game.Path))
+            {
+                _logger.Debug("Creating game folder: {0}", game.Path);
+                _diskProvider.CreateFolder(game.Path);
+            }
         }
     }
 }

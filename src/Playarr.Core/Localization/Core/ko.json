@@ -1800,7 +1800,7 @@
     "ScriptPath": "스크립트 경로",
     "Search": "검색",
     "SearchAll": "모두 검색",
-    "SearchByIgdbId": "IGDB ID를 사용하여 프로그램를 검색할 수도 있습니다. 예: tvdb:71663",
+    "SearchByIgdbId": "IGDB ID를 사용하여 프로그램를 검색할 수도 있습니다. 예: igdb:7346",
     "SearchFailedError": "검색에 실패했습니다. 나중에 다시 시도해주세요.",
     "SearchForAllMissingEpisodes": "누락된 모든 에피소드 검색",
     "SearchForAllMissingEpisodesConfirmationCount": "{totalRecords}개의 누락된 에피소드를 모두 검색하시겠습니까?",

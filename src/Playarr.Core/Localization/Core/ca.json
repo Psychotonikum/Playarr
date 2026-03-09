@@ -1878,7 +1878,7 @@
     "ScriptPath": "Camí de l'script",
     "Search": "Cerca",
     "SearchAll": "Cerca-ho tot",
-    "SearchByIgdbId": "També podeu cercar mitjançant l'identificador de TMDb d'una sèries, per exemple, tvdb:71663",
+    "SearchByIgdbId": "També podeu cercar mitjançant l'identificador de TMDb d'una sèries, per exemple, igdb:7346",
     "SearchFailedError": "La recerca ha fallat, si us plau, torneu-ho a provar més tard.",
     "SearchForAllMissingEpisodes": "Cerca tots els episodis que falten",
     "SearchForAllMissingEpisodesConfirmationCount": "Esteu segur que voleu cercar tots els {totalRecords} episodis faltants?",

@@ -1859,7 +1859,7 @@
     "ScriptPath": "Komentosarjan sijainti",
     "Search": "Haku",
     "SearchAll": "Etsi kaikkia",
-    "SearchByIgdbId": "Voit etsiä myös sarjojen TheIGDB-tunnisteilla (esim. \"tvdb:71663\").",
+    "SearchByIgdbId": "Voit etsiä myös sarjojen TheIGDB-tunnisteilla (esim. \"igdb:7346\").",
     "SearchFailedError": "Haku epäonnistui. Yritä myöhemmin uudelleen.",
     "SearchForAllMissingEpisodes": "Etsi kaikkia puuttuvia jaksoja",
     "SearchForAllMissingEpisodesConfirmationCount": "Haluatko varmasti etsiä kaikkia {totalRecords} puuttuvaa jaksoa?",

@@ -40,6 +40,7 @@ using Playarr.Core.RootFolders;
 using Playarr.Core.Tags;
 using Playarr.Core.ThingiProvider;
 using Playarr.Core.Games;
+using Playarr.Core.MetadataSource.Providers;
 using Playarr.Core.Update.History;
 using static Dapper.SqlMapper;
 
@@ -105,6 +106,9 @@ namespace Playarr.Core.Datastore
             Mapper.Entity<MetadataDefinition>("Metadata").RegisterModel()
                   .Ignore(x => x.ImplementationName)
                   .Ignore(d => d.Tags);
+
+            Mapper.Entity<MetadataSourceDefinition>("MetadataSourceProviders").RegisterModel()
+                  .Ignore(x => x.ImplementationName);
 
             Mapper.Entity<DownloadClientDefinition>("DownloadClients").RegisterModel()
                   .Ignore(x => x.ImplementationName)

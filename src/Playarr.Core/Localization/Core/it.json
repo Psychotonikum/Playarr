@@ -890,7 +890,7 @@
     "Score": "Punteggio",
     "Search": "Ricerca",
     "SearchAll": "Ricerca tutto",
-    "SearchByIgdbId": "Puoi anche ricercare usando l'ID IGDB di uno show. Es. tvdb:71663",
+    "SearchByIgdbId": "Puoi anche ricercare usando l'ID IGDB di uno show. Es. igdb:7346",
     "SearchFailedError": "Ricerca fallita, per favore riprova nuovamente dopo.",
     "SearchForMissing": "Ricerca dei Mancanti",
     "SearchForMonitoredEpisodes": "Ricerca degli episodi monitorati",
