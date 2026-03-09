@@ -28,6 +28,8 @@ namespace Playarr.Core.MediaFiles
         public LazyLoaded<List<Rom>> Roms { get; set; }
         public LazyLoaded<Game> Game { get; set; }
         public List<Language> Languages { get; set; }
+        public string Region { get; set; }
+        public string CrcHash { get; set; }
         public ReleaseType ReleaseType { get; set; }
         public RomFileType RomFileType { get; set; }
         public string PatchVersion { get; set; }

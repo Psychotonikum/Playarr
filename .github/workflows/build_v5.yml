@@ -118,7 +118,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build_ui
-          path: _output/UI/**/*
+          path: _output/net10.0/UI/**/*
 
   unit_test:
     needs: backend

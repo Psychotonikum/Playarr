@@ -7,6 +7,9 @@ export enum QualitySource {
   DVD = 'dvd',
   Bluray = 'bluray',
   BlurayRaw = 'blurayRaw',
+  CRC = 'crc',
+  FileName = 'fileName',
+  Manual = 'manual',
 }
 
 export interface Revision {

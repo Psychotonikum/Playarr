@@ -5,6 +5,7 @@
         Unknown,
         Name,
         Extension,
-        MediaInfo
+        MediaInfo,
+        CRC
     }
 }

@@ -15,6 +15,8 @@ export interface RomFile extends ModelBase {
   sceneName: string;
   releaseGroup: string;
   languages: Language[];
+  region?: string;
+  crcHash?: string;
   quality: QualityModel;
   customFormats: CustomFormat[];
   customFormatScore: number;

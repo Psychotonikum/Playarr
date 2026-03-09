@@ -103,9 +103,9 @@ if ! $SKIP_FRONTEND; then
     echo "Frontend build complete"
 fi
 
-# Ensure UI output exists
-if [ ! -d "_output/UI" ]; then
-    echo "Error: No UI build found at _output/UI. Run without --skip-frontend or build the frontend first." >&2
+# Ensure UI output exists (now inside net10.0 folder)
+if [ ! -d "_output/$FRAMEWORK/UI" ]; then
+    echo "Error: No UI build found at _output/$FRAMEWORK/UI. Run without --skip-frontend or build the frontend first." >&2
     exit 1
 fi
 
@@ -188,9 +188,9 @@ for RID in "${RUNTIMES[@]}"; do
             ;;
     esac
 
-    # Copy UI into the package
+    # Copy UI into the package (from the framework folder)
     echo "Copying UI..."
-    cp -r _output/UI "$packageDir/UI"
+    cp -r _output/$FRAMEWORK/UI "$packageDir/UI"
 
     # Set permissions
     find "$packageDir" -name "ffprobe" -exec chmod a+x {} \; 2>/dev/null || true

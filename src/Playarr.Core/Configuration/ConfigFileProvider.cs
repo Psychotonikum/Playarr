@@ -289,7 +289,8 @@ namespace Playarr.Core.Configuration
             }
         }
 
-        public string UiFolder => BuildInfo.IsDebug ? Path.Combine("..", "UI") : "UI";
+        // UI is always in a 'UI' subfolder next to the executable (matches Sonarr structure)
+        public string UiFolder => "UI";
 
         public string InstanceName
         {

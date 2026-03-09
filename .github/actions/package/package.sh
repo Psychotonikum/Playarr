@@ -2,7 +2,7 @@
 
 outputFolder=_output
 artifactsFolder=_artifacts
-uiFolder="$outputFolder/UI"
+uiFolder="$outputFolder/net10.0/UI"
 framework="${FRAMEWORK:=net10.0}"
 
 rm -rf $artifactsFolder
@@ -15,7 +15,7 @@ do
   playarrFolder="$folderName/Playarr"
   archiveName="Playarr.$BRANCH.$PLAYARR_VERSION.$name"
 
-  if [[ "$name" == 'UI' ]]; then
+  if [[ "$name" == 'net10.0' ]]; then
     continue
   fi
     

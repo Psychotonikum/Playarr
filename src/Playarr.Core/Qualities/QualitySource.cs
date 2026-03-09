@@ -9,6 +9,9 @@ namespace Playarr.Core.Qualities
         WebRip,
         DVD,
         Bluray,
-        BlurayRaw
+        BlurayRaw,
+        CRC,
+        FileName,
+        Manual
     }
 }

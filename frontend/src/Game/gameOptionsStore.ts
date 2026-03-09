@@ -222,12 +222,6 @@ const { useOptions, useOption, setOptions, setOption, setSort, getOptions } =
           isVisible: false,
         },
         {
-          name: 'useSceneNumbering',
-          label: () => translate('SceneNumbering'),
-          isSortable: true,
-          isVisible: false,
-        },
-        {
           name: 'monitorNewItems',
           label: () => translate('MonitorNewSeasons'),
           isSortable: true,

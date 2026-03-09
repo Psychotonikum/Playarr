@@ -25,6 +25,7 @@ namespace Playarr.Core.Parser.Model
         public List<DeletedRomFile> OldFiles { get; set; }
         public QualityModel Quality { get; set; }
         public List<Language> Languages { get; set; } = new();
+        public string Region { get; set; }
         public IndexerFlags IndexerFlags { get; set; }
         public ReleaseType ReleaseType { get; set; }
         public MediaInfoModel MediaInfo { get; set; }
@@ -103,6 +104,7 @@ namespace Playarr.Core.Parser.Model
                 ReleaseGroup = ReleaseGroup,
                 ReleaseHash = ReleaseHash,
                 Languages = Languages,
+                Region = Region,
                 IndexerFlags = IndexerFlags,
                 ReleaseType = ReleaseType,
                 SceneName = SceneName,

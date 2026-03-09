@@ -15,7 +15,9 @@ module.exports = (env) => {
   const isProduction = !!env.production;
   const isProfiling = isProduction && !!env.profile;
 
-  const distFolder = path.resolve(frontendFolder, '..', '_output', uiFolder);
+  // Output UI inside the backend folder so everything is in one place
+  // Matches Sonarr's structure: /opt/Playarr/ contains both binary and UI/
+  const distFolder = path.resolve(frontendFolder, '..', '_output', 'net10.0', uiFolder);
 
   console.log('Source Folder:', srcFolder);
   console.log('Output Folder:', distFolder);

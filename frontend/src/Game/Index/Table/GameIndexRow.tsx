@@ -135,7 +135,6 @@ function GameIndexRow(props: GameIndexRowProps) {
     originalLanguage,
     certification,
     year,
-    useSceneNumbering,
     genres = [],
     ratings,
     platforms = [],
@@ -440,20 +439,6 @@ function GameIndexRow(props: GameIndexRowProps) {
           return (
             <VirtualTableRowCell key={name} className={styles[name]}>
               <GameTagList tags={tags} />
-            </VirtualTableRowCell>
-          );
-        }
-
-        if (name === 'useSceneNumbering') {
-          return (
-            <VirtualTableRowCell key={name} className={styles[name]}>
-              <CheckInput
-                className={styles.checkInput}
-                name="useSceneNumbering"
-                value={useSceneNumbering}
-                isDisabled={true}
-                onChange={checkInputCallback}
-              />
             </VirtualTableRowCell>
           );
         }

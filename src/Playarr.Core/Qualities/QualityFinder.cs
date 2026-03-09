@@ -10,6 +10,13 @@ namespace Playarr.Core.Qualities
 
         public static Quality FindBySourceAndResolution(QualitySource source, int resolution)
         {
+            // For ROM quality, source-based lookup is the primary mechanism
+            if (source == QualitySource.CRC)
+            {
+                // resolution field repurposed: 0 = bad, 1 = verified
+                return resolution > 0 ? Quality.Verified : Quality.Bad;
+            }
+
             var matchingQuality = Quality.All.SingleOrDefault(q => q.Source == source && q.Resolution == resolution);
 
             if (matchingQuality != null)
@@ -17,38 +24,9 @@ namespace Playarr.Core.Qualities
                 return matchingQuality;
             }
 
-            // Handle 576p releases that have a Television or Web source, so they don't get rolled up to Bluray 576p
-            if (resolution < 720)
-            {
-                switch (source)
-                {
-                    case QualitySource.Television:
-                        return Quality.SDTV;
-                    case QualitySource.Web:
-                        return Quality.WEBDL480p;
-                    case QualitySource.WebRip:
-                        return Quality.WEBRip480p;
-                }
-            }
+            Logger.Warn("Unable to find exact quality for {0} and {1}. Using Unknown as fallback", source, resolution);
 
-            var matchingResolution = Quality.All.Where(q => q.Resolution == resolution)
-                                            .OrderBy(q => q.Source)
-                                            .ToList();
-
-            var nearestQuality = Quality.Unknown;
-
-            foreach (var quality in matchingResolution)
-            {
-                if (quality.Source >= source)
-                {
-                    nearestQuality = quality;
-                    break;
-                }
-            }
-
-            Logger.Warn("Unable to find exact quality for {0} and {1}. Using {2} as fallback", source, resolution, nearestQuality);
-
-            return nearestQuality;
+            return Quality.Unknown;
         }
     }
 }

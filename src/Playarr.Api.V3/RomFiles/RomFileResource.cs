@@ -24,6 +24,8 @@ namespace Playarr.Api.V3.RomFiles
         public string SceneName { get; set; }
         public string ReleaseGroup { get; set; }
         public List<Language> Languages { get; set; }
+        public string Region { get; set; }
+        public string CrcHash { get; set; }
         public QualityModel Quality { get; set; }
         public List<CustomFormatResource> CustomFormats { get; set; }
         public int CustomFormatScore { get; set; }
@@ -63,6 +65,8 @@ namespace Playarr.Api.V3.RomFiles
                 SceneName = model.SceneName,
                 ReleaseGroup = model.ReleaseGroup,
                 Languages = model.Languages,
+                Region = model.Region,
+                CrcHash = model.CrcHash,
                 Quality = model.Quality,
                 MediaInfo = model.MediaInfo.ToResource(model.SceneName),
                 QualityCutoffNotMet = upgradableSpecification.QualityCutoffNotMet(game.QualityProfile.Value, model.Quality),
