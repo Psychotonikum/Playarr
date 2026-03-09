@@ -31,7 +31,6 @@ function AddNewGameSearchResult({ game }: AddNewGameSearchResultProps) {
     statistics = {} as Statistics,
     ratings,
     overview,
-    gameType,
     images,
     isExcluded,
   } = game;
@@ -165,7 +164,6 @@ function AddNewGameSearchResult({ game }: AddNewGameSearchResultProps) {
       <AddNewGameModal
         isOpen={isNewAddGameModalOpen && !isExistingSeries}
         game={game}
-        initialGameType={gameType}
         onModalClose={handleAddGameModalClose}
       />
     </div>

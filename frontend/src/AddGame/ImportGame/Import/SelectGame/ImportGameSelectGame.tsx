@@ -34,12 +34,10 @@ import styles from './ImportGameSelectGame.css';
 
 interface ImportGameSelectGameProps {
   id: string;
-  onInputChange: (input: InputChanged) => void;
 }
 
 function ImportGameSelectGame({
   id,
-  onInputChange,
 }: ImportGameSelectGameProps) {
   const importSeriesItem = useImportGameItem(id);
   const { selectedSeries, name } = importSeriesItem ?? {};
@@ -85,25 +83,8 @@ function ImportGameSelectGame({
         id,
         selectedSeries,
       });
-
-      if (selectedSeries.gameType !== 'standard') {
-        onInputChange({
-          name: 'gameType',
-          value: selectedSeries.gameType,
-        });
-      }
     },
-    [id, data, onInputChange]
-  );
-
-  useEffect(() => {
-    if (isFetched) {
-      updateImportGameItem({
-        id,
-        hasSearched: isFetched,
-        selectedSeries: data[0],
-      });
-
+    [id, data]
       removeFromLookupQueue(id);
     }
   }, [id, isFetched, data]);

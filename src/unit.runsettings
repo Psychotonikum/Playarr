@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+  <RunConfiguration>
+    <MaxCpuCount>0</MaxCpuCount>
+  </RunConfiguration>
+  <NUnit>
+    <NumberOfTestWorkers>8</NumberOfTestWorkers>
+    <TestTimeout>30000</TestTimeout>
+  </NUnit>
+</RunSettings>

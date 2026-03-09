@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import { useAddGameOptions } from 'AddGame/addGameOptionsStore';
 import { UnmappedFolder } from 'RootFolder/useRootFolders';
-import Game, { GameMonitor, GameType } from 'Game/Game';
+import Game, { GameMonitor } from 'Game/Game';
 
 export interface UnamppedFolderItem extends UnmappedFolder {
   id: string;
@@ -13,11 +13,8 @@ export interface ImportGameItem {
   id: string;
   monitor: GameMonitor;
   path: string;
-  qualityProfileId: number;
   relativePath: string;
-  platformFolder: boolean;
   selectedSeries?: Game;
-  gameType: GameType;
   name: string;
   hasSearched: boolean;
 }
@@ -39,7 +36,7 @@ const importGameStore = create<ImportGameState>()(() => defaultState);
 export const useEnsureImportGameItems = (
   unmappedFolders: UnamppedFolderItem[]
 ) => {
-  const { monitor, qualityProfileId, gameType, platformFolder } =
+  const { monitor } =
     useAddGameOptions();
 
   useEffect(() => {
@@ -54,9 +51,6 @@ export const useEnsureImportGameItems = (
       const newItem: ImportGameItem = {
         ...unmappedFolder,
         monitor,
-        qualityProfileId,
-        gameType,
-        platformFolder,
         hasSearched: false,
       };
 
@@ -67,7 +61,7 @@ export const useEnsureImportGameItems = (
         },
       }));
     });
-  }, [unmappedFolders, monitor, qualityProfileId, gameType, platformFolder]);
+  }, [unmappedFolders, monitor]);
 };
 
 export const updateImportGameItem = (

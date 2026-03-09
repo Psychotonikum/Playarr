@@ -1,0 +1,43 @@
+.system {
+  composes: card from '~Components/Card.css';
+  width: 300px;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.source {
+  color: var(--dimColor);
+  margin-bottom: 5px;
+}
+
+.size {
+  color: var(--dimColor);
+  margin-bottom: 10px;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+
+.downloaded {
+  color: var(--successColor);
+}
+
+.notDownloaded {
+  color: var(--dimColor);
+}
+
+.entryCount {
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--dimColor);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}

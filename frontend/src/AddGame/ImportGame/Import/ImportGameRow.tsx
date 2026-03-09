@@ -28,9 +28,6 @@ function ImportGameRow({ unmappedFolder }: ImportGameRowProps) {
   const {
     relativePath,
     monitor,
-    qualityProfileId,
-    platformFolder,
-    gameType,
     selectedSeries,
   } = item ?? {};
 
@@ -88,35 +85,8 @@ function ImportGameRow({ unmappedFolder }: ImportGameRowProps) {
         />
       </VirtualTableRowCell>
 
-      <VirtualTableRowCell className={styles.qualityProfile}>
-        <FormInputGroup
-          type={inputTypes.QUALITY_PROFILE_SELECT}
-          name="qualityProfileId"
-          value={qualityProfileId}
-          onChange={handleInputChange}
-        />
-      </VirtualTableRowCell>
-
-      <VirtualTableRowCell className={styles.gameType}>
-        <FormInputGroup
-          type={inputTypes.SERIES_TYPE_SELECT}
-          name="gameType"
-          value={gameType}
-          onChange={handleInputChange}
-        />
-      </VirtualTableRowCell>
-
-      <VirtualTableRowCell className={styles.platformFolder}>
-        <FormInputGroup
-          type={inputTypes.CHECK}
-          name="platformFolder"
-          value={platformFolder}
-          onChange={handleInputChange}
-        />
-      </VirtualTableRowCell>
-
       <VirtualTableRowCell className={styles.game}>
-        <ImportGameSelectGame id={id} onInputChange={handleInputChange} />
+        <ImportGameSelectGame id={id} />
       </VirtualTableRowCell>
     </>
   );

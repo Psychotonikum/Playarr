@@ -21,6 +21,7 @@ import NotificationSettings from 'Settings/Notifications/NotificationSettings';
 import Settings from 'Settings/Settings';
 import TagSettings from 'Settings/Tags/TagSettings';
 import GameSystemSettingsPage from 'Settings/GameSystems/GameSystemSettingsPage';
+import RomDatabaseSettingsPage from 'Settings/RomDatabase/RomDatabaseSettingsPage';
 import UISettings from 'Settings/UI/UISettings';
 import Backups from 'System/Backup/Backups';
 import LogsTable from 'System/Events/LogsTable';
@@ -114,6 +115,8 @@ function AppRoutes() {
       />
 
       <Route path="/settings/gamesystems" component={GameSystemSettingsPage} />
+
+      <Route path="/settings/romdatabase" component={RomDatabaseSettingsPage} />
 
       <Route path="/settings/tags" component={TagSettings} />
 

@@ -28,8 +28,8 @@ function GameDetailsLinks(props: GameDetailsLinksProps) {
       validLinks.push(
         {
           externalId: igdbId,
-          name: 'The IGDB',
-          url: `https://www.theigdb.com/?tab=game&id=${igdbId}`,
+          name: 'IGDB',
+          url: `https://www.igdb.com/games/${igdbId}`,
         }
       );
     }
@@ -37,36 +37,13 @@ function GameDetailsLinks(props: GameDetailsLinksProps) {
     if (rawgId) {
       validLinks.push({
         externalId: rawgId,
-        name: 'TV Maze',
-        url: `https://www.tvmaze.com/shows/${rawgId}/_`,
-      });
-    }
-
-    if (imdbId) {
-      validLinks.push(
-        {
-          externalId: imdbId,
-          name: 'IMDB',
-          url: `https://imdb.com/title/${imdbId}/`,
-        },
-        {
-          externalId: imdbId,
-          name: 'MDBList',
-          url: `https://mdblist.com/show/${imdbId}`,
-        }
-      );
-    }
-
-    if (tmdbId) {
-      validLinks.push({
-        externalId: tmdbId,
-        name: 'TMDB',
-        url: `https://www.themoviedb.org/tv/${tmdbId}`,
+        name: 'RAWG',
+        url: `https://rawg.io/games/${rawgId}`,
       });
     }
 
     return validLinks;
-  }, [igdbId, rawgId, imdbId, tmdbId]);
+  }, [igdbId, rawgId]);
 
   return (
     <div className={styles.links}>

@@ -49,14 +49,10 @@ export const useImportGame = () => {
             ...selectedSeries,
             monitored: true,
             monitorNewItems: 'all',
-            qualityProfileId: item.qualityProfileId,
             path: item.path,
-            gameType: item.gameType,
-            platformFolder: item.platformFolder,
             addOptions: {
               monitor: item.monitor,
               searchForMissingRoms: false,
-              searchForCutoffUnmetRoms: false,
             },
             tags: [],
           };

@@ -19,7 +19,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
 {
     public class SkyHookProxy : IProvideSeriesInfo, ISearchForNewSeries, IFetchUpcomingReleases
     {
-        private const string GameFields = "fields id,name,summary,first_release_date,cover.image_id,platforms.name,platforms.abbreviation,genres.name,rating,rating_count,slug,game_status,screenshots.image_id,artworks.image_id,involved_companies.developer,involved_companies.publisher,involved_companies.company.name;";
+        private const string GameFields = "fields id,name,summary,first_release_date,cover.image_id,platforms.name,platforms.abbreviation,genres.name,rating,rating_count,slug,game_status,screenshots.image_id,artworks.image_id,involved_companies.developer,involved_companies.publisher,involved_companies.company.name,dlcs,expansions;";
 
         private readonly IIgdbClient _igdbClient;
         private readonly Logger _logger;
@@ -55,6 +55,86 @@ namespace Playarr.Core.MetadataSource.SkyHook
 
             var game = MapIgdbGame(games[0]);
             var roms = new List<Rom>();
+
+            // Generate a base game ROM entry for each platform so the Game Details page shows content
+            if (game.Platforms != null)
+            {
+                foreach (var platform in game.Platforms)
+                {
+                    roms.Add(new Rom
+                    {
+                        GameId = 0,
+                        PlatformNumber = platform.PlatformNumber,
+                        EpisodeNumber = 1,
+                        Title = game.Title,
+                        Overview = game.Overview,
+                        AirDate = game.FirstAired?.ToString("yyyy-MM-dd"),
+                        AirDateUtc = game.FirstAired?.ToUniversalTime(),
+                        Ratings = game.Ratings,
+                        Monitored = true
+                    });
+                }
+            }
+
+            // Fetch DLCs and expansions from IGDB to populate additional ROM entries per platform
+            try
+            {
+                var dlcIds = new List<long>();
+
+                if (games[0].Dlcs?.Ids != null)
+                {
+                    dlcIds.AddRange(games[0].Dlcs.Ids);
+                }
+
+                if (games[0].Expansions?.Ids != null)
+                {
+                    dlcIds.AddRange(games[0].Expansions.Ids);
+                }
+
+                if (dlcIds.Any())
+                {
+                    var idList = string.Join(",", dlcIds.Take(50));
+                    var dlcQuery = $"fields id,name,first_release_date,summary,platforms.name,platforms.abbreviation; where id = ({idList}); limit 50;";
+                    var dlcResults = _igdbClient.SearchGames(dlcQuery);
+
+                    if (dlcResults != null)
+                    {
+                        // Sort DLCs by release date, putting items without dates at the end
+                        var sortedDlcs = dlcResults
+                            .OrderBy(d => d.FirstReleaseDate?.DateTime ?? DateTime.MaxValue)
+                            .ToList();
+
+                        foreach (var dlc in sortedDlcs)
+                        {
+                            if (game.Platforms == null)
+                            {
+                                continue;
+                            }
+
+                            foreach (var platform in game.Platforms)
+                            {
+                                var romNumber = roms.Count(r => r.PlatformNumber == platform.PlatformNumber) + 1;
+
+                                roms.Add(new Rom
+                                {
+                                    GameId = 0,
+                                    PlatformNumber = platform.PlatformNumber,
+                                    EpisodeNumber = romNumber,
+                                    Title = dlc.Name ?? "Unknown DLC",
+                                    Overview = dlc.Summary,
+                                    AirDate = dlc.FirstReleaseDate?.DateTime.ToString("yyyy-MM-dd"),
+                                    AirDateUtc = dlc.FirstReleaseDate?.DateTime.ToUniversalTime(),
+                                    Monitored = true
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Debug(ex, "Failed to fetch DLC/expansion info for game {0}", game.Title);
+            }
 
             return new Tuple<Game, List<Rom>>(game, roms);
         }
@@ -145,66 +225,101 @@ namespace Playarr.Core.MetadataSource.SkyHook
 
         public List<Game> GetUpcomingReleases(DateTime start, DateTime end)
         {
+            var allGames = new Dictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
+
+            // Fetch from IGDB
             try
             {
-                var startUtc = new DateTimeOffset(DateTime.SpecifyKind(start, DateTimeKind.Utc));
-                var endUtc = new DateTimeOffset(DateTime.SpecifyKind(end, DateTimeKind.Utc));
-
-                var query = $"fields game.name,game.slug,game.summary,game.cover.image_id,game.platforms.name,game.genres.name,game.rating,game.rating_count,game.game_status,date,human,platform.name,platform.abbreviation; where date >= {startUtc.ToUnixTimeSeconds()} & date <= {endUtc.ToUnixTimeSeconds()}; sort date asc; limit 50;";
-                var releases = _igdbClient.SearchReleaseDates(query);
-
-                if (releases == null)
+                var igdbGames = GetIgdbUpcomingReleases(start, end);
+                foreach (var game in igdbGames)
                 {
-                    return new List<Game>();
-                }
-
-                var games = new Dictionary<int, Game>();
-
-                foreach (var release in releases)
-                {
-                    var releaseGame = release.Game?.Value;
-                    if (releaseGame?.Id == null)
+                    var key = game.CleanTitle ?? game.Title?.ToLowerInvariant() ?? "";
+                    if (!allGames.ContainsKey(key))
                     {
-                        continue;
-                    }
-
-                    var gameId = (int)releaseGame.Id.Value;
-
-                    if (!games.ContainsKey(gameId))
-                    {
-                        var game = MapIgdbGame(releaseGame);
-                        game.Status = GameStatusType.Upcoming;
-                        game.Monitored = false;
-
-                        if (release.Date.HasValue)
-                        {
-                            game.FirstAired = release.Date.Value.UtcDateTime;
-                            game.Year = release.Date.Value.Year;
-                        }
-
-                        games[gameId] = game;
-                    }
-
-                    if (release.Platform?.Value != null)
-                    {
-                        var platformName = release.Platform.Value.Abbreviation ?? release.Platform.Value.Name ?? $"Platform {games[gameId].Platforms.Count + 1}";
-                        games[gameId].Platforms.Add(new Platform
-                        {
-                            PlatformNumber = games[gameId].Platforms.Count + 1,
-                            Title = platformName,
-                            Images = new List<MediaCover.MediaCover>(),
-                            Monitored = true
-                        });
+                        allGames[key] = game;
                     }
                 }
-
-                return games.Values.ToList();
             }
             catch (Exception ex)
             {
                 _logger.Warn(ex, "Failed to fetch upcoming releases from IGDB");
+            }
+
+            // Fetch from Metacritic and merge (deduplicate by title)
+            try
+            {
+                var metacriticGames = _metacriticProxy.GetUpcomingReleases(start, end);
+                foreach (var game in metacriticGames)
+                {
+                    var key = game.CleanTitle ?? game.Title?.ToLowerInvariant() ?? "";
+                    if (!allGames.ContainsKey(key))
+                    {
+                        allGames[key] = game;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Warn(ex, "Failed to fetch upcoming releases from Metacritic");
+            }
+
+            return allGames.Values.ToList();
+        }
+
+        private List<Game> GetIgdbUpcomingReleases(DateTime start, DateTime end)
+        {
+            var startUtc = new DateTimeOffset(DateTime.SpecifyKind(start, DateTimeKind.Utc));
+            var endUtc = new DateTimeOffset(DateTime.SpecifyKind(end, DateTimeKind.Utc));
+
+            var query = $"fields game.name,game.slug,game.summary,game.cover.image_id,game.platforms.name,game.genres.name,game.rating,game.rating_count,game.game_status,date,human,platform.name,platform.abbreviation; where date >= {startUtc.ToUnixTimeSeconds()} & date <= {endUtc.ToUnixTimeSeconds()}; sort date asc; limit 50;";
+            var releases = _igdbClient.SearchReleaseDates(query);
+
+            if (releases == null)
+            {
                 return new List<Game>();
             }
+
+            var games = new Dictionary<int, Game>();
+
+            foreach (var release in releases)
+            {
+                var releaseGame = release.Game?.Value;
+                if (releaseGame?.Id == null)
+                {
+                    continue;
+                }
+
+                var gameId = (int)releaseGame.Id.Value;
+
+                if (!games.ContainsKey(gameId))
+                {
+                    var game = MapIgdbGame(releaseGame);
+                    game.Status = GameStatusType.Upcoming;
+                    game.Monitored = false;
+
+                    if (release.Date.HasValue)
+                    {
+                        game.FirstAired = release.Date.Value.UtcDateTime;
+                        game.Year = release.Date.Value.Year;
+                    }
+
+                    games[gameId] = game;
+                }
+
+                if (release.Platform?.Value != null)
+                {
+                    var platformName = release.Platform.Value.Name ?? release.Platform.Value.Abbreviation ?? $"Platform {games[gameId].Platforms.Count + 1}";
+                    games[gameId].Platforms.Add(new Platform
+                    {
+                        PlatformNumber = games[gameId].Platforms.Count + 1,
+                        Title = platformName,
+                        Images = new List<MediaCover.MediaCover>(),
+                        Monitored = true
+                    });
+                }
+            }
+
+            return games.Values.ToList();
         }
 
         private Game MapSearchResult(IGDB.Models.Game igdbGame)
@@ -321,7 +436,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
                     .Select((p, i) => new Platform
                     {
                         PlatformNumber = i + 1,
-                        Title = p.Abbreviation ?? p.Name ?? $"Platform {i + 1}",
+                        Title = p.Name ?? p.Abbreviation ?? $"Platform {i + 1}",
                         Images = new List<MediaCover.MediaCover>(),
                         Monitored = true
                     }).ToList();

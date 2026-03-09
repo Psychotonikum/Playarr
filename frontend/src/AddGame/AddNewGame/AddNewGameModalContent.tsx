@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import AddGame from 'AddGame/AddGame';
 import {
   AddGameOptions,
@@ -6,7 +6,6 @@ import {
   useAddGameOptions,
 } from 'AddGame/addGameOptionsStore';
 import GameMonitoringOptionsPopoverContent from 'AddGame/GameMonitoringOptionsPopoverContent';
-import GameTypePopoverContent from 'AddGame/GameTypePopoverContent';
 import { useAppDimension } from 'App/appStore';
 import CheckInput from 'Components/Form/CheckInput';
 import Form from 'Components/Form/Form';
@@ -22,7 +21,6 @@ import ModalHeader from 'Components/Modal/ModalHeader';
 import Popover from 'Components/Tooltip/Popover';
 import { getValidationFailures } from 'Helpers/Hooks/useApiMutation';
 import { icons, inputTypes, kinds, tooltipPositions } from 'Helpers/Props';
-import { GameType } from 'Game/Game';
 import GamePoster from 'Game/GamePoster';
 import selectSettings from 'Store/Selectors/selectSettings';
 import { useIsWindows } from 'System/Status/useSystemStatus';
@@ -33,16 +31,14 @@ import styles from './AddNewGameModalContent.css';
 
 export interface AddNewGameModalContentProps {
   game: AddGame;
-  initialGameType: GameType;
   onModalClose: () => void;
 }
 
 function AddNewGameModalContent({
   game,
-  initialGameType,
   onModalClose,
 }: AddNewGameModalContentProps) {
-  const { title, year, overview, images, folder } = game;
+  const { title, year, overview, images, folder, platforms = [] } = game;
   const options = useAddGameOptions();
   const isSmallScreen = useAppDimension('isSmallScreen');
   const isWindows = useIsWindows();
@@ -56,17 +52,10 @@ function AddNewGameModalContent({
     };
   }, [options, addError]);
 
-  const [gameType, setGameType] = useState<GameType>(
-    initialGameType === 'standard'
-      ? settings.gameType.value
-      : initialGameType
-  );
-
   const {
     monitor,
     rootFolderPath,
     searchForMissingRoms,
-    gameType: gameTypeSetting,
     tags,
   } = settings;
 
@@ -85,22 +74,16 @@ function AddNewGameModalContent({
         monitor: monitor.value,
         searchForMissingRoms: searchForMissingRoms.value,
       },
-      gameType,
       tags: tags.value,
     });
   }, [
     game,
-    gameType,
     rootFolderPath,
     monitor,
     searchForMissingRoms,
     tags,
     addGame,
   ]);
-
-  useEffect(() => {
-    setGameType(gameTypeSetting.value);
-  }, [gameTypeSetting]);
 
   return (
     <ModalContent onModalClose={onModalClose}>
@@ -179,26 +162,33 @@ function AddNewGameModalContent({
               </FormGroup>
 
               <FormGroup>
-                <FormLabel>
-                  {translate('GameType')}
+                <FormLabel>{translate('Language')}</FormLabel>
 
-                  <Popover
-                    anchor={
-                      <Icon className={styles.labelIcon} name={icons.INFO} />
-                    }
-                    title={translate('GameTypes')}
-                    body={<GameTypePopoverContent />}
-                    position={tooltipPositions.RIGHT}
-                  />
+                <FormInputGroup
+                  type={inputTypes.LANGUAGE_SELECT}
+                  name="language"
+                  onChange={handleInputChange}
+                  helpText={translate('LanguageHelpText')}
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <FormLabel>
+                  {translate('GamePlatform')}
                 </FormLabel>
 
                 <FormInputGroup
-                  type={inputTypes.SERIES_TYPE_SELECT}
-                  name="gameType"
+                  type={inputTypes.SELECT}
+                  name="gamePlatform"
+                  values={[
+                    { key: 'all', value: translate('All') },
+                    ...platforms.map((p) => ({
+                      key: String(p.platformNumber),
+                      value: p.title || `Platform ${p.platformNumber}`,
+                    })),
+                  ]}
                   onChange={handleInputChange}
-                  {...gameTypeSetting}
-                  value={gameType}
-                  helpText={translate('GameTypesHelpText')}
+                  helpText={translate('GamePlatformHelpText')}
                 />
               </FormGroup>
 

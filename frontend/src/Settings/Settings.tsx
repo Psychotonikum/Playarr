@@ -28,6 +28,14 @@ function Settings() {
           Manage game systems, folder layouts, and Aerofoil naming schemes
         </div>
 
+        <Link className={styles.link} to="/settings/romdatabase">
+          ROM Databases
+        </Link>
+
+        <div className={styles.summary}>
+          Download No-Intro and Redump DAT files for ROM verification
+        </div>
+
         <Link className={styles.link} to="/settings/indexers">
           {translate('Indexers')}
         </Link>

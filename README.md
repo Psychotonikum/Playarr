@@ -16,6 +16,7 @@
 - **Download Client Integration** — SABnzbd, NZBGet, qBittorrent, Transmission, Deluge, and more
 - **Calendar** — Track upcoming game releases from IGDB and Metacritic
 - **Quality Profiles** — Define preferences for ROM file quality and format
+- **ROM Verification** — Validate ROM integrity using [No-Intro](https://no-intro.org/) and [Redump](http://redump.org/) DAT databases
 - **Game System Presets** — Built-in definitions for 25+ retro and modern platforms
 - **Metacritic Scores** — Optional alternative rating source
 - **REST API** — Full API at `/api/v3` for automation and integrations
@@ -139,6 +140,7 @@ See [docs/development.md](docs/development.md) for the full development guide.
 | Real-time | SignalR |
 | Testing | NUnit, Moq, FluentAssertions |
 | Metadata | IGDB (via [igdb-dotnet](https://github.com/kamranayub/igdb-dotnet)), Metacritic |
+| ROM Verification | [No-Intro](https://no-intro.org/), [Redump](http://redump.org/) |
 
 ## Project Structure
 
@@ -183,5 +185,7 @@ Third-party components:
 - **[Sonarr](https://github.com/Sonarr/Sonarr)** — Original codebase (GPL v3). Copyright 2010-2017 Mark McDowall, Keivan Beigi, Taloth Saldono and contributors.
 - **[igdb-dotnet](https://github.com/kamranayub/igdb-dotnet)** — IGDB API client (Apache 2.0) by Kamran Ayub
 - **[AeroFoil](https://github.com/luketanti/AeroFoil)** — Inspiration for ROM file name parsing conventions
+- **[No-Intro](https://no-intro.org/)** — Cartridge-based ROM verification databases
+- **[Redump](http://redump.org/)** — Disc-based ROM preservation databases
 
 See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and [COPYRIGHT.md](COPYRIGHT.md) for full details.

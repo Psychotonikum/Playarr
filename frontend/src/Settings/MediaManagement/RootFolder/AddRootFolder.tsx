@@ -20,9 +20,12 @@ function AddRootFolder() {
 
   const onNewRootFolderSelect = useCallback(
     ({ value }: { value: string }) => {
-      addRootFolder({ path: value });
+      if (!isAdding) {
+        addRootFolder({ path: value });
+        setIsAddNewRootFolderModalOpen(false);
+      }
     },
-    [addRootFolder]
+    [addRootFolder, isAdding]
   );
 
   const onAddRootFolderModalClose = useCallback(() => {
