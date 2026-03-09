@@ -19,6 +19,10 @@ namespace Playarr.Core.Games
             OriginalLanguage = Language.English;
             MalIds = new HashSet<int>();
             AniListIds = new HashSet<int>();
+            PreferredRegions = new List<string>();
+            PreferredLanguageIds = new List<int>();
+            PreferredReleaseTypes = new List<string>();
+            PreferredModifications = new List<string>();
         }
 
         public int IgdbId { get; set; }
@@ -62,6 +66,10 @@ namespace Playarr.Core.Games
         public HashSet<int> Tags { get; set; }
         public AddGameOptions AddOptions { get; set; }
         public int? GameSystemId { get; set; }
+        public List<string> PreferredRegions { get; set; }
+        public List<int> PreferredLanguageIds { get; set; }
+        public List<string> PreferredReleaseTypes { get; set; }
+        public List<string> PreferredModifications { get; set; }
 
         public override string ToString()
         {
@@ -84,6 +92,10 @@ namespace Playarr.Core.Games
             RootFolderPath = otherGame.RootFolderPath;
             Tags = otherGame.Tags;
             AddOptions = otherGame.AddOptions;
+            PreferredRegions = otherGame.PreferredRegions;
+            PreferredLanguageIds = otherGame.PreferredLanguageIds;
+            PreferredReleaseTypes = otherGame.PreferredReleaseTypes;
+            PreferredModifications = otherGame.PreferredModifications;
         }
     }
 }

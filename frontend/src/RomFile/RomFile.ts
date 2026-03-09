@@ -25,6 +25,11 @@ export interface RomFile extends ModelBase {
   romFileType: number;
   patchVersion?: string;
   dlcIndex?: string;
+  revision?: string;
+  dumpQuality: number;
+  modification: number;
+  modificationName?: string;
+  romReleaseType: number;
   mediaInfo: MediaInfo;
   qualityCutoffNotMet: boolean;
 }

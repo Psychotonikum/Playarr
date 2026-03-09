@@ -53,6 +53,10 @@ function EditGameModalContent({
     gameType,
     path,
     tags,
+    preferredRegions,
+    preferredLanguageIds,
+    preferredReleaseTypes,
+    preferredModifications,
     rootFolderPath: initialRootFolderPath,
   } = game;
 
@@ -80,6 +84,10 @@ function EditGameModalContent({
         gameType,
         path,
         tags,
+        preferredRegions,
+        preferredLanguageIds,
+        preferredReleaseTypes,
+        preferredModifications,
       },
       pendingChanges,
       saveError
@@ -92,6 +100,10 @@ function EditGameModalContent({
     gameType,
     path,
     tags,
+    preferredRegions,
+    preferredLanguageIds,
+    preferredReleaseTypes,
+    preferredModifications,
     pendingChanges,
     saveError,
   ]);
@@ -264,6 +276,69 @@ function EditGameModalContent({
               type={inputTypes.TAG}
               name="tags"
               {...settings.tags}
+              onChange={handleInputChange}
+            />
+          </FormGroup>
+
+          <FormGroup size={sizes.MEDIUM}>
+            <FormLabel>{translate('PreferredRegions')}</FormLabel>
+
+            <FormInputGroup
+              type={inputTypes.SELECT}
+              name="preferredRegions"
+              value={(settings.preferredRegions?.value ?? []) as unknown as number[]}
+              values={[
+                { key: 'USA', value: 'USA' },
+                { key: 'Europe', value: 'Europe' },
+                { key: 'Japan', value: 'Japan' },
+                { key: 'World', value: 'World' },
+                { key: 'Asia', value: 'Asia' },
+                { key: 'Australia', value: 'Australia' },
+                { key: 'Korea', value: 'Korea' },
+                { key: 'Brazil', value: 'Brazil' },
+              ]}
+              helpText={translate('PreferredRegionsHelpText')}
+              onChange={handleInputChange}
+            />
+          </FormGroup>
+
+          <FormGroup size={sizes.MEDIUM}>
+            <FormLabel>{translate('PreferredReleaseTypes')}</FormLabel>
+
+            <FormInputGroup
+              type={inputTypes.SELECT}
+              name="preferredReleaseTypes"
+              value={(settings.preferredReleaseTypes?.value ?? []) as unknown as number[]}
+              values={[
+                { key: 'Retail', value: 'Retail' },
+                { key: 'Prototype', value: 'Prototype' },
+                { key: 'Beta', value: 'Beta' },
+                { key: 'Demo', value: 'Demo' },
+                { key: 'Sample', value: 'Sample' },
+                { key: 'Promo', value: 'Promo' },
+                { key: 'Update', value: 'Update' },
+                { key: 'Dlc', value: 'DLC' },
+              ]}
+              helpText={translate('PreferredReleaseTypesHelpText')}
+              onChange={handleInputChange}
+            />
+          </FormGroup>
+
+          <FormGroup size={sizes.MEDIUM}>
+            <FormLabel>{translate('PreferredModifications')}</FormLabel>
+
+            <FormInputGroup
+              type={inputTypes.SELECT}
+              name="preferredModifications"
+              value={(settings.preferredModifications?.value ?? []) as unknown as number[]}
+              values={[
+                { key: 'Original', value: 'Original' },
+                { key: 'Hack', value: 'Hack' },
+                { key: 'Translation', value: 'Translation' },
+                { key: 'Homebrew', value: 'Homebrew' },
+                { key: 'Unlicensed', value: 'Unlicensed' },
+              ]}
+              helpText={translate('PreferredModificationsHelpText')}
               onChange={handleInputChange}
             />
           </FormGroup>

@@ -55,6 +55,10 @@ public class GameResource : RestResource
     public AddGameOptions? AddOptions { get; set; }
     public int? GameSystemId { get; set; }
     public Ratings? Ratings { get; set; }
+    public List<string>? PreferredRegions { get; set; }
+    public List<int>? PreferredLanguageIds { get; set; }
+    public List<string>? PreferredReleaseTypes { get; set; }
+    public List<string>? PreferredModifications { get; set; }
     public SeriesStatisticsResource? Statistics { get; set; }
     public bool? EpisodesChanged { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
@@ -105,7 +109,11 @@ public static class GameResourceMapper
             Added = model.Added,
             AddOptions = model.AddOptions,
             Ratings = model.Ratings,
-            GameSystemId = model.GameSystemId
+            GameSystemId = model.GameSystemId,
+            PreferredRegions = model.PreferredRegions,
+            PreferredLanguageIds = model.PreferredLanguageIds,
+            PreferredReleaseTypes = model.PreferredReleaseTypes,
+            PreferredModifications = model.PreferredModifications
         };
     }
 
@@ -149,7 +157,11 @@ public static class GameResourceMapper
             Added = resource.Added,
             AddOptions = resource.AddOptions,
             Ratings = resource.Ratings,
-            GameSystemId = resource.GameSystemId
+            GameSystemId = resource.GameSystemId,
+            PreferredRegions = resource.PreferredRegions,
+            PreferredLanguageIds = resource.PreferredLanguageIds,
+            PreferredReleaseTypes = resource.PreferredReleaseTypes,
+            PreferredModifications = resource.PreferredModifications
         };
     }
 

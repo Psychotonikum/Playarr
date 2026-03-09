@@ -66,6 +66,10 @@ namespace Playarr.Api.V3.Game
         public DateTime Added { get; set; }
         public AddGameOptions AddOptions { get; set; }
         public Ratings Ratings { get; set; }
+        public List<string> PreferredRegions { get; set; }
+        public List<int> PreferredLanguageIds { get; set; }
+        public List<string> PreferredReleaseTypes { get; set; }
+        public List<string> PreferredModifications { get; set; }
 
         public SeriesStatisticsResource Statistics { get; set; }
 
@@ -140,7 +144,11 @@ namespace Playarr.Api.V3.Game
                        Tags = model.Tags,
                        Added = model.Added,
                        AddOptions = model.AddOptions,
-                       Ratings = model.Ratings
+                       Ratings = model.Ratings,
+                       PreferredRegions = model.PreferredRegions,
+                       PreferredLanguageIds = model.PreferredLanguageIds,
+                       PreferredReleaseTypes = model.PreferredReleaseTypes,
+                       PreferredModifications = model.PreferredModifications
                    };
         }
 
@@ -201,7 +209,11 @@ namespace Playarr.Api.V3.Game
                        Tags = resource.Tags,
                        Added = resource.Added,
                        AddOptions = resource.AddOptions,
-                       Ratings = resource.Ratings
+                       Ratings = resource.Ratings,
+                       PreferredRegions = resource.PreferredRegions,
+                       PreferredLanguageIds = resource.PreferredLanguageIds,
+                       PreferredReleaseTypes = resource.PreferredReleaseTypes,
+                       PreferredModifications = resource.PreferredModifications
                    };
         }
 

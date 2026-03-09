@@ -35,6 +35,11 @@ namespace Playarr.Core.MediaFiles
         public string PatchVersion { get; set; }
         public string DlcIndex { get; set; }
         public int? LinkedGameId { get; set; }
+        public string Revision { get; set; }
+        public int DumpQuality { get; set; }
+        public int Modification { get; set; }
+        public string ModificationName { get; set; }
+        public int RomReleaseType { get; set; }
 
         public override string ToString()
         {

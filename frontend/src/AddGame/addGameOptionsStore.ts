@@ -7,6 +7,10 @@ export interface AddGameOptions {
   languageProfileId: number;
   searchForMissingRoms: boolean;
   tags: number[];
+  preferredRegions: string[];
+  preferredLanguageIds: number[];
+  preferredReleaseTypes: string[];
+  preferredModifications: string[];
 }
 
 const { useOptions, useOption, setOption } =
@@ -17,6 +21,10 @@ const { useOptions, useOption, setOption } =
       languageProfileId: 0,
       searchForMissingRoms: false,
       tags: [],
+      preferredRegions: [],
+      preferredLanguageIds: [],
+      preferredReleaseTypes: [],
+      preferredModifications: [],
     };
   });
 

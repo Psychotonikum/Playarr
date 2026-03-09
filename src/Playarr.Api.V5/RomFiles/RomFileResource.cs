@@ -32,6 +32,11 @@ namespace Playarr.Api.V5.RomFiles
         public RomFileType RomFileType { get; set; }
         public string? PatchVersion { get; set; }
         public string? DlcIndex { get; set; }
+        public string? Revision { get; set; }
+        public int DumpQuality { get; set; }
+        public int Modification { get; set; }
+        public string? ModificationName { get; set; }
+        public int RomReleaseType { get; set; }
 
         public bool QualityCutoffNotMet { get; set; }
     }
@@ -69,6 +74,11 @@ namespace Playarr.Api.V5.RomFiles
                 RomFileType = model.RomFileType,
                 PatchVersion = model.PatchVersion,
                 DlcIndex = model.DlcIndex,
+                Revision = model.Revision,
+                DumpQuality = model.DumpQuality,
+                Modification = model.Modification,
+                ModificationName = model.ModificationName,
+                RomReleaseType = model.RomReleaseType,
             };
         }
     }

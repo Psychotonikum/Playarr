@@ -26,6 +26,11 @@ namespace Playarr.Core.Parser.Model
         public QualityModel Quality { get; set; }
         public List<Language> Languages { get; set; } = new();
         public string Region { get; set; }
+        public string Revision { get; set; }
+        public int DumpQuality { get; set; }
+        public int Modification { get; set; }
+        public string ModificationName { get; set; }
+        public int RomReleaseType { get; set; }
         public IndexerFlags IndexerFlags { get; set; }
         public ReleaseType ReleaseType { get; set; }
         public MediaInfoModel MediaInfo { get; set; }
@@ -105,6 +110,11 @@ namespace Playarr.Core.Parser.Model
                 ReleaseHash = ReleaseHash,
                 Languages = Languages,
                 Region = Region,
+                Revision = Revision,
+                DumpQuality = DumpQuality,
+                Modification = Modification,
+                ModificationName = ModificationName,
+                RomReleaseType = RomReleaseType,
                 IndexerFlags = IndexerFlags,
                 ReleaseType = ReleaseType,
                 SceneName = SceneName,

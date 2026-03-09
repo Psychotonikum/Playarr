@@ -106,6 +106,10 @@ interface Game extends ModelBase {
   year: number;
   addOptions: GameAddOptions;
   gameSystemId?: number;
+  preferredRegions: string[];
+  preferredLanguageIds: number[];
+  preferredReleaseTypes: string[];
+  preferredModifications: string[];
 }
 
 export default Game;
