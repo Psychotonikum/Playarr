@@ -4,6 +4,7 @@ import { GameMonitor } from 'Game/Game';
 export interface AddGameOptions {
   rootFolderPath: string;
   monitor: GameMonitor;
+  qualityProfileId: number;
   languageProfileId: number;
   searchForMissingRoms: boolean;
   tags: number[];
@@ -18,6 +19,7 @@ const { useOptions, useOption, setOption } =
     return {
       rootFolderPath: '',
       monitor: 'all',
+      qualityProfileId: 0,
       languageProfileId: 0,
       searchForMissingRoms: false,
       tags: [],

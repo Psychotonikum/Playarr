@@ -54,6 +54,7 @@ function AddNewGameModalContent({
 
   const {
     monitor,
+    qualityProfileId,
     rootFolderPath,
     searchForMissingRoms,
     tags,
@@ -74,6 +75,7 @@ function AddNewGameModalContent({
     addGame({
       ...game,
       rootFolderPath: rootFolderPath.value,
+      qualityProfileId: qualityProfileId.value,
       addOptions: {
         monitor: monitor.value,
         searchForMissingRoms: searchForMissingRoms.value,
@@ -87,6 +89,7 @@ function AddNewGameModalContent({
   }, [
     game,
     rootFolderPath,
+    qualityProfileId,
     monitor,
     searchForMissingRoms,
     tags,
@@ -170,6 +173,17 @@ function AddNewGameModalContent({
                   name="monitor"
                   onChange={handleInputChange}
                   {...monitor}
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <FormLabel>{translate('QualityProfile')}</FormLabel>
+
+                <FormInputGroup
+                  type={inputTypes.QUALITY_PROFILE_SELECT}
+                  name="qualityProfileId"
+                  {...qualityProfileId}
+                  onChange={handleInputChange}
                 />
               </FormGroup>
 

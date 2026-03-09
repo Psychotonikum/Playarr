@@ -6,6 +6,7 @@ import Game from 'Game/Game';
 
 interface AddGamePayload extends AddGame {
   rootFolderPath: string;
+  qualityProfileId: number;
   addOptions: {
     monitor: import('Game/Game').GameMonitor;
     searchForMissingRoms: boolean;
