@@ -448,6 +448,35 @@ namespace Playarr.Core.Parser
 
                 // Anime OVA special
                 new Regex(@"^\[(?<subgroup>.+?)\][-_. ]?(?<title>.+?)(?:[-_. ]+(?<special>special|ova|ovd|ncop|nced)).*?(?<hash>[(\[]\w{8}[)\]])?(?:$|\.mkv)",
+                    RegexOptions.IgnoreCase | RegexOptions.Compiled),
+
+                // ROM - Scene style with system tag and group: Title.Region.System-GROUP
+                // e.g. The.Legend.of.Zelda.Ocarina.Of.Time.3D.PAL.MULTI5-TES
+                // e.g. Legend of Zelda  The - Ocarina of Time E V1.1 -N64-ROM
+                new Regex(@"^(?<title>.+?)[-_. ]+(?:(?:PAL|NTSC|EUR(?:OPE)?|USA|JPN|JAP(?:AN)?|MULTI\d*|NTSC-[JUPE]|[EUJS])[-_. ]+)*(?:N64|NES|SNES|SFC|GBA|GBC?|NDS|3DS|NSW|WII(?:U)?|PS[1-5P]|PSP|PSVITA|GCN|NGC|XBOX(?:360)?|XONE|XSX|DC|SS|MD|GG|PCE|LYNX|MAME|NEOGEO|GENESIS|MEGADRIVE|MASTERSYSTEM|GAMEGEAR|SATURN|DREAMCAST|GAMECUBE|SWITCH|NUS)[-_. ]*(?:ROM|NUS|WAD|CIA|NSP|XCI|PKG|ISO|BIN|CHD|CSO|PBP)?(?:[-_](?<releasegroup>[A-Z][A-Z0-9]+))?$",
+                    RegexOptions.IgnoreCase | RegexOptions.Compiled),
+
+                // ROM - No-Intro style: Title (Region) or Title (Region) (Version)
+                // e.g. Legend of Zelda, The - Ocarina of Time (USA) (Rev 1.2)
+                // e.g. Super Mario 64 (Europe) (En,Fr,De)
+                new Regex(@"^(?<title>.+?)(?:\s*\((?:USA|Europe|Japan|World|En|Fr|De|Es|It|Ja|Ko|Zh|Pt|Ru|Sv|Da|Fi|No|Nl|Pl|NTSC|PAL|NTSC-[JUPE]|[EUJS]|[A-Z][a-z](?:,[A-Z][a-z])*)[^)]*\))+(?:\s*\((?:Rev|V|v)?\s*[\d.]+\))?(?:\s*\[[^\]]*\])*\s*$",
+                    RegexOptions.IgnoreCase | RegexOptions.Compiled),
+
+                // ROM - Generic with system prefix: System Title or System - Title
+                // e.g. N64 Rom - Legend of Zelda  The - Ocarina of Time
+                // e.g. GBA Pokemon FireRed
+                new Regex(@"^(?:N64|NES|SNES|SFC|GBA|GBC?|NDS|3DS|NSW|WII(?:U)?|PS[1-5P]|PSP|PSVITA|GCN|NGC|XBOX(?:360)?|XONE|XSX|DC|MAME|NEOGEO|GENESIS|MEGADRIVE|SWITCH|NUS)(?:\s+ROM)?[-_. ]+(?:[-_. ]+)?(?<title>.+?)(?:\.(?:7z|zip|rar|nzb|z|gz))?$",
+                    RegexOptions.IgnoreCase | RegexOptions.Compiled),
+
+                // ROM - Nintendo Switch scene releases: Title Update vX.XX NSW-GROUP
+                // e.g. Dont Starve Together Update v1.26.0 NSW-SUXXORS
+                // e.g. EA SPORTS FC 26 Update v1.84.73e6 NSW-VENOM
+                new Regex(@"^(?<title>.+?)(?:\s+(?:Update|DLC|Patch)\s+v[\d.]+[a-z0-9]*)?[-_. ]+(?:NSW|SWITCH)[-_](?<releasegroup>[A-Z][A-Z0-9]+)$",
+                    RegexOptions.IgnoreCase | RegexOptions.Compiled),
+
+                // ROM - General scene release: Title System-GROUP (last resort before anime)
+                // e.g. Super.Mario.64.N64-GOODN64
+                new Regex(@"^(?<title>.+?)[-_. ]+(?:N64|NES|SNES|SFC|GBA|GBC?|NDS|3DS|NSW|WII(?:U)?|PS[1-5P]|PSP|PSVITA|GCN|NGC|XBOX|DC|MAME|NEOGEO|GENESIS|MEGADRIVE|SWITCH)[-_](?<releasegroup>[A-Z][A-Z0-9]+)$",
                     RegexOptions.IgnoreCase | RegexOptions.Compiled)
             };
 

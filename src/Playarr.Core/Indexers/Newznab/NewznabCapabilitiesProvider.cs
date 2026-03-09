@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using NLog;
@@ -145,7 +146,12 @@ namespace Playarr.Core.Indexers.Newznab
                 {
                     if (xmlTvSearch.Attribute("supportedParams") != null)
                     {
-                        capabilities.SupportedTvSearchParameters = xmlTvSearch.Attribute("supportedParams").Value.Split(',');
+                        var tvSearchParams = xmlTvSearch.Attribute("supportedParams").Value.Split(',');
+
+                        // Map standard Newznab "season" param to Playarr's "platform" param
+                        capabilities.SupportedTvSearchParameters = tvSearchParams
+                            .Select(p => p.Trim() == "season" ? "platform" : p.Trim())
+                            .ToArray();
                         capabilities.SupportsAggregateIdSearch = true;
                     }
 

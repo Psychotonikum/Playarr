@@ -26,10 +26,11 @@ function AnalyticSettings({
         <FormInputGroup
           type={inputTypes.CHECK}
           name="analyticsEnabled"
-          helpText={translate('AnalyticsEnabledHelpText')}
-          helpTextWarning={translate('RestartRequiredHelpTextWarning')}
+          helpText="Analytics are disabled. No telemetry server is configured."
+          isDisabled={true}
           onChange={onInputChange}
           {...analyticsEnabled}
+          value={false}
         />
       </FormGroup>
     </FieldSet>

@@ -9,7 +9,7 @@ import styles from './GameDetailsLinks.css';
 
 type GameDetailsLinksProps = Pick<
   Game,
-  'igdbId' | 'rawgId'
+  'igdbId' | 'rawgId' | 'titleSlug'
 >;
 
 interface GameDetailsLink {
@@ -29,7 +29,7 @@ function GameDetailsLinks(props: GameDetailsLinksProps) {
         {
           externalId: igdbId,
           name: 'IGDB',
-          url: `https://www.igdb.com/games/${igdbId}`,
+          url: `https://www.igdb.com/games/${props.titleSlug || igdbId}`,
         }
       );
     }

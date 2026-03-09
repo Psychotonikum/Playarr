@@ -110,7 +110,7 @@ function AddNewGameSearchResult({ game }: AddNewGameSearchResultProps) {
 
               <Link
                 className={styles.igdbLink}
-                to={`https://www.theigdb.com/?tab=game&id=${igdbId}`}
+                to={`https://www.igdb.com/games/${titleSlug || igdbId}`}
                 onPress={handleIgdbLinkPress}
               >
                 <Icon

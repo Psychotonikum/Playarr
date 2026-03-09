@@ -40,7 +40,7 @@ function ImportGameSearchResult({
 
       <Link
         className={styles.igdbLink}
-        to={`https://www.theigdb.com/?tab=game&id=${igdbId}`}
+        to={`https://www.igdb.com/search?utf8=%E2%9C%93&q=${encodeURIComponent(title)}`}
       >
         <Icon
           className={styles.igdbLinkIcon}

@@ -174,8 +174,8 @@ namespace Playarr.Core.Notifications.Gotify
 
                         if (linkType == MetadataLinkType.Igdb && game.IgdbId > 0)
                         {
-                            linkText = "TVDb";
-                            linkUrl = $"http://www.theigdb.com/?tab=game&id={game.IgdbId}";
+                            linkText = "IGDB";
+                            linkUrl = $"https://www.igdb.com/games/{game.TitleSlug}";
                         }
 
                         if (linkType == MetadataLinkType.Trakt && game.IgdbId > 0)

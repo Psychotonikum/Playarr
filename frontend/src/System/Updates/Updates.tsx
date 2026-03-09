@@ -261,8 +261,8 @@ function Updates() {
               <div>
                 <InlineMarkdown
                   data={translate('InstallMajorVersionUpdateMessageLink', {
-                    domain: 'playarr.tv',
-                    url: 'https://playarr.tv/#downloads',
+                    domain: 'github.com/Psychotonikum/Playarr',
+                    url: 'https://github.com/Psychotonikum/Playarr/releases',
                   })}
                 />
               </div>

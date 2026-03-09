@@ -66,7 +66,7 @@ function PageHeader() {
           className={styles.donate}
           name={icons.HEART}
           aria-label={translate('Donate')}
-          to="https://playarr.tv/donate.html"
+          to="https://github.com/Psychotonikum/Playarr"
           size={14}
           title={translate('Donate')}
         />

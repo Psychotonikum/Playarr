@@ -71,8 +71,8 @@ export default function createSentryMiddleware() {
     return;
   }
 
-  const dsn = isProduction ? 'https://b80ca60625b443c38b242e0d21681eb7@sentry.playarr.tv/13' :
-    'https://8dbaacdfe2ff4caf97dc7945aecf9ace@sentry.playarr.tv/12';
+  // Sentry disabled — no telemetry server configured
+  return;
 
   sentry.init({
     dsn,

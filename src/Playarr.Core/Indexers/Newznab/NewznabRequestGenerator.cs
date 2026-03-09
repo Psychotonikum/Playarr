@@ -236,7 +236,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTvIdPageableRequests(pageableRequests,
                     categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
+                    $"&season={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
             }
 
             if (searchCriteria.SearchMode.HasFlag(SearchMode.SearchTitle))
@@ -244,7 +244,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
+                    $"&season={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
             }
 
             pageableRequests.AddTier();
@@ -254,8 +254,12 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
+                    $"&season={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
             }
+
+            // Fallback: generic search without season/episode constraints for ROM-style releases
+            pageableRequests.AddTier();
+            AddGenericSearchRequests(pageableRequests, categories, searchCriteria);
 
             return pageableRequests;
         }
@@ -283,7 +287,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTvIdPageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
+                    $"&season={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
             }
 
             if (searchCriteria.SearchMode.HasFlag(SearchMode.SearchTitle))
@@ -291,7 +295,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
+                    $"&season={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
             }
 
             pageableRequests.AddTier();
@@ -301,8 +305,12 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
+                    $"&season={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
             }
+
+            // Fallback: generic search without season constraints for ROM-style releases
+            pageableRequests.AddTier();
+            AddGenericSearchRequests(pageableRequests, Settings.Categories, searchCriteria);
 
             return pageableRequests;
         }
@@ -330,7 +338,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTvIdPageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={searchCriteria.AirDate:yyyy}&ep={searchCriteria.AirDate:MM}/{searchCriteria.AirDate:dd}");
+                    $"&season={searchCriteria.AirDate:yyyy}&ep={searchCriteria.AirDate:MM}/{searchCriteria.AirDate:dd}");
             }
 
             if (searchCriteria.SearchMode.HasFlag(SearchMode.SearchTitle))
@@ -338,7 +346,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={searchCriteria.AirDate:yyyy}&ep={searchCriteria.AirDate:MM}/{searchCriteria.AirDate:dd}");
+                    $"&season={searchCriteria.AirDate:yyyy}&ep={searchCriteria.AirDate:MM}/{searchCriteria.AirDate:dd}");
             }
 
             pageableRequests.AddTier();
@@ -348,7 +356,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={searchCriteria.AirDate:yyyy}&ep={searchCriteria.AirDate:MM}/{searchCriteria.AirDate:dd}");
+                    $"&season={searchCriteria.AirDate:yyyy}&ep={searchCriteria.AirDate:MM}/{searchCriteria.AirDate:dd}");
             }
 
             return pageableRequests;
@@ -377,7 +385,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTvIdPageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={searchCriteria.Year}");
+                    $"&season={searchCriteria.Year}");
             }
 
             if (searchCriteria.SearchMode.HasFlag(SearchMode.SearchTitle))
@@ -385,7 +393,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={searchCriteria.Year}");
+                    $"&season={searchCriteria.Year}");
             }
 
             pageableRequests.AddTier();
@@ -395,7 +403,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTitlePageableRequests(pageableRequests,
                     Settings.Categories,
                     searchCriteria,
-                    $"&platform={searchCriteria.Year}");
+                    $"&season={searchCriteria.Year}");
             }
 
             return pageableRequests;
@@ -421,7 +429,7 @@ namespace Playarr.Core.Indexers.Newznab
                     AddTvIdPageableRequests(pageableRequests,
                         Settings.AnimeCategories,
                         searchCriteria,
-                        $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
+                        $"&season={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}");
                 }
 
                 var queryTitles = TextSearchEngine == "raw" ? searchCriteria.AllSceneTitles : searchCriteria.CleanSceneTitles;
@@ -438,7 +446,7 @@ namespace Playarr.Core.Indexers.Newznab
                         pageableRequests.Add(GetPagedRequests(MaxPages,
                             Settings.AnimeCategories,
                             "tvsearch",
-                            $"&q={NewsnabifyTitle(queryTitle)}&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}"));
+                            $"&q={NewsnabifyTitle(queryTitle)}&season={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}&ep={searchCriteria.EpisodeNumber}"));
                     }
                 }
             }
@@ -455,7 +463,7 @@ namespace Playarr.Core.Indexers.Newznab
                 AddTvIdPageableRequests(pageableRequests,
                     Settings.AnimeCategories,
                     searchCriteria,
-                    $"&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
+                    $"&season={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}");
 
                 var queryTitles = TextSearchEngine == "raw" ? searchCriteria.AllSceneTitles : searchCriteria.CleanSceneTitles;
 
@@ -464,7 +472,7 @@ namespace Playarr.Core.Indexers.Newznab
                     pageableRequests.Add(GetPagedRequests(MaxPages,
                         Settings.AnimeCategories,
                         "tvsearch",
-                        $"&q={NewsnabifyTitle(queryTitle)}&platform={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}"));
+                        $"&q={NewsnabifyTitle(queryTitle)}&season={NewznabifyPlatformNumber(searchCriteria.PlatformNumber)}"));
                 }
             }
 
@@ -595,6 +603,18 @@ namespace Playarr.Core.Indexers.Newznab
                         "tvsearch",
                         $"&q={NewsnabifyTitle(queryTitle)}{parameters}"));
                 }
+            }
+        }
+
+        private void AddGenericSearchRequests(IndexerPageableRequestChain chain, IEnumerable<int> categories, SearchCriteriaBase searchCriteria)
+        {
+            var queryTitles = TvTextSearchEngine == "raw" ? searchCriteria.AllSceneTitles : searchCriteria.CleanSceneTitles;
+            foreach (var queryTitle in queryTitles)
+            {
+                chain.Add(GetPagedRequests(MaxPages,
+                    categories,
+                    "search",
+                    $"&q={NewsnabifyTitle(queryTitle)}"));
             }
         }
 

@@ -10,6 +10,7 @@ using Playarr.Core.Download;
 using Playarr.Core.Indexers;
 using Playarr.Core.Parser.Model;
 using Playarr.Core.Profiles.Qualities;
+using Playarr.Core.Games;
 using Playarr.Http;
 
 namespace Playarr.Api.V3.Indexers
@@ -21,6 +22,8 @@ namespace Playarr.Api.V3.Indexers
         private readonly IProcessDownloadDecisions _downloadDecisionProcessor;
         private readonly IIndexerFactory _indexerFactory;
         private readonly IDownloadClientFactory _downloadClientFactory;
+        private readonly IGameService _gameService;
+        private readonly IRomService _romService;
         private readonly Logger _logger;
 
         private static readonly object PushLock = new object();
@@ -29,6 +32,8 @@ namespace Playarr.Api.V3.Indexers
                                  IProcessDownloadDecisions downloadDecisionProcessor,
                                  IIndexerFactory indexerFactory,
                                  IDownloadClientFactory downloadClientFactory,
+                                 IGameService gameService,
+                                 IRomService romService,
                                  IQualityProfileService qualityProfileService,
                                  Logger logger)
             : base(qualityProfileService)
@@ -37,6 +42,8 @@ namespace Playarr.Api.V3.Indexers
             _downloadDecisionProcessor = downloadDecisionProcessor;
             _indexerFactory = indexerFactory;
             _downloadClientFactory = downloadClientFactory;
+            _gameService = gameService;
+            _romService = romService;
             _logger = logger;
 
             PostValidator.RuleFor(s => s.Title).NotEmpty();
@@ -70,7 +77,58 @@ namespace Playarr.Api.V3.Indexers
 
                 decision = decisions.FirstOrDefault();
 
-                _downloadDecisionProcessor.ProcessDecision(decision, downloadClientId).GetAwaiter().GetResult();
+                // If parsing failed or game was not matched, but manual game/episode targeting was provided, create a manual decision
+                var parsingFailed = decision?.RemoteEpisode?.ParsedRomInfo == null;
+                var gameNotMatched = decision != null && decision.Rejections.Any();
+                if ((parsingFailed || gameNotMatched) && release.GameId.HasValue)
+                {
+                    _logger.Info("Title parse failed, using manual game/episode targeting for push");
+
+                    var game = _gameService.GetSeries(release.GameId.Value);
+                    var roms = new List<Rom>();
+
+                    if (release.EpisodeId.HasValue)
+                    {
+                        roms.Add(_romService.GetEpisode(release.EpisodeId.Value));
+                    }
+                    else if (release.RomIds != null && release.RomIds.Any())
+                    {
+                        roms.AddRange(_romService.GetEpisodes(release.RomIds));
+                    }
+
+                    if (game != null && roms.Any())
+                    {
+                        var parsedInfo = new ParsedRomInfo
+                        {
+                            GameTitle = game.Title,
+                            PlatformNumber = roms.First().PlatformNumber,
+                            RomNumbers = roms.Select(r => r.EpisodeNumber).ToArray(),
+                            AbsoluteRomNumbers = global::System.Array.Empty<int>(),
+                            ReleaseTitle = release.Title,
+                            Quality = new Playarr.Core.Qualities.QualityModel(),
+                            FullSeason = false
+                        };
+
+                        parsedInfo.Languages = Core.Parser.LanguageParser.ParseLanguages(release.Title);
+
+                        var remoteRom = new RemoteEpisode
+                        {
+                            Release = info,
+                            ParsedRomInfo = parsedInfo,
+                            Game = game,
+                            Roms = roms,
+                            DownloadAllowed = true
+                        };
+
+                        decision = new DownloadDecision(remoteRom);
+
+                        _downloadDecisionProcessor.ProcessDecision(decision, downloadClientId).GetAwaiter().GetResult();
+                    }
+                }
+                else
+                {
+                    _downloadDecisionProcessor.ProcessDecision(decision, downloadClientId).GetAwaiter().GetResult();
+                }
             }
 
             if (decision?.RemoteEpisode.ParsedRomInfo == null)

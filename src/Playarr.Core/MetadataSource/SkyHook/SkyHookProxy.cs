@@ -20,7 +20,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
 {
     public class SkyHookProxy : IProvideSeriesInfo, ISearchForNewSeries, IFetchUpcomingReleases
     {
-        private const string GameFields = "fields id,name,summary,first_release_date,cover.image_id,platforms.name,platforms.abbreviation,genres.name,rating,rating_count,slug,game_status,screenshots.image_id,artworks.image_id,involved_companies.developer,involved_companies.publisher,involved_companies.company.name,dlcs,expansions;";
+        private const string GameFields = "fields id,name,summary,first_release_date,cover.image_id,platforms.name,platforms.abbreviation,genres.name,rating,rating_count,slug,game_status,screenshots.image_id,artworks.image_id,involved_companies.developer,involved_companies.publisher,involved_companies.company.name,dlcs,expansions,release_dates.date,release_dates.platform.name,release_dates.platform.abbreviation;";
 
         private readonly IIgdbClient _igdbClient;
         private readonly Logger _logger;
@@ -63,8 +63,36 @@ namespace Playarr.Core.MetadataSource.SkyHook
             // Generate a base game ROM entry for each platform so the Game Details page shows content
             if (game.Platforms != null)
             {
+                // Build a lookup of per-platform release dates from IGDB release_dates
+                var platformReleaseDates = new Dictionary<string, DateTimeOffset>(StringComparer.OrdinalIgnoreCase);
+                if (games[0].ReleaseDates?.Values != null)
+                {
+                    foreach (var rd in games[0].ReleaseDates.Values)
+                    {
+                        if (rd?.Date != null && rd.Platform?.Value != null)
+                        {
+                            var platName = rd.Platform.Value.Name ?? rd.Platform.Value.Abbreviation ?? "";
+                            if (!string.IsNullOrWhiteSpace(platName) && !platformReleaseDates.ContainsKey(platName))
+                            {
+                                platformReleaseDates[platName] = rd.Date.Value;
+                            }
+                        }
+                    }
+                }
+
                 foreach (var platform in game.Platforms)
                 {
+                    // Try to find a platform-specific release date; fall back to the game's first release date
+                    DateTime? platformAirDate = null;
+                    if (platform.Title != null && platformReleaseDates.TryGetValue(platform.Title, out var platDate))
+                    {
+                        platformAirDate = platDate.UtcDateTime;
+                    }
+                    else
+                    {
+                        platformAirDate = game.FirstAired;
+                    }
+
                     roms.Add(new Rom
                     {
                         GameId = 0,
@@ -72,8 +100,8 @@ namespace Playarr.Core.MetadataSource.SkyHook
                         EpisodeNumber = 1,
                         Title = game.Title,
                         Overview = game.Overview,
-                        AirDate = game.FirstAired?.ToString("yyyy-MM-dd"),
-                        AirDateUtc = game.FirstAired?.ToUniversalTime(),
+                        AirDate = platformAirDate?.ToString("yyyy-MM-dd"),
+                        AirDateUtc = platformAirDate?.ToUniversalTime(),
                         Ratings = game.Ratings,
                         Monitored = true
                     });

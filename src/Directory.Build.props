@@ -71,11 +71,11 @@
   <!-- Set the Product and Version info for our own projects -->
   <PropertyGroup Condition="'$(PlayarrProject)'=='true'">
     <Product>Playarr</Product>
-    <Company>playarr.tv</Company>
-    <Copyright>Copyright 2014-$([System.DateTime]::Now.ToString('yyyy')) playarr.tv (GNU General Public v3)</Copyright>
+    <Company>Playarr</Company>
+    <Copyright>Copyright 2024-$([System.DateTime]::Now.ToString('yyyy')) Playarr (GNU General Public v3)</Copyright>
     
     <!-- Should be replaced by CI -->
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <AssemblyConfiguration>$(Configuration)-alpha</AssemblyConfiguration>
     <NeutralLanguage>en</NeutralLanguage>
 

@@ -15,7 +15,7 @@ function TheIgdb() {
         <div className={styles.title}>{translate('TheIgdb')}</div>
         <InlineMarkdown
           data={translate('SeriesAndRomInformationIsProvidedByTheIGDB', {
-            url: 'https://www.theigdb.com/subscribe',
+            url: 'https://www.igdb.com/',
           })}
         />
       </div>
