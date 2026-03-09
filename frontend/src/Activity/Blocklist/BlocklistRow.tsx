@@ -6,9 +6,7 @@ import TableRowCell from 'Components/Table/Cells/TableRowCell';
 import TableSelectCell from 'Components/Table/Cells/TableSelectCell';
 import Column from 'Components/Table/Column';
 import TableRow from 'Components/Table/TableRow';
-import RomFormats from 'Rom/RomFormats';
 import RomLanguages from 'Rom/RomLanguages';
-import RomQuality from 'Rom/RomQuality';
 import { icons, kinds } from 'Helpers/Props';
 import GameTitleLink from 'Game/GameTitleLink';
 import { useSingleGame } from 'Game/useGame';
@@ -28,8 +26,6 @@ function BlocklistRow({
   gameId,
   sourceTitle,
   languages,
-  quality,
-  customFormats,
   date,
   protocol,
   indexer,
@@ -104,21 +100,7 @@ function BlocklistRow({
           );
         }
 
-        if (name === 'quality') {
-          return (
-            <TableRowCell key={name} className={styles.quality}>
-              <RomQuality quality={quality} />
-            </TableRowCell>
-          );
-        }
 
-        if (name === 'customFormats') {
-          return (
-            <TableRowCell key={name}>
-              <RomFormats formats={customFormats} />
-            </TableRowCell>
-          );
-        }
 
         if (name === 'date') {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment

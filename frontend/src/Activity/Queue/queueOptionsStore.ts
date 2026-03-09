@@ -40,13 +40,13 @@ const { useOptions, useOption, setOptions, setOption, setSort } =
         },
         {
           name: 'rom',
-          label: () => translate('EpisodeMaybePlural'),
+          label: () => translate('Platform'),
           isSortable: true,
           isVisible: true,
         },
         {
           name: 'roms.title',
-          label: () => translate('RomTitleMaybePlural'),
+          label: () => translate('RomTitle'),
           isSortable: true,
           isVisible: true,
         },
@@ -62,18 +62,7 @@ const { useOptions, useOption, setOptions, setOption, setSort } =
           isSortable: true,
           isVisible: false,
         },
-        {
-          name: 'quality',
-          label: () => translate('Quality'),
-          isSortable: true,
-          isVisible: true,
-        },
-        {
-          name: 'customFormats',
-          label: () => translate('Formats'),
-          isSortable: false,
-          isVisible: true,
-        },
+
         {
           name: 'customFormatScore',
           columnLabel: () => translate('CustomFormatScore'),

@@ -13,12 +13,10 @@ import Tooltip from 'Components/Tooltip/Tooltip';
 import DownloadProtocol from 'DownloadClient/DownloadProtocol';
 import RomFormats from 'Rom/RomFormats';
 import RomLanguages from 'Rom/RomLanguages';
-import RomQuality from 'Rom/RomQuality';
 import { useRomsWithIds } from 'Rom/useRom';
 import { icons, kinds, tooltipPositions } from 'Helpers/Props';
 import InteractiveImportModal from 'InteractiveImport/InteractiveImportModal';
 import Language from 'Language/Language';
-import { QualityModel } from 'Quality/Quality';
 import GameTitleLink from 'Game/GameTitleLink';
 import { useSingleGame } from 'Game/useGame';
 import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
@@ -52,7 +50,6 @@ interface QueueRowProps {
   statusMessages?: StatusMessage[];
   errorMessage?: string;
   languages: Language[];
-  quality: QualityModel;
   customFormats?: CustomFormat[];
   customFormatScore: number;
   protocol: DownloadProtocol;
@@ -85,7 +82,6 @@ function QueueRow(props: QueueRowProps) {
     statusMessages,
     errorMessage,
     languages,
-    quality,
     customFormats = [],
     customFormatScore,
     protocol,
@@ -271,21 +267,7 @@ function QueueRow(props: QueueRowProps) {
           );
         }
 
-        if (name === 'quality') {
-          return (
-            <TableRowCell key={name}>
-              {quality ? <RomQuality quality={quality} /> : null}
-            </TableRowCell>
-          );
-        }
 
-        if (name === 'customFormats') {
-          return (
-            <TableRowCell key={name}>
-              <RomFormats formats={customFormats} />
-            </TableRowCell>
-          );
-        }
 
         if (name === 'customFormatScore') {
           return (

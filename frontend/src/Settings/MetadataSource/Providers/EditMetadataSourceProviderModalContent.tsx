@@ -124,13 +124,12 @@ function EditMetadataSourceProviderModalContent({
             <FormInputGroup
               type={inputTypes.CHECK}
               name="enableSearch"
-              helpText="Use this provider when searching for games"
-              isDisabled={!supportsSearch?.value}
-              helpTextWarning={
+              helpText={
                 supportsSearch?.value
-                  ? undefined
+                  ? 'Use this provider when searching for games'
                   : 'Search is not supported by this provider'
               }
+              isDisabled={!supportsSearch?.value}
               {...enableSearch}
               onChange={handleInputChange}
             />
@@ -142,13 +141,12 @@ function EditMetadataSourceProviderModalContent({
             <FormInputGroup
               type={inputTypes.CHECK}
               name="enableCalendar"
-              helpText="Use this provider for calendar/upcoming game data"
-              isDisabled={!supportsCalendar?.value}
-              helpTextWarning={
+              helpText={
                 supportsCalendar?.value
-                  ? undefined
+                  ? 'Use this provider for calendar/upcoming game data'
                   : 'Calendar is not supported by this provider'
               }
+              isDisabled={!supportsCalendar?.value}
               {...enableCalendar}
               onChange={handleInputChange}
             />
@@ -160,13 +158,12 @@ function EditMetadataSourceProviderModalContent({
             <FormInputGroup
               type={inputTypes.CHECK}
               name="downloadMetadata"
-              helpText="Download metadata (images, descriptions) locally for offline access"
-              isDisabled={!supportsMetadataDownload?.value}
-              helpTextWarning={
+              helpText={
                 supportsMetadataDownload?.value
-                  ? undefined
+                  ? 'Download metadata (images, descriptions) locally for offline access'
                   : 'Metadata download is not supported by this provider'
               }
+              isDisabled={!supportsMetadataDownload?.value}
               {...downloadMetadata}
               onChange={handleInputChange}
             />

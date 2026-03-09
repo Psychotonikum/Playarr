@@ -22,6 +22,9 @@ public class MetadataSourceProviderResourceMapper : ProviderResourceMapper<Metad
         resource.EnableSearch = definition.EnableSearch;
         resource.EnableCalendar = definition.EnableCalendar;
         resource.DownloadMetadata = definition.DownloadMetadata;
+        resource.SupportsSearch = definition.SupportsSearch;
+        resource.SupportsCalendar = definition.SupportsCalendar;
+        resource.SupportsMetadataDownload = definition.SupportsMetadataDownload;
 
         return resource;
     }

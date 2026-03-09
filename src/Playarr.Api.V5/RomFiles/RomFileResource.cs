@@ -1,5 +1,6 @@
 using Playarr.Core.CustomFormats;
 using Playarr.Core.DecisionEngine.Specifications;
+using Playarr.Core.Games;
 using Playarr.Core.Languages;
 using Playarr.Core.MediaFiles;
 using Playarr.Core.Parser.Model;
@@ -26,6 +27,9 @@ namespace Playarr.Api.V5.RomFiles
         public int? IndexerFlags { get; set; }
         public ReleaseType? ReleaseType { get; set; }
         public MediaInfoResource? MediaInfo { get; set; }
+        public RomFileType RomFileType { get; set; }
+        public string? PatchVersion { get; set; }
+        public string? DlcIndex { get; set; }
 
         public bool QualityCutoffNotMet { get; set; }
     }
@@ -58,6 +62,9 @@ namespace Playarr.Api.V5.RomFiles
                 CustomFormatScore = customFormatScore,
                 IndexerFlags = (int)model.IndexerFlags,
                 ReleaseType = model.ReleaseType,
+                RomFileType = model.RomFileType,
+                PatchVersion = model.PatchVersion,
+                DlcIndex = model.DlcIndex,
             };
         }
     }

@@ -108,7 +108,10 @@ namespace Playarr.Core.Datastore
                   .Ignore(d => d.Tags);
 
             Mapper.Entity<MetadataSourceDefinition>("MetadataSourceProviders").RegisterModel()
-                  .Ignore(x => x.ImplementationName);
+                  .Ignore(x => x.ImplementationName)
+                  .Ignore(x => x.SupportsSearch)
+                  .Ignore(x => x.SupportsCalendar)
+                  .Ignore(x => x.SupportsMetadataDownload);
 
             Mapper.Entity<DownloadClientDefinition>("DownloadClients").RegisterModel()
                   .Ignore(x => x.ImplementationName)

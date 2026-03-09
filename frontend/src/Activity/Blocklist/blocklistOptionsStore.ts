@@ -31,17 +31,7 @@ const { useOptions, useOption, setOptions, setOption, setSort } =
           label: () => translate('Languages'),
           isVisible: false,
         },
-        {
-          name: 'quality',
-          label: () => translate('Quality'),
-          isVisible: true,
-        },
-        {
-          name: 'customFormats',
-          label: () => translate('Formats'),
-          isSortable: false,
-          isVisible: true,
-        },
+
         {
           name: 'date',
           label: () => translate('Date'),

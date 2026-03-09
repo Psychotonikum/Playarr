@@ -20,6 +20,7 @@ import Popover from 'Components/Tooltip/Popover';
 import Tooltip from 'Components/Tooltip/Tooltip';
 import useRoms from 'Rom/useRoms';
 import useRomFiles from 'RomFile/useRomFiles';
+import { useGameSystem } from 'GameSystem/useGameSystems';
 import usePrevious from 'Helpers/Hooks/usePrevious';
 import {
   align,
@@ -59,6 +60,7 @@ import GameAlternateTitles from './GameAlternateTitles';
 import GameDetailsLinks from './GameDetailsLinks';
 import GameDetailsProvider from './GameDetailsProvider';
 import GameDetailsPlatform from './GameDetailsPlatform';
+import GamePatchInfo from './GamePatchInfo';
 import GameProgressLabel from './GameProgressLabel';
 import GameTags from './GameTags';
 import styles from './GameDetails.css';
@@ -110,9 +112,22 @@ function GameDetails({ gameId }: GameDetailsProps) {
     isFetching: isRomFilesFetching,
     isFetched: isRomFilesFetched,
     error: romFilesError,
+    data: romFiles,
     hasRomFiles,
     refetch: refetchRomFiles,
   } = useRomFiles({ gameId });
+
+  const { data: gameSystem } = useGameSystem(game?.gameSystemId ?? 0);
+
+  const patchInfo = useMemo(() => {
+    const systemType = gameSystem?.systemType ?? 0;
+    const baseFile = romFiles.find((f) => f.romFileType === 0);
+    const updates = romFiles.filter((f) => f.romFileType === 1);
+    const dlcs = romFiles.filter((f) => f.romFileType === 2);
+    const isMissingBase = !baseFile && (updates.length > 0 || dlcs.length > 0);
+
+    return { systemType, baseFile, updates, dlcs, isMissingBase };
+  }, [romFiles, gameSystem]);
 
   const { data: commands } = useCommands();
 
@@ -801,6 +816,13 @@ function GameDetails({ gameId }: GameDetailsProps) {
 
             {isPopulated && !!platforms.length ? (
               <div>
+                <GamePatchInfo
+                  systemType={patchInfo.systemType}
+                  baseFile={patchInfo.baseFile ? { fileName: patchInfo.baseFile.relativePath, fileType: 0, version: patchInfo.baseFile.patchVersion, dlcIndex: patchInfo.baseFile.dlcIndex } : undefined}
+                  updates={patchInfo.updates.map((f) => ({ fileName: f.relativePath, fileType: 1, version: f.patchVersion, dlcIndex: f.dlcIndex }))}
+                  dlcs={patchInfo.dlcs.map((f) => ({ fileName: f.relativePath, fileType: 2, version: f.patchVersion, dlcIndex: f.dlcIndex }))}
+                  isMissingBase={patchInfo.isMissingBase}
+                />
                 {platforms
                   .slice(0)
                   .reverse()
