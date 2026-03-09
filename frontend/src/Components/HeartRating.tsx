@@ -17,7 +17,7 @@ function HeartRating({ rating, votes = 0, iconSize = 14 }: HeartRatingProps) {
       anchor={
         <span className={styles.rating}>
           <Icon className={styles.heart} name={icons.HEART} size={iconSize} />
-          {rating * 10}%
+          {Math.round(rating * 10)}%
         </span>
       }
       tooltip={translate('CountVotes', { votes })}

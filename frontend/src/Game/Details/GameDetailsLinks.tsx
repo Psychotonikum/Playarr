@@ -9,7 +9,7 @@ import styles from './GameDetailsLinks.css';
 
 type GameDetailsLinksProps = Pick<
   Game,
-  'igdbId' | 'rawgId' | 'imdbId' | 'tmdbId'
+  'igdbId' | 'rawgId'
 >;
 
 interface GameDetailsLink {
@@ -19,7 +19,7 @@ interface GameDetailsLink {
 }
 
 function GameDetailsLinks(props: GameDetailsLinksProps) {
-  const { igdbId, rawgId, imdbId, tmdbId } = props;
+  const { igdbId, rawgId } = props;
 
   const links = useMemo(() => {
     const validLinks: GameDetailsLink[] = [];

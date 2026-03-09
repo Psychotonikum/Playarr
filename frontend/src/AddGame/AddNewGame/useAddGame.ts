@@ -1,16 +1,17 @@
 import { useQueryClient } from '@tanstack/react-query';
 import AddGame from 'AddGame/AddGame';
-import { AddGameOptions } from 'AddGame/addGameOptionsStore';
 import useApiMutation from 'Helpers/Hooks/useApiMutation';
 import useApiQuery from 'Helpers/Hooks/useApiQuery';
 import Game from 'Game/Game';
 
-interface AddGamePayload
-  extends AddGame,
-    Omit<
-      AddGameOptions,
-      'monitor' | 'searchForMissingRoms' | 'searchForCutoffUnmetRoms'
-    > {}
+interface AddGamePayload extends AddGame {
+  rootFolderPath: string;
+  addOptions: {
+    monitor: import('Game/Game').GameMonitor;
+    searchForMissingRoms: boolean;
+  };
+  tags: number[];
+}
 
 const DEFAULT_SERIES: AddGame[] = [];
 

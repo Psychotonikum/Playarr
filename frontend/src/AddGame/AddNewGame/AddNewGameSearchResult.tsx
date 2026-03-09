@@ -125,7 +125,7 @@ function AddNewGameSearchResult({ game }: AddNewGameSearchResultProps) {
           <div>
             <Label size={sizes.LARGE}>
               <HeartRating
-                rating={Math.round(ratings.value)}
+                rating={ratings.value}
                 votes={ratings.votes}
                 iconSize={13}
               />

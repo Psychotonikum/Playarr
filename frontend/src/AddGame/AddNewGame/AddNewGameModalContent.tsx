@@ -167,7 +167,8 @@ function AddNewGameModalContent({
                 <FormInputGroup
                   type={inputTypes.LANGUAGE_SELECT}
                   name="language"
-                  onChange={handleInputChange}
+                  value={0}
+                  onChange={handleInputChange as any}
                   helpText={translate('LanguageHelpText')}
                 />
               </FormGroup>
@@ -180,6 +181,7 @@ function AddNewGameModalContent({
                 <FormInputGroup
                   type={inputTypes.SELECT}
                   name="gamePlatform"
+                  value="all"
                   values={[
                     { key: 'all', value: translate('All') },
                     ...platforms.map((p) => ({

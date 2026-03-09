@@ -376,8 +376,6 @@ function GameDetails({ gameId }: GameDetailsProps) {
   const {
     igdbId,
     rawgId,
-    imdbId,
-    tmdbId,
     title,
     runtime,
     ratings,
@@ -740,8 +738,6 @@ function GameDetails({ gameId }: GameDetailsProps) {
                       <GameDetailsLinks
                         igdbId={igdbId}
                         rawgId={rawgId}
-                        imdbId={imdbId}
-                        tmdbId={tmdbId}
                       />
                     }
                     kind={kinds.INVERSE}

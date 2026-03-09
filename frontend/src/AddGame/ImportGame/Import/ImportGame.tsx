@@ -1,9 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router';
-import {
-  setAddGameOption,
-  useAddGameOption,
-} from 'AddGame/addGameOptionsStore';
 import { SelectProvider } from 'App/Select/SelectContext';
 import Alert from 'Components/Alert';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
@@ -11,7 +7,6 @@ import PageContent from 'Components/Page/PageContent';
 import PageContentBody from 'Components/Page/PageContentBody';
 import { kinds } from 'Helpers/Props';
 import useRootFolders, { useRootFolder } from 'RootFolder/useRootFolders';
-import { useQualityProfilesData } from 'Settings/Profiles/Quality/useQualityProfiles';
 import translate from 'Utilities/String/translate';
 import ImportGameFooter from './ImportGameFooter';
 import { clearImportGame } from './importGameStore';
@@ -47,10 +42,6 @@ function ImportGame() {
     };
   }, [rootFolders, rootFolderId]);
 
-  const qualityProfiles = useQualityProfilesData();
-
-  const defaultQualityProfileId = useAddGameOption('qualityProfileId');
-
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   const items = useMemo(() => {
@@ -67,15 +58,6 @@ function ImportGame() {
       clearImportGame();
     };
   }, [rootFolderId]);
-
-  useEffect(() => {
-    if (
-      !defaultQualityProfileId ||
-      !qualityProfiles.some((p) => p.id === defaultQualityProfileId)
-    ) {
-      setAddGameOption('qualityProfileId', qualityProfiles[0].id);
-    }
-  }, [defaultQualityProfileId, qualityProfiles]);
 
   return (
     <SelectProvider items={items}>

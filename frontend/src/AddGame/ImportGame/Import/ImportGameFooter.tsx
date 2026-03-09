@@ -5,7 +5,6 @@ import {
   useAddGameOptions,
 } from 'AddGame/addGameOptionsStore';
 import { useSelect } from 'App/Select/SelectContext';
-import CheckInput from 'Components/Form/CheckInput';
 import FormInputGroup from 'Components/Form/FormInputGroup';
 import Icon from 'Components/Icon';
 import Button from 'Components/Link/Button';
@@ -14,7 +13,7 @@ import LoadingIndicator from 'Components/Loading/LoadingIndicator';
 import PageContentFooter from 'Components/Page/PageContentFooter';
 import Popover from 'Components/Tooltip/Popover';
 import { icons, inputTypes, kinds, tooltipPositions } from 'Helpers/Props';
-import { GameMonitor, GameType } from 'Game/Game';
+import { GameMonitor } from 'Game/Game';
 import { InputChanged } from 'typings/inputs';
 import translate from 'Utilities/String/translate';
 import {
@@ -33,9 +32,6 @@ type MixedType = 'mixed';
 function ImportGameFooter() {
   const {
     monitor: defaultMonitor,
-    qualityProfileId: defaultQualityProfileId,
-    gameType: defaultGameType,
-    platformFolder: defaultPlatformFolder,
   } = useAddGameOptions();
 
   const items = useImportGameItems();
@@ -43,15 +39,6 @@ function ImportGameFooter() {
 
   const [monitor, setMonitor] = useState<GameMonitor | MixedType>(
     defaultMonitor
-  );
-  const [qualityProfileId, setQualityProfileId] = useState<number | MixedType>(
-    defaultQualityProfileId
-  );
-  const [gameType, setGameType] = useState<GameType | MixedType>(
-    defaultGameType
-  );
-  const [platformFolder, setPlatformFolder] = useState<boolean | MixedType>(
-    defaultPlatformFolder
   );
 
   const { selectedCount, getSelectedIds } = useSelect<ImportGameItem>();
@@ -61,31 +48,13 @@ function ImportGameFooter() {
   const {
     hasUnsearchedItems,
     isMonitorMixed,
-    isQualityProfileIdMixed,
-    isGameTypeMixed,
-    isPlatformFolderMixed,
   } = useMemo(() => {
     let isMonitorMixed = false;
-    let isQualityProfileIdMixed = false;
-    let isGameTypeMixed = false;
-    let isPlatformFolderMixed = false;
     let hasUnsearchedItems = false;
 
     items.forEach((item) => {
       if (item.monitor !== defaultMonitor) {
         isMonitorMixed = true;
-      }
-
-      if (item.qualityProfileId !== defaultQualityProfileId) {
-        isQualityProfileIdMixed = true;
-      }
-
-      if (item.gameType !== defaultGameType) {
-        isGameTypeMixed = true;
-      }
-
-      if (item.platformFolder !== defaultPlatformFolder) {
-        isPlatformFolderMixed = true;
       }
 
       if (!item.hasSearched) {
@@ -96,15 +65,9 @@ function ImportGameFooter() {
     return {
       hasUnsearchedItems: !isLookingUpSeries && hasUnsearchedItems,
       isMonitorMixed,
-      isQualityProfileIdMixed,
-      isGameTypeMixed,
-      isPlatformFolderMixed,
     };
   }, [
     defaultMonitor,
-    defaultQualityProfileId,
-    defaultPlatformFolder,
-    defaultGameType,
     items,
     isLookingUpSeries,
   ]);
@@ -113,12 +76,6 @@ function ImportGameFooter() {
     ({ name, value }: InputChanged<string | number | boolean | number[]>) => {
       if (name === 'monitor') {
         setMonitor(value as GameMonitor);
-      } else if (name === 'qualityProfileId') {
-        setQualityProfileId(value as number);
-      } else if (name === 'gameType') {
-        setGameType(value as GameType);
-      } else if (name === 'platformFolder') {
-        setPlatformFolder(value as boolean);
       }
 
       setAddGameOption(name as keyof AddGameOptions, value);
@@ -153,33 +110,6 @@ function ImportGameFooter() {
     }
   }, [defaultMonitor, isMonitorMixed, monitor]);
 
-  useEffect(() => {
-    if (isQualityProfileIdMixed && qualityProfileId !== 'mixed') {
-      setQualityProfileId('mixed');
-    } else if (
-      !isQualityProfileIdMixed &&
-      qualityProfileId !== defaultQualityProfileId
-    ) {
-      setQualityProfileId(defaultQualityProfileId);
-    }
-  }, [defaultQualityProfileId, isQualityProfileIdMixed, qualityProfileId]);
-
-  useEffect(() => {
-    if (isGameTypeMixed && gameType !== 'mixed') {
-      setGameType('mixed');
-    } else if (!isGameTypeMixed && gameType !== defaultGameType) {
-      setGameType(defaultGameType);
-    }
-  }, [defaultGameType, isGameTypeMixed, gameType]);
-
-  useEffect(() => {
-    if (isPlatformFolderMixed && platformFolder !== 'mixed') {
-      setPlatformFolder('mixed');
-    } else if (!isPlatformFolderMixed && platformFolder !== defaultPlatformFolder) {
-      setPlatformFolder(defaultPlatformFolder);
-    }
-  }, [defaultPlatformFolder, isPlatformFolderMixed, platformFolder]);
-
   return (
     <PageContentFooter>
       <div className={styles.inputContainer}>
@@ -191,43 +121,6 @@ function ImportGameFooter() {
           value={monitor}
           isDisabled={!selectedCount}
           includeMixed={isMonitorMixed}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className={styles.inputContainer}>
-        <div className={styles.label}>{translate('QualityProfile')}</div>
-
-        <FormInputGroup
-          type={inputTypes.QUALITY_PROFILE_SELECT}
-          name="qualityProfileId"
-          value={qualityProfileId}
-          isDisabled={!selectedCount}
-          includeMixed={isQualityProfileIdMixed}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className={styles.inputContainer}>
-        <div className={styles.label}>{translate('GameType')}</div>
-
-        <FormInputGroup
-          type={inputTypes.SERIES_TYPE_SELECT}
-          name="gameType"
-          value={gameType}
-          isDisabled={!selectedCount}
-          includeMixed={isGameTypeMixed}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className={styles.inputContainer}>
-        <div className={styles.label}>{translate('PlatformFolder')}</div>
-
-        <CheckInput
-          name="platformFolder"
-          value={platformFolder}
-          isDisabled={!selectedCount}
           onChange={handleInputChange}
         />
       </div>

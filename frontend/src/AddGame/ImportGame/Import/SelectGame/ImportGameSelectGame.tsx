@@ -85,6 +85,10 @@ function ImportGameSelectGame({
       });
     },
     [id, data]
+  );
+
+  useEffect(() => {
+    if (isFetched) {
       removeFromLookupQueue(id);
     }
   }, [id, isFetched, data]);

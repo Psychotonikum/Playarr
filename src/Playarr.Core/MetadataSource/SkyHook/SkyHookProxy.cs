@@ -14,6 +14,7 @@ using Playarr.Core.Games;
 using Playarr.Core.Languages;
 using Playarr.Core.MediaCover;
 using Playarr.Core.MetadataSource.Metacritic;
+using Playarr.Core.MetadataSource.Tinfoil;
 
 namespace Playarr.Core.MetadataSource.SkyHook
 {
@@ -27,12 +28,14 @@ namespace Playarr.Core.MetadataSource.SkyHook
         private readonly IDailyGameService _dailyGameService;
         private readonly IConfigService _configService;
         private readonly IMetacriticProxy _metacriticProxy;
+        private readonly ITinfoilProxy _tinfoilProxy;
 
         public SkyHookProxy(IIgdbClient igdbClient,
                             IGameService seriesService,
                             IDailyGameService dailyGameService,
                             IConfigService configService,
                             IMetacriticProxy metacriticProxy,
+                            ITinfoilProxy tinfoilProxy,
                             Logger logger)
         {
             _igdbClient = igdbClient;
@@ -41,6 +44,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
             _dailyGameService = dailyGameService;
             _configService = configService;
             _metacriticProxy = metacriticProxy;
+            _tinfoilProxy = tinfoilProxy;
         }
 
         public Tuple<Game, List<Rom>> GetSeriesInfo(int igdbGameId)
@@ -134,6 +138,47 @@ namespace Playarr.Core.MetadataSource.SkyHook
             catch (Exception ex)
             {
                 _logger.Debug(ex, "Failed to fetch DLC/expansion info for game {0}", game.Title);
+            }
+
+            // Enrich Nintendo Switch platforms with tinfoil title database (updates + DLCs)
+            try
+            {
+                var switchPlatforms = game.Platforms?.Where(p =>
+                    p.Title != null &&
+                    p.Title.Contains("Switch", StringComparison.OrdinalIgnoreCase)).ToList();
+
+                if (switchPlatforms != null && switchPlatforms.Any())
+                {
+                    var tinfoilTitles = _tinfoilProxy.GetTitlesForGame(game.Title);
+
+                    if (tinfoilTitles.Any())
+                    {
+                        foreach (var platform in switchPlatforms)
+                        {
+                            foreach (var tinfoilTitle in tinfoilTitles.Where(t => t.Type != "Base"))
+                            {
+                                var romNumber = roms.Count(r => r.PlatformNumber == platform.PlatformNumber) + 1;
+
+                                roms.Add(new Rom
+                                {
+                                    GameId = 0,
+                                    PlatformNumber = platform.PlatformNumber,
+                                    EpisodeNumber = romNumber,
+                                    Title = $"[{tinfoilTitle.Type}] {tinfoilTitle.Name ?? game.Title}",
+                                    Overview = $"Tinfoil ID: {tinfoilTitle.Id}, Version: {tinfoilTitle.Version ?? "N/A"}, Region: {tinfoilTitle.Region ?? "N/A"}, Size: {(tinfoilTitle.Size.HasValue ? $"{tinfoilTitle.Size.Value / 1048576}MB" : "N/A")}",
+                                    AirDate = tinfoilTitle.ReleaseDate,
+                                    Monitored = tinfoilTitle.Type == "Update"
+                                });
+                            }
+                        }
+
+                        _logger.Info("Added {0} tinfoil entries for Switch game '{1}'", tinfoilTitles.Count(t => t.Type != "Base"), game.Title);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Debug(ex, "Failed to enrich Switch ROMs from Tinfoil for game {0}", game.Title);
             }
 
             return new Tuple<Game, List<Rom>>(game, roms);
