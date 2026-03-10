@@ -56,6 +56,13 @@ namespace Playarr.Core.Games
             // but before this game was refreshed won't be lost.
             var game = _gameService.GetGame(gameId);
 
+            // Skip IGDB lookup for locally-imported games (negative IgdbId)
+            if (game.IgdbId < 0)
+            {
+                _logger.Debug("Skipping IGDB refresh for locally-imported game {0} (IgdbId: {1})", game.Title, game.IgdbId);
+                return game;
+            }
+
             _logger.ProgressInfo("Updating {0}", game.Title);
 
             Game seriesInfo;

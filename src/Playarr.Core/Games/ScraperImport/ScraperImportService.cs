@@ -307,6 +307,8 @@ namespace Playarr.Core.Games.ScraperImport
                 }
 
                 // Create new game directly without SkyHook lookup
+                var gamePath = Path.Combine(rootPath, system.FolderName);
+
                 var newGame = new Game
                 {
                     IgdbId = igdbId,
@@ -315,22 +317,18 @@ namespace Playarr.Core.Games.ScraperImport
                     SortTitle = GameTitleNormalizer.Normalize(request.GameName, igdbId),
                     TitleSlug = request.GameName.ToLower().Replace(" ", "-").Replace(":", "").Replace("'", "") + "-" + Math.Abs(igdbId),
                     QualityProfileId = request.QualityProfileId > 0 ? request.QualityProfileId : 1,
-                    Path = Path.Combine(rootPath, request.GameName),
+                    Path = gamePath,
                     Monitored = true,
                     PlatformFolder = true,
                     Added = DateTime.UtcNow,
                     OriginalLanguage = Languages.Language.English,
+                    Status = GameStatusType.Ended,
                 };
 
                 try
                 {
                     existingGame = _gameService.AddGame(newGame);
                     _logger.Info("Added game {0} (Id: {1})", existingGame.Title, existingGame.Id);
-
-                    if (!_diskProvider.FolderExists(existingGame.Path))
-                    {
-                        _diskProvider.CreateFolder(existingGame.Path);
-                    }
                 }
                 catch (Exception ex)
                 {

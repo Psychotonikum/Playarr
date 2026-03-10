@@ -22,7 +22,7 @@ namespace Playarr.Core.HealthCheck.Checks
 
         public override HealthCheck Check()
         {
-            var deletedSeries = _gameService.GetAllGames().Where(v => v.Status == GameStatusType.Deleted).ToList();
+            var deletedSeries = _gameService.GetAllGames().Where(v => v.Status == GameStatusType.Deleted && v.IgdbId > 0).ToList();
 
             if (deletedSeries.Empty())
             {
