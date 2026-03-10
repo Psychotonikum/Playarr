@@ -20,12 +20,12 @@ namespace Playarr.Core.ImportLists.MyAnimeList
         {
             var pageableReq = new ImportListPageableRequestChain();
 
-            pageableReq.Add(GetSeriesRequest());
+            pageableReq.Add(GetGameRequest());
 
             return pageableReq;
         }
 
-        private IEnumerable<ImportListRequest> GetSeriesRequest()
+        private IEnumerable<ImportListRequest> GetGameRequest()
         {
             var status = (MyAnimeListStatus)Settings.ListStatus;
             var requestBuilder = new HttpRequestBuilder(Settings.BaseUrl.Trim());

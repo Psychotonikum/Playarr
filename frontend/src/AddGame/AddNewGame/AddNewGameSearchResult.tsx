@@ -6,11 +6,11 @@ import Icon from 'Components/Icon';
 import Label from 'Components/Label';
 import Link from 'Components/Link/Link';
 import MetadataAttribution from 'Components/MetadataAttribution';
-import { icons, kinds, sizes } from 'Helpers/Props';
 import { Statistics } from 'Game/Game';
 import GameGenres from 'Game/GameGenres';
 import GamePoster from 'Game/GamePoster';
 import useExistingGame from 'Game/useExistingGame';
+import { icons, kinds, sizes } from 'Helpers/Props';
 import translate from 'Utilities/String/translate';
 import AddNewGameModal from './AddNewGameModal';
 import styles from './AddNewGameSearchResult.css';
@@ -146,7 +146,9 @@ function AddNewGameSearchResult({ game }: AddNewGameSearchResultProps) {
               </Label>
             ) : null}
 
-            {platformCount ? <Label size={sizes.LARGE}>{platforms}</Label> : null}
+            {platformCount ? (
+              <Label size={sizes.LARGE}>{platforms}</Label>
+            ) : null}
 
             {status === 'upcoming' ? (
               <Label kind={kinds.INFO} size={sizes.LARGE}>

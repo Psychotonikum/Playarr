@@ -22,7 +22,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
         public void Setup()
         {
             _series = Builder<Game>.CreateNew()
-                                     .With(s => s.SeriesType = GameTypes.Anime)
+                                     .With(s => s.SeriesType = GameTypes.Standard)
                                      .With(s => s.Path = @"C:\Test\TV\30 Rock".AsOsAgnostic())
                                      .Build();
 

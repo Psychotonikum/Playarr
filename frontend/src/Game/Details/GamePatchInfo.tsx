@@ -55,9 +55,7 @@ function GamePatchInfo({
       <div className={styles.patchRow}>
         <span className={styles.patchLabel}>Update:</span>
         {activeUpdate ? (
-          <Label kind={kinds.SUCCESS}>
-            v{activeUpdate.version}
-          </Label>
+          <Label kind={kinds.SUCCESS}>v{activeUpdate.version}</Label>
         ) : (
           <span className={styles.version}>None</span>
         )}

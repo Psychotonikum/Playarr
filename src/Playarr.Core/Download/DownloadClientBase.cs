@@ -96,7 +96,7 @@ namespace Playarr.Core.Download
 
         public abstract DownloadProtocol Protocol { get; }
 
-        public abstract Task<string> Download(RemoteEpisode remoteRom, IIndexer indexer);
+        public abstract Task<string> Download(RemoteRom remoteRom, IIndexer indexer);
         public abstract IEnumerable<DownloadClientItem> GetItems();
 
         public virtual DownloadClientItem GetImportItem(DownloadClientItem item, DownloadClientItem previousImportAttempt)

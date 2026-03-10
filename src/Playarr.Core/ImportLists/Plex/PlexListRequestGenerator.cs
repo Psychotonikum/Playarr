@@ -22,12 +22,12 @@ namespace Playarr.Core.ImportLists.Plex
         {
             var pageableRequests = new ImportListPageableRequestChain();
 
-            pageableRequests.Add(GetSeriesRequest());
+            pageableRequests.Add(GetGameRequest());
 
             return pageableRequests;
         }
 
-        private IEnumerable<ImportListRequest> GetSeriesRequest()
+        private IEnumerable<ImportListRequest> GetGameRequest()
         {
             for (var page = 0; page < MaxPages; page++)
             {

@@ -66,10 +66,7 @@ function MetadataSourceProviders() {
             );
           })}
 
-          <Card
-            className={styles.addProvider}
-            onPress={handleAddPress}
-          >
+          <Card className={styles.addProvider} onPress={handleAddPress}>
             <div className={styles.center}>
               <Icon name={icons.ADD} size={45} />
             </div>

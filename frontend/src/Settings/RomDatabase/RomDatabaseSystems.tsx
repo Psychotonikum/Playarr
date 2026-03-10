@@ -1,8 +1,8 @@
 import React from 'react';
 import FieldSet from 'Components/FieldSet';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
-import { useRomDatabaseSystems } from './useRomDatabase';
 import RomDatabaseSystemCard from './RomDatabaseSystemCard';
+import { useRomDatabaseSystems } from './useRomDatabase';
 import styles from './RomDatabaseSystems.css';
 
 function RomDatabaseSystems() {

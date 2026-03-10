@@ -26,7 +26,7 @@ namespace Playarr.Core.MediaFiles
 
     public class RomFileMovingService : IMoveRomFiles
     {
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly IUpdateRomFileService _updateRomFileService;
         private readonly IBuildFileNames _buildFileNames;
         private readonly IDiskTransferService _diskTransferService;
@@ -50,7 +50,7 @@ namespace Playarr.Core.MediaFiles
                                 IConfigService configService,
                                 Logger logger)
         {
-            _episodeService = episodeService;
+            _romService = episodeService;
             _updateRomFileService = updateRomFileService;
             _buildFileNames = buildFileNames;
             _diskTransferService = diskTransferService;
@@ -65,7 +65,7 @@ namespace Playarr.Core.MediaFiles
 
         public RomFile MoveRomFile(RomFile romFile, Game game)
         {
-            var roms = _episodeService.GetEpisodesByFileId(romFile.Id);
+            var roms = _romService.GetRomsByFileId(romFile.Id);
             return MoveRomFile(romFile, game, roms);
         }
 

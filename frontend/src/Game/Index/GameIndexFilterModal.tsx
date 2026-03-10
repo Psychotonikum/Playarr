@@ -6,9 +6,7 @@ import useGame, { FILTER_BUILDER } from 'Game/useGame';
 
 type GameIndexFilterModalProps = FilterModalProps<Game>;
 
-export default function GameIndexFilterModal(
-  props: GameIndexFilterModalProps
-) {
+export default function GameIndexFilterModal(props: GameIndexFilterModalProps) {
   const { data: sectionItems } = useGame();
 
   const dispatchSetFilter = useCallback(

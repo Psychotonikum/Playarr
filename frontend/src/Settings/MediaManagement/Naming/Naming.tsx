@@ -417,9 +417,7 @@ function Naming({ setChildSave, onChildStateChange }: NamingProps) {
               type={inputTypes.TEXT}
               name="seriesFolderFormat"
               buttons={
-                <FormInputButton
-                  onPress={handleGameFolderNamingModalOpenClick}
-                >
+                <FormInputButton onPress={handleGameFolderNamingModalOpenClick}>
                   ?
                 </FormInputButton>
               }

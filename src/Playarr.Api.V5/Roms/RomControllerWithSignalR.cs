@@ -18,8 +18,8 @@ public abstract class RomControllerWithSignalR : RestControllerWithSignalR<RomRe
                                                      IHandle<EpisodeImportedEvent>,
                                                      IHandle<RomFileDeletedEvent>
 {
-    protected readonly IRomService _episodeService;
-    protected readonly IGameService _seriesService;
+    protected readonly IRomService _romService;
+    protected readonly IGameService _gameService;
     protected readonly IUpgradableSpecification _upgradableSpecification;
     protected readonly ICustomFormatCalculationService _formatCalculator;
 
@@ -30,8 +30,8 @@ public abstract class RomControllerWithSignalR : RestControllerWithSignalR<RomRe
                                        IBroadcastSignalRMessage signalRBroadcaster)
         : base(signalRBroadcaster)
     {
-        _episodeService = episodeService;
-        _seriesService = seriesService;
+        _romService = episodeService;
+        _gameService = seriesService;
         _upgradableSpecification = upgradableSpecification;
         _formatCalculator = formatCalculator;
     }
@@ -44,15 +44,15 @@ public abstract class RomControllerWithSignalR : RestControllerWithSignalR<RomRe
                                        string resource)
         : base(signalRBroadcaster)
     {
-        _episodeService = episodeService;
-        _seriesService = seriesService;
+        _romService = episodeService;
+        _gameService = seriesService;
         _upgradableSpecification = upgradableSpecification;
         _formatCalculator = formatCalculator;
     }
 
     protected override RomResource GetResourceById(int id)
     {
-        var rom = _episodeService.GetEpisode(id);
+        var rom = _romService.GetEpisode(id);
         var resource = MapToResource(rom, true, true, true);
         return resource;
     }
@@ -63,7 +63,7 @@ public abstract class RomControllerWithSignalR : RestControllerWithSignalR<RomRe
 
         if (includeSeries || includeRomFile || includeImages)
         {
-            var game = rom.Game ?? _seriesService.GetSeries(rom.GameId);
+            var game = rom.Game ?? _gameService.GetGame(rom.GameId);
 
             if (includeSeries)
             {
@@ -96,7 +96,7 @@ public abstract class RomControllerWithSignalR : RestControllerWithSignalR<RomRe
                 var rom = roms[i];
                 var resource = result[i];
 
-                var game = rom.Game ?? seriesDict.GetValueOrDefault(roms[i].GameId) ?? _seriesService.GetSeries(roms[i].GameId);
+                var game = rom.Game ?? seriesDict.GetValueOrDefault(roms[i].GameId) ?? _gameService.GetGame(roms[i].GameId);
                 seriesDict[game.Id] = game;
 
                 if (includeSeries)

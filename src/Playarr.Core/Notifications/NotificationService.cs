@@ -54,18 +54,9 @@ namespace Playarr.Core.Notifications
                 return $"{game.Title} - [{qualityString}]";
             }
 
-            if (game.SeriesType == GameTypes.Daily)
-            {
-                var rom = roms.First();
-
-                return $"{game.Title} - {rom.AirDate} - {rom.Title} [{qualityString}]";
-            }
-
-            var romNumbers = string.Concat(roms.Select(e => $"x{e.EpisodeNumber:00}"));
-
             var romTitles = string.Join(" + ", roms.Select(e => e.Title));
 
-            return $"{game.Title} - {roms.First().PlatformNumber}{romNumbers} - {romTitles} [{qualityString}]";
+            return $"{game.Title} - {romTitles} [{qualityString}]";
         }
 
         private string GetFullSeasonMessage(Game game, int platformNumber, QualityModel quality)
@@ -81,14 +72,7 @@ namespace Playarr.Core.Notifications
 
             if (quality.Revision.Version > 1)
             {
-                if (game.SeriesType == GameTypes.Anime)
-                {
-                    qualityString += " v" + quality.Revision.Version;
-                }
-                else
-                {
-                    qualityString += " Proper";
-                }
+                qualityString += " Proper";
             }
 
             return qualityString;
@@ -203,9 +187,9 @@ namespace Playarr.Core.Notifications
 
         public void Handle(DownloadCompletedEvent message)
         {
-            var game = message.TrackedDownload.RemoteEpisode.Game;
-            var roms = message.TrackedDownload.RemoteEpisode.Roms;
-            var parsedRomInfo = message.TrackedDownload.RemoteEpisode.ParsedRomInfo;
+            var game = message.TrackedDownload.RemoteRom.Game;
+            var roms = message.TrackedDownload.RemoteRom.Roms;
+            var parsedRomInfo = message.TrackedDownload.RemoteRom.ParsedRomInfo;
 
             var downloadMessage = new ImportCompleteMessage
             {

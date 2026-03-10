@@ -25,7 +25,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
     {
         private Game _series;
         private Rom _episode;
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         private Game _otherGame;
         private Rom _otherEpisode;
@@ -67,7 +67,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _releaseInfo = Builder<ReleaseInfo>.CreateNew()
                                                .Build();
 
-            _remoteRom = Builder<RemoteEpisode>.CreateNew()
+            _remoteRom = Builder<RemoteRom>.CreateNew()
                                                    .With(r => r.Game = _series)
                                                    .With(r => r.Roms = new List<Rom> { _episode })
                                                    .With(r => r.ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD), Languages = new List<Language> { Language.Spanish } })
@@ -75,7 +75,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                    .Build();
 
             Mocker.GetMock<ICustomFormatCalculationService>()
-                  .Setup(x => x.ParseCustomFormat(It.IsAny<RemoteEpisode>(), It.IsAny<long>()))
+                  .Setup(x => x.ParseCustomFormat(It.IsAny<RemoteRom>(), It.IsAny<long>()))
                   .Returns(new List<CustomFormat>());
         }
 
@@ -89,15 +89,15 @@ namespace Playarr.Core.Test.DecisionEngineTests
         private void GivenQueueFormats(List<CustomFormat> formats)
         {
             Mocker.GetMock<ICustomFormatCalculationService>()
-                  .Setup(x => x.ParseCustomFormat(It.IsAny<RemoteEpisode>(), It.IsAny<long>()))
+                  .Setup(x => x.ParseCustomFormat(It.IsAny<RemoteRom>(), It.IsAny<long>()))
                   .Returns(formats);
         }
 
-        private void GivenQueue(IEnumerable<RemoteEpisode> remoteRoms, TrackedDownloadState trackedDownloadState = TrackedDownloadState.Downloading)
+        private void GivenQueue(IEnumerable<RemoteRom> remoteRoms, TrackedDownloadState trackedDownloadState = TrackedDownloadState.Downloading)
         {
             var queue = remoteRoms.Select(remoteRom => new Queue.Queue
             {
-                RemoteEpisode = remoteRom,
+                RemoteRom = remoteRom,
                 TrackedDownloadState = trackedDownloadState
             });
 
@@ -116,14 +116,14 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_return_true_when_series_doesnt_match()
         {
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Game = _otherGame)
                                                       .With(r => r.Roms = new List<Rom> { _episode })
                                                       .With(r => r.Release = _releaseInfo)
                                                       .With(r => r.CustomFormats = new List<CustomFormat>())
                                                       .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
         }
 
@@ -132,7 +132,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             _series.QualityProfile.Value.Cutoff = Quality.Bluray1080p.Id;
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                 .With(r => r.Game = _series)
                 .With(r => r.Roms = new List<Rom> { _episode })
                 .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -144,7 +144,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 .With(r => r.Release = _releaseInfo)
                 .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
 
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }
@@ -154,7 +154,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             _series.QualityProfile.Value.Cutoff = Quality.Bluray1080p.Id;
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Game = _series)
                                                       .With(r => r.Roms = new List<Rom> { _episode })
                                                       .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -166,7 +166,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                       .With(r => r.CustomFormats = new List<CustomFormat>())
                                                       .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
         }
 
@@ -175,7 +175,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             _series.QualityProfile.Value.Cutoff = Quality.Bluray1080p.Id;
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Game = _series)
                                                       .With(r => r.Roms = new List<Rom> { _episode })
                                                       .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -187,14 +187,14 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                       .With(r => r.CustomFormats = new List<CustomFormat>())
                                                       .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
         }
 
         [Test]
         public void should_return_true_when_episode_doesnt_match()
         {
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Game = _series)
                                                       .With(r => r.Roms = new List<Rom> { _otherEpisode })
                                                       .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -205,7 +205,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                       .With(r => r.CustomFormats = new List<CustomFormat>())
                                                       .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
         }
 
@@ -222,7 +222,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             GivenQueueFormats(lowFormat);
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                 .With(r => r.Game = _series)
                 .With(r => r.Roms = new List<Rom> { _episode })
                 .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -234,14 +234,14 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 .With(r => r.CustomFormats = lowFormat)
                 .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
         }
 
         [Test]
         public void should_return_false_when_qualities_are_the_same_and_languages_are_the_same()
         {
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Game = _series)
                                                       .With(r => r.Roms = new List<Rom> { _episode })
                                                       .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -253,7 +253,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                       .With(r => r.CustomFormats = new List<CustomFormat>())
                                                       .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }
 
@@ -262,7 +262,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             _series.QualityProfile.Value.Cutoff = Quality.Bluray1080p.Id;
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Game = _series)
                                                       .With(r => r.Roms = new List<Rom> { _episode })
                                                       .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -274,14 +274,14 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                       .With(r => r.CustomFormats = new List<CustomFormat>())
                                                       .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }
 
         [Test]
         public void should_return_false_if_matching_multi_episode_is_in_queue()
         {
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Game = _series)
                                                       .With(r => r.Roms = new List<Rom> { _episode, _otherEpisode })
                                                       .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -293,14 +293,14 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                       .With(r => r.CustomFormats = new List<CustomFormat>())
                                                       .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }
 
         [Test]
         public void should_return_false_if_multi_episode_has_one_episode_in_queue()
         {
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Game = _series)
                                                       .With(r => r.Roms = new List<Rom> { _episode })
                                                       .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -314,14 +314,14 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             _remoteRom.Roms.Add(_otherEpisode);
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }
 
         [Test]
         public void should_return_false_if_multi_part_episode_is_already_in_queue()
         {
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Game = _series)
                                                       .With(r => r.Roms = new List<Rom> { _episode, _otherEpisode })
                                                       .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -335,14 +335,14 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             _remoteRom.Roms.Add(_otherEpisode);
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }
 
         [Test]
         public void should_return_false_if_multi_part_episode_has_two_episodes_in_queue()
         {
-            var remoteRoms = Builder<RemoteEpisode>.CreateListOfSize(2)
+            var remoteRoms = Builder<RemoteRom>.CreateListOfSize(2)
                                                        .All()
                                                        .With(r => r.Game = _series)
                                                        .With(r => r.CustomFormats = new List<CustomFormat>())
@@ -370,7 +370,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             _series.QualityProfile.Value.Cutoff = _remoteRom.ParsedRomInfo.Quality.Quality.Id;
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Game = _series)
                                                       .With(r => r.Roms = new List<Rom> { _episode })
                                                       .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -382,7 +382,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                       .With(r => r.CustomFormats = new List<CustomFormat>())
                                                       .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
 
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }
@@ -390,7 +390,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_return_false_when_quality_are_the_same_language_is_better_and_upgrade_allowed_is_false_for_language_profile()
         {
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                 .With(r => r.Game = _series)
                 .With(r => r.Roms = new List<Rom> { _episode })
                 .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -402,7 +402,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 .With(r => r.CustomFormats = new List<CustomFormat>())
                 .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }
 
@@ -412,7 +412,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _series.QualityProfile.Value.Cutoff = Quality.Bluray1080p.Id;
             _series.QualityProfile.Value.UpgradeAllowed = false;
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                 .With(r => r.Game = _series)
                 .With(r => r.Roms = new List<Rom> { _episode })
                 .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -424,7 +424,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 .With(r => r.CustomFormats = new List<CustomFormat>())
                 .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }
 
@@ -433,7 +433,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             _series.QualityProfile.Value.Cutoff = Quality.Bluray1080p.Id;
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                 .With(r => r.Game = _series)
                 .With(r => r.Roms = new List<Rom> { _episode })
                 .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -445,7 +445,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 .With(r => r.CustomFormats = new List<CustomFormat>())
                 .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom }, TrackedDownloadState.FailedPending);
+            GivenQueue(new List<RemoteRom> { remoteRom }, TrackedDownloadState.FailedPending);
 
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
         }
@@ -460,7 +460,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 .Setup(s => s.DownloadPropersAndRepacks)
                 .Returns(ProperDownloadTypes.DoNotUpgrade);
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                 .With(r => r.Game = _series)
                 .With(r => r.Roms = new List<Rom> { _episode })
                 .With(r => r.ParsedRomInfo = new ParsedRomInfo
@@ -472,7 +472,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 .With(r => r.CustomFormats = new List<CustomFormat>())
                 .Build();
 
-            GivenQueue(new List<RemoteEpisode> { remoteRom });
+            GivenQueue(new List<RemoteRom> { remoteRom });
 
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }

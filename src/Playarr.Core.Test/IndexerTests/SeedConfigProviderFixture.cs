@@ -20,7 +20,7 @@ namespace Playarr.Core.Test.IndexerTests
                   .Setup(v => v.GetSettings(It.IsAny<int>()))
                   .Returns<CachedIndexerSettings>(null);
 
-            var result = Subject.GetSeedConfiguration(new RemoteEpisode
+            var result = Subject.GetSeedConfiguration(new RemoteRom
             {
                 Release = new ReleaseInfo
                 {
@@ -39,7 +39,7 @@ namespace Playarr.Core.Test.IndexerTests
                   .Setup(v => v.GetSettings(It.IsAny<int>()))
                   .Returns<CachedIndexerSettings>(null);
 
-            var result = Subject.GetSeedConfiguration(new RemoteEpisode
+            var result = Subject.GetSeedConfiguration(new RemoteRom
             {
                 Release = new ReleaseInfo
                 {
@@ -70,7 +70,7 @@ namespace Playarr.Core.Test.IndexerTests
                          SeedCriteriaSettings = settings.SeedCriteria
                      });
 
-            var result = Subject.GetSeedConfiguration(new RemoteEpisode
+            var result = Subject.GetSeedConfiguration(new RemoteRom
             {
                 Release = new ReleaseInfo
                 {
@@ -103,7 +103,7 @@ namespace Playarr.Core.Test.IndexerTests
                     SeedCriteriaSettings = settings.SeedCriteria
                 });
 
-            var result = Subject.GetSeedConfiguration(new RemoteEpisode
+            var result = Subject.GetSeedConfiguration(new RemoteRom
             {
                 Release = new ReleaseInfo
                 {
@@ -136,7 +136,7 @@ namespace Playarr.Core.Test.IndexerTests
                     SeedCriteriaSettings = settings.SeedCriteria
                 });
 
-            var result = Subject.GetSeedConfiguration(new RemoteEpisode
+            var result = Subject.GetSeedConfiguration(new RemoteRom
             {
                 Release = new ReleaseInfo
                 {

@@ -29,7 +29,7 @@ namespace Playarr.Core.Test.TvTests
                             };
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetAllSeries())
+                  .Setup(s => s.GetAllGames())
                   .Returns(_series);
         }
 

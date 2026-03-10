@@ -7,11 +7,11 @@ namespace Playarr.Core.DecisionEngine.Specifications
 {
     public class SameEpisodesSpecification
     {
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
 
         public SameEpisodesSpecification(IRomService episodeService)
         {
-            _episodeService = episodeService;
+            _romService = episodeService;
         }
 
         public bool IsSatisfiedBy(List<Rom> roms)
@@ -21,7 +21,7 @@ namespace Playarr.Core.DecisionEngine.Specifications
 
             foreach (var romFileId in romFileIds)
             {
-                var episodesInFile = _episodeService.GetEpisodesByFileId(romFileId);
+                var episodesInFile = _romService.GetRomsByFileId(romFileId);
 
                 if (episodesInFile.Select(e => e.Id).Except(romIds).Any())
                 {

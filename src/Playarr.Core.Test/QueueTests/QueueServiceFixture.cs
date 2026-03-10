@@ -36,7 +36,7 @@ namespace Playarr.Core.Test.QueueTests
                                           .With(e => e.GameId = game.Id)
                                           .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                    .With(r => r.Game = game)
                                                    .With(r => r.Roms = new List<Rom>(roms))
                                                    .With(r => r.ParsedRomInfo = new ParsedRomInfo())
@@ -46,7 +46,7 @@ namespace Playarr.Core.Test.QueueTests
                 .All()
                 .With(v => v.IsTrackable = true)
                 .With(v => v.DownloadItem = downloadItem)
-                .With(v => v.RemoteEpisode = remoteRom)
+                .With(v => v.RemoteRom = remoteRom)
                 .Build()
                 .ToList();
         }

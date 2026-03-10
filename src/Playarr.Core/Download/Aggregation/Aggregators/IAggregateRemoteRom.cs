@@ -4,6 +4,6 @@ namespace Playarr.Core.Download.Aggregation.Aggregators
 {
     public interface IAggregateRemoteEpisode
     {
-        RemoteEpisode Aggregate(RemoteEpisode remoteRom);
+        RemoteRom Aggregate(RemoteRom remoteRom);
     }
 }

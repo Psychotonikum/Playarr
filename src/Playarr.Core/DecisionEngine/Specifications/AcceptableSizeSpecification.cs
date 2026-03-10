@@ -8,19 +8,19 @@ namespace Playarr.Core.DecisionEngine.Specifications
 {
     public class AcceptableSizeSpecification : IDownloadDecisionEngineSpecification
     {
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly Logger _logger;
 
         public AcceptableSizeSpecification(IRomService episodeService, Logger logger)
         {
-            _episodeService = episodeService;
+            _romService = episodeService;
             _logger = logger;
         }
 
         public SpecificationPriority Priority => SpecificationPriority.Default;
         public RejectionType Type => RejectionType.Permanent;
 
-        public DownloadSpecDecision IsSatisfiedBy(RemoteEpisode subject, ReleaseDecisionInformation information)
+        public DownloadSpecDecision IsSatisfiedBy(RemoteRom subject, ReleaseDecisionInformation information)
         {
             _logger.Debug("Beginning size check for: {0}", subject);
 
@@ -44,7 +44,7 @@ namespace Playarr.Core.DecisionEngine.Specifications
             if (seriesRuntime == 0)
             {
                 var firstPlatformNumber = subject.Game.Platforms.Where(s => s.PlatformNumber > 0).Min(s => s.PlatformNumber);
-                var pilotEpisode = _episodeService.GetEpisodesBySeason(subject.Game.Id, firstPlatformNumber).First();
+                var pilotEpisode = _romService.GetRomsByPlatform(subject.Game.Id, firstPlatformNumber).First();
 
                 if (subject.Roms.First().PlatformNumber == pilotEpisode.PlatformNumber)
                 {

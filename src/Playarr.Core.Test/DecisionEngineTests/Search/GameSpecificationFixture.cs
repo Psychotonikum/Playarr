@@ -15,7 +15,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.Search
     {
         private Game _series1;
         private Game _series2;
-        private RemoteEpisode _remoteRom = new();
+        private RemoteRom _remoteRom = new();
         private SearchCriteriaBase _searchCriteria = new SingleEpisodeSearchCriteria();
         private ReleaseDecisionInformation _information;
 

@@ -15,7 +15,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
     public class QualityAllowedByProfileSpecificationFixture : CoreTest<QualityAllowedByProfileSpecification>
     {
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         public static object[] AllowedTestCases =
         {
@@ -38,7 +38,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                          .With(c => c.QualityProfile = (LazyLoaded<QualityProfile>)new QualityProfile { Cutoff = Quality.Bluray1080p.Id })
                          .Build();
 
-            _remoteRom = new RemoteEpisode
+            _remoteRom = new RemoteRom
             {
                 Game = fakeSeries,
                 ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)) },

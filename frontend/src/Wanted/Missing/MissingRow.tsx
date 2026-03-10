@@ -5,13 +5,13 @@ import TableRowCell from 'Components/Table/Cells/TableRowCell';
 import TableSelectCell from 'Components/Table/Cells/TableSelectCell';
 import Column from 'Components/Table/Column';
 import TableRow from 'Components/Table/TableRow';
+import GameTitleLink from 'Game/GameTitleLink';
+import { useSingleGame } from 'Game/useGame';
+import PlatformRomNumber from 'Rom/PlatformRomNumber';
 import Rom from 'Rom/Rom';
 import RomSearchCell from 'Rom/RomSearchCell';
 import RomStatus from 'Rom/RomStatus';
 import RomTitleLink from 'Rom/RomTitleLink';
-import PlatformRomNumber from 'Rom/PlatformRomNumber';
-import GameTitleLink from 'Game/GameTitleLink';
-import { useSingleGame } from 'Game/useGame';
 import { SelectStateInputProps } from 'typings/props';
 import styles from './MissingRow.css';
 
@@ -85,10 +85,7 @@ function MissingRow({
         if (name === 'game.sortTitle') {
           return (
             <TableRowCell key={name}>
-              <GameTitleLink
-                titleSlug={game.titleSlug}
-                title={game.title}
-              />
+              <GameTitleLink titleSlug={game.titleSlug} title={game.title} />
             </TableRowCell>
           );
         }

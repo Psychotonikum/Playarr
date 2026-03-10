@@ -20,7 +20,7 @@ namespace Playarr.Core.DecisionEngine.Specifications.RssSync
         public SpecificationPriority Priority => SpecificationPriority.Database;
         public RejectionType Type => RejectionType.Temporary;
 
-        public DownloadSpecDecision IsSatisfiedBy(RemoteEpisode subject, ReleaseDecisionInformation information)
+        public DownloadSpecDecision IsSatisfiedBy(RemoteRom subject, ReleaseDecisionInformation information)
         {
             // Skip this check for RSS sync and interactive searches,
 
@@ -37,9 +37,9 @@ namespace Playarr.Core.DecisionEngine.Specifications.RssSync
 
             var pending = _pendingReleaseService.GetPendingQueue();
 
-            var matchingEpisode = pending.Where(q => q.RemoteEpisode?.Game != null &&
-                                                     q.RemoteEpisode.Game.Id == subject.Game.Id &&
-                                                     q.RemoteEpisode.Roms.Select(e => e.Id).Intersect(subject.Roms.Select(e => e.Id)).Any())
+            var matchingEpisode = pending.Where(q => q.RemoteRom?.Game != null &&
+                                                     q.RemoteRom.Game.Id == subject.Game.Id &&
+                                                     q.RemoteRom.Roms.Select(e => e.Id).Intersect(subject.Roms.Select(e => e.Id)).Any())
                                        .ToList();
 
             if (matchingEpisode.Any())

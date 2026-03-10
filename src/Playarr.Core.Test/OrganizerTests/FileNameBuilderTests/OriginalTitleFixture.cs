@@ -86,7 +86,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_include_current_filename_if_not_including_air_date_token_for_daily_series()
         {
-            _series.SeriesType = GameTypes.Daily;
+            _series.SeriesType = GameTypes.Standard;
             _episode.AirDate = "2022-04-28";
             _romFile.RelativePath = "My Game - 2022-04-28 - City Sushi";
             _namingConfig.DailyEpisodeFormat = "{Original Title} {Quality Title}";
@@ -98,7 +98,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_include_current_filename_if_not_including_absolute_episode_number_token_for_anime_series()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _episode.AbsoluteEpisodeNumber = 123;
             _romFile.RelativePath = "My Game - 123 - City Sushi";
             _namingConfig.AnimeEpisodeFormat = "{Original Title} {Quality Title}";
@@ -120,7 +120,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_not_include_current_filename_if_including_air_date_token_for_daily_series()
         {
-            _series.SeriesType = GameTypes.Daily;
+            _series.SeriesType = GameTypes.Standard;
             _episode.AirDate = "2022-04-28";
             _romFile.RelativePath = "My Game - 2022-04-28 - City Sushi";
             _namingConfig.DailyEpisodeFormat = "{Game Title} - {Air-Date} {[Original Title]}";
@@ -132,7 +132,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_not_include_current_filename_if_including_absolute_episode_number_token_for_anime_series()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _episode.AbsoluteEpisodeNumber = 123;
             _romFile.RelativePath = "My Game - 123 - City Sushi";
             _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:00} {[Original Title]}";
@@ -155,7 +155,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_include_current_filename_for_new_file_if_including_air_date_token_for_daily_series()
         {
-            _series.SeriesType = GameTypes.Daily;
+            _series.SeriesType = GameTypes.Standard;
             _episode.AirDate = "2022-04-28";
             _romFile.Id = 0;
             _romFile.RelativePath = "My Game - 2022-04-28 - City Sushi";
@@ -168,7 +168,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_include_current_filename_for_new_file_if_including_absolute_episode_number_token_for_anime_series()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _episode.AbsoluteEpisodeNumber = 123;
             _romFile.Id = 0;
             _romFile.RelativePath = "My Game - 123 - City Sushi";

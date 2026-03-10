@@ -92,7 +92,10 @@ const useUpcomingReleasesForDay = (date: string) => {
   const momentDate = moment(date);
 
   return data.filter((release: UpcomingRelease) => {
-    return release.releaseDate && momentDate.isSame(moment(release.releaseDate), 'day');
+    return (
+      release.releaseDate &&
+      momentDate.isSame(moment(release.releaseDate), 'day')
+    );
   });
 };
 

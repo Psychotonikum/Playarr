@@ -16,34 +16,34 @@ import PageToolbarSeparator from 'Components/Page/Toolbar/PageToolbarSeparator';
 import TableOptionsModalWrapper from 'Components/Table/TableOptions/TableOptionsModalWrapper';
 import withScrollPosition from 'Components/withScrollPosition';
 import { useCustomFiltersList } from 'Filters/useCustomFilters';
-import { align, icons, kinds } from 'Helpers/Props';
-import { DESCENDING } from 'Helpers/Props/sortDirections';
-import ParseToolbarButton from 'Parse/ParseToolbarButton';
-import NoGame from 'Game/NoGame';
 import {
   setGameOption,
   setGameSort,
   setGameTableOptions,
   useGameOptions,
 } from 'Game/gameOptionsStore';
+import NoGame from 'Game/NoGame';
 import { FILTERS, useGameIndex } from 'Game/useGame';
+import { align, icons, kinds } from 'Helpers/Props';
+import { DESCENDING } from 'Helpers/Props/sortDirections';
+import ParseToolbarButton from 'Parse/ParseToolbarButton';
 import scrollPositions from 'Store/scrollPositions';
 import { TableOptionsChangePayload } from 'typings/Table';
 import translate from 'Utilities/String/translate';
+import GameIndexFooter from './GameIndexFooter';
+import GameIndexRefreshGameButton from './GameIndexRefreshGameButton';
 import GameIndexFilterMenu from './Menus/GameIndexFilterMenu';
 import GameIndexSortMenu from './Menus/GameIndexSortMenu';
 import GameIndexViewMenu from './Menus/GameIndexViewMenu';
-import GameIndexOverviewOptionsModal from './Overview/Options/GameIndexOverviewOptionsModal';
 import GameIndexOverviews from './Overview/GameIndexOverviews';
-import GameIndexPosterOptionsModal from './Posters/Options/GameIndexPosterOptionsModal';
+import GameIndexOverviewOptionsModal from './Overview/Options/GameIndexOverviewOptionsModal';
 import GameIndexPosters from './Posters/GameIndexPosters';
+import GameIndexPosterOptionsModal from './Posters/Options/GameIndexPosterOptionsModal';
 import GameIndexSelectAllButton from './Select/GameIndexSelectAllButton';
 import GameIndexSelectAllMenuItem from './Select/GameIndexSelectAllMenuItem';
 import GameIndexSelectFooter from './Select/GameIndexSelectFooter';
 import GameIndexSelectModeButton from './Select/GameIndexSelectModeButton';
 import GameIndexSelectModeMenuItem from './Select/GameIndexSelectModeMenuItem';
-import GameIndexFooter from './GameIndexFooter';
-import GameIndexRefreshGameButton from './GameIndexRefreshGameButton';
 import GameIndexTable from './Table/GameIndexTable';
 import GameIndexTableOptions from './Table/GameIndexTableOptions';
 import styles from './GameIndex.css';

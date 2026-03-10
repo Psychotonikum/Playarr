@@ -37,7 +37,7 @@ namespace Playarr.Api.V3.Game
                                 IHandle<SeriesBulkEditedEvent>,
                                 IHandle<MediaCoversUpdatedEvent>
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IAddGameService _addGameService;
         private readonly ISeriesStatisticsService _seriesStatisticsService;
         private readonly ISceneMappingService _sceneMappingService;
@@ -55,16 +55,16 @@ namespace Playarr.Api.V3.Game
                             IRootFolderService rootFolderService,
                             RootFolderValidator rootFolderValidator,
                             MappedNetworkDriveValidator mappedNetworkDriveValidator,
-                            SeriesPathValidator seriesPathValidator,
-                            SeriesExistsValidator seriesExistsValidator,
-                            SeriesAncestorValidator seriesAncestorValidator,
+                            GamePathValidator seriesPathValidator,
+                            GameExistsValidator seriesExistsValidator,
+                            GameAncestorValidator seriesAncestorValidator,
                             SystemFolderValidator systemFolderValidator,
                             QualityProfileExistsValidator qualityProfileExistsValidator,
                             RootFolderExistsValidator rootFolderExistsValidator,
                             GameFolderAsRootFolderValidator seriesFolderAsRootFolderValidator)
             : base(signalRBroadcaster)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _addGameService = addGameService;
             _seriesStatisticsService = seriesStatisticsService;
             _sceneMappingService = sceneMappingService;
@@ -114,11 +114,11 @@ namespace Playarr.Api.V3.Game
 
             if (igdbId.HasValue)
             {
-                seriesResources.AddIfNotNull(_seriesService.FindByIgdbId(igdbId.Value).ToResource(includeSeasonImages));
+                seriesResources.AddIfNotNull(_gameService.FindByIgdbId(igdbId.Value).ToResource(includeSeasonImages));
             }
             else
             {
-                seriesResources.AddRange(_seriesService.GetAllSeries().Select(s => s.ToResource(includeSeasonImages)));
+                seriesResources.AddRange(_gameService.GetAllGames().Select(s => s.ToResource(includeSeasonImages)));
             }
 
             MapCoversToLocal(seriesResources.ToArray());
@@ -159,7 +159,7 @@ namespace Playarr.Api.V3.Game
 
         private GameResource GetGameResourceById(int id, bool includeSeasonImages = false)
         {
-            var game = _seriesService.GetSeries(id);
+            var game = _gameService.GetGame(id);
 
             // Parse IncludeImages and use it
             return GetGameResource(game, includeSeasonImages);
@@ -180,7 +180,7 @@ namespace Playarr.Api.V3.Game
         [Produces("application/json")]
         public ActionResult<GameResource> UpdateSeries([FromBody] GameResource seriesResource, [FromQuery] bool moveFiles = false)
         {
-            var game = _seriesService.GetSeries(seriesResource.Id);
+            var game = _gameService.GetGame(seriesResource.Id);
 
             if (moveFiles)
             {
@@ -198,7 +198,7 @@ namespace Playarr.Api.V3.Game
 
             var model = seriesResource.ToModel(game);
 
-            _seriesService.UpdateSeries(model);
+            _gameService.UpdateSeries(model);
 
             BroadcastResourceChange(ModelAction.Updated, seriesResource);
 
@@ -208,7 +208,7 @@ namespace Playarr.Api.V3.Game
         [RestDeleteById]
         public void DeleteGame(int id, bool deleteFiles = false, bool addImportListExclusion = false)
         {
-            _seriesService.DeleteGame(new List<int> { id }, deleteFiles, addImportListExclusion);
+            _gameService.DeleteGame(new List<int> { id }, deleteFiles, addImportListExclusion);
         }
 
         private GameResource GetGameResource(Playarr.Core.Games.Game game, bool includeSeasonImages)

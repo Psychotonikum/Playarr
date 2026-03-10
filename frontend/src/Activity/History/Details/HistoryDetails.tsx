@@ -9,11 +9,11 @@ import {
   DownloadFailedHistory,
   DownloadFolderImportedHistory,
   DownloadIgnoredHistory,
-  RomFileDeletedHistory,
-  RomFileRenamedHistory,
   GrabbedHistoryData,
   HistoryData,
   HistoryEventType,
+  RomFileDeletedHistory,
+  RomFileRenamedHistory,
 } from 'typings/History';
 import formatDateTime from 'Utilities/Date/formatDateTime';
 import formatAge from 'Utilities/Number/formatAge';
@@ -246,8 +246,7 @@ function HistoryDetails(props: HistoryDetailsProps) {
   }
 
   if (eventType === 'romFileDeleted') {
-    const { reason, customFormatScore, size } =
-      data as RomFileDeletedHistory;
+    const { reason, customFormatScore, size } = data as RomFileDeletedHistory;
 
     let reasonMessage = '';
 

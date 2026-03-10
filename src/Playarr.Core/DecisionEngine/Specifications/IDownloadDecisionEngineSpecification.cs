@@ -8,6 +8,6 @@ namespace Playarr.Core.DecisionEngine.Specifications
 
         SpecificationPriority Priority { get; }
 
-        DownloadSpecDecision IsSatisfiedBy(RemoteEpisode subject, ReleaseDecisionInformation information);
+        DownloadSpecDecision IsSatisfiedBy(RemoteRom subject, ReleaseDecisionInformation information);
     }
 }

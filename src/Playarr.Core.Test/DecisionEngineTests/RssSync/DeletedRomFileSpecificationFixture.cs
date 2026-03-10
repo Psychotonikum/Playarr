@@ -22,8 +22,8 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
     [TestFixture]
     public class DeletedRomFileSpecificationFixture : CoreTest<DeletedRomFileSpecification>
     {
-        private RemoteEpisode _parseResultMulti;
-        private RemoteEpisode _parseResultSingle;
+        private RemoteRom _parseResultMulti;
+        private RemoteRom _parseResultSingle;
         private RomFile _firstFile;
         private RomFile _secondFile;
 
@@ -57,14 +57,14 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                          .With(c => c.Path = @"C:\Game\My.Game".AsOsAgnostic())
                          .Build();
 
-            _parseResultMulti = new RemoteEpisode
+            _parseResultMulti = new RemoteRom
             {
                 Game = fakeSeries,
                 ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)) },
                 Roms = doubleEpisodeList
             };
 
-            _parseResultSingle = new RemoteEpisode
+            _parseResultSingle = new RemoteRom
             {
                 Game = fakeSeries,
                 ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)) },

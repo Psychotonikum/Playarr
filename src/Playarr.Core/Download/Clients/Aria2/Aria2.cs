@@ -37,7 +37,7 @@ namespace Playarr.Core.Download.Clients.Aria2
             _proxy = proxy;
         }
 
-        protected override string AddFromMagnetLink(RemoteEpisode remoteRom, string hash, string magnetLink)
+        protected override string AddFromMagnetLink(RemoteRom remoteRom, string hash, string magnetLink)
         {
             var gid = _proxy.AddMagnet(Settings, magnetLink);
 
@@ -56,7 +56,7 @@ namespace Playarr.Core.Download.Clients.Aria2
             return hash;
         }
 
-        protected override string AddFromTorrentFile(RemoteEpisode remoteRom, string hash, string filename, byte[] fileContent)
+        protected override string AddFromTorrentFile(RemoteRom remoteRom, string hash, string filename, byte[] fileContent)
         {
             var gid = _proxy.AddTorrent(Settings, fileContent);
 

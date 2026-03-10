@@ -2,11 +2,11 @@ import React, { useCallback } from 'react';
 import FormGroup from 'Components/Form/FormGroup';
 import FormInputGroup from 'Components/Form/FormInputGroup';
 import FormLabel from 'Components/Form/FormLabel';
-import { inputTypes } from 'Helpers/Props';
 import {
   setGameTableOptions,
   useGameTableOptions,
 } from 'Game/gameOptionsStore';
+import { inputTypes } from 'Helpers/Props';
 import { InputChanged } from 'typings/inputs';
 import translate from 'Utilities/String/translate';
 

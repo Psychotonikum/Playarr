@@ -37,7 +37,7 @@ namespace Playarr.Core.ImportLists.Custom
 
             try
             {
-                var remoteGame = _customProxy.GetSeries(Settings);
+                var remoteGame = _customProxy.GetGame(Settings);
 
                 foreach (var item in remoteGame)
                 {

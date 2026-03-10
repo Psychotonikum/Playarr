@@ -18,7 +18,7 @@ namespace Playarr.Core.Blocklisting
         bool Blocklisted(int gameId, ReleaseInfo release);
         bool BlocklistedTorrentHash(int gameId, string hash);
         PagingSpec<Blocklist> Paged(PagingSpec<Blocklist> pagingSpec);
-        void Block(RemoteEpisode remoteRom, string message, string source);
+        void Block(RemoteRom remoteRom, string message, string source);
         void Delete(int id);
         void Delete(List<int> ids);
     }
@@ -72,7 +72,7 @@ namespace Playarr.Core.Blocklisting
             return _blocklistRepository.GetPaged(pagingSpec);
         }
 
-        public void Block(RemoteEpisode remoteRom, string message, string source)
+        public void Block(RemoteRom remoteRom, string message, string source)
         {
             var blocklist = new Blocklist
                             {

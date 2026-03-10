@@ -5,18 +5,18 @@ import TableRowCell from 'Components/Table/Cells/TableRowCell';
 import Column from 'Components/Table/Column';
 import TableRow from 'Components/Table/TableRow';
 import Tooltip from 'Components/Tooltip/Tooltip';
+import GameTitleLink from 'Game/GameTitleLink';
+import { useSingleGame } from 'Game/useGame';
+import { icons, tooltipPositions } from 'Helpers/Props';
+import Language from 'Language/Language';
+import { QualityModel } from 'Quality/Quality';
+import PlatformRomNumber from 'Rom/PlatformRomNumber';
 import romEntities from 'Rom/romEntities';
 import RomFormats from 'Rom/RomFormats';
 import RomLanguages from 'Rom/RomLanguages';
 import RomQuality from 'Rom/RomQuality';
 import RomTitleLink from 'Rom/RomTitleLink';
-import PlatformRomNumber from 'Rom/PlatformRomNumber';
 import useRom from 'Rom/useRom';
-import { icons, tooltipPositions } from 'Helpers/Props';
-import Language from 'Language/Language';
-import { QualityModel } from 'Quality/Quality';
-import GameTitleLink from 'Game/GameTitleLink';
-import { useSingleGame } from 'Game/useGame';
 import CustomFormat from 'typings/CustomFormat';
 import { HistoryData, HistoryEventType } from 'typings/History';
 import formatCustomFormatScore from 'Utilities/Number/formatCustomFormatScore';
@@ -100,10 +100,7 @@ function HistoryRow(props: HistoryRowProps) {
         if (name === 'game.sortTitle') {
           return (
             <TableRowCell key={name}>
-              <GameTitleLink
-                titleSlug={game.titleSlug}
-                title={game.title}
-              />
+              <GameTitleLink titleSlug={game.titleSlug} title={game.title} />
             </TableRowCell>
           );
         }

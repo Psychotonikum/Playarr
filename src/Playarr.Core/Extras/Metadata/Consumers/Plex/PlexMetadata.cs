@@ -11,12 +11,12 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Plex
 {
     public class PlexMetadata : MetadataBase<PlexMetadataSettings>
     {
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly IMediaFileService _mediaFileService;
 
         public PlexMetadata(IRomService episodeService, IMediaFileService mediaFileService)
         {
-            _episodeService = episodeService;
+            _romService = episodeService;
             _mediaFileService = mediaFileService;
         }
 
@@ -63,7 +63,7 @@ namespace Playarr.Core.Extras.Metadata.Consumers.Plex
 
             if (Settings.EpisodeMappings)
             {
-                var roms = _episodeService.GetEpisodeBySeries(game.Id);
+                var roms = _romService.GetEpisodeBySeries(game.Id);
                 var romFiles = _mediaFileService.GetFilesBySeries(game.Id);
 
                 foreach (var romFile in romFiles)

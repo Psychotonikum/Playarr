@@ -53,7 +53,7 @@ namespace Playarr.Core.MediaFiles
                 {
                     _logger.Debug("External directory scan request for known download {0}. [{1}]", message.DownloadClientId, message.Path);
 
-                    var importResults = _downloadedEpisodesImportService.ProcessPath(message.Path, message.ImportMode, trackedDownload.RemoteEpisode.Game, trackedDownload.DownloadItem);
+                    var importResults = _downloadedEpisodesImportService.ProcessPath(message.Path, message.ImportMode, trackedDownload.RemoteRom.Game, trackedDownload.DownloadItem);
 
                     _completedDownloadService.VerifyImport(trackedDownload, importResults);
 

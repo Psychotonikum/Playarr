@@ -4,14 +4,14 @@ import CommandNames from 'Commands/CommandNames';
 import { useCommandExecuting } from 'Commands/useCommands';
 import SpinnerButton from 'Components/Link/SpinnerButton';
 import PageContentFooter from 'Components/Page/PageContentFooter';
-import usePrevious from 'Helpers/Hooks/usePrevious';
-import { kinds } from 'Helpers/Props';
 import Game from 'Game/Game';
 import {
   useBulkDeleteGame,
   useSaveGameEditor,
   useUpdateGameMonitor,
 } from 'Game/useGame';
+import usePrevious from 'Helpers/Hooks/usePrevious';
+import { kinds } from 'Helpers/Props';
 import translate from 'Utilities/String/translate';
 import DeleteGameModal from './Delete/DeleteGameModal';
 import EditGameModal from './Edit/EditGameModal';
@@ -31,8 +31,7 @@ interface SavePayload {
 
 function GameIndexSelectFooter() {
   const { saveGameEditor, isSavingGameEditor } = useSaveGameEditor();
-  const { updateGameMonitor, isUpdatingGameMonitor } =
-    useUpdateGameMonitor();
+  const { updateGameMonitor, isUpdatingGameMonitor } = useUpdateGameMonitor();
   const { isBulkDeleting, bulkDeleteError } = useBulkDeleteGame();
 
   const isOrganizingSeries = useCommandExecuting(CommandNames.RenameSeries);

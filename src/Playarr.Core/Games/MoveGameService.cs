@@ -13,7 +13,7 @@ namespace Playarr.Core.Games
 {
     public class MoveGameService : IExecute<MoveGameCommand>, IExecute<BulkMoveGameCommand>
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IBuildFileNames _filenameBuilder;
         private readonly IDiskProvider _diskProvider;
         private readonly IDiskTransferService _diskTransferService;
@@ -27,7 +27,7 @@ namespace Playarr.Core.Games
                                  IEventAggregator eventAggregator,
                                  Logger logger)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _filenameBuilder = filenameBuilder;
             _diskProvider = diskProvider;
             _diskTransferService = diskTransferService;
@@ -85,15 +85,15 @@ namespace Playarr.Core.Games
 
         private void RevertPath(int gameId, string path)
         {
-            var game = _seriesService.GetSeries(gameId);
+            var game = _gameService.GetGame(gameId);
 
             game.Path = path;
-            _seriesService.UpdateSeries(game);
+            _gameService.UpdateSeries(game);
         }
 
         public void Execute(MoveGameCommand message)
         {
-            var game = _seriesService.GetSeries(message.GameId);
+            var game = _gameService.GetGame(message.GameId);
             MoveSingleSeries(game, message.SourcePath, message.DestinationPath);
         }
 
@@ -107,7 +107,7 @@ namespace Playarr.Core.Games
             for (var index = 0; index < seriesToMove.Count; index++)
             {
                 var s = seriesToMove[index];
-                var game = _seriesService.GetSeries(s.GameId);
+                var game = _gameService.GetGame(s.GameId);
                 var destinationPath = Path.Combine(destinationRootFolder, _filenameBuilder.GetGameFolder(game));
 
                 MoveSingleSeries(game, s.SourcePath, destinationPath, index, seriesToMove.Count);

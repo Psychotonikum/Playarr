@@ -10,7 +10,7 @@ namespace Playarr.Core.History
 {
     public interface IHistoryRepository : IBasicRepository<EpisodeHistory>
     {
-        EpisodeHistory MostRecentForEpisode(int romId);
+        EpisodeHistory MostRecentForRom(int romId);
         List<EpisodeHistory> FindByRomId(int romId);
         EpisodeHistory MostRecentForDownloadId(string downloadId);
         List<EpisodeHistory> FindByDownloadId(string downloadId);
@@ -30,7 +30,7 @@ namespace Playarr.Core.History
         {
         }
 
-        public EpisodeHistory MostRecentForEpisode(int romId)
+        public EpisodeHistory MostRecentForRom(int romId)
         {
             return Query(h => h.EpisodeId == romId).MaxBy(h => h.Date);
         }

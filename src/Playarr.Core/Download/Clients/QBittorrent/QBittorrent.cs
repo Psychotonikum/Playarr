@@ -72,7 +72,7 @@ namespace Playarr.Core.Download.Clients.QBittorrent
             }
         }
 
-        protected override string AddFromMagnetLink(RemoteEpisode remoteRom, string hash, string magnetLink)
+        protected override string AddFromMagnetLink(RemoteRom remoteRom, string hash, string magnetLink)
         {
             if (!Proxy.GetConfig(Settings).DhtEnabled && !magnetLink.Contains("&tr="))
             {
@@ -146,7 +146,7 @@ namespace Playarr.Core.Download.Clients.QBittorrent
             return hash;
         }
 
-        protected override string AddFromTorrentFile(RemoteEpisode remoteRom, string hash, string filename, byte[] fileContent)
+        protected override string AddFromTorrentFile(RemoteRom remoteRom, string hash, string filename, byte[] fileContent)
         {
             var setShareLimits = remoteRom.SeedConfiguration != null && (remoteRom.SeedConfiguration.Ratio.HasValue || remoteRom.SeedConfiguration.SeedTime.HasValue);
             var addHasSetShareLimits = setShareLimits && ProxyApiVersion >= new Version(2, 8, 1);

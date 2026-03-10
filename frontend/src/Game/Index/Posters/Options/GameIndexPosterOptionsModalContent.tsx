@@ -9,11 +9,11 @@ import ModalBody from 'Components/Modal/ModalBody';
 import ModalContent from 'Components/Modal/ModalContent';
 import ModalFooter from 'Components/Modal/ModalFooter';
 import ModalHeader from 'Components/Modal/ModalHeader';
-import { inputTypes } from 'Helpers/Props';
 import {
   setGamePosterOptions,
   useGamePosterOptions,
 } from 'Game/gameOptionsStore';
+import { inputTypes } from 'Helpers/Props';
 import translate from 'Utilities/String/translate';
 
 const posterSizeOptions: EnhancedSelectInputValue<string>[] = [

@@ -62,10 +62,7 @@ function Calendar() {
       refetch();
     };
 
-    registerPagePopulator(repopulate, [
-      'romFileUpdated',
-      'romFileDeleted',
-    ]);
+    registerPagePopulator(repopulate, ['romFileUpdated', 'romFileDeleted']);
 
     return () => {
       unregisterPagePopulator(repopulate);

@@ -33,17 +33,17 @@ namespace Playarr.Core.DecisionEngine.Specifications
         public SpecificationPriority Priority => SpecificationPriority.Default;
         public RejectionType Type => RejectionType.Permanent;
 
-        public DownloadSpecDecision IsSatisfiedBy(RemoteEpisode subject, ReleaseDecisionInformation information)
+        public DownloadSpecDecision IsSatisfiedBy(RemoteRom subject, ReleaseDecisionInformation information)
         {
             var queue = _queueService.GetQueue();
-            var matchingEpisode = queue.Where(q => q.RemoteEpisode?.Game != null &&
-                                                   q.RemoteEpisode.Game.Id == subject.Game.Id &&
-                                                   q.RemoteEpisode.Roms.Select(e => e.Id).Intersect(subject.Roms.Select(e => e.Id)).Any())
+            var matchingEpisode = queue.Where(q => q.RemoteRom?.Game != null &&
+                                                   q.RemoteRom.Game.Id == subject.Game.Id &&
+                                                   q.RemoteRom.Roms.Select(e => e.Id).Intersect(subject.Roms.Select(e => e.Id)).Any())
                                        .ToList();
 
             foreach (var queueItem in matchingEpisode)
             {
-                var remoteRom = queueItem.RemoteEpisode;
+                var remoteRom = queueItem.RemoteRom;
                 var qualityProfile = subject.Game.QualityProfile.Value;
 
                 // To avoid a race make sure it's not FailedPending (failed awaiting removal/search).

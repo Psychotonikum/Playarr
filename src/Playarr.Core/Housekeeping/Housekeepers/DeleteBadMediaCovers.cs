@@ -12,7 +12,7 @@ namespace Playarr.Core.Housekeeping.Housekeepers
     public class DeleteBadMediaCovers : IHousekeepingTask
     {
         private readonly IMetadataFileService _metaFileService;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IDiskProvider _diskProvider;
         private readonly IConfigService _configService;
         private readonly Logger _logger;
@@ -24,7 +24,7 @@ namespace Playarr.Core.Housekeeping.Housekeepers
                                     Logger logger)
         {
             _metaFileService = metaFileService;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _diskProvider = diskProvider;
             _configService = configService;
             _logger = logger;
@@ -37,7 +37,7 @@ namespace Playarr.Core.Housekeeping.Housekeepers
                 return;
             }
 
-            var game = _seriesService.GetAllSeriesPaths();
+            var game = _gameService.GetAllGamePaths();
 
             foreach (var show in game)
             {

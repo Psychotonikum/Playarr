@@ -15,13 +15,13 @@ import PageToolbar from 'Components/Page/Toolbar/PageToolbar';
 import PageToolbarButton from 'Components/Page/Toolbar/PageToolbarButton';
 import PageToolbarSection from 'Components/Page/Toolbar/PageToolbarSection';
 import PageToolbarSeparator from 'Components/Page/Toolbar/PageToolbarSeparator';
-import Rom from 'Rom/Rom';
-import RomFileProvider from 'RomFile/RomFileProvider';
 import { useCustomFiltersList } from 'Filters/useCustomFilters';
-import useMeasure from 'Helpers/Hooks/useMeasure';
-import { align, icons } from 'Helpers/Props';
 import NoGame from 'Game/NoGame';
 import { useHasSeries } from 'Game/useGame';
+import useMeasure from 'Helpers/Hooks/useMeasure';
+import { align, icons } from 'Helpers/Props';
+import Rom from 'Rom/Rom';
+import RomFileProvider from 'RomFile/RomFileProvider';
 import selectUniqueIds from 'Utilities/Object/selectUniqueIds';
 import translate from 'Utilities/String/translate';
 import Calendar from './Calendar';
@@ -107,10 +107,7 @@ function CalendarPage() {
   }, [width]);
 
   return (
-    <CalendarPageProvider
-      romIds={romIds}
-      romFileIds={romFileIds}
-    >
+    <CalendarPageProvider romIds={romIds} romFileIds={romFileIds}>
       <PageContent title={translate('Calendar')}>
         <PageToolbar>
           <PageToolbarSection>
@@ -183,9 +180,7 @@ function CalendarPageProvider({
 }: PropsWithChildren<{ romIds: number[]; romFileIds: number[] }>) {
   return (
     <QueueDetailsProvider romIds={romIds}>
-      <RomFileProvider romFileIds={romFileIds}>
-        {children}
-      </RomFileProvider>
+      <RomFileProvider romFileIds={romFileIds}>{children}</RomFileProvider>
     </QueueDetailsProvider>
   );
 }

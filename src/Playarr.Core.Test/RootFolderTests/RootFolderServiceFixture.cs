@@ -54,7 +54,7 @@ namespace Playarr.Core.Test.RootFolderTests
         public void should_be_able_to_add_root_dir(string path)
         {
             Mocker.GetMock<IGameRepository>()
-                  .Setup(s => s.AllSeriesPaths())
+                  .Setup(s => s.AllGamePaths())
                   .Returns(new Dictionary<int, string>());
 
             var root = new RootFolder { Path = path.AsOsAgnostic() };
@@ -137,7 +137,7 @@ namespace Playarr.Core.Test.RootFolderTests
                   .Returns(rootFolder);
 
             Mocker.GetMock<IGameRepository>()
-                  .Setup(s => s.AllSeriesPaths())
+                  .Setup(s => s.AllGamePaths())
                   .Returns(new Dictionary<int, string>());
 
             Mocker.GetMock<IDiskProvider>()
@@ -176,7 +176,7 @@ namespace Playarr.Core.Test.RootFolderTests
                 .Returns(rootFolder);
 
             Mocker.GetMock<IGameRepository>()
-                .Setup(s => s.AllSeriesPaths())
+                .Setup(s => s.AllGamePaths())
                 .Returns(new Dictionary<int, string>());
 
             Mocker.GetMock<IDiskProvider>()

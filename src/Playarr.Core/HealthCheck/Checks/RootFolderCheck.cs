@@ -16,21 +16,21 @@ namespace Playarr.Core.HealthCheck.Checks
     [CheckOn(typeof(EpisodeImportFailedEvent), CheckOnCondition.SuccessfulOnly)]
     public class RootFolderCheck : HealthCheckBase
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IDiskProvider _diskProvider;
         private readonly IRootFolderService _rootFolderService;
 
         public RootFolderCheck(IGameService seriesService, IDiskProvider diskProvider, IRootFolderService rootFolderService, ILocalizationService localizationService)
             : base(localizationService)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _diskProvider = diskProvider;
             _rootFolderService = rootFolderService;
         }
 
         public override HealthCheck Check()
         {
-            var rootFolders = _seriesService.GetAllSeriesPaths()
+            var rootFolders = _gameService.GetAllGamePaths()
                 .Select(s => _rootFolderService.GetBestRootFolderPath(s.Value))
                 .Distinct()
                 .ToList();

@@ -71,46 +71,6 @@ namespace Playarr.Core.Indexers
             return FetchReleases(g => g.GetSearchRequests(searchCriteria));
         }
 
-        public override Task<IList<ReleaseInfo>> Fetch(DailyEpisodeSearchCriteria searchCriteria)
-        {
-            if (!SupportsSearch)
-            {
-                return Task.FromResult<IList<ReleaseInfo>>(Array.Empty<ReleaseInfo>());
-            }
-
-            return FetchReleases(g => g.GetSearchRequests(searchCriteria));
-        }
-
-        public override Task<IList<ReleaseInfo>> Fetch(DailySeasonSearchCriteria searchCriteria)
-        {
-            if (!SupportsSearch)
-            {
-                return Task.FromResult<IList<ReleaseInfo>>(Array.Empty<ReleaseInfo>());
-            }
-
-            return FetchReleases(g => g.GetSearchRequests(searchCriteria));
-        }
-
-        public override Task<IList<ReleaseInfo>> Fetch(AnimeEpisodeSearchCriteria searchCriteria)
-        {
-            if (!SupportsSearch)
-            {
-                return Task.FromResult<IList<ReleaseInfo>>(Array.Empty<ReleaseInfo>());
-            }
-
-            return FetchReleases(g => g.GetSearchRequests(searchCriteria));
-        }
-
-        public override Task<IList<ReleaseInfo>> Fetch(AnimeSeasonSearchCriteria searchCriteria)
-        {
-            if (!SupportsSearch)
-            {
-                return Task.FromResult<IList<ReleaseInfo>>(Array.Empty<ReleaseInfo>());
-            }
-
-            return FetchReleases(g => g.GetSearchRequests(searchCriteria));
-        }
-
         public override Task<IList<ReleaseInfo>> Fetch(SpecialEpisodeSearchCriteria searchCriteria)
         {
             if (!SupportsSearch)

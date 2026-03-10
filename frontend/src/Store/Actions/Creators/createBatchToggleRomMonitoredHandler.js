@@ -1,8 +1,8 @@
 import createAjaxRequest from 'Utilities/createAjaxRequest';
-import updateEpisodes from 'Utilities/Rom/updateRoms';
+import updateRoms from 'Utilities/Rom/updateRoms';
 import getSectionState from 'Utilities/State/getSectionState';
 
-function createBatchToggleEpisodeMonitoredHandler(section, fetchHandler) {
+function createBatchToggleRomMonitoredHandler(section, fetchHandler) {
   return function(getState, payload, dispatch) {
     const {
       romIds,
@@ -11,7 +11,7 @@ function createBatchToggleEpisodeMonitoredHandler(section, fetchHandler) {
 
     const state = getSectionState(getState(), section, true);
 
-    dispatch(updateEpisodes(section, state.items, romIds, {
+    dispatch(updateRoms(section, state.items, romIds, {
       isSaving: true
     }));
 
@@ -23,7 +23,7 @@ function createBatchToggleEpisodeMonitoredHandler(section, fetchHandler) {
     }).request;
 
     promise.done(() => {
-      dispatch(updateEpisodes(section, state.items, romIds, {
+      dispatch(updateRoms(section, state.items, romIds, {
         isSaving: false,
         monitored
       }));
@@ -32,11 +32,11 @@ function createBatchToggleEpisodeMonitoredHandler(section, fetchHandler) {
     });
 
     promise.fail(() => {
-      dispatch(updateEpisodes(section, state.items, romIds, {
+      dispatch(updateRoms(section, state.items, romIds, {
         isSaving: false
       }));
     });
   };
 }
 
-export default createBatchToggleEpisodeMonitoredHandler;
+export default createBatchToggleRomMonitoredHandler;

@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Playarr.Core.IndexerSearch.Definitions
 {
     public class SingleEpisodeSearchCriteria : SearchCriteriaBase
@@ -7,7 +9,10 @@ namespace Playarr.Core.IndexerSearch.Definitions
 
         public override string ToString()
         {
-            return string.Format("[{0} : S{1:00}E{2:00}]", Game.Title, PlatformNumber, EpisodeNumber);
+            var platformName = Game.Platforms?.FirstOrDefault(p => p.PlatformNumber == PlatformNumber)?.Title ?? $"Platform {PlatformNumber}";
+            var romTitle = Roms?.FirstOrDefault()?.Title ?? $"ROM {EpisodeNumber}";
+
+            return $"[{Game.Title} | {platformName} - {romTitle}]";
         }
     }
 }

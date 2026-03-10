@@ -15,7 +15,7 @@ namespace Playarr.Core.Download.Pending
         public PendingReleaseAdditionalInfo AdditionalInfo { get; set; }
 
         // Not persisted
-        public RemoteEpisode RemoteEpisode { get; set; }
+        public RemoteRom RemoteRom { get; set; }
     }
 
     public class PendingReleaseAdditionalInfo

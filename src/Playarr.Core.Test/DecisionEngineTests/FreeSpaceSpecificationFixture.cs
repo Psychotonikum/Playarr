@@ -15,12 +15,12 @@ namespace Playarr.Core.Test.DecisionEngineTests
 {
     public class FreeSpaceSpecificationFixture : CoreTest<FreeSpaceSpecification>
     {
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         [SetUp]
         public void Setup()
         {
-            _remoteRom = new RemoteEpisode() { Release = new ReleaseInfo(), Game = new Game { Path = @"C:\Test\TV\Game".AsOsAgnostic() } };
+            _remoteRom = new RemoteRom() { Release = new ReleaseInfo(), Game = new Game { Path = @"C:\Test\TV\Game".AsOsAgnostic() } };
         }
 
         private void WithMinimumFreeSpace(int size)

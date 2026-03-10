@@ -1,7 +1,7 @@
 import React from 'react';
 import Label from 'Components/Label';
-import { kinds, sizes } from 'Helpers/Props';
 import { useSingleGame } from 'Game/useGame';
+import { kinds, sizes } from 'Helpers/Props';
 import { useTagList } from 'Tags/useTags';
 import sortByProp from 'Utilities/Array/sortByProp';
 

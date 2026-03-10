@@ -53,14 +53,14 @@ namespace Playarr.Core.Test.MediaFiles
                 .With(v => v.Status = DownloadItemStatus.Downloading)
                 .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                 .With(v => v.Game = new Game())
                 .Build();
 
             _trackedDownload = new TrackedDownload
             {
                 DownloadItem = downloadItem,
-                RemoteEpisode = remoteRom,
+                RemoteRom = remoteRom,
                 State = TrackedDownloadState.Downloading
             };
         }
@@ -68,7 +68,7 @@ namespace Playarr.Core.Test.MediaFiles
         private void GivenValidSeries()
         {
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetSeries(It.IsAny<string>()))
+                  .Setup(s => s.GetGame(It.IsAny<string>()))
                   .Returns(Builder<Game>.CreateNew().Build());
         }
 
@@ -100,7 +100,7 @@ namespace Playarr.Core.Test.MediaFiles
         {
             Subject.ProcessRootFolder(new DirectoryInfo(_droneFactory));
 
-            Mocker.GetMock<IParsingService>().Verify(c => c.GetSeries("foldername"), Times.Once());
+            Mocker.GetMock<IParsingService>().Verify(c => c.GetGame("foldername"), Times.Once());
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Playarr.Core.Test.MediaFiles
         [Test]
         public void should_skip_if_no_series_found()
         {
-            Mocker.GetMock<IParsingService>().Setup(c => c.GetSeries("foldername")).Returns((Game)null);
+            Mocker.GetMock<IParsingService>().Setup(c => c.GetGame("foldername")).Returns((Game)null);
 
             Subject.ProcessRootFolder(new DirectoryInfo(_droneFactory));
 
@@ -234,10 +234,10 @@ namespace Playarr.Core.Test.MediaFiles
             Subject.ProcessRootFolder(new DirectoryInfo(_droneFactory));
 
             Mocker.GetMock<IParsingService>()
-                .Verify(v => v.GetSeries(folderName), Times.Once());
+                .Verify(v => v.GetGame(folderName), Times.Once());
 
             Mocker.GetMock<IParsingService>()
-                .Verify(v => v.GetSeries(It.Is<string>(s => s.StartsWith(prefix))), Times.Never());
+                .Verify(v => v.GetGame(It.Is<string>(s => s.StartsWith(prefix))), Times.Never());
         }
 
         [Test]
@@ -363,7 +363,7 @@ namespace Playarr.Core.Test.MediaFiles
             Subject.ProcessPath(folderName).Should().BeEmpty();
 
             Mocker.GetMock<IParsingService>()
-                .Verify(v => v.GetSeries(It.IsAny<string>()), Times.Never());
+                .Verify(v => v.GetGame(It.IsAny<string>()), Times.Never());
 
             ExceptionVerification.ExpectedErrors(1);
         }
@@ -411,7 +411,7 @@ namespace Playarr.Core.Test.MediaFiles
 
             _trackedDownload.DownloadItem.CanMoveFiles = false;
 
-            Subject.ProcessPath(_droneFactory, ImportMode.Auto, _trackedDownload.RemoteEpisode.Game, _trackedDownload.DownloadItem);
+            Subject.ProcessPath(_droneFactory, ImportMode.Auto, _trackedDownload.RemoteRom.Game, _trackedDownload.DownloadItem);
 
             Mocker.GetMock<IDiskProvider>()
                   .Verify(v => v.DeleteFolder(It.IsAny<string>(), true), Times.Never());
@@ -426,7 +426,7 @@ namespace Playarr.Core.Test.MediaFiles
 
             _trackedDownload.DownloadItem.CanMoveFiles = false;
 
-            Subject.ProcessPath(_droneFactory, ImportMode.Move, _trackedDownload.RemoteEpisode.Game, _trackedDownload.DownloadItem);
+            Subject.ProcessPath(_droneFactory, ImportMode.Move, _trackedDownload.RemoteRom.Game, _trackedDownload.DownloadItem);
 
             Mocker.GetMock<IDiskProvider>()
                   .Verify(v => v.DeleteFolder(It.IsAny<string>(), true), Times.Once());
@@ -441,7 +441,7 @@ namespace Playarr.Core.Test.MediaFiles
 
             _trackedDownload.DownloadItem.CanMoveFiles = true;
 
-            Subject.ProcessPath(_droneFactory, ImportMode.Copy, _trackedDownload.RemoteEpisode.Game, _trackedDownload.DownloadItem);
+            Subject.ProcessPath(_droneFactory, ImportMode.Copy, _trackedDownload.RemoteRom.Game, _trackedDownload.DownloadItem);
 
             Mocker.GetMock<IDiskProvider>()
                   .Verify(v => v.DeleteFolder(It.IsAny<string>(), true), Times.Never());
@@ -511,13 +511,13 @@ namespace Playarr.Core.Test.MediaFiles
             Mocker.GetMock<IDiskProvider>().Setup(c => c.FolderExists(folderName))
                 .Returns(true);
 
-            var result = Subject.ProcessPath(folderName, ImportMode.Auto, _trackedDownload.RemoteEpisode.Game, _trackedDownload.DownloadItem);
+            var result = Subject.ProcessPath(folderName, ImportMode.Auto, _trackedDownload.RemoteRom.Game, _trackedDownload.DownloadItem);
 
             result.Count.Should().Be(1);
             result.First().Result.Should().Be(ImportResultType.Rejected);
             result.First().ImportDecision.Rejections.First().Reason.Should().Be(ImportRejectionReason.MultiSeason);
 
-            Mocker.GetMock<IParsingService>().Setup(c => c.GetSeries("foldername")).Returns((Game)null);
+            Mocker.GetMock<IParsingService>().Setup(c => c.GetGame("foldername")).Returns((Game)null);
 
             Mocker.GetMock<IMakeImportDecision>()
                 .Verify(c => c.GetImportDecisions(It.IsAny<List<string>>(), It.IsAny<Game>(), It.IsAny<DownloadClientItem>(), It.IsAny<ParsedRomInfo>(), It.IsAny<ParsedRomInfo>(), It.IsAny<bool>(), true),

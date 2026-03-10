@@ -39,7 +39,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_return_true_if_it_is_not_a_repack()
         {
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(e => e.ParsedRomInfo = _parsedRomInfo)
                                                       .With(e => e.Roms = _episodes)
                                                       .Build();
@@ -55,7 +55,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             _parsedRomInfo.Quality.Revision.IsRepack = true;
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(e => e.ParsedRomInfo = _parsedRomInfo)
                                                       .With(e => e.Roms = _episodes)
                                                       .Build();
@@ -76,7 +76,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                                 .With(e => e.ReleaseGroup = "Playarr")
                                                                 .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(e => e.ParsedRomInfo = _parsedRomInfo)
                                                       .With(e => e.Roms = _episodes)
                                                       .Build();
@@ -97,7 +97,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                                 .With(e => e.ReleaseGroup = "Playarr")
                                                                 .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(e => e.ParsedRomInfo = _parsedRomInfo)
                                                       .With(e => e.Roms = _episodes)
                                                       .Build();
@@ -118,7 +118,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                                 .With(e => e.ReleaseGroup = "NotPlayarr")
                                                                 .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(e => e.ParsedRomInfo = _parsedRomInfo)
                                                       .With(e => e.Roms = _episodes)
                                                       .Build();
@@ -139,7 +139,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                                 .With(e => e.ReleaseGroup = "")
                                                                 .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(e => e.ParsedRomInfo = _parsedRomInfo)
                                                       .With(e => e.Roms = _episodes)
                                                       .Build();
@@ -162,7 +162,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                                 .With(e => e.ReleaseGroup = "Playarr")
                                                                 .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(e => e.ParsedRomInfo = _parsedRomInfo)
                                                       .With(e => e.Roms = _episodes)
                                                       .Build();
@@ -187,7 +187,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                                 .With(e => e.ReleaseGroup = "Playarr")
                                                                 .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(e => e.ParsedRomInfo = _parsedRomInfo)
                                                       .With(e => e.Roms = _episodes)
                                                       .Build();
@@ -209,7 +209,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                                 .With(e => e.ReleaseGroup = "Playarr")
                                                                 .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(e => e.ParsedRomInfo = _parsedRomInfo)
                                                       .With(e => e.Roms = _episodes)
                                                       .Build();
@@ -231,7 +231,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                                                 .With(e => e.ReleaseGroup = "Playarr")
                                                                 .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(e => e.ParsedRomInfo = _parsedRomInfo)
                                                       .With(e => e.Roms = _episodes)
                                                       .Build();

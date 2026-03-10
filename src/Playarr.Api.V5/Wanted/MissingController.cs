@@ -49,7 +49,7 @@ public class MissingController : RomControllerWithSignalR
         var includeSeries = includeSubresources.Contains(MissingSubresource.Game);
         var includeImages = includeSubresources.Contains(MissingSubresource.Images);
 
-        var resource = pagingSpec.ApplyToPage(_episodeService.EpisodesWithoutFiles, v => MapToResource(v, includeSeries, false, includeImages));
+        var resource = pagingSpec.ApplyToPage(_romService.EpisodesWithoutFiles, v => MapToResource(v, includeSeries, false, includeImages));
 
         return resource;
     }

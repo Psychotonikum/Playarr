@@ -12,7 +12,7 @@ namespace Playarr.Core.ImportLists.Playarr
 {
     public interface IPlayarrV3Proxy
     {
-        List<PlayarrSeries> GetSeries(PlayarrSettings settings);
+        List<PlayarrSeries> GetGame(PlayarrSettings settings);
         List<PlayarrProfile> GetQualityProfiles(PlayarrSettings settings);
         List<PlayarrProfile> GetLanguageProfiles(PlayarrSettings settings);
         List<PlayarrRootFolder> GetRootFolders(PlayarrSettings settings);
@@ -33,7 +33,7 @@ namespace Playarr.Core.ImportLists.Playarr
             _logger = logger;
         }
 
-        public List<PlayarrSeries> GetSeries(PlayarrSettings settings)
+        public List<PlayarrSeries> GetGame(PlayarrSettings settings)
         {
             return Execute<PlayarrSeries>("/api/v3/game", settings);
         }
@@ -62,7 +62,7 @@ namespace Playarr.Core.ImportLists.Playarr
         {
             try
             {
-                GetSeries(settings);
+                GetGame(settings);
             }
             catch (HttpException ex)
             {

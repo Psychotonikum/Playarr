@@ -17,7 +17,7 @@ namespace Playarr.Api.V3.Config
                                            PathExistsValidator pathExistsValidator,
                                            FolderChmodValidator folderChmodValidator,
                                            FolderWritableValidator folderWritableValidator,
-                                           SeriesPathValidator seriesPathValidator,
+                                           GamePathValidator seriesPathValidator,
                                            StartupFolderValidator startupFolderValidator,
                                            SystemFolderValidator systemFolderValidator,
                                            RootFolderAncestorValidator rootFolderAncestorValidator,

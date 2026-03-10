@@ -16,8 +16,8 @@ namespace Playarr.Core.Games
         Game FindByMobyGamesId(int mobyGamesId);
         Game FindByImdbId(string imdbId);
         Game FindByPath(string path);
-        List<int> AllSeriesIgdbIds();
-        Dictionary<int, string> AllSeriesPaths();
+        List<int> AllGameIgdbIds();
+        Dictionary<int, string> AllGamePaths();
         Dictionary<int, List<int>> AllGameTags();
     }
 
@@ -85,7 +85,7 @@ namespace Playarr.Core.Games
                         .FirstOrDefault();
         }
 
-        public List<int> AllSeriesIgdbIds()
+        public List<int> AllGameIgdbIds()
         {
             using (var conn = _database.OpenConnection())
             {
@@ -93,7 +93,7 @@ namespace Playarr.Core.Games
             }
         }
 
-        public Dictionary<int, string> AllSeriesPaths()
+        public Dictionary<int, string> AllGamePaths()
         {
             using (var conn = _database.OpenConnection())
             {

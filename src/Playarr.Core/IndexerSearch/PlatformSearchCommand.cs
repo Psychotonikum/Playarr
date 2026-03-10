@@ -2,7 +2,7 @@
 
 namespace Playarr.Core.IndexerSearch
 {
-    public class SeasonSearchCommand : Command
+    public class PlatformSearchCommand : Command
     {
         public int GameId { get; set; }
         public int PlatformNumber { get; set; }

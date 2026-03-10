@@ -1,7 +1,7 @@
 import React from 'react';
 import Label from 'Components/Label';
-import { kinds } from 'Helpers/Props';
 import GamePoster from 'Game/GamePoster';
+import { kinds } from 'Helpers/Props';
 import { Tag } from 'Tags/useTags';
 import { SuggestedSeries } from './GameSearchInput';
 import styles from './GameSearchResult.css';

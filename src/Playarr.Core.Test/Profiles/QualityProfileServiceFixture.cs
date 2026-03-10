@@ -59,12 +59,12 @@ namespace Playarr.Core.Test.Profiles
                                           .With(p => p.Id = 2)
                                           .Build();
 
-            var seriesList = Builder<Game>.CreateListOfSize(3)
+            var gameList = Builder<Game>.CreateListOfSize(3)
                                             .Random(1)
                                             .With(c => c.QualityProfileId = profile.Id)
                                             .Build().ToList();
 
-            Mocker.GetMock<IGameService>().Setup(c => c.GetAllSeries()).Returns(seriesList);
+            Mocker.GetMock<IGameService>().Setup(c => c.GetAllGames()).Returns(gameList);
             Mocker.GetMock<IQualityProfileRepository>().Setup(c => c.Get(profile.Id)).Returns(profile);
 
             Assert.Throws<QualityProfileInUseException>(() => Subject.Delete(profile.Id));
@@ -75,12 +75,12 @@ namespace Playarr.Core.Test.Profiles
         [Test]
         public void should_delete_profile_if_not_assigned_to_series()
         {
-            var seriesList = Builder<Game>.CreateListOfSize(3)
+            var gameList = Builder<Game>.CreateListOfSize(3)
                                             .All()
                                             .With(c => c.QualityProfileId = 2)
                                             .Build().ToList();
 
-            Mocker.GetMock<IGameService>().Setup(c => c.GetAllSeries()).Returns(seriesList);
+            Mocker.GetMock<IGameService>().Setup(c => c.GetAllGames()).Returns(gameList);
 
             Subject.Delete(1);
 
@@ -94,7 +94,7 @@ namespace Playarr.Core.Test.Profiles
                                                  .With(p => p.Id = 1)
                                                  .Build();
 
-            var seriesList = Builder<Game>.CreateListOfSize(3)
+            var gameList = Builder<Game>.CreateListOfSize(3)
                                             .All()
                                             .With(c => c.QualityProfileId = 2)
                                             .Build().ToList();
@@ -104,7 +104,7 @@ namespace Playarr.Core.Test.Profiles
                                                            .Build().ToList();
 
             Mocker.GetMock<IQualityProfileRepository>().Setup(c => c.Get(profile.Id)).Returns(profile);
-            Mocker.GetMock<IGameService>().Setup(c => c.GetAllSeries()).Returns(seriesList);
+            Mocker.GetMock<IGameService>().Setup(c => c.GetAllGames()).Returns(gameList);
 
             Mocker.GetMock<IImportListFactory>()
                   .Setup(s => s.All())

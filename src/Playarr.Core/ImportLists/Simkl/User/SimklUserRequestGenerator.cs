@@ -14,12 +14,12 @@ namespace Playarr.Core.ImportLists.Simkl.User
         {
             var pageableRequests = new ImportListPageableRequestChain();
 
-            pageableRequests.Add(GetSeriesRequest());
+            pageableRequests.Add(GetGameRequest());
 
             return pageableRequests;
         }
 
-        private IEnumerable<ImportListRequest> GetSeriesRequest()
+        private IEnumerable<ImportListRequest> GetGameRequest()
         {
             var link = $"{Settings.BaseUrl.Trim()}/sync/all-items/{((SimklUserShowType)Settings.ShowType).ToString().ToLowerInvariant()}/{((SimklUserListType)Settings.ListType).ToString().ToLowerInvariant()}";
 

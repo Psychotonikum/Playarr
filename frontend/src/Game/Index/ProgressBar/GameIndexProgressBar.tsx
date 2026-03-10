@@ -1,8 +1,8 @@
 import React from 'react';
 import { useQueueDetailsForSeries } from 'Activity/Queue/Details/QueueDetailsProvider';
 import ProgressBar from 'Components/ProgressBar';
-import { sizes } from 'Helpers/Props';
 import { GameStatus } from 'Game/Game';
+import { sizes } from 'Helpers/Props';
 import getProgressBarKind from 'Utilities/Game/getProgressBarKind';
 import translate from 'Utilities/String/translate';
 import styles from './GameIndexProgressBar.css';

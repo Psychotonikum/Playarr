@@ -19,7 +19,7 @@ namespace Playarr.Core.Games
     public class EpisodeRefreshedService : IEpisodeRefreshedService, IHandle<RomInfoRefreshedEvent>
     {
         private readonly IManageCommandQueue _commandQueueManager;
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly Logger _logger;
         private readonly ICached<List<int>> _searchCache;
 
@@ -29,7 +29,7 @@ namespace Playarr.Core.Games
                                    Logger logger)
         {
             _commandQueueManager = commandQueueManager;
-            _episodeService = episodeService;
+            _romService = episodeService;
             _logger = logger;
             _searchCache = cacheManager.GetCache<List<int>>(GetType());
         }
@@ -40,11 +40,11 @@ namespace Playarr.Core.Games
 
             if (previouslyAired != null && previouslyAired.Any())
             {
-                var missing = previouslyAired.Select(e => _episodeService.GetEpisode(e)).Where(e => !e.HasFile).ToList();
+                var missing = previouslyAired.Select(e => _romService.GetEpisode(e)).Where(e => !e.HasFile).ToList();
 
                 if (missing.Any())
                 {
-                    _commandQueueManager.Push(new EpisodeSearchCommand(missing.Select(e => e.Id).ToList()));
+                    _commandQueueManager.Push(new RomSearchCommand(missing.Select(e => e.Id).ToList()));
                 }
             }
 

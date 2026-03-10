@@ -2,15 +2,12 @@ import React, { useMemo } from 'react';
 import Label from 'Components/Label';
 import ClipboardButton from 'Components/Link/ClipboardButton';
 import Link from 'Components/Link/Link';
-import { kinds, sizes } from 'Helpers/Props';
 import Game from 'Game/Game';
+import { kinds, sizes } from 'Helpers/Props';
 import translate from 'Utilities/String/translate';
 import styles from './GameDetailsLinks.css';
 
-type GameDetailsLinksProps = Pick<
-  Game,
-  'igdbId' | 'rawgId' | 'titleSlug'
->;
+type GameDetailsLinksProps = Pick<Game, 'igdbId' | 'rawgId' | 'titleSlug'>;
 
 interface GameDetailsLink {
   externalId: string | number;
@@ -25,13 +22,11 @@ function GameDetailsLinks(props: GameDetailsLinksProps) {
     const validLinks: GameDetailsLink[] = [];
 
     if (igdbId) {
-      validLinks.push(
-        {
-          externalId: igdbId,
-          name: 'IGDB',
-          url: `https://www.igdb.com/games/${props.titleSlug || igdbId}`,
-        }
-      );
+      validLinks.push({
+        externalId: igdbId,
+        name: 'IGDB',
+        url: `https://www.igdb.com/games/${props.titleSlug || igdbId}`,
+      });
     }
 
     if (rawgId) {

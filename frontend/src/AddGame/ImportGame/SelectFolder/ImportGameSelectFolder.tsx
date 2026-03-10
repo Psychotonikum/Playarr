@@ -81,9 +81,7 @@ function ImportGameSelectFolder() {
               <ul>
                 <li className={styles.tip}>
                   <InlineMarkdown
-                    data={translate(
-                      'LibraryImportTipsQualityInRomFilename'
-                    )}
+                    data={translate('LibraryImportTipsQualityInRomFilename')}
                   />
                 </li>
                 <li className={styles.tip}>

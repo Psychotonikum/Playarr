@@ -9,20 +9,20 @@ import ModalContent from 'Components/Modal/ModalContent';
 import ModalFooter from 'Components/Modal/ModalFooter';
 import ModalHeader from 'Components/Modal/ModalHeader';
 import DownloadProtocol from 'DownloadClient/DownloadProtocol';
-import RomLanguages from 'Rom/RomLanguages';
-import RomQuality from 'Rom/RomQuality';
+import Game from 'Game/Game';
+import { useSingleGame } from 'Game/useGame';
 import usePrevious from 'Helpers/Hooks/usePrevious';
+import SelectGameModal from 'InteractiveImport/Game/SelectGameModal';
+import SelectLanguageModal from 'InteractiveImport/Language/SelectLanguageModal';
+import SelectPlatformModal from 'InteractiveImport/Platform/SelectPlatformModal';
+import SelectQualityModal from 'InteractiveImport/Quality/SelectQualityModal';
 import SelectRomModal from 'InteractiveImport/Rom/SelectRomModal';
 import { SelectedEpisode } from 'InteractiveImport/Rom/SelectRomModalContent';
-import SelectLanguageModal from 'InteractiveImport/Language/SelectLanguageModal';
-import SelectQualityModal from 'InteractiveImport/Quality/SelectQualityModal';
-import SelectPlatformModal from 'InteractiveImport/Platform/SelectPlatformModal';
-import SelectGameModal from 'InteractiveImport/Game/SelectGameModal';
 import { ReleaseEpisode, useGrabRelease } from 'InteractiveSearch/useReleases';
 import Language from 'Language/Language';
 import { QualityModel } from 'Quality/Quality';
-import Game from 'Game/Game';
-import { useSingleGame } from 'Game/useGame';
+import RomLanguages from 'Rom/RomLanguages';
+import RomQuality from 'Rom/RomQuality';
 import { fetchDownloadClients } from 'Store/Actions/settingsActions';
 import createEnabledDownloadClientsSelector from 'Store/Selectors/createEnabledDownloadClientsSelector';
 import translate from 'Utilities/String/translate';
@@ -92,8 +92,7 @@ function OverrideMatchModalContent(props: OverrideMatchModalContentProps) {
         <div key={rom.id}>
           {rom.romNumber}
 
-          {game?.gameType === 'anime' &&
-          rom.absoluteRomNumber != null
+          {game?.gameType === 'anime' && rom.absoluteRomNumber != null
             ? ` (${rom.absoluteRomNumber})`
             : ''}
 

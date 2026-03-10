@@ -29,9 +29,7 @@ function RomDatabaseSystemCard({ system }: RomDatabaseSystemCardProps) {
         ) : status?.isDownloaded ? (
           <span className={styles.downloaded}>
             <Icon name={icons.CHECK} /> Downloaded
-            <div className={styles.entryCount}>
-              {status.entryCount} entries
-            </div>
+            <div className={styles.entryCount}>{status.entryCount} entries</div>
           </span>
         ) : (
           <span className={styles.notDownloaded}>Not downloaded</span>

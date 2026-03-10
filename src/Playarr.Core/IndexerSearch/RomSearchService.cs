@@ -14,18 +14,18 @@ using Playarr.Core.Games;
 
 namespace Playarr.Core.IndexerSearch
 {
-    public class EpisodeSearchService : IExecute<EpisodeSearchCommand>,
-                                        IExecute<MissingEpisodeSearchCommand>,
-                                        IExecute<CutoffUnmetEpisodeSearchCommand>
+    public class RomSearchService : IExecute<RomSearchCommand>,
+                                        IExecute<MissingRomSearchCommand>,
+                                        IExecute<CutoffUnmetRomSearchCommand>
     {
         private readonly ISearchForReleases _releaseSearchService;
         private readonly IProcessDownloadDecisions _processDownloadDecisions;
-        private readonly IRomService _episodeService;
-        private readonly IEpisodeCutoffService _episodeCutoffService;
+        private readonly IRomService _romService;
+        private readonly IEpisodeCutoffService _romCutoffService;
         private readonly IQueueService _queueService;
         private readonly Logger _logger;
 
-        public EpisodeSearchService(ISearchForReleases releaseSearchService,
+        public RomSearchService(ISearchForReleases releaseSearchService,
                                     IProcessDownloadDecisions processDownloadDecisions,
                                     IRomService episodeService,
                                     IEpisodeCutoffService episodeCutoffService,
@@ -34,8 +34,8 @@ namespace Playarr.Core.IndexerSearch
         {
             _releaseSearchService = releaseSearchService;
             _processDownloadDecisions = processDownloadDecisions;
-            _episodeService = episodeService;
-            _episodeCutoffService = episodeCutoffService;
+            _romService = episodeService;
+            _romCutoffService = episodeCutoffService;
             _queueService = queueService;
             _logger = logger;
         }
@@ -44,13 +44,13 @@ namespace Playarr.Core.IndexerSearch
         {
             _logger.ProgressInfo("Performing search for {0} roms", roms.Count);
             var downloadedCount = 0;
-            var groups = new List<EpisodeSearchGroup>();
+            var groups = new List<RomSearchGroup>();
 
             foreach (var game in roms.GroupBy(e => e.GameId))
             {
                 foreach (var platform in game.Select(e => e).GroupBy(e => e.PlatformNumber))
                 {
-                    groups.Add(new EpisodeSearchGroup
+                    groups.Add(new RomSearchGroup
                     {
                         GameId = game.Key,
                         PlatformNumber = platform.Key,
@@ -65,13 +65,13 @@ namespace Playarr.Core.IndexerSearch
 
                 var gameId = group.GameId;
                 var platformNumber = group.PlatformNumber;
-                var groupEpisodes = group.Roms;
+                var groupRoms = group.Roms;
 
-                if (groupEpisodes.Count > 1)
+                if (groupRoms.Count > 1)
                 {
                     try
                     {
-                        decisions = await _releaseSearchService.SeasonSearch(gameId, platformNumber, groupEpisodes, monitoredOnly, userInvokedSearch, false);
+                        decisions = await _releaseSearchService.PlatformSearch(gameId, platformNumber, groupRoms, monitoredOnly, userInvokedSearch, false);
                     }
                     catch (Exception ex)
                     {
@@ -81,11 +81,11 @@ namespace Playarr.Core.IndexerSearch
                 }
                 else
                 {
-                    var rom = groupEpisodes.First();
+                    var rom = groupRoms.First();
 
                     try
                     {
-                        decisions = await _releaseSearchService.EpisodeSearch(rom, userInvokedSearch, false);
+                        decisions = await _releaseSearchService.RomSearch(rom, userInvokedSearch, false);
                     }
                     catch (Exception ex)
                     {
@@ -107,25 +107,25 @@ namespace Playarr.Core.IndexerSearch
             return episodeMonitored && seriesMonitored;
         }
 
-        public void Execute(EpisodeSearchCommand message)
+        public void Execute(RomSearchCommand message)
         {
             foreach (var romId in message.RomIds)
             {
-                var decisions = _releaseSearchService.EpisodeSearch(romId, message.Trigger == CommandTrigger.Manual, false).GetAwaiter().GetResult();
+                var decisions = _releaseSearchService.RomSearch(romId, message.Trigger == CommandTrigger.Manual, false).GetAwaiter().GetResult();
                 var processed = _processDownloadDecisions.ProcessDecisions(decisions).GetAwaiter().GetResult();
 
                 _logger.ProgressInfo("Rom search completed. {0} reports downloaded.", processed.Grabbed.Count);
             }
         }
 
-        public void Execute(MissingEpisodeSearchCommand message)
+        public void Execute(MissingRomSearchCommand message)
         {
             var monitored = message.Monitored;
             List<Rom> roms;
 
             if (message.GameId.HasValue)
             {
-                roms = _episodeService.GetEpisodeBySeries(message.GameId.Value)
+                roms = _romService.GetEpisodeBySeries(message.GameId.Value)
                                           .Where(e => e.Monitored == monitored &&
                                                  !e.HasFile &&
                                                  e.AirDateUtc.HasValue &&
@@ -151,7 +151,7 @@ namespace Playarr.Core.IndexerSearch
                     pagingSpec.FilterExpressions.Add(v => v.Monitored == false || v.Game.Monitored == false);
                 }
 
-                roms = _episodeService.EpisodesWithoutFiles(pagingSpec).Records.ToList();
+                roms = _romService.EpisodesWithoutFiles(pagingSpec).Records.ToList();
             }
 
             var queue = GetQueuedRomIds();
@@ -160,7 +160,7 @@ namespace Playarr.Core.IndexerSearch
             SearchForBulkEpisodes(missing, monitored, message.Trigger == CommandTrigger.Manual).GetAwaiter().GetResult();
         }
 
-        public void Execute(CutoffUnmetEpisodeSearchCommand message)
+        public void Execute(CutoffUnmetRomSearchCommand message)
         {
             var monitored = message.Monitored;
 
@@ -187,7 +187,7 @@ namespace Playarr.Core.IndexerSearch
                 pagingSpec.FilterExpressions.Add(v => v.Monitored == false || v.Game.Monitored == false);
             }
 
-            var roms = _episodeCutoffService.EpisodesWhereCutoffUnmet(pagingSpec).Records.ToList();
+            var roms = _romCutoffService.EpisodesWhereCutoffUnmet(pagingSpec).Records.ToList();
             var queue = GetQueuedRomIds();
             var cutoffUnmet = roms.Where(e => !queue.Contains(e.Id)).ToList();
 

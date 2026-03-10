@@ -25,7 +25,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         private Game _series;
         private QualityModel _hdtv720p;
         private QualityModel _hdtv1080p;
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
         private List<EpisodeHistory> _history;
 
         [SetUp]
@@ -48,7 +48,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _hdtv720p = new QualityModel(Quality.HDTV720p, new Revision(version: 1));
             _hdtv1080p = new QualityModel(Quality.HDTV1080p, new Revision(version: 1));
 
-            _remoteRom = new RemoteEpisode
+            _remoteRom = new RemoteRom
             {
                 Game = _series,
                 ParsedRomInfo = new ParsedRomInfo { Quality = _hdtv720p },

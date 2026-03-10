@@ -32,7 +32,7 @@ namespace Playarr.Core.Profiles.Qualities
         private readonly IQualityProfileRepository _qualityProfileRepository;
         private readonly IImportListFactory _importListFactory;
         private readonly ICustomFormatService _formatService;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IEventAggregator _eventAggregator;
         private readonly Logger _logger;
 
@@ -46,7 +46,7 @@ namespace Playarr.Core.Profiles.Qualities
             _qualityProfileRepository = qualityProfileRepository;
             _importListFactory = importListFactory;
             _formatService = formatService;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _eventAggregator = eventAggregator;
             _logger = logger;
         }
@@ -64,7 +64,7 @@ namespace Playarr.Core.Profiles.Qualities
 
         public void Delete(int id)
         {
-            if (_seriesService.GetAllSeries().Any(c => c.QualityProfileId == id) || _importListFactory.All().Any(c => c.QualityProfileId == id))
+            if (_gameService.GetAllGames().Any(c => c.QualityProfileId == id) || _importListFactory.All().Any(c => c.QualityProfileId == id))
             {
                 var profile = _qualityProfileRepository.Get(id);
                 throw new QualityProfileInUseException(profile.Name);

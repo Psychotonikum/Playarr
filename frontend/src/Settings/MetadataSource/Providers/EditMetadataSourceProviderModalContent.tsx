@@ -97,9 +97,7 @@ function EditMetadataSourceProviderModalContent({
   return (
     <ModalContent onModalClose={onModalClose}>
       <ModalHeader>
-        {id
-          ? `Edit - ${implementationName}`
-          : `Add - ${implementationName}`}
+        {id ? `Edit - ${implementationName}` : `Add - ${implementationName}`}
       </ModalHeader>
 
       <ModalBody>

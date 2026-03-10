@@ -16,7 +16,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         {
             const string title = "30 Stone";
 
-            Subject.GetSeries(title);
+            Subject.GetGame(title);
 
             Mocker.GetMock<IGameService>()
                   .Verify(s => s.FindByTitle(title), Times.Once());
@@ -27,7 +27,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         {
             const string title = "30.Stone.S01E01.720p.hdtv";
 
-            Subject.GetSeries(title);
+            Subject.GetGame(title);
 
             Mocker.GetMock<IGameService>()
                   .Verify(s => s.FindByTitle(Parser.Parser.ParseTitle(title).GameTitle), Times.Once());
@@ -39,7 +39,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
             const string title = "Show.2004.S01E01.720p.hdtv";
             var parsedRomInfo = Parser.Parser.ParseTitle(title);
 
-            Subject.GetSeries(title);
+            Subject.GetGame(title);
 
             Mocker.GetMock<IGameService>()
                   .Verify(s => s.FindByTitle(parsedRomInfo.GameTitleInfo.TitleWithoutYear,
@@ -54,7 +54,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
             Mocker.GetMock<IGameService>().Setup(v => v.FindByTitle("Welcome")).Returns(game);
             Mocker.GetMock<ISceneMappingService>().Setup(v => v.FindIgdbId("Mairimashita", It.IsAny<string>(), It.IsAny<int>())).Returns(100);
 
-            var result = Subject.GetSeries("Welcome (Mairimashita).S01E01.720p.WEB-DL-Viva");
+            var result = Subject.GetGame("Welcome (Mairimashita).S01E01.720p.WEB-DL-Viva");
 
             result.Should().NotBeNull();
             result.IgdbId.Should().Be(100);

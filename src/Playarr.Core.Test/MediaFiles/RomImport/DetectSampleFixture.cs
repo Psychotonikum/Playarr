@@ -171,7 +171,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport
         public void should_not_treat_daily_episode_a_special()
         {
             GivenRuntime(600);
-            _series.SeriesType = GameTypes.Daily;
+            _series.SeriesType = GameTypes.Standard;
             _localRom.Roms[0].PlatformNumber = 0;
 
             Subject.IsSample(_localRom.Game,
@@ -182,7 +182,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport
         [Test]
         public void should_return_false_for_anime_special()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _localRom.Roms[0].PlatformNumber = 0;
 
             Subject.IsSample(_localRom.Game,

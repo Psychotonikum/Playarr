@@ -159,7 +159,7 @@ namespace Playarr.Core.Datastore
             Mapper.Entity<OtherExtraFile>("ExtraFiles").RegisterModel();
 
             Mapper.Entity<PendingRelease>("PendingReleases").RegisterModel()
-                  .Ignore(e => e.RemoteEpisode);
+                  .Ignore(e => e.RemoteRom);
 
             Mapper.Entity<RemotePathMapping>("RemotePathMappings").RegisterModel();
             Mapper.Entity<Tag>("Tags").RegisterModel();

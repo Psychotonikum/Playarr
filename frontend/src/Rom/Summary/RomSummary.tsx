@@ -5,13 +5,13 @@ import Label from 'Components/Label';
 import Column from 'Components/Table/Column';
 import Table from 'Components/Table/Table';
 import TableBody from 'Components/Table/TableBody';
+import Game from 'Game/Game';
+import { useSingleGame } from 'Game/useGame';
+import { icons, kinds, sizes } from 'Helpers/Props';
 import Rom from 'Rom/Rom';
 import useRom, { RomEntity } from 'Rom/useRom';
 import { useRomFile } from 'RomFile/RomFileProvider';
 import { useDeleteRomFile } from 'RomFile/useRomFiles';
-import { icons, kinds, sizes } from 'Helpers/Props';
-import Game from 'Game/Game';
-import { useSingleGame } from 'Game/useGame';
 import QualityProfileName from 'Settings/Profiles/Quality/QualityProfileName';
 import translate from 'Utilities/String/translate';
 import RomAiring from './RomAiring';
@@ -73,19 +73,11 @@ interface RomSummaryProps {
   romFileId?: number;
 }
 
-function RomSummary({
-  gameId,
-  romId,
-  romEntity,
-  romFileId,
-}: RomSummaryProps) {
+function RomSummary({ gameId, romId, romEntity, romFileId }: RomSummaryProps) {
   const queryClient = useQueryClient();
   const { qualityProfileId, network } = useSingleGame(gameId) as Game;
 
-  const { airDateUtc, overview } = useRom(
-    romId,
-    romEntity
-  ) as Rom;
+  const { airDateUtc, overview } = useRom(romId, romEntity) as Rom;
 
   const {
     path,
@@ -98,10 +90,7 @@ function RomSummary({
     customFormatScore,
   } = useRomFile(romFileId) ?? {};
 
-  const { deleteRomFile } = useDeleteRomFile(
-    romFileId!,
-    romEntity
-  );
+  const { deleteRomFile } = useDeleteRomFile(romFileId!, romEntity);
 
   const handleDeleteRomFile = useCallback(() => {
     deleteRomFile();

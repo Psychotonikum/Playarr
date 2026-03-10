@@ -1,8 +1,4 @@
-import Game, {
-  MonitorNewItems,
-  GameMonitor,
-  GameType,
-} from 'Game/Game';
+import Game, { GameMonitor, GameType, MonitorNewItems } from 'Game/Game';
 
 interface NewSeriesPayload {
   rootFolderPath: string;
@@ -16,7 +12,7 @@ interface NewSeriesPayload {
   searchForCutoffUnmetRoms?: boolean;
 }
 
-function getNewSeries(game: Game, payload: NewSeriesPayload) {
+function getNewGame(game: Game, payload: NewSeriesPayload) {
   const {
     rootFolderPath,
     monitor,
@@ -47,4 +43,4 @@ function getNewSeries(game: Game, payload: NewSeriesPayload) {
   return game;
 }
 
-export default getNewSeries;
+export default getNewGame;

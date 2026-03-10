@@ -3,10 +3,7 @@ import History from 'typings/History';
 
 const DEFAULT_HISTORY: History[] = [];
 
-const useGameHistory = (
-  gameId: number,
-  platformNumber: number | undefined
-) => {
+const useGameHistory = (gameId: number, platformNumber: number | undefined) => {
   const { data, ...result } = useApiQuery<History[]>({
     path: '/history/game',
     queryParams: {

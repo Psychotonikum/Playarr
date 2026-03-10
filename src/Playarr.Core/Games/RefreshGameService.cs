@@ -19,12 +19,12 @@ namespace Playarr.Core.Games
 {
     public class RefreshGameService : IExecute<RefreshSeriesCommand>
     {
-        private readonly IProvideSeriesInfo _seriesInfo;
-        private readonly IGameService _seriesService;
+        private readonly IProvideSeriesInfo _gameInfo;
+        private readonly IGameService _gameService;
         private readonly IRefreshRomService _refreshRomService;
         private readonly IEventAggregator _eventAggregator;
         private readonly IDiskScanService _diskScanService;
-        private readonly ICheckIfSeriesShouldBeRefreshed _checkIfSeriesShouldBeRefreshed;
+        private readonly ICheckIfSeriesShouldBeRefreshed _checkIfGameShouldBeRefreshed;
         private readonly IConfigService _configService;
         private readonly ICommandResultReporter _commandResultReporter;
         private readonly Logger _logger;
@@ -39,12 +39,12 @@ namespace Playarr.Core.Games
                                     ICommandResultReporter commandResultReporter,
                                     Logger logger)
         {
-            _seriesInfo = seriesInfo;
-            _seriesService = seriesService;
+            _gameInfo = seriesInfo;
+            _gameService = seriesService;
             _refreshRomService = refreshRomService;
             _eventAggregator = eventAggregator;
             _diskScanService = diskScanService;
-            _checkIfSeriesShouldBeRefreshed = checkIfSeriesShouldBeRefreshed;
+            _checkIfGameShouldBeRefreshed = checkIfSeriesShouldBeRefreshed;
             _configService = configService;
             _commandResultReporter = commandResultReporter;
             _logger = logger;
@@ -54,7 +54,7 @@ namespace Playarr.Core.Games
         {
             // Get the game before updating, that way any changes made to the game after the refresh started,
             // but before this game was refreshed won't be lost.
-            var game = _seriesService.GetSeries(gameId);
+            var game = _gameService.GetGame(gameId);
 
             _logger.ProgressInfo("Updating {0}", game.Title);
 
@@ -63,7 +63,7 @@ namespace Playarr.Core.Games
 
             try
             {
-                var tuple = _seriesInfo.GetSeriesInfo(game.IgdbId);
+                var tuple = _gameInfo.GetGameInfo(game.IgdbId);
                 seriesInfo = tuple.Item1;
                 roms = tuple.Item2;
             }
@@ -72,7 +72,7 @@ namespace Playarr.Core.Games
                 if (game.Status != GameStatusType.Deleted)
                 {
                     game.Status = GameStatusType.Deleted;
-                    _seriesService.UpdateSeries(game, publishUpdatedEvent: false);
+                    _gameService.UpdateSeries(game, publishUpdatedEvent: false);
                     _logger.Debug("Game marked as deleted on igdb for {0}", game.Title);
                     _eventAggregator.PublishEvent(new SeriesUpdatedEvent(game));
                 }
@@ -125,7 +125,7 @@ namespace Playarr.Core.Games
 
             game.Platforms = UpdateSeasons(game, seriesInfo);
 
-            _seriesService.UpdateSeries(game, publishUpdatedEvent: false);
+            _gameService.UpdateSeries(game, publishUpdatedEvent: false);
             _refreshRomService.RefreshRomInfo(game, roms);
 
             _logger.Debug("Finished game refresh for {0}", game.Title);
@@ -200,11 +200,11 @@ namespace Playarr.Core.Games
 
         private void UpdateTags(Game game)
         {
-            var tagsUpdated = _seriesService.UpdateTags(game);
+            var tagsUpdated = _gameService.UpdateTags(game);
 
             if (tagsUpdated)
             {
-                _seriesService.UpdateSeries(game);
+                _gameService.UpdateSeries(game);
             }
         }
 
@@ -218,7 +218,7 @@ namespace Playarr.Core.Games
             {
                 foreach (var gameId in message.GameIds)
                 {
-                    var game = _seriesService.GetSeries(gameId);
+                    var game = _gameService.GetGame(gameId);
 
                     try
                     {
@@ -248,12 +248,12 @@ namespace Playarr.Core.Games
             }
             else
             {
-                var allGames = _seriesService.GetAllSeries().OrderBy(c => c.SortTitle).ToList();
+                var allGames = _gameService.GetAllGames().OrderBy(c => c.SortTitle).ToList();
 
                 foreach (var game in allGames)
                 {
                     var seriesLocal = game;
-                    if (trigger == CommandTrigger.Manual || _checkIfSeriesShouldBeRefreshed.ShouldRefresh(seriesLocal))
+                    if (trigger == CommandTrigger.Manual || _checkIfGameShouldBeRefreshed.ShouldRefresh(seriesLocal))
                     {
                         try
                         {

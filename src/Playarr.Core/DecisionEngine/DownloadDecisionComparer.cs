@@ -7,7 +7,6 @@ using Playarr.Core.Indexers;
 using Playarr.Core.Parser.Model;
 using Playarr.Core.Profiles.Delay;
 using Playarr.Core.Qualities;
-using Playarr.Core.Games;
 
 namespace Playarr.Core.DecisionEngine
 {
@@ -65,29 +64,29 @@ namespace Playarr.Core.DecisionEngine
 
         private int CompareIndexerPriority(DownloadDecision x, DownloadDecision y)
         {
-            return CompareByReverse(x.RemoteEpisode.Release, y.RemoteEpisode.Release, release => release.IndexerPriority);
+            return CompareByReverse(x.RemoteRom.Release, y.RemoteRom.Release, release => release.IndexerPriority);
         }
 
         private int CompareQuality(DownloadDecision x, DownloadDecision y)
         {
             if (_configService.DownloadPropersAndRepacks == ProperDownloadTypes.DoNotPrefer)
             {
-                return CompareBy(x.RemoteEpisode, y.RemoteEpisode, remoteRom => remoteRom.Game.QualityProfile.Value.GetIndex(remoteRom.ParsedRomInfo.Quality.Quality));
+                return CompareBy(x.RemoteRom, y.RemoteRom, remoteRom => remoteRom.Game.QualityProfile.Value.GetIndex(remoteRom.ParsedRomInfo.Quality.Quality));
             }
 
             return CompareAll(
-                CompareBy(x.RemoteEpisode, y.RemoteEpisode, remoteRom => remoteRom.Game.QualityProfile.Value.GetIndex(remoteRom.ParsedRomInfo.Quality.Quality)),
-                CompareBy(x.RemoteEpisode, y.RemoteEpisode, remoteRom => remoteRom.ParsedRomInfo.Quality.Revision));
+                CompareBy(x.RemoteRom, y.RemoteRom, remoteRom => remoteRom.Game.QualityProfile.Value.GetIndex(remoteRom.ParsedRomInfo.Quality.Quality)),
+                CompareBy(x.RemoteRom, y.RemoteRom, remoteRom => remoteRom.ParsedRomInfo.Quality.Revision));
         }
 
         private int CompareCustomFormatScore(DownloadDecision x, DownloadDecision y)
         {
-            return CompareBy(x.RemoteEpisode, y.RemoteEpisode, remoteMovie => remoteMovie.CustomFormatScore);
+            return CompareBy(x.RemoteRom, y.RemoteRom, remoteMovie => remoteMovie.CustomFormatScore);
         }
 
         private int CompareProtocol(DownloadDecision x, DownloadDecision y)
         {
-            var result = CompareBy(x.RemoteEpisode, y.RemoteEpisode, remoteRom =>
+            var result = CompareBy(x.RemoteRom, y.RemoteRom, remoteRom =>
             {
                 var delayProfile = _delayProfileService.BestForTags(remoteRom.Game.Tags);
                 var downloadProtocol = remoteRom.Release.DownloadProtocol;
@@ -99,8 +98,8 @@ namespace Playarr.Core.DecisionEngine
 
         private int CompareEpisodeCount(DownloadDecision x, DownloadDecision y)
         {
-            var seasonPackCompare = CompareBy(x.RemoteEpisode,
-                y.RemoteEpisode,
+            var seasonPackCompare = CompareBy(x.RemoteRom,
+                y.RemoteRom,
                 remoteRom => remoteRom.ParsedRomInfo.FullSeason);
 
             if (seasonPackCompare != 0)
@@ -108,38 +107,32 @@ namespace Playarr.Core.DecisionEngine
                 return seasonPackCompare;
             }
 
-            if (x.RemoteEpisode.Game.SeriesType == GameTypes.Anime &
-                y.RemoteEpisode.Game.SeriesType == GameTypes.Anime)
-            {
-                return CompareBy(x.RemoteEpisode, y.RemoteEpisode, remoteRom => remoteRom.Roms.Count);
-            }
-
-            return CompareByReverse(x.RemoteEpisode, y.RemoteEpisode, remoteRom => remoteRom.Roms.Count);
+            return CompareByReverse(x.RemoteRom, y.RemoteRom, remoteRom => remoteRom.Roms.Count);
         }
 
         private int CompareRomNumber(DownloadDecision x, DownloadDecision y)
         {
-            return CompareByReverse(x.RemoteEpisode, y.RemoteEpisode, remoteRom => remoteRom.Roms.Select(e => e.EpisodeNumber).MinOrDefault());
+            return CompareByReverse(x.RemoteRom, y.RemoteRom, remoteRom => remoteRom.Roms.Select(e => e.EpisodeNumber).MinOrDefault());
         }
 
         private int ComparePeersIfTorrent(DownloadDecision x, DownloadDecision y)
         {
             // Different protocols should get caught when checking the preferred protocol,
             // since we're dealing with the same game in our comparisons
-            if (x.RemoteEpisode.Release.DownloadProtocol != DownloadProtocol.Torrent ||
-                y.RemoteEpisode.Release.DownloadProtocol != DownloadProtocol.Torrent)
+            if (x.RemoteRom.Release.DownloadProtocol != DownloadProtocol.Torrent ||
+                y.RemoteRom.Release.DownloadProtocol != DownloadProtocol.Torrent)
             {
                 return 0;
             }
 
             return CompareAll(
-                CompareBy(x.RemoteEpisode, y.RemoteEpisode, remoteRom =>
+                CompareBy(x.RemoteRom, y.RemoteRom, remoteRom =>
                 {
                     var seeders = TorrentInfo.GetSeeders(remoteRom.Release);
 
                     return seeders.HasValue && seeders.Value > 0 ? Math.Round(Math.Log10(seeders.Value)) : 0;
                 }),
-                CompareBy(x.RemoteEpisode, y.RemoteEpisode, remoteRom =>
+                CompareBy(x.RemoteRom, y.RemoteRom, remoteRom =>
                 {
                     var peers = TorrentInfo.GetPeers(remoteRom.Release);
 
@@ -149,13 +142,13 @@ namespace Playarr.Core.DecisionEngine
 
         private int CompareAgeIfUsenet(DownloadDecision x, DownloadDecision y)
         {
-            if (x.RemoteEpisode.Release.DownloadProtocol != DownloadProtocol.Usenet ||
-                y.RemoteEpisode.Release.DownloadProtocol != DownloadProtocol.Usenet)
+            if (x.RemoteRom.Release.DownloadProtocol != DownloadProtocol.Usenet ||
+                y.RemoteRom.Release.DownloadProtocol != DownloadProtocol.Usenet)
             {
                 return 0;
             }
 
-            return CompareBy(x.RemoteEpisode, y.RemoteEpisode, remoteRom =>
+            return CompareBy(x.RemoteRom, y.RemoteRom, remoteRom =>
             {
                 var ageHours = remoteRom.Release.AgeHours;
                 var age = remoteRom.Release.Age;
@@ -181,7 +174,7 @@ namespace Playarr.Core.DecisionEngine
 
         private int CompareSize(DownloadDecision x, DownloadDecision y)
         {
-            var sizeCompare =  CompareBy(x.RemoteEpisode, y.RemoteEpisode, remoteRom =>
+            var sizeCompare =  CompareBy(x.RemoteRom, y.RemoteRom, remoteRom =>
             {
                 var qualityProfile = remoteRom.Game.QualityProfile.Value;
                 var qualityIndex = qualityProfile.GetIndex(remoteRom.ParsedRomInfo.Quality.Quality, true);

@@ -13,13 +13,13 @@ namespace Playarr.Core.Test.DecisionEngineTests
     [TestFixture]
     public class MultiSeasonSpecificationFixture : CoreTest<MultiSeasonSpecification>
     {
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         [SetUp]
         public void Setup()
         {
             var game = Builder<Game>.CreateNew().With(s => s.Id = 1234).Build();
-            _remoteRom = new RemoteEpisode
+            _remoteRom = new RemoteRom
             {
                 ParsedRomInfo = new ParsedRomInfo
                 {

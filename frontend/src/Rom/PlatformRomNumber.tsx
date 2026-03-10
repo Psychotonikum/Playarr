@@ -15,11 +15,7 @@ function PlatformRomNumber(props: PlatformRomNumberProps) {
   }
 
   return (
-    <RomNumber
-      gameType={gameType}
-      showPlatformNumber={true}
-      {...otherProps}
-    />
+    <RomNumber gameType={gameType} showPlatformNumber={true} {...otherProps} />
   );
 }
 

@@ -1,7 +1,4 @@
-import {
-  useManageSettings,
-  useSettings,
-} from 'Settings/useSettings';
+import { useManageSettings, useSettings } from 'Settings/useSettings';
 
 export interface MetadataSourceSettingsModel {
   twitchClientId: string;

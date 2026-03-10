@@ -3,18 +3,18 @@ import React, { useCallback, useMemo, useState } from 'react';
 import TextTruncate from 'react-text-truncate';
 import CommandNames from 'Commands/CommandNames';
 import { useExecuteCommand } from 'Commands/useCommands';
+import GameTagList from 'Components/GameTagList';
 import IconButton from 'Components/Link/IconButton';
 import Link from 'Components/Link/Link';
 import SpinnerIconButton from 'Components/Link/SpinnerIconButton';
-import GameTagList from 'Components/GameTagList';
-import { icons } from 'Helpers/Props';
 import DeleteGameModal from 'Game/Delete/DeleteGameModal';
 import EditGameModal from 'Game/Edit/EditGameModal';
-import GameIndexProgressBar from 'Game/Index/ProgressBar/GameIndexProgressBar';
-import GameIndexPosterSelect from 'Game/Index/Select/GameIndexPosterSelect';
 import { Statistics } from 'Game/Game';
 import { useGameOverviewOptions } from 'Game/gameOptionsStore';
 import GamePoster from 'Game/GamePoster';
+import GameIndexProgressBar from 'Game/Index/ProgressBar/GameIndexProgressBar';
+import GameIndexPosterSelect from 'Game/Index/Select/GameIndexPosterSelect';
+import { icons } from 'Helpers/Props';
 import dimensions from 'Styles/Variables/dimensions';
 import fonts from 'Styles/Variables/fonts';
 import translate from 'Utilities/String/translate';
@@ -143,10 +143,7 @@ function GameIndexOverview(props: GameIndexOverviewProps) {
         <div className={styles.poster}>
           <div className={styles.posterContainer}>
             {isSelectMode ? (
-              <GameIndexPosterSelect
-                gameId={gameId}
-                titleSlug={titleSlug}
-              />
+              <GameIndexPosterSelect gameId={gameId} titleSlug={titleSlug} />
             ) : null}
 
             {status === 'ended' ? (

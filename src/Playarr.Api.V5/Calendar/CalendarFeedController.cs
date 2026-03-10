@@ -13,14 +13,14 @@ namespace Playarr.Api.V5.Calendar;
 [V5FeedController("calendar")]
 public class CalendarFeedController : Controller
 {
-    private readonly IRomService _episodeService;
-    private readonly IGameService _seriesService;
+    private readonly IRomService _romService;
+    private readonly IGameService _gameService;
     private readonly ITagService _tagService;
 
     public CalendarFeedController(IRomService episodeService, IGameService seriesService, ITagService tagService)
     {
-        _episodeService = episodeService;
-        _seriesService = seriesService;
+        _romService = episodeService;
+        _gameService = seriesService;
         _tagService = tagService;
     }
 
@@ -36,8 +36,8 @@ public class CalendarFeedController : Controller
             parsedTags.AddRange(tags.Split(',').Select(_tagService.GetTag).Select(t => t.Id));
         }
 
-        var roms = _episodeService.EpisodesBetweenDates(start, end, unmonitored, includeSpecials);
-        var allGames = _seriesService.GetAllSeries();
+        var roms = _romService.EpisodesBetweenDates(start, end, unmonitored, includeSpecials);
+        var allGames = _gameService.GetAllGames();
         var calendar = new Ical.Net.Calendar
         {
             ProductId = "-//playarr.tv//Playarr//EN"
@@ -82,15 +82,7 @@ public class CalendarFeedController : Controller
                 occurrence.End = new CalDateTime(rom.AirDateUtc.Value.AddMinutes(game.Runtime)) { HasTime = true };
             }
 
-            switch (game.SeriesType)
-            {
-                case GameTypes.Daily:
-                    occurrence.Summary = $"{game.Title} - {rom.Title}";
-                    break;
-                default:
-                    occurrence.Summary = $"{game.Title} - {rom.PlatformNumber}x{rom.EpisodeNumber:00} - {rom.Title}";
-                    break;
-            }
+            occurrence.Summary = $"{game.Title} - {rom.Title}";
         }
 
         var serializer = (IStringSerializer)new SerializerFactory().Build(calendar.GetType(), new SerializationContext());

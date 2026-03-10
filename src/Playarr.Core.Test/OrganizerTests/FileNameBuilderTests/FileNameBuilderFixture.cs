@@ -311,7 +311,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.DailyEpisodeFormat = "{Game Title} - {air-date} - {Rom Title}";
 
             _series.Title = "The Daily Show with Jon Stewart";
-            _series.SeriesType = GameTypes.Daily;
+            _series.SeriesType = GameTypes.Standard;
 
             _episode1.AirDate = "2012-12-13";
             _episode1.Title = "Kristen Stewart";
@@ -330,7 +330,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} - {Rom Title}";
 
             _series.Title = "The Daily Show with Jon Stewart";
-            _series.SeriesType = GameTypes.Daily;
+            _series.SeriesType = GameTypes.Standard;
 
             _episode1.AirDate = "2012-12-13";
             _episode1.Title = "Kristen Stewart";
@@ -349,7 +349,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.DailyEpisodeFormat = "{Game Title} - {Air-Date} - {Rom Title}";
 
             _series.Title = "The Daily Show with Jon Stewart";
-            _series.SeriesType = GameTypes.Daily;
+            _series.SeriesType = GameTypes.Standard;
 
             _episode1.AirDate = null;
             _episode1.Title = "Kristen Stewart";
@@ -470,7 +470,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_standard_and_absolute_numbering_when_series_is_anime()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _namingConfig.AnimeEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}.{absolute:00}.{Rom.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
@@ -480,7 +480,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_standard_numbering_when_series_is_anime()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _namingConfig.AnimeEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}.{Rom.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
@@ -490,7 +490,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_absolute_numbering_when_series_is_anime()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _namingConfig.AnimeEpisodeFormat = "{Game.Title}.{absolute:00}.{Rom.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
@@ -500,7 +500,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_duplicate_numbering_individually()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _namingConfig.AnimeEpisodeFormat = "{Game.Title}.{platform}x{rom:00}.{absolute:000}\\{Game.Title}.S{platform:00}E{rom:00}.{absolute:00}.{Rom.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
@@ -510,7 +510,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_individual_season_episode_tokens()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _namingConfig.AnimeEpisodeFormat = "{Game Title} Platform {platform:0000} Rom {rom:0000}\\{Game.Title}.S{platform:00}E{rom:00}.{absolute:00}.{Rom.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
@@ -520,7 +520,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_use_standard_naming_when_anime_episode_has_no_absolute_number()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _episode1.AbsoluteEpisodeNumber = null;
 
             _namingConfig.StandardEpisodeFormat = "{Game Title} - {platform:0}x{rom:00} - {Rom Title}";
@@ -711,7 +711,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_replace_quality_proper_with_v2_for_anime_v2()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _namingConfig.AnimeEpisodeFormat = "{Quality Proper}";
 
             GivenProper();
@@ -806,7 +806,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_not_require_a_separator_between_tokens()
         {
-            _series.SeriesType = GameTypes.Anime;
+            _series.SeriesType = GameTypes.Standard;
             _namingConfig.AnimeEpisodeFormat = "[{Release Group}]{Game.CleanTitle}.{absolute:000}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)

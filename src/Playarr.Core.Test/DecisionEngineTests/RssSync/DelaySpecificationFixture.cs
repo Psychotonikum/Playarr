@@ -29,7 +29,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
     {
         private QualityProfile _profile;
         private DelayProfile _delayProfile;
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         [SetUp]
         public void Setup()
@@ -45,7 +45,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                                         .With(s => s.QualityProfile = _profile)
                                         .Build();
 
-            _remoteRom = Builder<RemoteEpisode>.CreateNew()
+            _remoteRom = Builder<RemoteRom>.CreateNew()
                                                    .With(r => r.Game = game)
                                                    .Build();
 
@@ -69,7 +69,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
 
             Mocker.GetMock<IPendingReleaseService>()
                   .Setup(s => s.GetPendingRemoteEpisodes(It.IsAny<int>()))
-                  .Returns(new List<RemoteEpisode>());
+                  .Returns(new List<RemoteRom>());
         }
 
         private void GivenExistingFile(QualityModel quality, Language language)
@@ -94,7 +94,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
         [Test]
         public void should_be_true_when_user_invoked_search()
         {
-            Subject.IsSatisfiedBy(new RemoteEpisode(), new ReleaseDecisionInformation(false, new SingleEpisodeSearchCriteria { UserInvokedSearch = true })).Accepted.Should().BeTrue();
+            Subject.IsSatisfiedBy(new RemoteRom(), new ReleaseDecisionInformation(false, new SingleEpisodeSearchCriteria { UserInvokedSearch = true })).Accepted.Should().BeTrue();
         }
 
         [Test]

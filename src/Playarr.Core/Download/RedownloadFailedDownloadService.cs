@@ -13,7 +13,7 @@ namespace Playarr.Core.Download
     public class RedownloadFailedDownloadService : IHandle<DownloadFailedEvent>
     {
         private readonly IConfigService _configService;
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly IManageCommandQueue _commandQueueManager;
         private readonly Logger _logger;
 
@@ -23,7 +23,7 @@ namespace Playarr.Core.Download
                                                Logger logger)
         {
             _configService = configService;
-            _episodeService = episodeService;
+            _romService = episodeService;
             _commandQueueManager = commandQueueManager;
             _logger = logger;
         }
@@ -53,19 +53,19 @@ namespace Playarr.Core.Download
             {
                 _logger.Debug("Failed download only contains one rom, searching again");
 
-                _commandQueueManager.Push(new EpisodeSearchCommand(message.RomIds));
+                _commandQueueManager.Push(new RomSearchCommand(message.RomIds));
 
                 return;
             }
 
-            var platformNumber = _episodeService.GetEpisode(message.RomIds.First()).PlatformNumber;
-            var episodesInSeason = _episodeService.GetEpisodesBySeason(message.GameId, platformNumber);
+            var platformNumber = _romService.GetEpisode(message.RomIds.First()).PlatformNumber;
+            var episodesInSeason = _romService.GetRomsByPlatform(message.GameId, platformNumber);
 
             if (message.RomIds.Count == episodesInSeason.Count)
             {
                 _logger.Debug("Failed download was entire platform, searching again");
 
-                _commandQueueManager.Push(new SeasonSearchCommand
+                _commandQueueManager.Push(new PlatformSearchCommand
                 {
                     GameId = message.GameId,
                     PlatformNumber = platformNumber
@@ -76,7 +76,7 @@ namespace Playarr.Core.Download
 
             _logger.Debug("Failed download contains multiple roms, probably a double rom, searching again");
 
-            _commandQueueManager.Push(new EpisodeSearchCommand(message.RomIds));
+            _commandQueueManager.Push(new RomSearchCommand(message.RomIds));
         }
     }
 }

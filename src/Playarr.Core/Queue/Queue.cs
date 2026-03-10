@@ -33,7 +33,7 @@ namespace Playarr.Core.Queue
         public TrackedDownloadState? TrackedDownloadState { get; set; }
         public List<TrackedDownloadStatusMessage> StatusMessages { get; set; }
         public string DownloadId { get; set; }
-        public RemoteEpisode RemoteEpisode { get; set; }
+        public RemoteRom RemoteRom { get; set; }
         public DownloadProtocol Protocol { get; set; }
         public string DownloadClient { get; set; }
         public bool DownloadClientHasPostImportCategory { get; set; }

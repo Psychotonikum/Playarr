@@ -2,19 +2,19 @@
 
 namespace Playarr.Core.IndexerSearch
 {
-    public class MissingEpisodeSearchCommand : Command
+    public class MissingRomSearchCommand : Command
     {
         public int? GameId { get; set; }
         public bool Monitored { get; set; }
 
         public override bool SendUpdatesToClient => true;
 
-        public MissingEpisodeSearchCommand()
+        public MissingRomSearchCommand()
         {
             Monitored = true;
         }
 
-        public MissingEpisodeSearchCommand(int gameId)
+        public MissingRomSearchCommand(int gameId)
         {
             GameId = gameId;
             Monitored = true;

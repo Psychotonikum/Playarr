@@ -16,7 +16,7 @@ namespace Playarr.Core.MediaFiles
     public class MediaFileTableCleanupService : IMediaFileTableCleanupService
     {
         private readonly IMediaFileService _mediaFileService;
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly Logger _logger;
 
         public MediaFileTableCleanupService(IMediaFileService mediaFileService,
@@ -24,14 +24,14 @@ namespace Playarr.Core.MediaFiles
                                             Logger logger)
         {
             _mediaFileService = mediaFileService;
-            _episodeService = episodeService;
+            _romService = episodeService;
             _logger = logger;
         }
 
         public void Clean(Game game, List<string> filesOnDisk)
         {
             var seriesFiles = _mediaFileService.GetFilesBySeries(game.Id);
-            var roms = _episodeService.GetEpisodeBySeries(game.Id);
+            var roms = _romService.GetEpisodeBySeries(game.Id);
 
             var filesOnDiskKeys = new HashSet<string>(filesOnDisk, PathEqualityComparer.Instance);
 
@@ -78,7 +78,7 @@ namespace Playarr.Core.MediaFiles
                 if (rom.EpisodeFileId > 0 && seriesFiles.None(f => f.Id == rom.EpisodeFileId))
                 {
                     rom.EpisodeFileId = 0;
-                    _episodeService.UpdateEpisode(rom);
+                    _romService.UpdateEpisode(rom);
                 }
             }
         }

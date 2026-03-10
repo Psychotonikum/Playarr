@@ -8,11 +8,11 @@ import TableRowCell from 'Components/Table/Cells/TableRowCell';
 import TableRow from 'Components/Table/TableRow';
 import Popover from 'Components/Tooltip/Popover';
 import Tooltip from 'Components/Tooltip/Tooltip';
+import { icons, kinds, tooltipPositions } from 'Helpers/Props';
+import IndexerFlags from 'Rom/IndexerFlags';
 import RomFormats from 'Rom/RomFormats';
 import RomLanguages from 'Rom/RomLanguages';
 import RomQuality from 'Rom/RomQuality';
-import IndexerFlags from 'Rom/IndexerFlags';
-import { icons, kinds, tooltipPositions } from 'Helpers/Props';
 import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
 import formatDateTime from 'Utilities/Date/formatDateTime';
 import formatAge from 'Utilities/Number/formatAge';
@@ -98,13 +98,8 @@ function InteractiveSearchRow(props: InteractiveSearchRowProps) {
 
   const { rejections = [] } = decision;
 
-  const {
-    absoluteRomNumbers,
-    romNumbers,
-    isDaily,
-    platformNumber,
-    quality,
-  } = parsedInfo;
+  const { absoluteRomNumbers, romNumbers, isDaily, platformNumber, quality } =
+    parsedInfo;
 
   const {
     guid,

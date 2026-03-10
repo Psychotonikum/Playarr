@@ -11,8 +11,8 @@ namespace Playarr.Core.Test.IndexerTests.FanzubTests
     public class FanzubRequestGeneratorFixture : CoreTest<FanzubRequestGenerator>
     {
         private SeasonSearchCriteria _seasonSearchCriteria;
-        private AnimeEpisodeSearchCriteria _animeSearchCriteria;
-        private AnimeSeasonSearchCriteria _animeSeasonSearchCriteria;
+        private SingleEpisodeSearchCriteria _animeSearchCriteria;
+        private SeasonSearchCriteria _animeSeasonSearchCriteria;
 
         [SetUp]
         public void SetUp()
@@ -28,15 +28,14 @@ namespace Playarr.Core.Test.IndexerTests.FanzubTests
                 PlatformNumber = 1,
             };
 
-            _animeSearchCriteria = new AnimeEpisodeSearchCriteria()
+            _animeSearchCriteria = new SingleEpisodeSearchCriteria()
             {
                 SceneTitles = new List<string>() { "Naruto Shippuuden" },
-                AbsoluteEpisodeNumber = 9,
                 PlatformNumber = 1,
                 EpisodeNumber = 9
             };
 
-            _animeSeasonSearchCriteria = new AnimeSeasonSearchCriteria()
+            _animeSeasonSearchCriteria = new SeasonSearchCriteria()
             {
                 SceneTitles = new List<string>() { "Naruto Shippuuden" },
                 PlatformNumber = 3,

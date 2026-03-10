@@ -45,10 +45,10 @@ namespace Playarr.Core.Download
 
         public virtual bool PreferTorrentFile => false;
 
-        protected abstract string AddFromMagnetLink(RemoteEpisode remoteRom, string hash, string magnetLink);
-        protected abstract string AddFromTorrentFile(RemoteEpisode remoteRom, string hash, string filename, byte[] fileContent);
+        protected abstract string AddFromMagnetLink(RemoteRom remoteRom, string hash, string magnetLink);
+        protected abstract string AddFromTorrentFile(RemoteRom remoteRom, string hash, string filename, byte[] fileContent);
 
-        public override async Task<string> Download(RemoteEpisode remoteRom, IIndexer indexer)
+        public override async Task<string> Download(RemoteRom remoteRom, IIndexer indexer)
         {
             var torrentInfo = remoteRom.Release as TorrentInfo;
 
@@ -128,7 +128,7 @@ namespace Playarr.Core.Download
             return null;
         }
 
-        private async Task<string> DownloadFromWebUrl(RemoteEpisode remoteRom, IIndexer indexer, string torrentUrl)
+        private async Task<string> DownloadFromWebUrl(RemoteRom remoteRom, IIndexer indexer, string torrentUrl)
         {
             byte[] torrentFile = null;
 
@@ -214,7 +214,7 @@ namespace Playarr.Core.Download
             return actualHash;
         }
 
-        private string DownloadFromMagnetUrl(RemoteEpisode remoteRom, IIndexer indexer, string magnetUrl)
+        private string DownloadFromMagnetUrl(RemoteRom remoteRom, IIndexer indexer, string magnetUrl)
         {
             string hash = null;
             string actualHash = null;
@@ -246,7 +246,7 @@ namespace Playarr.Core.Download
             return actualHash;
         }
 
-        private void EnsureReleaseIsNotBlocklisted(RemoteEpisode remoteRom, IIndexer indexer, string hash)
+        private void EnsureReleaseIsNotBlocklisted(RemoteRom remoteRom, IIndexer indexer, string hash)
         {
             var indexerSettings = indexer?.Definition?.Settings as ITorrentIndexerSettings;
             var torrentInfo = remoteRom.Release as TorrentInfo;

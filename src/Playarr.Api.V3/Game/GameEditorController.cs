@@ -13,13 +13,13 @@ namespace Playarr.Api.V3.Game
     [V3ApiController("game/editor")]
     public class GameEditorController : Controller
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IManageCommandQueue _commandQueueManager;
         private readonly GameEditorValidator _seriesEditorValidator;
 
         public GameEditorController(IGameService seriesService, IManageCommandQueue commandQueueManager, GameEditorValidator seriesEditorValidator)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _commandQueueManager = commandQueueManager;
             _seriesEditorValidator = seriesEditorValidator;
         }
@@ -27,7 +27,7 @@ namespace Playarr.Api.V3.Game
         [HttpPut]
         public object SaveAll([FromBody] GameEditorResource resource)
         {
-            var gamesToUpdate = _seriesService.GetSeries(resource.GameIds);
+            var gamesToUpdate = _gameService.GetGame(resource.GameIds);
             var seriesToMove = new List<BulkMoveGame>();
 
             foreach (var game in gamesToUpdate)
@@ -103,13 +103,13 @@ namespace Playarr.Api.V3.Game
                 });
             }
 
-            return Accepted(_seriesService.UpdateSeries(gamesToUpdate, !resource.MoveFiles).ToResource());
+            return Accepted(_gameService.UpdateSeries(gamesToUpdate, !resource.MoveFiles).ToResource());
         }
 
         [HttpDelete]
         public object DeleteGame([FromBody] GameEditorResource resource)
         {
-            _seriesService.DeleteGame(resource.GameIds, resource.DeleteFiles, resource.AddImportListExclusion);
+            _gameService.DeleteGame(resource.GameIds, resource.DeleteFiles, resource.AddImportListExclusion);
 
             return new { };
         }

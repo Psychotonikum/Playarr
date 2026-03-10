@@ -45,17 +45,17 @@ namespace Playarr.Core.Test.DiskSpace
             GivenSeries();
         }
 
-        private void GivenSeries(params string[] seriesPaths)
+        private void GivenSeries(params string[] gamePaths)
         {
             Mocker.GetMock<IGameService>()
-                .Setup(v => v.GetAllSeriesPaths())
-                .Returns(new Dictionary<int, string>(seriesPaths.Select((value, i) => new KeyValuePair<int, string>(i, value))));
+                .Setup(v => v.GetAllGamePaths())
+                .Returns(new Dictionary<int, string>(gamePaths.Select((value, i) => new KeyValuePair<int, string>(i, value))));
         }
 
-        private void GivenRootFolder(string seriesPath, string rootFolderPath)
+        private void GivenRootFolder(string gamePath, string rootFolderPath)
         {
             Mocker.GetMock<IRootFolderService>()
-                .Setup(v => v.GetBestRootFolderPath(seriesPath))
+                .Setup(v => v.GetBestRootFolderPath(gamePath))
                 .Returns(rootFolderPath);
         }
 

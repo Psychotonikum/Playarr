@@ -16,7 +16,7 @@ namespace Playarr.Core.ImportLists.Custom
 {
     public interface ICustomImportProxy
     {
-        List<CustomSeries> GetSeries(CustomSettings settings);
+        List<CustomSeries> GetGame(CustomSettings settings);
         ValidationFailure Test(CustomSettings settings);
     }
 
@@ -33,7 +33,7 @@ namespace Playarr.Core.ImportLists.Custom
             _logger = logger;
         }
 
-        public List<CustomSeries> GetSeries(CustomSettings settings)
+        public List<CustomSeries> GetGame(CustomSettings settings)
         {
             return Execute<CustomSeries>(settings);
         }
@@ -42,7 +42,7 @@ namespace Playarr.Core.ImportLists.Custom
         {
             try
             {
-                GetSeries(settings);
+                GetGame(settings);
             }
             catch (HttpException ex)
             {

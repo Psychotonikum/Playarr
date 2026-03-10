@@ -14,9 +14,9 @@ import TextInput from 'Components/Form/TextInput';
 import Icon from 'Components/Icon';
 import Link from 'Components/Link/Link';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
+import useExistingGame from 'Game/useExistingGame';
 import useDebounce from 'Helpers/Hooks/useDebounce';
 import { icons, kinds } from 'Helpers/Props';
-import useExistingGame from 'Game/useExistingGame';
 import { InputChanged } from 'typings/inputs';
 import getErrorMessage from 'Utilities/Object/getErrorMessage';
 import translate from 'Utilities/String/translate';
@@ -36,9 +36,7 @@ interface ImportGameSelectGameProps {
   id: string;
 }
 
-function ImportGameSelectGame({
-  id,
-}: ImportGameSelectGameProps) {
+function ImportGameSelectGame({ id }: ImportGameSelectGameProps) {
   const importSeriesItem = useImportGameItem(id);
   const { selectedSeries, name } = importSeriesItem ?? {};
   const isExistingSeries = useExistingGame(selectedSeries?.igdbId);

@@ -1,8 +1,8 @@
 import React from 'react';
 import Popover from 'Components/Tooltip/Popover';
+import Game from 'Game/Game';
 import Rom from 'Rom/Rom';
 import RomTitleLink from 'Rom/RomTitleLink';
-import Game from 'Game/Game';
 import translate from 'Utilities/String/translate';
 import styles from './RomTitleCellContent.css';
 
@@ -44,9 +44,7 @@ export default function RomTitleCellContent({
           {roms.map((rom) => {
             return (
               <div key={rom.id} className={styles.row}>
-                <div className={styles.romNumber}>
-                  {rom.romNumber}
-                </div>
+                <div className={styles.romNumber}>{rom.romNumber}</div>
 
                 <RomTitleLink
                   romId={rom.id}

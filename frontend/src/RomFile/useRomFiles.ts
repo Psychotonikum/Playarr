@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { RomEntity, getQueryKey } from 'Rom/useRom';
 import useApiMutation from 'Helpers/Hooks/useApiMutation';
 import useApiQuery from 'Helpers/Hooks/useApiQuery';
+import { getQueryKey, RomEntity } from 'Rom/useRom';
 import { RomFile } from './RomFile';
 
 const DEFAULT_ROM_FILES: RomFile[] = [];
@@ -36,10 +36,7 @@ const useRomFiles = (params: RomFileFilter) => {
 
 export default useRomFiles;
 
-export const useDeleteRomFile = (
-  id: number,
-  romEntity: RomEntity
-) => {
+export const useDeleteRomFile = (id: number, romEntity: RomEntity) => {
   const queryClient = useQueryClient();
 
   const { mutate, error, isPending } = useApiMutation<unknown, void>({

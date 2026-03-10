@@ -28,7 +28,7 @@ namespace Playarr.Core.Test.Download.DownloadClientTests
         private string _pneumaticFolder;
         private string _strmFolder;
         private string _nzbPath;
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
         private IIndexer _indexer;
         private DownloadClientItem _downloadClientItem;
 
@@ -40,7 +40,7 @@ namespace Playarr.Core.Test.Download.DownloadClientTests
             _nzbPath = Path.Combine(_pneumaticFolder, _title + ".nzb").AsOsAgnostic();
             _strmFolder = @"d:\unsorted tv\".AsOsAgnostic();
 
-            _remoteRom = new RemoteEpisode();
+            _remoteRom = new RemoteRom();
             _remoteRom.Release = new ReleaseInfo();
             _remoteRom.Release.Title = _title;
             _remoteRom.Release.DownloadUrl = _nzbUrl;

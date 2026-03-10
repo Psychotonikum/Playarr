@@ -16,14 +16,14 @@ namespace Playarr.Core.Test.TvTests
     [TestFixture]
     public class MoveGameServiceFixture : CoreTest<MoveGameService>
     {
-        private Game _series;
+        private Game _game;
         private MoveGameCommand _command;
         private BulkMoveGameCommand _bulkCommand;
 
         [SetUp]
         public void Setup()
         {
-            _series = Builder<Game>
+            _game = Builder<Game>
                 .CreateNew()
                 .Build();
 
@@ -48,8 +48,8 @@ namespace Playarr.Core.Test.TvTests
                        };
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetSeries(It.IsAny<int>()))
-                  .Returns(_series);
+                  .Setup(s => s.GetGame(It.IsAny<int>()))
+                  .Returns(_game);
 
             Mocker.GetMock<IDiskProvider>()
                   .Setup(s => s.FolderExists(It.IsAny<string>()))

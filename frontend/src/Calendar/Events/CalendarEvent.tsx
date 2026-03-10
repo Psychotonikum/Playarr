@@ -5,12 +5,12 @@ import { useCalendarOptions } from 'Calendar/calendarOptionsStore';
 import getStatusStyle from 'Calendar/getStatusStyle';
 import Icon from 'Components/Icon';
 import Link from 'Components/Link/Link';
+import { useSingleGame } from 'Game/useGame';
+import { icons, kinds } from 'Helpers/Props';
+import getFinaleTypeName from 'Rom/getFinaleTypeName';
 import RomDetailsModal from 'Rom/RomDetailsModal';
 import romEntities from 'Rom/romEntities';
-import getFinaleTypeName from 'Rom/getFinaleTypeName';
 import { useRomFile } from 'RomFile/RomFileProvider';
-import { icons, kinds } from 'Helpers/Props';
-import { useSingleGame } from 'Game/useGame';
 import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
 import { convertToTimezone } from 'Utilities/Date/convertToTimezone';
 import formatTime from 'Utilities/Date/formatTime';
@@ -154,9 +154,7 @@ function CalendarEvent(props: CalendarEventProps) {
               />
             ) : null}
 
-            {showCutoffUnmetIcon &&
-            !!romFile &&
-            romFile.qualityCutoffNotMet ? (
+            {showCutoffUnmetIcon && !!romFile && romFile.qualityCutoffNotMet ? (
               <Icon
                 className={styles.statusIcon}
                 name={icons.ROM_FILE}

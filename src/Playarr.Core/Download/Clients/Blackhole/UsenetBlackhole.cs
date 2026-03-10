@@ -35,7 +35,7 @@ namespace Playarr.Core.Download.Clients.Blackhole
             ScanGracePeriod = TimeSpan.FromSeconds(30);
         }
 
-        protected override string AddFromNzbFile(RemoteEpisode remoteRom, string filename, byte[] fileContent)
+        protected override string AddFromNzbFile(RemoteRom remoteRom, string filename, byte[] fileContent)
         {
             var title = remoteRom.Release.Title;
 

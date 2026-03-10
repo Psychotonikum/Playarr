@@ -3,9 +3,9 @@ import { useQueueItemForEpisode } from 'Activity/Queue/Details/QueueDetailsProvi
 import QueueDetails from 'Activity/Queue/QueueDetails';
 import Icon from 'Components/Icon';
 import ProgressBar from 'Components/ProgressBar';
+import { icons, kinds, sizes } from 'Helpers/Props';
 import useRom, { RomEntity } from 'Rom/useRom';
 import { useRomFile } from 'RomFile/RomFileProvider';
-import { icons, kinds, sizes } from 'Helpers/Props';
 import isBefore from 'Utilities/Date/isBefore';
 import translate from 'Utilities/String/translate';
 import RomQuality from './RomQuality';
@@ -17,11 +17,7 @@ interface RomStatusProps {
   romFileId: number | undefined;
 }
 
-function RomStatus({
-  romId,
-  romEntity = 'roms',
-  romFileId,
-}: RomStatusProps) {
+function RomStatus({ romId, romEntity = 'roms', romFileId }: RomStatusProps) {
   const rom = useRom(romId, romEntity);
   const queueItem = useQueueItemForEpisode(romId);
   const romFile = useRomFile(romFileId);

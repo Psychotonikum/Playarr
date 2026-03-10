@@ -41,7 +41,7 @@ namespace Playarr.Core.Download.Clients.Blackhole
             ScanGracePeriod = TimeSpan.FromSeconds(30);
         }
 
-        protected override string AddFromMagnetLink(RemoteEpisode remoteRom, string hash, string magnetLink)
+        protected override string AddFromMagnetLink(RemoteRom remoteRom, string hash, string magnetLink)
         {
             if (!Settings.SaveMagnetFiles)
             {
@@ -65,7 +65,7 @@ namespace Playarr.Core.Download.Clients.Blackhole
             return null;
         }
 
-        protected override string AddFromTorrentFile(RemoteEpisode remoteRom, string hash, string filename, byte[] fileContent)
+        protected override string AddFromTorrentFile(RemoteRom remoteRom, string hash, string filename, byte[] fileContent)
         {
             var title = remoteRom.Release.Title;
 

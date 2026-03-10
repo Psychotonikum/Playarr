@@ -58,9 +58,7 @@ export function useIsDownloadingEpisodes(romIds: number[]) {
       return false;
     }
 
-    return queue.some((item) =>
-      item.romIds?.some((e) => romIds.includes(e))
-    );
+    return queue.some((item) => item.romIds?.some((e) => romIds.includes(e)));
   }, [romIds, queue]);
 }
 

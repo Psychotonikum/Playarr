@@ -19,12 +19,12 @@ namespace Playarr.Core.ImportLists.Trakt.User
         {
             var pageableRequests = new ImportListPageableRequestChain();
 
-            pageableRequests.Add(GetSeriesRequest());
+            pageableRequests.Add(GetGameRequest());
 
             return pageableRequests;
         }
 
-        private IEnumerable<ImportListRequest> GetSeriesRequest()
+        private IEnumerable<ImportListRequest> GetGameRequest()
         {
             var requestBuilder = new HttpRequestBuilder(_settings.BaseUrl.Trim());
 

@@ -14,7 +14,7 @@ namespace Playarr.Core.CustomFormats
 {
     public interface ICustomFormatCalculationService
     {
-        List<CustomFormat> ParseCustomFormat(RemoteEpisode remoteRom, long size);
+        List<CustomFormat> ParseCustomFormat(RemoteRom remoteRom, long size);
         List<CustomFormat> ParseCustomFormat(RomFile romFile, Game game);
         List<CustomFormat> ParseCustomFormat(RomFile romFile);
         List<CustomFormat> ParseCustomFormat(Blocklist blocklist, Game game);
@@ -33,7 +33,7 @@ namespace Playarr.Core.CustomFormats
             _logger = logger;
         }
 
-        public List<CustomFormat> ParseCustomFormat(RemoteEpisode remoteRom, long size)
+        public List<CustomFormat> ParseCustomFormat(RemoteRom remoteRom, long size)
         {
             var input = new CustomFormatInput
             {

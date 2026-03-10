@@ -1,8 +1,8 @@
 import ModelBase from 'App/ModelBase';
-import Rom from 'Rom/Rom';
+import Game from 'Game/Game';
 import Language from 'Language/Language';
 import { QualityModel } from 'Quality/Quality';
-import Game from 'Game/Game';
+import Rom from 'Rom/Rom';
 import CustomFormat from 'typings/CustomFormat';
 
 export interface GameTitleInfo {

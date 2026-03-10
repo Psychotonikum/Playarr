@@ -1,4 +1,4 @@
-import { MonitorNewItems, GameMonitor, GameType } from 'Game/Game';
+import { GameMonitor, GameType, MonitorNewItems } from 'Game/Game';
 import Provider from './Provider';
 
 interface ImportList extends Provider {

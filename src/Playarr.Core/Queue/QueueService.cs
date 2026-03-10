@@ -45,9 +45,9 @@ namespace Playarr.Core.Queue
 
         private IEnumerable<Queue> MapQueue(TrackedDownload trackedDownload)
         {
-            if (trackedDownload.RemoteEpisode?.Roms != null && trackedDownload.RemoteEpisode.Roms.Any())
+            if (trackedDownload.RemoteRom?.Roms != null && trackedDownload.RemoteRom.Roms.Any())
             {
-                yield return MapQueueItem(trackedDownload, trackedDownload.RemoteEpisode.Roms);
+                yield return MapQueueItem(trackedDownload, trackedDownload.RemoteRom.Roms);
             }
             else
             {
@@ -59,11 +59,11 @@ namespace Playarr.Core.Queue
         {
             var queue = new Queue
             {
-                Game = trackedDownload.RemoteEpisode?.Game,
-                PlatformNumber = trackedDownload.RemoteEpisode?.MappedPlatformNumber,
+                Game = trackedDownload.RemoteRom?.Game,
+                PlatformNumber = trackedDownload.RemoteRom?.MappedPlatformNumber,
                 Roms = roms,
-                Languages = trackedDownload.RemoteEpisode?.Languages ?? new List<Language> { Language.Unknown },
-                Quality = trackedDownload.RemoteEpisode?.ParsedRomInfo.Quality ?? new QualityModel(Quality.Unknown),
+                Languages = trackedDownload.RemoteRom?.Languages ?? new List<Language> { Language.Unknown },
+                Quality = trackedDownload.RemoteRom?.ParsedRomInfo.Quality ?? new QualityModel(Quality.Unknown),
                 Title = FileExtensions.RemoveFileExtension(trackedDownload.DownloadItem.Title),
                 Size = trackedDownload.DownloadItem.TotalSize,
                 SizeLeft = trackedDownload.DownloadItem.RemainingSize,
@@ -73,7 +73,7 @@ namespace Playarr.Core.Queue
                 TrackedDownloadState = trackedDownload.State,
                 StatusMessages = trackedDownload.StatusMessages.ToList(),
                 ErrorMessage = trackedDownload.DownloadItem.Message,
-                RemoteEpisode = trackedDownload.RemoteEpisode,
+                RemoteRom = trackedDownload.RemoteRom,
                 DownloadId = trackedDownload.DownloadItem.DownloadId,
                 Protocol = trackedDownload.Protocol,
                 DownloadClient = trackedDownload.DownloadItem.DownloadClientInfo.Name,

@@ -12,7 +12,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.Search.SingleEpisodeSearchMatchS
     [TestFixture]
     public class StandardEpisodeSearch : TestBase<SingleEpisodeSearchMatchSpecification>
     {
-        private RemoteEpisode _remoteRom = new();
+        private RemoteRom _remoteRom = new();
         private SingleEpisodeSearchCriteria _searchCriteria = new();
         private ReleaseDecisionInformation _information;
 

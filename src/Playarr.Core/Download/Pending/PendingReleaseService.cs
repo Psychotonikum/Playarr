@@ -29,11 +29,11 @@ namespace Playarr.Core.Download.Pending
         void Add(DownloadDecision decision, PendingReleaseReason reason);
         void AddMany(List<Tuple<DownloadDecision, PendingReleaseReason>> decisions);
         List<ReleaseInfo> GetPending();
-        List<RemoteEpisode> GetPendingRemoteEpisodes(int gameId);
+        List<RemoteRom> GetPendingRemoteEpisodes(int gameId);
         List<Queue.Queue> GetPendingQueue();
         Queue.Queue FindPendingQueueItem(int queueId);
         void RemovePendingQueueItems(int queueId);
-        RemoteEpisode OldestPendingRelease(int gameId, int[] romIds);
+        RemoteRom OldestPendingRelease(int gameId, int[] romIds);
         List<Queue.Queue> GetPendingQueueObsolete();
         Queue.Queue FindPendingQueueItemObsolete(int queueId);
         void RemovePendingQueueItemsObsolete(int queueId);
@@ -51,7 +51,7 @@ namespace Playarr.Core.Download.Pending
     {
         private readonly IIndexerStatusService _indexerStatusService;
         private readonly IPendingReleaseRepository _repository;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IParsingService _parsingService;
         private readonly IDelayProfileService _delayProfileService;
         private readonly ITaskManager _taskManager;
@@ -81,7 +81,7 @@ namespace Playarr.Core.Download.Pending
         {
             _indexerStatusService = indexerStatusService;
             _repository = repository;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _parsingService = parsingService;
             _delayProfileService = delayProfileService;
             _taskManager = taskManager;
@@ -103,13 +103,13 @@ namespace Playarr.Core.Download.Pending
         {
             var pending = _pendingReleases;
 
-            foreach (var seriesDecisions in decisions.GroupBy(v => v.Item1.RemoteEpisode.Game.Id))
+            foreach (var seriesDecisions in decisions.GroupBy(v => v.Item1.RemoteRom.Game.Id))
             {
-                var game = seriesDecisions.First().Item1.RemoteEpisode.Game;
+                var game = seriesDecisions.First().Item1.RemoteRom.Game;
                 var alreadyPending = _pendingReleases.Where(p => p.GameId == game.Id).SelectList(s => s.JsonClone());
 
                 // TODO: Do we need IncludeRemoteEpisodes?
-                alreadyPending = IncludeRemoteEpisodes(alreadyPending, seriesDecisions.ToDictionaryIgnoreDuplicates(v => v.Item1.RemoteEpisode.Release.Title, v => v.Item1.RemoteEpisode));
+                alreadyPending = IncludeRemoteEpisodes(alreadyPending, seriesDecisions.ToDictionaryIgnoreDuplicates(v => v.Item1.RemoteRom.Release.Title, v => v.Item1.RemoteRom));
                 var alreadyPendingByEpisode = CreateEpisodeLookup(alreadyPending);
 
                 foreach (var pair in seriesDecisions)
@@ -117,12 +117,12 @@ namespace Playarr.Core.Download.Pending
                     var decision = pair.Item1;
                     var reason = pair.Item2;
 
-                    var romIds = decision.RemoteEpisode.Roms.Select(e => e.Id);
+                    var romIds = decision.RemoteRom.Roms.Select(e => e.Id);
 
                     var existingReports = romIds.SelectMany(v => alreadyPendingByEpisode[v])
                                                     .Distinct().ToList();
 
-                    var matchingReports = existingReports.Where(MatchingReleasePredicate(decision.RemoteEpisode.Release)).ToList();
+                    var matchingReports = existingReports.Where(MatchingReleasePredicate(decision.RemoteRom.Release)).ToList();
 
                     if (matchingReports.Any())
                     {
@@ -132,23 +132,23 @@ namespace Playarr.Core.Download.Pending
                         {
                             if (matchingReport.Reason == PendingReleaseReason.DownloadClientUnavailable)
                             {
-                                _logger.Debug("The release {0} is already pending with reason {1}, not changing reason", decision.RemoteEpisode, matchingReport.Reason);
+                                _logger.Debug("The release {0} is already pending with reason {1}, not changing reason", decision.RemoteRom, matchingReport.Reason);
                             }
                             else
                             {
-                                _logger.Debug("The release {0} is already pending with reason {1}, changing to {2}", decision.RemoteEpisode, matchingReport.Reason, reason);
+                                _logger.Debug("The release {0} is already pending with reason {1}, changing to {2}", decision.RemoteRom, matchingReport.Reason, reason);
                                 matchingReport.Reason = reason;
                                 _repository.Update(matchingReport);
                             }
                         }
                         else
                         {
-                            _logger.Debug("The release {0} is already pending with reason {1}, not adding again", decision.RemoteEpisode, reason);
+                            _logger.Debug("The release {0} is already pending with reason {1}, not adding again", decision.RemoteRom, reason);
                         }
 
                         if (matchingReports.Count > 1)
                         {
-                            _logger.Debug("The release {0} had {1} duplicate pending, removing duplicates.", decision.RemoteEpisode, matchingReports.Count - 1);
+                            _logger.Debug("The release {0} had {1} duplicate pending, removing duplicates.", decision.RemoteRom, matchingReports.Count - 1);
 
                             foreach (var duplicate in matchingReports.Skip(1))
                             {
@@ -161,7 +161,7 @@ namespace Playarr.Core.Download.Pending
                         continue;
                     }
 
-                    _logger.Debug("Adding release {0} to pending releases with reason {1}", decision.RemoteEpisode, reason);
+                    _logger.Debug("Adding release {0} to pending releases with reason {1}", decision.RemoteRom, reason);
                     Insert(decision, reason);
                 }
             }
@@ -188,9 +188,9 @@ namespace Playarr.Core.Download.Pending
             return releases;
         }
 
-        public List<RemoteEpisode> GetPendingRemoteEpisodes(int gameId)
+        public List<RemoteRom> GetPendingRemoteEpisodes(int gameId)
         {
-            return _pendingReleases.Where(p => p.GameId == gameId).Select(p => p.RemoteEpisode).ToList();
+            return _pendingReleases.Where(p => p.GameId == gameId).Select(p => p.RemoteRom).ToList();
         }
 
         public List<Queue.Queue> GetPendingQueue()
@@ -201,7 +201,7 @@ namespace Playarr.Core.Download.Pending
 
             foreach (var pendingRelease in pendingReleases)
             {
-                if (pendingRelease.RemoteEpisode.Roms.Empty())
+                if (pendingRelease.RemoteRom.Roms.Empty())
                 {
                     var noEpisodeItem = GetQueueItem(pendingRelease, nextRssSync, []);
 
@@ -212,7 +212,7 @@ namespace Playarr.Core.Download.Pending
                     continue;
                 }
 
-                queued.Add(GetQueueItem(pendingRelease, nextRssSync, pendingRelease.RemoteEpisode.Roms));
+                queued.Add(GetQueueItem(pendingRelease, nextRssSync, pendingRelease.RemoteRom.Roms));
             }
 
             // Return best quality release for each rom group, this may result in multiple for the same rom if the roms in each release differ
@@ -236,7 +236,7 @@ namespace Playarr.Core.Download.Pending
 
             foreach (var pendingRelease in pendingReleases)
             {
-                if (pendingRelease.RemoteEpisode.Roms.Empty())
+                if (pendingRelease.RemoteRom.Roms.Empty())
                 {
                     var noEpisodeItem = GetQueueItem(pendingRelease, nextRssSync, (Rom)null);
 
@@ -247,7 +247,7 @@ namespace Playarr.Core.Download.Pending
                     continue;
                 }
 
-                foreach (var rom in pendingRelease.RemoteEpisode.Roms)
+                foreach (var rom in pendingRelease.RemoteRom.Roms)
                 {
                     queued.Add(GetQueueItem(pendingRelease, nextRssSync, rom));
                 }
@@ -303,18 +303,18 @@ namespace Playarr.Core.Download.Pending
             _repository.DeleteMany(releasesToRemove.Select(c => c.Id));
         }
 
-        public RemoteEpisode OldestPendingRelease(int gameId, int[] romIds)
+        public RemoteRom OldestPendingRelease(int gameId, int[] romIds)
         {
             var seriesReleases = GetPendingReleases(gameId);
 
-            return seriesReleases.Select(r => r.RemoteEpisode)
+            return seriesReleases.Select(r => r.RemoteRom)
                                  .Where(r => r.Roms.Select(e => e.Id).Intersect(romIds).Any())
                                  .MaxBy(p => p.Release.AgeHours);
         }
 
         private ILookup<int, PendingRelease> CreateEpisodeLookup(IEnumerable<PendingRelease> alreadyPending)
         {
-            return alreadyPending.SelectMany(v => v.RemoteEpisode.Roms
+            return alreadyPending.SelectMany(v => v.RemoteRom.Roms
                                                    .Select(d => new { Rom = d, PendingRelease = v }))
                                  .ToLookup(v => v.Rom.Id, v => v.PendingRelease);
         }
@@ -336,28 +336,28 @@ namespace Playarr.Core.Download.Pending
             return _pendingReleases.Where(p => p.GameId == gameId).ToList();
         }
 
-        private List<PendingRelease> IncludeRemoteEpisodes(List<PendingRelease> releases, Dictionary<string, RemoteEpisode> knownRemoteEpisodes = null)
+        private List<PendingRelease> IncludeRemoteEpisodes(List<PendingRelease> releases, Dictionary<string, RemoteRom> knownRemoteEpisodes = null)
         {
             var result = new List<PendingRelease>();
 
-            var seriesMap = new Dictionary<int, Game>();
+            var gameMap = new Dictionary<int, Game>();
 
             if (knownRemoteEpisodes != null)
             {
                 foreach (var game in knownRemoteEpisodes.Values.Select(v => v.Game))
                 {
-                    seriesMap.TryAdd(game.Id, game);
+                    gameMap.TryAdd(game.Id, game);
                 }
             }
 
-            foreach (var game in _seriesService.GetSeries(releases.Select(v => v.GameId).Distinct().Where(v => !seriesMap.ContainsKey(v))))
+            foreach (var game in _gameService.GetGame(releases.Select(v => v.GameId).Distinct().Where(v => !gameMap.ContainsKey(v))))
             {
-                seriesMap[game.Id] = game;
+                gameMap[game.Id] = game;
             }
 
             foreach (var release in releases)
             {
-                var game = seriesMap.GetValueOrDefault(release.GameId);
+                var game = gameMap.GetValueOrDefault(release.GameId);
 
                 // Just in case the game was removed, but wasn't cleaned up yet (housekeeper will clean it up)
                 if (game == null)
@@ -371,7 +371,7 @@ namespace Playarr.Core.Download.Pending
                     release.ParsedRomInfo.Languages = LanguageParser.ParseLanguages(release.Title);
                 }
 
-                release.RemoteEpisode = new RemoteEpisode
+                release.RemoteRom = new RemoteRom
                 {
                     Game = game,
                     SeriesMatchType = release.AdditionalInfo?.SeriesMatchType ?? SeriesMatchType.Unknown,
@@ -382,8 +382,8 @@ namespace Playarr.Core.Download.Pending
 
                 if (knownRemoteEpisodes != null && knownRemoteEpisodes.TryGetValue(release.Release.Title, out var knownRemoteEpisode))
                 {
-                    release.RemoteEpisode.MappedPlatformNumber = knownRemoteEpisode.MappedPlatformNumber;
-                    release.RemoteEpisode.Roms = knownRemoteEpisode.Roms;
+                    release.RemoteRom.MappedPlatformNumber = knownRemoteEpisode.MappedPlatformNumber;
+                    release.RemoteRom.Roms = knownRemoteEpisode.Roms;
                 }
                 else if (ValidateParsedRomInfo.ValidateForGameType(release.ParsedRomInfo, game))
                 {
@@ -391,25 +391,25 @@ namespace Playarr.Core.Download.Pending
                     {
                         var remoteRom = _parsingService.Map(release.ParsedRomInfo, game);
 
-                        release.RemoteEpisode.MappedPlatformNumber = remoteRom.MappedPlatformNumber;
-                        release.RemoteEpisode.Roms = remoteRom.Roms;
+                        release.RemoteRom.MappedPlatformNumber = remoteRom.MappedPlatformNumber;
+                        release.RemoteRom.Roms = remoteRom.Roms;
                     }
                     catch (InvalidOperationException ex)
                     {
                         _logger.Debug(ex, ex.Message);
 
-                        release.RemoteEpisode.MappedPlatformNumber = release.ParsedRomInfo.PlatformNumber;
-                        release.RemoteEpisode.Roms = new List<Rom>();
+                        release.RemoteRom.MappedPlatformNumber = release.ParsedRomInfo.PlatformNumber;
+                        release.RemoteRom.Roms = new List<Rom>();
                     }
                 }
                 else
                 {
-                    release.RemoteEpisode.MappedPlatformNumber = release.ParsedRomInfo.PlatformNumber;
-                    release.RemoteEpisode.Roms = new List<Rom>();
+                    release.RemoteRom.MappedPlatformNumber = release.ParsedRomInfo.PlatformNumber;
+                    release.RemoteRom.Roms = new List<Rom>();
                 }
 
-                _aggregationService.Augment(release.RemoteEpisode);
-                release.RemoteEpisode.CustomFormats = _formatCalculator.ParseCustomFormat(release.RemoteEpisode, release.Release.Size);
+                _aggregationService.Augment(release.RemoteRom);
+                release.RemoteRom.CustomFormats = _formatCalculator.ParseCustomFormat(release.RemoteRom, release.Release.Size);
 
                 result.Add(release);
             }
@@ -419,7 +419,7 @@ namespace Playarr.Core.Download.Pending
 
         private Queue.Queue GetQueueItem(PendingRelease pendingRelease, Lazy<DateTime> nextRssSync, List<Rom> roms)
         {
-            var ect = pendingRelease.Release.PublishDate.AddMinutes(GetDelay(pendingRelease.RemoteEpisode));
+            var ect = pendingRelease.Release.PublishDate.AddMinutes(GetDelay(pendingRelease.RemoteRom));
 
             if (ect < nextRssSync.Value)
             {
@@ -450,20 +450,20 @@ namespace Playarr.Core.Download.Pending
             var queue = new Queue.Queue
             {
                 Id = GetQueueId(pendingRelease),
-                Game = pendingRelease.RemoteEpisode.Game,
+                Game = pendingRelease.RemoteRom.Game,
                 Roms = roms,
-                Languages = pendingRelease.RemoteEpisode.Languages,
-                Quality = pendingRelease.RemoteEpisode.ParsedRomInfo.Quality,
+                Languages = pendingRelease.RemoteRom.Languages,
+                Quality = pendingRelease.RemoteRom.ParsedRomInfo.Quality,
                 Title = pendingRelease.Title,
-                Size = pendingRelease.RemoteEpisode.Release.Size,
-                SizeLeft = pendingRelease.RemoteEpisode.Release.Size,
-                RemoteEpisode = pendingRelease.RemoteEpisode,
+                Size = pendingRelease.RemoteRom.Release.Size,
+                SizeLeft = pendingRelease.RemoteRom.Release.Size,
+                RemoteRom = pendingRelease.RemoteRom,
                 TimeLeft = timeLeft,
                 EstimatedCompletionTime = ect,
                 Added = pendingRelease.Added,
                 Status = Enum.TryParse(pendingRelease.Reason.ToString(), out QueueStatus outValue) ? outValue : QueueStatus.Unknown,
-                Protocol = pendingRelease.RemoteEpisode.Release.DownloadProtocol,
-                Indexer = pendingRelease.RemoteEpisode.Release.Indexer,
+                Protocol = pendingRelease.RemoteRom.Release.DownloadProtocol,
+                Indexer = pendingRelease.RemoteRom.Release.Indexer,
                 DownloadClient = downloadClientName
             };
 
@@ -472,7 +472,7 @@ namespace Playarr.Core.Download.Pending
 
         private Queue.Queue GetQueueItem(PendingRelease pendingRelease, Lazy<DateTime> nextRssSync, Rom rom)
         {
-            var ect = pendingRelease.Release.PublishDate.AddMinutes(GetDelay(pendingRelease.RemoteEpisode));
+            var ect = pendingRelease.Release.PublishDate.AddMinutes(GetDelay(pendingRelease.RemoteRom));
 
             if (ect < nextRssSync.Value)
             {
@@ -503,24 +503,24 @@ namespace Playarr.Core.Download.Pending
             var queue = new Queue.Queue
             {
                 Id = GetQueueId(pendingRelease, rom),
-                Game = pendingRelease.RemoteEpisode.Game,
+                Game = pendingRelease.RemoteRom.Game,
 
 #pragma warning disable CS0612
                 Rom = rom,
 #pragma warning restore CS0612
 
-                Languages = pendingRelease.RemoteEpisode.Languages,
-                Quality = pendingRelease.RemoteEpisode.ParsedRomInfo.Quality,
+                Languages = pendingRelease.RemoteRom.Languages,
+                Quality = pendingRelease.RemoteRom.ParsedRomInfo.Quality,
                 Title = pendingRelease.Title,
-                Size = pendingRelease.RemoteEpisode.Release.Size,
-                SizeLeft = pendingRelease.RemoteEpisode.Release.Size,
-                RemoteEpisode = pendingRelease.RemoteEpisode,
+                Size = pendingRelease.RemoteRom.Release.Size,
+                SizeLeft = pendingRelease.RemoteRom.Release.Size,
+                RemoteRom = pendingRelease.RemoteRom,
                 TimeLeft = timeLeft,
                 EstimatedCompletionTime = ect,
                 Added = pendingRelease.Added,
                 Status = Enum.TryParse(pendingRelease.Reason.ToString(), out QueueStatus outValue) ? outValue : QueueStatus.Unknown,
-                Protocol = pendingRelease.RemoteEpisode.Release.DownloadProtocol,
-                Indexer = pendingRelease.RemoteEpisode.Release.Indexer,
+                Protocol = pendingRelease.RemoteRom.Release.DownloadProtocol,
+                Indexer = pendingRelease.RemoteRom.Release.Indexer,
                 DownloadClient = downloadClientName
             };
 
@@ -531,16 +531,16 @@ namespace Playarr.Core.Download.Pending
         {
             _repository.Insert(new PendingRelease
             {
-                GameId = decision.RemoteEpisode.Game.Id,
-                ParsedRomInfo = decision.RemoteEpisode.ParsedRomInfo,
-                Release = decision.RemoteEpisode.Release,
-                Title = decision.RemoteEpisode.Release.Title,
+                GameId = decision.RemoteRom.Game.Id,
+                ParsedRomInfo = decision.RemoteRom.ParsedRomInfo,
+                Release = decision.RemoteRom.Release,
+                Title = decision.RemoteRom.Release.Title,
                 Added = DateTime.UtcNow,
                 Reason = reason,
                 AdditionalInfo = new PendingReleaseAdditionalInfo
                 {
-                    SeriesMatchType = decision.RemoteEpisode.SeriesMatchType,
-                    ReleaseSource = decision.RemoteEpisode.ReleaseSource
+                    SeriesMatchType = decision.RemoteRom.SeriesMatchType,
+                    ReleaseSource = decision.RemoteRom.ReleaseSource
                 }
             });
 
@@ -553,7 +553,7 @@ namespace Playarr.Core.Download.Pending
             _eventAggregator.PublishEvent(new PendingReleasesUpdatedEvent());
         }
 
-        private int GetDelay(RemoteEpisode remoteRom)
+        private int GetDelay(RemoteRom remoteRom)
         {
             var delayProfile = _delayProfileService.AllForTags(remoteRom.Game.Tags).OrderBy(d => d.Order).First();
             var delay = delayProfile.GetProtocolDelay(remoteRom.Release.DownloadProtocol);
@@ -562,12 +562,12 @@ namespace Playarr.Core.Download.Pending
             return new[] { delay, minimumAge }.Max();
         }
 
-        private void RemoveGrabbed(RemoteEpisode remoteRom)
+        private void RemoveGrabbed(RemoteRom remoteRom)
         {
             var pendingReleases = GetPendingReleases(remoteRom.Game.Id);
             var romIds = remoteRom.Roms.Select(e => e.Id);
 
-            var existingReports = pendingReleases.Where(r => r.RemoteEpisode.Roms.Select(e => e.Id)
+            var existingReports = pendingReleases.Where(r => r.RemoteRom.Roms.Select(e => e.Id)
                                                              .Intersect(romIds)
                                                              .Any())
                                                              .ToList();
@@ -582,7 +582,7 @@ namespace Playarr.Core.Download.Pending
             foreach (var existingReport in existingReports)
             {
                 var compare = new QualityModelComparer(profile).Compare(remoteRom.ParsedRomInfo.Quality,
-                                                                        existingReport.RemoteEpisode.ParsedRomInfo.Quality);
+                                                                        existingReport.RemoteRom.ParsedRomInfo.Quality);
 
                 // Only remove lower/equal quality pending releases
                 // It is safer to retry these releases on the next round than remove it and try to re-add it (if its still in the feed)
@@ -601,7 +601,7 @@ namespace Playarr.Core.Download.Pending
 
             foreach (var rejectedRelease in rejected)
             {
-                var matching = pending.Where(MatchingReleasePredicate(rejectedRelease.RemoteEpisode.Release));
+                var matching = pending.Where(MatchingReleasePredicate(rejectedRelease.RemoteRom.Release));
 
                 foreach (var pendingRelease in matching)
                 {
@@ -618,7 +618,7 @@ namespace Playarr.Core.Download.Pending
 
         private PendingRelease FindPendingReleaseObsolete(int queueId)
         {
-            return GetPendingReleases().First(p => p.RemoteEpisode.Roms.Any(e => queueId == GetQueueId(p, e)));
+            return GetPendingReleases().First(p => p.RemoteRom.Roms.Any(e => queueId == GetQueueId(p, e)));
         }
 
         private int GetQueueId(PendingRelease pendingRelease)

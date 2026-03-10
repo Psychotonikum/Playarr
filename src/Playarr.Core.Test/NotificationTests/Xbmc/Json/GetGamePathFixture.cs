@@ -11,7 +11,7 @@ using Playarr.Core.Games;
 namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
 {
     [TestFixture]
-    public class GetSeriesPathFixture : CoreTest<XbmcService>
+    public class GetGamePathFixture : CoreTest<XbmcService>
     {
         private const int IGDB_ID = 5;
         private XbmcSettings _settings;
@@ -33,7 +33,7 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
                                          .ToList();
 
             Mocker.GetMock<IXbmcJsonApiProxy>()
-                  .Setup(s => s.GetSeries(_settings))
+                  .Setup(s => s.GetGame(_settings))
                   .Returns(_xbmcSeries);
         }
 
@@ -69,7 +69,7 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
         {
             GivenMatchingSeries();
 
-            Subject.GetSeriesPath(_settings, _series).Should().BeNull();
+            Subject.GetGamePath(_settings, _series).Should().BeNull();
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
         {
             GivenMatchingIgdbId();
 
-            Subject.GetSeriesPath(_settings, _series).Should().Be(_xbmcSeries.First().File);
+            Subject.GetGamePath(_settings, _series).Should().Be(_xbmcSeries.First().File);
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
         {
             GivenMatchingTitle();
 
-            Subject.GetSeriesPath(_settings, _series).Should().Be(_xbmcSeries.First().File);
+            Subject.GetGamePath(_settings, _series).Should().Be(_xbmcSeries.First().File);
         }
 
         [Test]
@@ -97,10 +97,10 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
             _xbmcSeries.Last().ImdbNumber = IGDB_ID.ToString();
 
             Mocker.GetMock<IXbmcJsonApiProxy>()
-                  .Setup(s => s.GetSeries(_settings))
+                  .Setup(s => s.GetGame(_settings))
                   .Returns(_xbmcSeries);
 
-            Subject.GetSeriesPath(_settings, _series).Should().NotBeNull();
+            Subject.GetGamePath(_settings, _series).Should().NotBeNull();
         }
     }
 }

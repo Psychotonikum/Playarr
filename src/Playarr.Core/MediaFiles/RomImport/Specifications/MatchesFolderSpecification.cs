@@ -52,8 +52,8 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Specifications
                 return ImportSpecDecision.Accept();
             }
 
-            var folderEpisodes = _parsingService.GetEpisodes(folderInfo, localRom.Game, true);
-            var fileEpisodes = _parsingService.GetEpisodes(fileInfo, localRom.Game, true);
+            var folderEpisodes = _parsingService.GetRoms(folderInfo, localRom.Game, true);
+            var fileEpisodes = _parsingService.GetRoms(fileInfo, localRom.Game, true);
 
             if (folderEpisodes.Empty())
             {

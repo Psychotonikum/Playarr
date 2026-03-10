@@ -6,7 +6,7 @@ namespace Playarr.Core.Indexers
 {
     public interface ISeedConfigProvider
     {
-        TorrentSeedConfiguration GetSeedConfiguration(RemoteEpisode release);
+        TorrentSeedConfiguration GetSeedConfiguration(RemoteRom release);
         TorrentSeedConfiguration GetSeedConfiguration(int indexerId, bool fullSeason);
     }
 
@@ -19,7 +19,7 @@ namespace Playarr.Core.Indexers
             _cachedIndexerSettingsProvider = cachedIndexerSettingsProvider;
         }
 
-        public TorrentSeedConfiguration GetSeedConfiguration(RemoteEpisode remoteRom)
+        public TorrentSeedConfiguration GetSeedConfiguration(RemoteRom remoteRom)
         {
             if (remoteRom.Release.DownloadProtocol != DownloadProtocol.Torrent)
             {

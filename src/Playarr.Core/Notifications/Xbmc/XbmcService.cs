@@ -58,9 +58,9 @@ namespace Playarr.Core.Notifications.Xbmc
             _proxy.CleanLibrary(settings);
         }
 
-        public string GetSeriesPath(XbmcSettings settings, Game game)
+        public string GetGamePath(XbmcSettings settings, Game game)
         {
-            var allGames = _proxy.GetSeries(settings);
+            var allGames = _proxy.GetGame(settings);
 
             if (!allGames.Any())
             {
@@ -87,18 +87,18 @@ namespace Playarr.Core.Notifications.Xbmc
         {
             try
             {
-                var seriesPath = GetSeriesPath(settings, game);
+                var gamePath = GetGamePath(settings, game);
 
-                if (seriesPath != null)
+                if (gamePath != null)
                 {
-                    _logger.Debug("Updating game {0} (Kodi path: {1}) on Kodi host: {2}", game, seriesPath, settings.Address);
+                    _logger.Debug("Updating game {0} (Kodi path: {1}) on Kodi host: {2}", game, gamePath, settings.Address);
                 }
                 else
                 {
                     _logger.Debug("Game {0} doesn't exist on Kodi host: {1}, Updating Entire Library", game, settings.Address);
                 }
 
-                var response = _proxy.UpdateLibrary(settings, seriesPath);
+                var response = _proxy.UpdateLibrary(settings, gamePath);
 
                 if (!response.Equals("OK", StringComparison.InvariantCultureIgnoreCase))
                 {

@@ -30,7 +30,7 @@ namespace Playarr.Core.Extras
                                 IHandle<DownloadsProcessedEvent>
     {
         private readonly IMediaFileService _mediaFileService;
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly IDiskProvider _diskProvider;
         private readonly IConfigService _configService;
         private readonly List<IManageExtraFiles> _extraFileManagers;
@@ -44,7 +44,7 @@ namespace Playarr.Core.Extras
                             Logger logger)
         {
             _mediaFileService = mediaFileService;
-            _episodeService = episodeService;
+            _romService = episodeService;
             _diskProvider = diskProvider;
             _configService = configService;
             _extraFileManagers = extraFileManagers.OrderBy(e => e.Order).ToList();
@@ -193,7 +193,7 @@ namespace Playarr.Core.Extras
         private List<RomFile> GetRomFiles(int gameId)
         {
             var romFiles = _mediaFileService.GetFilesBySeries(gameId);
-            var roms = _episodeService.GetEpisodeBySeries(gameId);
+            var roms = _romService.GetEpisodeBySeries(gameId);
 
             foreach (var romFile in romFiles)
             {

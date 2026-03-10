@@ -30,7 +30,7 @@ namespace Playarr.Core.Download.TrackedDownloads
                 return false;
             }
 
-            var allEpisodesImportedInHistory = trackedDownload.RemoteEpisode.Roms.All(e =>
+            var allEpisodesImportedInHistory = trackedDownload.RemoteRom.Roms.All(e =>
             {
                 var lastHistoryItem = historyItems.FirstOrDefault(h => h.EpisodeId == e.Id);
 

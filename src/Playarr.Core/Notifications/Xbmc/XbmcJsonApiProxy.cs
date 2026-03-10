@@ -14,7 +14,7 @@ namespace Playarr.Core.Notifications.Xbmc
         string UpdateLibrary(XbmcSettings settings, string path);
         void CleanLibrary(XbmcSettings settings);
         List<ActivePlayer> GetActivePlayers(XbmcSettings settings);
-        List<TvShow> GetSeries(XbmcSettings settings);
+        List<TvShow> GetGame(XbmcSettings settings);
     }
 
     public class XbmcJsonApiProxy : IXbmcJsonApiProxy
@@ -66,7 +66,7 @@ namespace Playarr.Core.Notifications.Xbmc
             return Json.Deserialize<ActivePlayersResult>(response).Result;
         }
 
-        public List<TvShow> GetSeries(XbmcSettings settings)
+        public List<TvShow> GetGame(XbmcSettings settings)
         {
             var response = ProcessRequest(settings, "VideoLibrary.GetTvShows", new List<string> { "file", "imdbnumber" });
 

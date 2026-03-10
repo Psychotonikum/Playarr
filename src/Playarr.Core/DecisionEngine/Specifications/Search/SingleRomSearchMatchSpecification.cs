@@ -20,7 +20,7 @@ namespace Playarr.Core.DecisionEngine.Specifications.Search
         public SpecificationPriority Priority => SpecificationPriority.Default;
         public RejectionType Type => RejectionType.Permanent;
 
-        public DownloadSpecDecision IsSatisfiedBy(RemoteEpisode remoteRom, ReleaseDecisionInformation information)
+        public DownloadSpecDecision IsSatisfiedBy(RemoteRom remoteRom, ReleaseDecisionInformation information)
         {
             var searchCriteria = information.SearchCriteria;
 
@@ -34,15 +34,10 @@ namespace Playarr.Core.DecisionEngine.Specifications.Search
                 return IsSatisfiedBy(remoteRom, singleEpisodeSpec);
             }
 
-            if (searchCriteria is AnimeEpisodeSearchCriteria animeEpisodeSpec)
-            {
-                return IsSatisfiedBy(remoteRom, animeEpisodeSpec);
-            }
-
             return DownloadSpecDecision.Accept();
         }
 
-        private DownloadSpecDecision IsSatisfiedBy(RemoteEpisode remoteRom, SingleEpisodeSearchCriteria singleEpisodeSpec)
+        private DownloadSpecDecision IsSatisfiedBy(RemoteRom remoteRom, SingleEpisodeSearchCriteria singleEpisodeSpec)
         {
             if (singleEpisodeSpec.PlatformNumber != remoteRom.ParsedRomInfo.PlatformNumber)
             {
@@ -60,17 +55,6 @@ namespace Playarr.Core.DecisionEngine.Specifications.Search
             {
                 _logger.Debug("Rom number does not match searched rom number, skipping.");
                 return DownloadSpecDecision.Reject(DownloadRejectionReason.WrongEpisode, "Wrong rom");
-            }
-
-            return DownloadSpecDecision.Accept();
-        }
-
-        private DownloadSpecDecision IsSatisfiedBy(RemoteEpisode remoteRom, AnimeEpisodeSearchCriteria animeEpisodeSpec)
-        {
-            if (remoteRom.ParsedRomInfo.FullSeason && !animeEpisodeSpec.IsSeasonSearch)
-            {
-                _logger.Debug("Full platform result during single rom search, skipping.");
-                return DownloadSpecDecision.Reject(DownloadRejectionReason.FullSeason, "Full platform pack");
             }
 
             return DownloadSpecDecision.Accept();

@@ -21,78 +21,9 @@ namespace Playarr.Core.Indexers.HDBits
             return pageableRequests;
         }
 
-        public virtual IndexerPageableRequestChain GetSearchRequests(AnimeEpisodeSearchCriteria searchCriteria)
-        {
-            var pageableRequests = new IndexerPageableRequestChain();
-            var queryBase = new TorrentQuery();
-
-            if (TryAddSearchParameters(queryBase, searchCriteria))
-            {
-                foreach (var rom in searchCriteria.Roms)
-                {
-                    var query = queryBase.Clone();
-
-                    query.IgdbInfo.Platform = rom.PlatformNumber;
-                    query.IgdbInfo.Rom = rom.EpisodeNumber;
-                }
-            }
-
-            return pageableRequests;
-        }
-
-        public virtual IndexerPageableRequestChain GetSearchRequests(AnimeSeasonSearchCriteria searchCriteria)
-        {
-            var pageableRequests = new IndexerPageableRequestChain();
-            var queryBase = new TorrentQuery();
-
-            if (TryAddSearchParameters(queryBase, searchCriteria))
-            {
-                foreach (var platformNumber in searchCriteria.Roms.Select(e => e.PlatformNumber).Distinct())
-                {
-                    var query = queryBase.Clone();
-
-                    query.IgdbInfo.Platform = platformNumber;
-
-                    pageableRequests.Add(GetRequest(query));
-                }
-            }
-
-            return pageableRequests;
-        }
-
         public virtual IndexerPageableRequestChain GetSearchRequests(SpecialEpisodeSearchCriteria searchCriteria)
         {
             return new IndexerPageableRequestChain();
-        }
-
-        public virtual IndexerPageableRequestChain GetSearchRequests(DailyEpisodeSearchCriteria searchCriteria)
-        {
-            var pageableRequests = new IndexerPageableRequestChain();
-            var query = new TorrentQuery();
-
-            if (TryAddSearchParameters(query, searchCriteria))
-            {
-                query.Search = searchCriteria.AirDate.ToString("yyyy-MM-dd");
-
-                pageableRequests.Add(GetRequest(query));
-            }
-
-            return pageableRequests;
-        }
-
-        public virtual IndexerPageableRequestChain GetSearchRequests(DailySeasonSearchCriteria searchCriteria)
-        {
-            var pageableRequests = new IndexerPageableRequestChain();
-            var query = new TorrentQuery();
-
-            if (TryAddSearchParameters(query, searchCriteria))
-            {
-                query.Search = $"{searchCriteria.Year}-";
-
-                pageableRequests.Add(GetRequest(query));
-            }
-
-            return pageableRequests;
         }
 
         public virtual IndexerPageableRequestChain GetSearchRequests(SeasonSearchCriteria searchCriteria)

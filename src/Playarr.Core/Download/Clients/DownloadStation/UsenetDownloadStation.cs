@@ -174,7 +174,7 @@ namespace Playarr.Core.Download.Clients.DownloadStation
             _logger.Debug("{0} removed correctly", item.DownloadId);
         }
 
-        protected override string AddFromNzbFile(RemoteEpisode remoteRom, string filename, byte[] fileContent)
+        protected override string AddFromNzbFile(RemoteRom remoteRom, string filename, byte[] fileContent)
         {
             var hashedSerialNumber = _serialNumberProvider.GetSerialNumber(Settings);
 

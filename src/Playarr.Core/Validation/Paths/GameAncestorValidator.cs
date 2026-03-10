@@ -5,13 +5,13 @@ using Playarr.Core.Games;
 
 namespace Playarr.Core.Validation.Paths
 {
-    public class SeriesAncestorValidator : PropertyValidator
+    public class GameAncestorValidator : PropertyValidator
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
 
-        public SeriesAncestorValidator(IGameService seriesService)
+        public GameAncestorValidator(IGameService seriesService)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
         }
 
         protected override string GetDefaultMessageTemplate() => "Path '{path}' is an ancestor of an existing game";
@@ -25,7 +25,7 @@ namespace Playarr.Core.Validation.Paths
 
             context.MessageFormatter.AppendArgument("path", context.PropertyValue.ToString());
 
-            return !_seriesService.GetAllSeriesPaths().Any(s => context.PropertyValue.ToString().IsParentPath(s.Value));
+            return !_gameService.GetAllGamePaths().Any(s => context.PropertyValue.ToString().IsParentPath(s.Value));
         }
     }
 }

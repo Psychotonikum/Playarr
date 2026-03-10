@@ -40,14 +40,9 @@ function AddGameSystemModalContent({
       <ModalBody>
         <FieldSet legend="Custom">
           <div className={styles.presetGrid}>
-            <div
-              className={styles.customCard}
-              onClick={handleCustomClick}
-            >
+            <div className={styles.customCard} onClick={handleCustomClick}>
               <div className={styles.presetName}>Custom System</div>
-              <div className={styles.presetFolder}>
-                Configure from scratch
-              </div>
+              <div className={styles.presetFolder}>Configure from scratch</div>
             </div>
           </div>
         </FieldSet>

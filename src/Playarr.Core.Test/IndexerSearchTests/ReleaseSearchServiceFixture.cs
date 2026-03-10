@@ -20,8 +20,8 @@ namespace Playarr.Core.Test.IndexerSearchTests
     public class ReleaseSearchServiceFixture : CoreTest<ReleaseSearchService>
     {
         private Mock<IIndexer> _mockIndexer;
-        private Game _xemSeries;
-        private List<Rom> _xemEpisodes;
+        private Game _xemGame;
+        private List<Rom> _xemRoms;
 
         [SetUp]
         public void SetUp()
@@ -38,20 +38,20 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 .Setup(s => s.GetSearchDecision(It.IsAny<List<Parser.Model.ReleaseInfo>>(), It.IsAny<SearchCriteriaBase>()))
                 .Returns(new List<DownloadDecision>());
 
-            _xemSeries = Builder<Game>.CreateNew()
+            _xemGame = Builder<Game>.CreateNew()
                 .With(v => v.UseSceneNumbering = true)
                 .With(v => v.Monitored = true)
                 .Build();
 
-            _xemEpisodes = new List<Rom>();
+            _xemRoms = new List<Rom>();
 
             Mocker.GetMock<IGameService>()
-                .Setup(v => v.GetSeries(_xemSeries.Id))
-                .Returns(_xemSeries);
+                .Setup(v => v.GetGame(_xemGame.Id))
+                .Returns(_xemGame);
 
             Mocker.GetMock<IRomService>()
-                .Setup(v => v.GetEpisodesBySeason(_xemSeries.Id, It.IsAny<int>()))
-                .Returns<int, int>((i, j) => _xemEpisodes.Where(d => d.PlatformNumber == j).ToList());
+                .Setup(v => v.GetRomsByPlatform(_xemGame.Id, It.IsAny<int>()))
+                .Returns<int, int>((i, j) => _xemRoms.Where(d => d.PlatformNumber == j).ToList());
 
             Mocker.GetMock<ISceneMappingService>()
                   .Setup(s => s.FindByIgdbId(It.IsAny<int>()))
@@ -62,11 +62,11 @@ namespace Playarr.Core.Test.IndexerSearchTests
                   .Returns(new List<string>());
         }
 
-        private void WithEpisode(int platformNumber, int romNumber, int? scenePlatformNumber, int? sceneRomNumber, string airDate = null)
+        private void WithRom(int platformNumber, int romNumber, int? scenePlatformNumber, int? sceneRomNumber, string airDate = null)
         {
             var rom = Builder<Rom>.CreateNew()
-                .With(v => v.GameId == _xemSeries.Id)
-                .With(v => v.Game == _xemSeries)
+                .With(v => v.GameId == _xemGame.Id)
+                .With(v => v.Game == _xemGame)
                 .With(v => v.PlatformNumber, platformNumber)
                 .With(v => v.EpisodeNumber, romNumber)
                 .With(v => v.ScenePlatformNumber, scenePlatformNumber)
@@ -76,33 +76,33 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 .With(v => v.Monitored = true)
                 .Build();
 
-            _xemEpisodes.Add(rom);
+            _xemRoms.Add(rom);
         }
 
-        private void WithEpisodes()
+        private void WithRoms()
         {
             // Platform 1 maps to Scene Platform 2 (one-to-one)
-            WithEpisode(1, 12, 2, 3);
-            WithEpisode(1, 13, 2, 4);
+            WithRom(1, 12, 2, 3);
+            WithRom(1, 13, 2, 4);
 
             // Platform 2 maps to Scene Platform 3 & 4 (one-to-one)
-            WithEpisode(2, 1, 3, 11);
-            WithEpisode(2, 2, 3, 12);
-            WithEpisode(2, 3, 4, 11);
-            WithEpisode(2, 4, 4, 12);
+            WithRom(2, 1, 3, 11);
+            WithRom(2, 2, 3, 12);
+            WithRom(2, 3, 4, 11);
+            WithRom(2, 4, 4, 12);
 
             // Platform 3 maps to Scene Platform 5 (partial)
             // Platform 4 maps to Scene Platform 5 & 6 (partial)
-            WithEpisode(3, 1, 5, 11);
-            WithEpisode(3, 2, 5, 12);
-            WithEpisode(4, 1, 5, 13);
-            WithEpisode(4, 2, 5, 14);
-            WithEpisode(4, 3, 6, 11);
-            WithEpisode(5, 1, 6, 12);
+            WithRom(3, 1, 5, 11);
+            WithRom(3, 2, 5, 12);
+            WithRom(4, 1, 5, 13);
+            WithRom(4, 2, 5, 14);
+            WithRom(4, 3, 6, 11);
+            WithRom(5, 1, 6, 12);
 
             // Platform 7+ maps normally, so no mapping specified.
-            WithEpisode(7, 1, null, null);
-            WithEpisode(7, 2, null, null);
+            WithRom(7, 1, null, null);
+            WithRom(7, 2, null, null);
         }
 
         private List<SearchCriteriaBase> WatchForSearchCriteria()
@@ -117,20 +117,20 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 .Callback<SeasonSearchCriteria>(s => result.Add(s))
                 .Returns(Task.FromResult<IList<Parser.Model.ReleaseInfo>>(new List<Parser.Model.ReleaseInfo>()));
 
-            _mockIndexer.Setup(v => v.Fetch(It.IsAny<DailyEpisodeSearchCriteria>()))
-                .Callback<DailyEpisodeSearchCriteria>(s => result.Add(s))
+            _mockIndexer.Setup(v => v.Fetch(It.IsAny<SeasonSearchCriteria>()))
+                .Callback<SeasonSearchCriteria>(s => result.Add(s))
                 .Returns(Task.FromResult<IList<Parser.Model.ReleaseInfo>>(new List<Parser.Model.ReleaseInfo>()));
 
-            _mockIndexer.Setup(v => v.Fetch(It.IsAny<DailySeasonSearchCriteria>()))
-                .Callback<DailySeasonSearchCriteria>(s => result.Add(s))
+            _mockIndexer.Setup(v => v.Fetch(It.IsAny<SeasonSearchCriteria>()))
+                .Callback<SeasonSearchCriteria>(s => result.Add(s))
                 .Returns(Task.FromResult<IList<Parser.Model.ReleaseInfo>>(new List<Parser.Model.ReleaseInfo>()));
 
-            _mockIndexer.Setup(v => v.Fetch(It.IsAny<AnimeEpisodeSearchCriteria>()))
-                .Callback<AnimeEpisodeSearchCriteria>(s => result.Add(s))
+            _mockIndexer.Setup(v => v.Fetch(It.IsAny<SingleEpisodeSearchCriteria>()))
+                .Callback<SingleEpisodeSearchCriteria>(s => result.Add(s))
                 .Returns(Task.FromResult<IList<Parser.Model.ReleaseInfo>>(new List<Parser.Model.ReleaseInfo>()));
 
-            _mockIndexer.Setup(v => v.Fetch(It.IsAny<AnimeSeasonSearchCriteria>()))
-                .Callback<AnimeSeasonSearchCriteria>(s => result.Add(s))
+            _mockIndexer.Setup(v => v.Fetch(It.IsAny<SeasonSearchCriteria>()))
+                .Callback<SeasonSearchCriteria>(s => result.Add(s))
                 .Returns(Task.FromResult<IList<Parser.Model.ReleaseInfo>>(new List<Parser.Model.ReleaseInfo>()));
 
             _mockIndexer.Setup(v => v.Fetch(It.IsAny<SpecialEpisodeSearchCriteria>()))
@@ -149,11 +149,11 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 Tags = new HashSet<int> { 3 }
             });
 
-            WithEpisodes();
+            WithRoms();
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.EpisodeSearch(_xemEpisodes.First(), true, false);
+            await Subject.RomSearch(_xemRoms.First(), true, false);
 
             var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
@@ -168,21 +168,21 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 Id = 1
             });
 
-            _xemSeries = Builder<Game>.CreateNew()
+            _xemGame = Builder<Game>.CreateNew()
                 .With(v => v.UseSceneNumbering = true)
                 .With(v => v.Monitored = true)
                 .With(v => v.Tags = new HashSet<int> { 3 })
                 .Build();
 
             Mocker.GetMock<IGameService>()
-                .Setup(v => v.GetSeries(_xemSeries.Id))
-                .Returns(_xemSeries);
+                .Setup(v => v.GetGame(_xemGame.Id))
+                .Returns(_xemGame);
 
-            WithEpisodes();
+            WithRoms();
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.EpisodeSearch(_xemEpisodes.First(), true, false);
+            await Subject.RomSearch(_xemRoms.First(), true, false);
 
             var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
@@ -198,21 +198,21 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 Tags = new HashSet<int> { 1, 2, 3 }
             });
 
-            _xemSeries = Builder<Game>.CreateNew()
+            _xemGame = Builder<Game>.CreateNew()
                 .With(v => v.UseSceneNumbering = true)
                 .With(v => v.Monitored = true)
                 .With(v => v.Tags = new HashSet<int> { 3, 4, 5 })
                 .Build();
 
             Mocker.GetMock<IGameService>()
-                .Setup(v => v.GetSeries(_xemSeries.Id))
-                .Returns(_xemSeries);
+                .Setup(v => v.GetGame(_xemGame.Id))
+                .Returns(_xemGame);
 
-            WithEpisodes();
+            WithRoms();
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.EpisodeSearch(_xemEpisodes.First(), true, false);
+            await Subject.RomSearch(_xemRoms.First(), true, false);
 
             var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
@@ -228,21 +228,21 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 Tags = new HashSet<int> { 1, 2, 3 }
             });
 
-            _xemSeries = Builder<Game>.CreateNew()
+            _xemGame = Builder<Game>.CreateNew()
                 .With(v => v.UseSceneNumbering = true)
                 .With(v => v.Monitored = true)
                 .With(v => v.Tags = new HashSet<int> { 4, 5, 6 })
                 .Build();
 
             Mocker.GetMock<IGameService>()
-                .Setup(v => v.GetSeries(_xemSeries.Id))
-                .Returns(_xemSeries);
+                .Setup(v => v.GetGame(_xemGame.Id))
+                .Returns(_xemGame);
 
-            WithEpisodes();
+            WithRoms();
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.EpisodeSearch(_xemEpisodes.First(), true, false);
+            await Subject.RomSearch(_xemRoms.First(), true, false);
 
             var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
@@ -250,13 +250,13 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task scene_episodesearch()
+        public async Task scene_romsearch()
         {
-            WithEpisodes();
+            WithRoms();
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.EpisodeSearch(_xemEpisodes.First(), true, false);
+            await Subject.RomSearch(_xemRoms.First(), true, false);
 
             var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
@@ -266,13 +266,13 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task scene_seasonsearch()
+        public async Task scene_platformsearch()
         {
-            WithEpisodes();
+            WithRoms();
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, 1, false, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, 1, false, false, true, false);
 
             var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
@@ -281,13 +281,13 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task scene_seasonsearch_should_search_multiple_seasons()
+        public async Task scene_platformsearch_should_search_multiple_seasons()
         {
-            WithEpisodes();
+            WithRoms();
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, 2, false, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, 2, false, false, true, false);
 
             var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
@@ -297,13 +297,13 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task scene_seasonsearch_should_search_single_episode_if_possible()
+        public async Task scene_platformsearch_should_search_single_episode_if_possible()
         {
-            WithEpisodes();
+            WithRoms();
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, 4, false, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, 4, false, false, true, false);
 
             var criteria1 = allCriteria.OfType<SeasonSearchCriteria>().ToList();
             var criteria2 = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
@@ -317,13 +317,13 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task scene_seasonsearch_should_use_seasonnumber_if_no_scene_number_is_available()
+        public async Task scene_platformsearch_should_use_seasonnumber_if_no_scene_number_is_available()
         {
-            WithEpisodes();
+            WithRoms();
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, 7, false, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, 7, false, false, true, false);
 
             var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
@@ -332,14 +332,14 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task scene_seasonsearch_should_skip_search_if_no_episodes_after_filtering()
+        public async Task scene_platformsearch_should_skip_search_if_no_episodes_after_filtering()
         {
-            WithEpisodes();
-            _xemEpisodes.ForEach(e => e.EpisodeFileId = 1);
+            WithRoms();
+            _xemRoms.ForEach(e => e.EpisodeFileId = 1);
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, 1, true, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, 1, true, false, true, false);
 
             var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
@@ -347,221 +347,216 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task season_search_for_anime_should_search_for_each_monitored_episode()
+        public async Task platform_search_for_standard_should_search_for_each_monitored_episode()
         {
-            WithEpisodes();
-            _xemSeries.SeriesType = GameTypes.Anime;
-            _xemEpisodes.ForEach(e => e.EpisodeFileId = 0);
+            WithRoms();
+            _xemGame.SeriesType = GameTypes.Standard;
+            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
 
             var platformNumber = 1;
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, platformNumber, true, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, platformNumber, true, false, true, false);
 
-            var criteria = allCriteria.OfType<AnimeEpisodeSearchCriteria>().ToList();
+            var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
-            criteria.Count.Should().Be(_xemEpisodes.Count(e => e.PlatformNumber == platformNumber));
+            criteria.Count.Should().Be(_xemRoms.Count(e => e.PlatformNumber == platformNumber));
         }
 
         [Test]
-        public async Task season_search_for_anime_should_not_search_for_unmonitored_episodes()
+        public async Task platform_search_for_standard_should_not_search_for_unmonitored_episodes()
         {
-            WithEpisodes();
-            _xemSeries.SeriesType = GameTypes.Anime;
-            _xemEpisodes.ForEach(e => e.Monitored = false);
-            _xemEpisodes.ForEach(e => e.EpisodeFileId = 0);
+            WithRoms();
+            _xemGame.SeriesType = GameTypes.Standard;
+            _xemRoms.ForEach(e => e.Monitored = false);
+            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
 
             var platformNumber = 1;
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, platformNumber, false, true, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, platformNumber, false, true, true, false);
 
-            var criteria = allCriteria.OfType<AnimeEpisodeSearchCriteria>().ToList();
+            var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(0);
         }
 
         [Test]
-        public async Task season_search_for_anime_should_not_search_for_unaired_episodes()
+        public async Task platform_search_for_standard_should_not_search_for_unaired_episodes()
         {
-            WithEpisodes();
-            _xemSeries.SeriesType = GameTypes.Anime;
-            _xemEpisodes.ForEach(e => e.AirDateUtc = DateTime.UtcNow.AddDays(5));
-            _xemEpisodes.ForEach(e => e.EpisodeFileId = 0);
+            WithRoms();
+            _xemGame.SeriesType = GameTypes.Standard;
+            _xemRoms.ForEach(e => e.AirDateUtc = DateTime.UtcNow.AddDays(5));
+            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
 
             var platformNumber = 1;
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, platformNumber, false, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, platformNumber, false, false, true, false);
 
-            var criteria = allCriteria.OfType<AnimeEpisodeSearchCriteria>().ToList();
+            var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(0);
         }
 
         [Test]
-        public async Task season_search_for_anime_should_not_search_for_episodes_with_files()
+        public async Task platform_search_for_standard_should_not_search_for_episodes_with_files()
         {
-            WithEpisodes();
-            _xemSeries.SeriesType = GameTypes.Anime;
-            _xemEpisodes.ForEach(e => e.EpisodeFileId = 1);
+            WithRoms();
+            _xemGame.SeriesType = GameTypes.Standard;
+            _xemRoms.ForEach(e => e.EpisodeFileId = 1);
 
             var platformNumber = 1;
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, platformNumber, true, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, platformNumber, true, false, true, false);
 
-            var criteria = allCriteria.OfType<AnimeEpisodeSearchCriteria>().ToList();
+            var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(0);
         }
 
         [Test]
-        public async Task season_search_for_anime_should_set_isSeasonSearch_flag()
+        public async Task platform_search_for_standard_should_set_isSeasonSearch_flag()
         {
-            WithEpisodes();
-            _xemSeries.SeriesType = GameTypes.Anime;
-            _xemEpisodes.ForEach(e => e.EpisodeFileId = 0);
+            WithRoms();
+            _xemGame.SeriesType = GameTypes.Standard;
+            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
 
             var platformNumber = 1;
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, platformNumber, true, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, platformNumber, true, false, true, false);
 
-            var criteria = allCriteria.OfType<AnimeEpisodeSearchCriteria>().ToList();
+            var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
-            criteria.Count.Should().Be(_xemEpisodes.Count(e => e.PlatformNumber == platformNumber));
-            criteria.ForEach(c => c.IsSeasonSearch.Should().BeTrue());
+            criteria.Count.Should().Be(_xemRoms.Count(e => e.PlatformNumber == platformNumber));
         }
 
         [Test]
-        public async Task season_search_for_anime_should_search_for_each_monitored_season()
+        public async Task platform_search_for_standard_should_search_for_each_monitored_season()
         {
-            WithEpisodes();
-            _xemSeries.SeriesType = GameTypes.Anime;
-            _xemEpisodes.ForEach(e => e.EpisodeFileId = 0);
+            WithRoms();
+            _xemGame.SeriesType = GameTypes.Standard;
+            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
 
             var platformNumber = 1;
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, platformNumber, true, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, platformNumber, true, false, true, false);
 
-            var criteria = allCriteria.OfType<AnimeSeasonSearchCriteria>().ToList();
+            var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
-            var episodesForSeason1 = _xemEpisodes.Where(e => e.PlatformNumber == platformNumber);
+            var episodesForSeason1 = _xemRoms.Where(e => e.PlatformNumber == platformNumber);
             criteria.Count.Should().Be(episodesForSeason1.Select(e => e.PlatformNumber).Distinct().Count());
         }
 
         [Test]
-        public async Task season_search_for_anime_should_not_search_for_unmonitored_season()
+        public async Task platform_search_for_standard_should_not_search_for_unmonitored_season()
         {
-            WithEpisodes();
-            _xemSeries.SeriesType = GameTypes.Anime;
-            _xemEpisodes.ForEach(e => e.Monitored = false);
-            _xemEpisodes.ForEach(e => e.EpisodeFileId = 0);
+            WithRoms();
+            _xemGame.SeriesType = GameTypes.Standard;
+            _xemRoms.ForEach(e => e.Monitored = false);
+            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
 
             var platformNumber = 1;
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, platformNumber, false, true, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, platformNumber, false, true, true, false);
 
-            var criteria = allCriteria.OfType<AnimeSeasonSearchCriteria>().ToList();
+            var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(0);
         }
 
         [Test]
-        public async Task season_search_for_anime_should_not_search_for_unaired_season()
+        public async Task platform_search_for_standard_should_not_search_for_unaired_season()
         {
-            WithEpisodes();
-            _xemSeries.SeriesType = GameTypes.Anime;
-            _xemEpisodes.ForEach(e => e.AirDateUtc = DateTime.UtcNow.AddDays(5));
-            _xemEpisodes.ForEach(e => e.EpisodeFileId = 0);
+            WithRoms();
+            _xemGame.SeriesType = GameTypes.Standard;
+            _xemRoms.ForEach(e => e.AirDateUtc = DateTime.UtcNow.AddDays(5));
+            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
 
             var platformNumber = 1;
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, platformNumber, false, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, platformNumber, false, false, true, false);
 
-            var criteria = allCriteria.OfType<AnimeSeasonSearchCriteria>().ToList();
+            var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(0);
         }
 
         [Test]
-        public async Task season_search_for_anime_should_not_search_for_season_with_files()
+        public async Task platform_search_for_standard_should_not_search_for_season_with_files()
         {
-            WithEpisodes();
-            _xemSeries.SeriesType = GameTypes.Anime;
-            _xemEpisodes.ForEach(e => e.EpisodeFileId = 1);
+            WithRoms();
+            _xemGame.SeriesType = GameTypes.Standard;
+            _xemRoms.ForEach(e => e.EpisodeFileId = 1);
 
             var platformNumber = 1;
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, platformNumber, true, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, platformNumber, true, false, true, false);
 
-            var criteria = allCriteria.OfType<AnimeSeasonSearchCriteria>().ToList();
+            var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(0);
         }
 
         [Test]
-        public async Task season_search_for_daily_should_search_multiple_years()
+        public async Task platform_search_for_standard_daily_should_search_multiple_years()
         {
-            WithEpisode(1, 1, null, null, "2005-12-30");
-            WithEpisode(1, 2, null, null, "2005-12-31");
-            WithEpisode(1, 3, null, null, "2006-01-01");
-            WithEpisode(1, 4, null, null, "2006-01-02");
-            _xemSeries.SeriesType = GameTypes.Daily;
+            WithRom(1, 1, null, null, "2005-12-30");
+            WithRom(1, 2, null, null, "2005-12-31");
+            WithRom(1, 3, null, null, "2006-01-01");
+            WithRom(1, 4, null, null, "2006-01-02");
+            _xemGame.SeriesType = GameTypes.Standard;
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, 1, false, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, 1, false, false, true, false);
 
-            var criteria = allCriteria.OfType<DailySeasonSearchCriteria>().ToList();
+            var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(2);
-            criteria[0].Year.Should().Be(2005);
-            criteria[1].Year.Should().Be(2006);
         }
 
         [Test]
-        public async Task season_search_for_daily_should_search_single_episode_if_possible()
+        public async Task platform_search_for_standard_daily_should_search_single_episode_if_possible()
         {
-            WithEpisode(1, 1, null, null, "2005-12-30");
-            WithEpisode(1, 2, null, null, "2005-12-31");
-            WithEpisode(1, 3, null, null, "2006-01-01");
-            _xemSeries.SeriesType = GameTypes.Daily;
+            WithRom(1, 1, null, null, "2005-12-30");
+            WithRom(1, 2, null, null, "2005-12-31");
+            WithRom(1, 3, null, null, "2006-01-01");
+            _xemGame.SeriesType = GameTypes.Standard;
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, 1, false, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, 1, false, false, true, false);
 
-            var criteria1 = allCriteria.OfType<DailySeasonSearchCriteria>().ToList();
-            var criteria2 = allCriteria.OfType<DailyEpisodeSearchCriteria>().ToList();
+            var criteria1 = allCriteria.OfType<SeasonSearchCriteria>().ToList();
+            var criteria2 = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
             criteria1.Count.Should().Be(1);
-            criteria1[0].Year.Should().Be(2005);
 
             criteria2.Count.Should().Be(1);
-            criteria2[0].AirDate.Should().Be(new DateTime(2006, 1, 1));
         }
 
         [Test]
-        public async Task season_search_for_daily_should_not_search_for_unmonitored_episodes()
+        public async Task platform_search_for_standard_daily_should_not_search_for_unmonitored_episodes()
         {
-            WithEpisode(1, 1, null, null, "2005-12-30");
-            WithEpisode(1, 2, null, null, "2005-12-31");
-            WithEpisode(1, 3, null, null, "2006-01-01");
-            _xemSeries.SeriesType = GameTypes.Daily;
-            _xemEpisodes[0].Monitored = false;
+            WithRom(1, 1, null, null, "2005-12-30");
+            WithRom(1, 2, null, null, "2005-12-31");
+            WithRom(1, 3, null, null, "2006-01-01");
+            _xemGame.SeriesType = GameTypes.Standard;
+            _xemRoms[0].Monitored = false;
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, 1, false, true, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, 1, false, true, true, false);
 
-            var criteria1 = allCriteria.OfType<DailySeasonSearchCriteria>().ToList();
-            var criteria2 = allCriteria.OfType<DailyEpisodeSearchCriteria>().ToList();
+            var criteria1 = allCriteria.OfType<SeasonSearchCriteria>().ToList();
+            var criteria2 = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
             criteria1.Should().HaveCount(0);
             criteria2.Should().HaveCount(2);
@@ -570,14 +565,14 @@ namespace Playarr.Core.Test.IndexerSearchTests
         [Test]
         public async Task getscenenames_should_use_seasonnumber_if_no_scene_seasonnumber_is_available()
         {
-            WithEpisodes();
+            WithRoms();
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.SeasonSearch(_xemSeries.Id, 7, false, false, true, false);
+            await Subject.PlatformSearch(_xemGame.Id, 7, false, false, true, false);
 
             Mocker.GetMock<ISceneMappingService>()
-                  .Verify(v => v.FindByIgdbId(_xemSeries.Id), Times.Once());
+                  .Verify(v => v.FindByIgdbId(_xemGame.Id), Times.Once());
 
             allCriteria.Should().HaveCount(1);
             allCriteria.First().Should().BeOfType<SeasonSearchCriteria>();
@@ -585,9 +580,9 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task episode_search_should_use_all_available_numbering_from_services_and_xem()
+        public async Task rom_search_should_use_all_available_numbering_from_services_and_xem()
         {
-            WithEpisode(1, 12, 2, 3);
+            WithRom(1, 12, 2, 3);
 
             Mocker.GetMock<ISceneMappingService>()
                 .Setup(s => s.FindByIgdbId(It.IsAny<int>()))
@@ -595,9 +590,9 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 {
                     new SceneMapping
                     {
-                        IgdbId = _xemSeries.IgdbId,
-                        SearchTerm = _xemSeries.Title,
-                        ParseTerm = _xemSeries.Title,
+                        IgdbId = _xemGame.IgdbId,
+                        SearchTerm = _xemGame.Title,
+                        ParseTerm = _xemGame.Title,
                         FilterRegex = "(?i)-(BTN)$",
                         PlatformNumber = 1,
                         ScenePlatformNumber = 1,
@@ -608,10 +603,10 @@ namespace Playarr.Core.Test.IndexerSearchTests
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.EpisodeSearch(_xemEpisodes.First(), false, false);
+            await Subject.RomSearch(_xemRoms.First(), false, false);
 
             Mocker.GetMock<ISceneMappingService>()
-                .Verify(v => v.FindByIgdbId(_xemSeries.Id), Times.Once());
+                .Verify(v => v.FindByIgdbId(_xemGame.Id), Times.Once());
 
             allCriteria.Should().HaveCount(2);
 
@@ -625,12 +620,12 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task episode_search_should_include_series_title_when_not_a_direct_title_match()
+        public async Task rom_search_should_include_series_title_when_not_a_direct_title_match()
         {
-            _xemSeries.Title = "Playarr's Title";
-            _xemSeries.CleanTitle = "playarrstitle";
+            _xemGame.Title = "Playarr's Title";
+            _xemGame.CleanTitle = "playarrstitle";
 
-            WithEpisode(1, 12, 2, 3);
+            WithRom(1, 12, 2, 3);
 
             Mocker.GetMock<ISceneMappingService>()
                 .Setup(s => s.FindByIgdbId(It.IsAny<int>()))
@@ -638,9 +633,9 @@ namespace Playarr.Core.Test.IndexerSearchTests
                 {
                     new SceneMapping
                     {
-                        IgdbId = _xemSeries.IgdbId,
+                        IgdbId = _xemGame.IgdbId,
                         SearchTerm = "Playarrs Title",
-                        ParseTerm = _xemSeries.CleanTitle,
+                        ParseTerm = _xemGame.CleanTitle,
                         PlatformNumber = 1,
                         ScenePlatformNumber = 1,
                         SceneOrigin = "igdb",
@@ -650,10 +645,10 @@ namespace Playarr.Core.Test.IndexerSearchTests
 
             var allCriteria = WatchForSearchCriteria();
 
-            await Subject.EpisodeSearch(_xemEpisodes.First(), false, false);
+            await Subject.RomSearch(_xemRoms.First(), false, false);
 
             Mocker.GetMock<ISceneMappingService>()
-                .Verify(v => v.FindByIgdbId(_xemSeries.Id), Times.Once());
+                .Verify(v => v.FindByIgdbId(_xemGame.Id), Times.Once());
 
             allCriteria.Should().HaveCount(2);
 

@@ -25,7 +25,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         {
             _series = Builder<Game>
                     .CreateNew()
-                    .With(s => s.SeriesType = GameTypes.Anime)
+                    .With(s => s.SeriesType = GameTypes.Standard)
                     .With(s => s.Title = "Anime Game")
                     .Build();
 

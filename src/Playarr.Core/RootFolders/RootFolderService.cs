@@ -27,7 +27,7 @@ namespace Playarr.Core.RootFolders
     {
         private readonly IRootFolderRepository _rootFolderRepository;
         private readonly IDiskProvider _diskProvider;
-        private readonly IGameRepository _seriesRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly INamingConfigService _namingConfigService;
         private readonly Logger _logger;
 
@@ -55,7 +55,7 @@ namespace Playarr.Core.RootFolders
         {
             _rootFolderRepository = rootFolderRepository;
             _diskProvider = diskProvider;
-            _seriesRepository = seriesRepository;
+            _gameRepository = seriesRepository;
             _namingConfigService = namingConfigService;
             _logger = logger;
 
@@ -72,7 +72,7 @@ namespace Playarr.Core.RootFolders
         public List<RootFolder> AllWithUnmappedFolders()
         {
             var rootFolders = _rootFolderRepository.All().ToList();
-            var seriesPaths = _seriesRepository.AllSeriesPaths();
+            var gamePaths = _gameRepository.AllGamePaths();
 
             rootFolders.ForEach(folder =>
             {
@@ -80,7 +80,7 @@ namespace Playarr.Core.RootFolders
                 {
                     if (folder.Path.IsPathValid(PathValidationType.CurrentOs))
                     {
-                        GetDetails(folder, seriesPaths, true);
+                        GetDetails(folder, gamePaths, true);
                     }
                 }
 
@@ -120,9 +120,9 @@ namespace Playarr.Core.RootFolders
             }
 
             _rootFolderRepository.Insert(rootFolder);
-            var seriesPaths = _seriesRepository.AllSeriesPaths();
+            var gamePaths = _gameRepository.AllGamePaths();
 
-            GetDetails(rootFolder, seriesPaths, true);
+            GetDetails(rootFolder, gamePaths, true);
             _cache.Clear();
 
             return rootFolder;
@@ -134,7 +134,7 @@ namespace Playarr.Core.RootFolders
             _cache.Clear();
         }
 
-        private List<UnmappedFolder> GetUnmappedFolders(string path, Dictionary<int, string> seriesPaths)
+        private List<UnmappedFolder> GetUnmappedFolders(string path, Dictionary<int, string> gamePaths)
         {
             _logger.Debug("Generating list of unmapped folders");
 
@@ -162,7 +162,7 @@ namespace Playarr.Core.RootFolders
                 }
             }
 
-            var unmappedFolders = possibleGameFolders.Except(seriesPaths.Select(s => s.Value), PathEqualityComparer.Instance).ToList();
+            var unmappedFolders = possibleGameFolders.Except(gamePaths.Select(s => s.Value), PathEqualityComparer.Instance).ToList();
 
             foreach (var unmappedFolder in unmappedFolders)
             {
@@ -185,9 +185,9 @@ namespace Playarr.Core.RootFolders
         public RootFolder Get(int id, bool timeout)
         {
             var rootFolder = _rootFolderRepository.Get(id);
-            var seriesPaths = _seriesRepository.AllSeriesPaths();
+            var gamePaths = _gameRepository.AllGamePaths();
 
-            GetDetails(rootFolder, seriesPaths, timeout);
+            GetDetails(rootFolder, gamePaths, timeout);
 
             return rootFolder;
         }
@@ -197,7 +197,7 @@ namespace Playarr.Core.RootFolders
             return _cache.Get(path, () => GetBestRootFolderPathInternal(path), TimeSpan.FromDays(1));
         }
 
-        private void GetDetails(RootFolder rootFolder, Dictionary<int, string> seriesPaths, bool timeout)
+        private void GetDetails(RootFolder rootFolder, Dictionary<int, string> gamePaths, bool timeout)
         {
             Task.Run(() =>
             {
@@ -207,7 +207,7 @@ namespace Playarr.Core.RootFolders
                     rootFolder.IsEmpty = _diskProvider.FolderEmpty(rootFolder.Path);
                     rootFolder.FreeSpace = _diskProvider.GetAvailableSpace(rootFolder.Path);
                     rootFolder.TotalSpace = _diskProvider.GetTotalSize(rootFolder.Path);
-                    rootFolder.UnmappedFolders = GetUnmappedFolders(rootFolder.Path, seriesPaths);
+                    rootFolder.UnmappedFolders = GetUnmappedFolders(rootFolder.Path, gamePaths);
                 }
             }).Wait(timeout ? 5000 : -1);
         }

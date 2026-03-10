@@ -353,7 +353,7 @@ namespace Playarr.Core.Test.Download.DownloadClientTests.DownloadStationTests
                   .Callback(PrepareClientToReturnQueuedItem);
         }
 
-        protected override RemoteEpisode CreateRemoteEpisode()
+        protected override RemoteRom CreateRemoteEpisode()
         {
             var rom = base.CreateRemoteEpisode();
 

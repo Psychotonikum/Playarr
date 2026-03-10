@@ -11,7 +11,7 @@ namespace Playarr.Core.Download.TrackedDownloads
         public DownloadClientItem ImportItem { get; set; }
         public TrackedDownloadState State { get; set; }
         public TrackedDownloadStatus Status { get; private set; }
-        public RemoteEpisode RemoteEpisode { get; set; }
+        public RemoteRom RemoteRom { get; set; }
         public TrackedDownloadStatusMessage[] StatusMessages { get; private set; }
         public DownloadProtocol Protocol { get; set; }
         public string Indexer { get; set; }

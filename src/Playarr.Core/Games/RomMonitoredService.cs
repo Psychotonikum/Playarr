@@ -13,14 +13,14 @@ namespace Playarr.Core.Games
 
     public class EpisodeMonitoredService : IEpisodeMonitoredService
     {
-        private readonly IGameService _seriesService;
-        private readonly IRomService _episodeService;
+        private readonly IGameService _gameService;
+        private readonly IRomService _romService;
         private readonly Logger _logger;
 
         public EpisodeMonitoredService(IGameService seriesService, IRomService episodeService, Logger logger)
         {
-            _seriesService = seriesService;
-            _episodeService = episodeService;
+            _gameService = seriesService;
+            _romService = episodeService;
             _logger = logger;
         }
 
@@ -29,7 +29,7 @@ namespace Playarr.Core.Games
             // Update the game without changing the roms
             if (monitoringOptions == null)
             {
-                _seriesService.UpdateSeries(game, false);
+                _gameService.UpdateSeries(game, false);
                 return;
             }
 
@@ -48,7 +48,7 @@ namespace Playarr.Core.Games
 
             var firstSeason = game.Platforms.Select(s => s.PlatformNumber).Where(s => s > 0).MinOrDefault();
             var lastSeason = game.Platforms.Select(s => s.PlatformNumber).MaxOrDefault();
-            var roms = _episodeService.GetEpisodeBySeries(game.Id);
+            var roms = _romService.GetEpisodeBySeries(game.Id);
 
             switch (monitoringOptions.Monitor)
             {
@@ -168,15 +168,15 @@ namespace Playarr.Core.Games
                 }
             }
 
-            _episodeService.UpdateEpisodes(roms);
-            _seriesService.UpdateSeries(game, false);
+            _romService.UpdateEpisodes(roms);
+            _gameService.UpdateSeries(game, false);
         }
 
         private void LegacySetEpisodeMonitoredStatus(Game game, MonitoringOptions monitoringOptions)
         {
             _logger.Debug("[{0}] Setting rom monitored status.", game.Title);
 
-            var roms = _episodeService.GetEpisodeBySeries(game.Id);
+            var roms = _romService.GetEpisodeBySeries(game.Id);
 
             if (monitoringOptions.IgnoreEpisodesWithFiles)
             {
@@ -226,9 +226,9 @@ namespace Playarr.Core.Games
                 }
             }
 
-            _episodeService.UpdateEpisodes(roms);
+            _romService.UpdateEpisodes(roms);
 
-            _seriesService.UpdateSeries(game, false);
+            _gameService.UpdateSeries(game, false);
         }
 
         private void ToggleEpisodesMonitoredState(IEnumerable<Rom> roms, bool monitored)

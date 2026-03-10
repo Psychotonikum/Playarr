@@ -24,7 +24,7 @@ namespace Playarr.Core.Download
 
         public bool IgnoreDownload(TrackedDownload trackedDownload)
         {
-            var game = trackedDownload.RemoteEpisode.Game;
+            var game = trackedDownload.RemoteRom.Game;
 
             if (game == null)
             {
@@ -32,14 +32,14 @@ namespace Playarr.Core.Download
                 return false;
             }
 
-            var roms = trackedDownload.RemoteEpisode.Roms;
+            var roms = trackedDownload.RemoteRom.Roms;
 
             var downloadIgnoredEvent = new DownloadIgnoredEvent
                                       {
                                           GameId = game.Id,
                                           RomIds = roms.Select(e => e.Id).ToList(),
-                                          Languages = trackedDownload.RemoteEpisode.Languages,
-                                          Quality = trackedDownload.RemoteEpisode.ParsedRomInfo.Quality,
+                                          Languages = trackedDownload.RemoteRom.Languages,
+                                          Quality = trackedDownload.RemoteRom.ParsedRomInfo.Quality,
                                           SourceTitle = trackedDownload.DownloadItem.Title,
                                           DownloadClientInfo = trackedDownload.DownloadItem.DownloadClientInfo,
                                           DownloadId = trackedDownload.DownloadItem.DownloadId,

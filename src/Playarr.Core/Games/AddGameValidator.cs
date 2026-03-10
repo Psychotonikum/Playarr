@@ -12,8 +12,8 @@ namespace Playarr.Core.Games
     public class AddGameValidator : AbstractValidator<Game>, IAddGameValidator
     {
         public AddGameValidator(RootFolderValidator rootFolderValidator,
-                                  SeriesPathValidator seriesPathValidator,
-                                  SeriesAncestorValidator seriesAncestorValidator,
+                                  GamePathValidator seriesPathValidator,
+                                  GameAncestorValidator seriesAncestorValidator,
                                   GameTitleSlugValidator gameTitleSlugValidator)
         {
             RuleFor(c => c.Path).Cascade(CascadeMode.Stop)

@@ -27,7 +27,7 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
         [TestCase(266189, "The Blacklist")]
         public void should_be_able_to_get_series_detail(int igdbId, string title)
         {
-            var details = Subject.GetSeriesInfo(igdbId);
+            var details = Subject.GetGameInfo(igdbId);
 
             ValidateSeries(details.Item1);
             ValidateEpisodes(details.Item2);
@@ -38,13 +38,13 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
         [Test]
         public void getting_details_of_invalid_series()
         {
-            Assert.Throws<SeriesNotFoundException>(() => Subject.GetSeriesInfo(int.MaxValue));
+            Assert.Throws<SeriesNotFoundException>(() => Subject.GetGameInfo(int.MaxValue));
         }
 
         [Test]
         public void should_not_have_period_at_start_of_title_slug()
         {
-            var details = Subject.GetSeriesInfo(79099);
+            var details = Subject.GetGameInfo(79099);
 
             details.Item1.TitleSlug.Should().Be("dothack");
         }

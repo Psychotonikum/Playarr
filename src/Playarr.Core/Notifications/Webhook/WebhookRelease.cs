@@ -13,7 +13,7 @@ namespace Playarr.Core.Notifications.Webhook
         {
         }
 
-        public WebhookRelease(QualityModel quality, RemoteEpisode remoteRom)
+        public WebhookRelease(QualityModel quality, RemoteRom remoteRom)
         {
             Quality = quality.Quality.Name;
             QualityVersion = quality.Revision.Version;

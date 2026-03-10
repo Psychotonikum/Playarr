@@ -31,9 +31,9 @@ namespace Playarr.Core.Download
         private readonly IProvideImportItemService _provideImportItemService;
         private readonly IDownloadedEpisodesImportService _downloadedEpisodesImportService;
         private readonly IParsingService _parsingService;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly ITrackedDownloadAlreadyImported _trackedDownloadAlreadyImported;
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly IMediaFileService _mediaFileService;
         private readonly IRejectedImportService _rejectedImportService;
         private readonly Logger _logger;
@@ -55,9 +55,9 @@ namespace Playarr.Core.Download
             _provideImportItemService = provideImportItemService;
             _downloadedEpisodesImportService = downloadedEpisodesImportService;
             _parsingService = parsingService;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _trackedDownloadAlreadyImported = trackedDownloadAlreadyImported;
-            _episodeService = episodeService;
+            _romService = episodeService;
             _mediaFileService = mediaFileService;
             _rejectedImportService = rejectedImportService;
             _logger = logger;
@@ -92,13 +92,13 @@ namespace Playarr.Core.Download
                 return;
             }
 
-            var game = _parsingService.GetSeries(trackedDownload.DownloadItem.Title);
+            var game = _parsingService.GetGame(trackedDownload.DownloadItem.Title);
 
             if (game == null)
             {
                 if (historyItem != null)
                 {
-                    game = _seriesService.GetSeries(historyItem.GameId);
+                    game = _gameService.GetGame(historyItem.GameId);
                 }
 
                 if (game == null)
@@ -134,7 +134,7 @@ namespace Playarr.Core.Download
                 return;
             }
 
-            if (trackedDownload.RemoteEpisode == null)
+            if (trackedDownload.RemoteRom == null)
             {
                 trackedDownload.Warn("Unable to parse download, automatic import is not possible.");
                 SetStateToImportBlocked(trackedDownload);
@@ -147,7 +147,7 @@ namespace Playarr.Core.Download
             var outputPath = trackedDownload.ImportItem.OutputPath.FullPath;
             var importResults = _downloadedEpisodesImportService.ProcessPath(outputPath,
                 ImportMode.Auto,
-                trackedDownload.RemoteEpisode.Game,
+                trackedDownload.RemoteRom.Game,
                 trackedDownload.ImportItem);
 
             if (VerifyImport(trackedDownload, importResults))
@@ -209,7 +209,7 @@ namespace Playarr.Core.Download
             var allEpisodesImported = importResults.Where(c => c.Result == ImportResultType.Imported)
                                                    .SelectMany(c => c.ImportDecision.LocalEpisode.Roms)
                                                    .Count() >= Math.Max(1,
-                                          trackedDownload.RemoteEpisode.Roms.Count);
+                                          trackedDownload.RemoteRom.Roms.Count);
 
             var historyItems = _historyService.FindByDownloadId(trackedDownload.DownloadItem.DownloadId)
                 .OrderByDescending(h => h.Date)
@@ -224,7 +224,7 @@ namespace Playarr.Core.Download
                 trackedDownload.State = TrackedDownloadState.Imported;
 
                 _eventAggregator.PublishEvent(new DownloadCompletedEvent(trackedDownload,
-                    trackedDownload.RemoteEpisode.Game.Id,
+                    trackedDownload.RemoteRom.Game.Id,
                     importResults.Where(c => c.Result == ImportResultType.Imported).Select(c => c.RomFile).ToList(),
                     releaseInfo));
 
@@ -256,7 +256,7 @@ namespace Playarr.Core.Download
                 {
                     _logger.ForDebugEvent()
                            .Message("No Roms were just imported, but all roms were previously imported, possible issue with download history.")
-                           .Property("GameId", trackedDownload.RemoteEpisode.Game.Id)
+                           .Property("GameId", trackedDownload.RemoteRom.Game.Id)
                            .Property("DownloadId", trackedDownload.DownloadItem.DownloadId)
                            .Property("Title", trackedDownload.DownloadItem.Title)
                            .Property("Path", trackedDownload.ImportItem.OutputPath.ToString())
@@ -264,11 +264,11 @@ namespace Playarr.Core.Download
                            .Log();
                 }
 
-                var roms = _episodeService.GetEpisodes(trackedDownload.RemoteEpisode.Roms.Select(e => e.Id));
+                var roms = _romService.GetRoms(trackedDownload.RemoteRom.Roms.Select(e => e.Id));
                 var files = _mediaFileService.GetFiles(roms.Select(e => e.EpisodeFileId).Where(i => i > 0).Distinct());
 
                 trackedDownload.State = TrackedDownloadState.Imported;
-                _eventAggregator.PublishEvent(new DownloadCompletedEvent(trackedDownload, trackedDownload.RemoteEpisode.Game.Id, files, releaseInfo));
+                _eventAggregator.PublishEvent(new DownloadCompletedEvent(trackedDownload, trackedDownload.RemoteRom.Game.Id, files, releaseInfo));
 
                 return true;
             }

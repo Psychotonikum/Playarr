@@ -23,7 +23,7 @@ namespace Playarr.Api.V3.History
         private readonly ICustomFormatCalculationService _formatCalculator;
         private readonly IUpgradableSpecification _upgradableSpecification;
         private readonly IFailedDownloadService _failedDownloadService;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
 
         public HistoryController(IHistoryService historyService,
                              ICustomFormatCalculationService formatCalculator,
@@ -35,7 +35,7 @@ namespace Playarr.Api.V3.History
             _formatCalculator = formatCalculator;
             _upgradableSpecification = upgradableSpecification;
             _failedDownloadService = failedDownloadService;
-            _seriesService = seriesService;
+            _gameService = seriesService;
         }
 
         protected HistoryResource MapToResource(EpisodeHistory model, bool includeSeries, bool includeEpisode)
@@ -108,7 +108,7 @@ namespace Playarr.Api.V3.History
         [Produces("application/json")]
         public List<HistoryResource> GetSeriesHistory(int gameId, int? platformNumber, EpisodeHistoryEventType? eventType = null, bool includeSeries = false, bool includeEpisode = false)
         {
-            var game = _seriesService.GetSeries(gameId);
+            var game = _gameService.GetGame(gameId);
 
             if (platformNumber.HasValue)
             {

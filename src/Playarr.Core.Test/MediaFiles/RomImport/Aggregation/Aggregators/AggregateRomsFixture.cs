@@ -29,7 +29,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
                              };
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetEpisodes(It.IsAny<ParsedRomInfo>(), _series, It.IsAny<bool>(), null))
+                  .Setup(s => s.GetRoms(It.IsAny<ParsedRomInfo>(), _series, It.IsAny<bool>(), null))
                   .Returns(Builder<Rom>.CreateListOfSize(1).BuildList());
 
             Mocker.SetConstant(augmenters.Select(c => c.Object));
@@ -51,7 +51,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
             Subject.Aggregate(localRom, null);
 
             Mocker.GetMock<IParsingService>()
-                  .Verify(v => v.GetEpisodes(fileRomInfo, _series, localRom.SceneSource, null), Times.Once());
+                  .Verify(v => v.GetRoms(fileRomInfo, _series, localRom.SceneSource, null), Times.Once());
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
             Subject.Aggregate(localRom, null);
 
             Mocker.GetMock<IParsingService>()
-                  .Verify(v => v.GetEpisodes(fileRomInfo, _series, localRom.SceneSource, null), Times.Once());
+                  .Verify(v => v.GetRoms(fileRomInfo, _series, localRom.SceneSource, null), Times.Once());
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
             Subject.Aggregate(localRom, null);
 
             Mocker.GetMock<IParsingService>()
-                  .Verify(v => v.GetEpisodes(fileRomInfo, _series, localRom.SceneSource, null), Times.Once());
+                  .Verify(v => v.GetRoms(fileRomInfo, _series, localRom.SceneSource, null), Times.Once());
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
             Subject.Aggregate(localRom, null);
 
             Mocker.GetMock<IParsingService>()
-                  .Verify(v => v.GetEpisodes(folderRomInfo, _series, localRom.SceneSource, null), Times.Once());
+                  .Verify(v => v.GetRoms(folderRomInfo, _series, localRom.SceneSource, null), Times.Once());
         }
 
         [Test]
@@ -128,7 +128,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
             Subject.Aggregate(localRom, null);
 
             Mocker.GetMock<IParsingService>()
-                  .Verify(v => v.GetEpisodes(fileRomInfo, _series, localRom.SceneSource, null), Times.Once());
+                  .Verify(v => v.GetRoms(fileRomInfo, _series, localRom.SceneSource, null), Times.Once());
         }
 
         [Test]
@@ -145,7 +145,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
                                };
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetEpisodes(fileRomInfo, _series, It.IsAny<bool>(), null))
+                  .Setup(s => s.GetRoms(fileRomInfo, _series, It.IsAny<bool>(), null))
                   .Returns(new List<Rom>());
 
             Mocker.GetMock<IParsingService>()
@@ -155,7 +155,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
             Subject.Aggregate(localRom, null);
 
             Mocker.GetMock<IParsingService>()
-                  .Verify(v => v.GetEpisodes(specialRomInfo, _series, localRom.SceneSource, null), Times.Once());
+                  .Verify(v => v.GetRoms(specialRomInfo, _series, localRom.SceneSource, null), Times.Once());
         }
     }
 }

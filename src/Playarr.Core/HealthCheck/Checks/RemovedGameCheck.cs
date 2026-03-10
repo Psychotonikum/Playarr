@@ -12,17 +12,17 @@ namespace Playarr.Core.HealthCheck.Checks
     [CheckOn(typeof(SeriesRefreshCompleteEvent))]
     public class RemovedSeriesCheck : HealthCheckBase, ICheckOnCondition<SeriesUpdatedEvent>, ICheckOnCondition<SeriesDeletedEvent>
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
 
         public RemovedSeriesCheck(IGameService seriesService, ILocalizationService localizationService)
             : base(localizationService)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
         }
 
         public override HealthCheck Check()
         {
-            var deletedSeries = _seriesService.GetAllSeries().Where(v => v.Status == GameStatusType.Deleted).ToList();
+            var deletedSeries = _gameService.GetAllGames().Where(v => v.Status == GameStatusType.Deleted).ToList();
 
             if (deletedSeries.Empty())
             {

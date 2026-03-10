@@ -13,9 +13,9 @@ import ModalContent from 'Components/Modal/ModalContent';
 import ModalFooter from 'Components/Modal/ModalFooter';
 import ModalHeader from 'Components/Modal/ModalHeader';
 import Popover from 'Components/Tooltip/Popover';
+import { useUpdateGameMonitor } from 'Game/useGame';
 import usePrevious from 'Helpers/Hooks/usePrevious';
 import { icons, kinds, tooltipPositions } from 'Helpers/Props';
-import { useUpdateGameMonitor } from 'Game/useGame';
 import { InputChanged } from 'typings/inputs';
 import translate from 'Utilities/String/translate';
 import styles from './MonitoringOptionsModalContent.css';
@@ -31,11 +31,8 @@ function MonitoringOptionsModalContent({
   gameId,
   onModalClose,
 }: MonitoringOptionsModalContentProps) {
-  const {
-    updateGameMonitor,
-    isUpdatingGameMonitor,
-    updateGameMonitorError,
-  } = useUpdateGameMonitor(true);
+  const { updateGameMonitor, isUpdatingGameMonitor, updateGameMonitorError } =
+    useUpdateGameMonitor(true);
 
   const [monitor, setMonitor] = useState(NO_CHANGE);
   const wasSaving = usePrevious(isUpdatingGameMonitor);
@@ -63,12 +60,7 @@ function MonitoringOptionsModalContent({
     if (!isUpdatingGameMonitor && wasSaving && !updateGameMonitorError) {
       onModalClose();
     }
-  }, [
-    isUpdatingGameMonitor,
-    wasSaving,
-    updateGameMonitorError,
-    onModalClose,
-  ]);
+  }, [isUpdatingGameMonitor, wasSaving, updateGameMonitorError, onModalClose]);
 
   return (
     <ModalContent onModalClose={onModalClose}>

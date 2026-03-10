@@ -47,45 +47,6 @@ namespace Playarr.Core.Indexers.Fanzub
             return pageableRequests;
         }
 
-        public virtual IndexerPageableRequestChain GetSearchRequests(DailyEpisodeSearchCriteria searchCriteria)
-        {
-            return new IndexerPageableRequestChain();
-        }
-
-        public virtual IndexerPageableRequestChain GetSearchRequests(DailySeasonSearchCriteria searchCriteria)
-        {
-            return new IndexerPageableRequestChain();
-        }
-
-        public virtual IndexerPageableRequestChain GetSearchRequests(AnimeEpisodeSearchCriteria searchCriteria)
-        {
-            var pageableRequests = new IndexerPageableRequestChain();
-
-            var searchTitles = searchCriteria.CleanSceneTitles.SelectMany(v => GetTitleSearchStrings(v, searchCriteria.AbsoluteEpisodeNumber)).ToList();
-
-            if (Settings.AnimeStandardFormatSearch && searchCriteria.PlatformNumber > 0 && searchCriteria.EpisodeNumber > 0)
-            {
-                searchTitles.AddRange(searchCriteria.CleanSceneTitles.SelectMany(v => GetTitleSearchStrings(v, searchCriteria.PlatformNumber, searchCriteria.EpisodeNumber)).ToList());
-            }
-
-            pageableRequests.Add(GetPagedRequests(string.Join("|", searchTitles)));
-
-            return pageableRequests;
-        }
-
-        public virtual IndexerPageableRequestChain GetSearchRequests(AnimeSeasonSearchCriteria searchCriteria)
-        {
-            var pageableRequests = new IndexerPageableRequestChain();
-
-            if (Settings.AnimeStandardFormatSearch && searchCriteria.PlatformNumber > 0)
-            {
-                var searchTitles = searchCriteria.CleanSceneTitles.SelectMany(v => GetSeasonSearchStrings(v, searchCriteria.PlatformNumber)).ToList();
-                pageableRequests.Add(GetPagedRequests(string.Join("|", searchTitles)));
-            }
-
-            return pageableRequests;
-        }
-
         public virtual IndexerPageableRequestChain GetSearchRequests(SpecialEpisodeSearchCriteria searchCriteria)
         {
             return new IndexerPageableRequestChain();

@@ -3,9 +3,9 @@ import { useSelect } from 'App/Select/SelectContext';
 import CommandNames from 'Commands/CommandNames';
 import { useCommandExecuting, useExecuteCommand } from 'Commands/useCommands';
 import PageToolbarButton from 'Components/Page/Toolbar/PageToolbarButton';
-import { icons } from 'Helpers/Props';
 import Game from 'Game/Game';
 import { useGameIndex } from 'Game/useGame';
+import { icons } from 'Helpers/Props';
 import translate from 'Utilities/String/translate';
 
 interface GameIndexRefreshGameButtonProps {
@@ -13,9 +13,7 @@ interface GameIndexRefreshGameButtonProps {
   selectedFilterKey: string | number;
 }
 
-function GameIndexRefreshGameButton(
-  props: GameIndexRefreshGameButtonProps
-) {
+function GameIndexRefreshGameButton(props: GameIndexRefreshGameButtonProps) {
   const isRefreshing = useCommandExecuting(CommandNames.RefreshSeries);
   const { data, totalItems } = useGameIndex();
 

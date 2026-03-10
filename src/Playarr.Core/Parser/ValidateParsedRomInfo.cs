@@ -11,22 +11,6 @@ namespace Playarr.Core.Parser
 
         public static bool ValidateForGameType(ParsedRomInfo parsedRomInfo, Game game, bool warnIfInvalid = true)
         {
-            if (parsedRomInfo.IsDaily && game.SeriesType == GameTypes.Standard)
-            {
-                var message = $"Found daily-style rom for non-daily game: {game}";
-
-                if (warnIfInvalid)
-                {
-                    Logger.Warn(message);
-                }
-                else
-                {
-                    Logger.Debug(message);
-                }
-
-                return false;
-            }
-
             return true;
         }
     }

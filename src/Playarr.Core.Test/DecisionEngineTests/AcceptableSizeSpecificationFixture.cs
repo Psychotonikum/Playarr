@@ -19,9 +19,9 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
     public class AcceptableSizeSpecificationFixture : CoreTest<AcceptableSizeSpecification>
     {
-        private RemoteEpisode _parseResultMultiSet;
-        private RemoteEpisode _parseResultMulti;
-        private RemoteEpisode _parseResultSingle;
+        private RemoteRom _parseResultMultiSet;
+        private RemoteRom _parseResultMulti;
+        private RemoteRom _parseResultSingle;
         private Game _series;
         private List<Rom> _episodes;
 
@@ -75,7 +75,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 .With(s => s.Runtime = 30)
                 .BuildList();
 
-            _parseResultMultiSet = new RemoteEpisode
+            _parseResultMultiSet = new RemoteRom
                                     {
                                         Game = _series,
                                         Release = new ReleaseInfo(),
@@ -87,7 +87,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                             .BuildList()
                                     };
 
-            _parseResultMulti = new RemoteEpisode
+            _parseResultMulti = new RemoteRom
                                     {
                                         Game = _series,
                                         Release = new ReleaseInfo(),
@@ -99,7 +99,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                             .BuildList()
                                     };
 
-            _parseResultSingle = new RemoteEpisode
+            _parseResultSingle = new RemoteRom
                                     {
                                         Game = _series,
                                         Release = new ReleaseInfo(),
@@ -119,7 +119,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 .Returns<Quality>(v => Quality.DefaultQualityDefinitions.First(c => c.Quality == v));
 
             Mocker.GetMock<IRomService>().Setup(
-                s => s.GetEpisodesBySeason(It.IsAny<int>(), It.IsAny<int>()))
+                s => s.GetRomsByPlatform(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(_episodes);
         }
 
@@ -252,7 +252,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             _series.Runtime = 60;
             _parseResultSingle.Game = _series;
-            _parseResultSingle.Game.SeriesType = GameTypes.Daily;
+            _parseResultSingle.Game.SeriesType = GameTypes.Standard;
             _parseResultSingle.Release.Size = 300.Megabytes();
             _parseResultSingle.Roms.First().Runtime = 60;
 
@@ -266,7 +266,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             _series.Runtime = 30;
             _parseResultSingle.Game = _series;
-            _parseResultSingle.Game.SeriesType = GameTypes.Daily;
+            _parseResultSingle.Game.SeriesType = GameTypes.Standard;
             _parseResultSingle.Release.Size = 500.Megabytes();
             _parseResultSingle.Roms.First().Runtime = 30;
 
@@ -280,7 +280,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             _series.Runtime = 45;
             _parseResultSingle.Game = _series;
-            _parseResultSingle.Game.SeriesType = GameTypes.Daily;
+            _parseResultSingle.Game.SeriesType = GameTypes.Standard;
             _parseResultSingle.Release.Size = 8000.Megabytes();
             _parseResultSingle.Roms.First().Runtime = 30;
 

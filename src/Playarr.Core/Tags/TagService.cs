@@ -35,7 +35,7 @@ namespace Playarr.Core.Tags
         private readonly IImportListFactory _importListFactory;
         private readonly INotificationFactory _notificationFactory;
         private readonly IReleaseProfileService _releaseProfileService;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IIndexerFactory _indexerService;
         private readonly IAutoTaggingService _autoTaggingService;
         private readonly IDownloadClientFactory _downloadClientFactory;
@@ -57,7 +57,7 @@ namespace Playarr.Core.Tags
             _importListFactory = importListFactory;
             _notificationFactory = notificationFactory;
             _releaseProfileService = releaseProfileService;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _indexerService = indexerService;
             _autoTaggingService = autoTaggingService;
             _downloadClientFactory = downloadClientFactory;
@@ -93,7 +93,7 @@ namespace Playarr.Core.Tags
             var notifications = _notificationFactory.AllForTag(tagId);
             var releaseProfiles = _releaseProfileService.AllForTag(tagId);
             var excludedReleaseProfiles = _releaseProfileService.AllExcludedForTag(tagId);
-            var game = _seriesService.AllForTag(tagId);
+            var game = _gameService.AllForTag(tagId);
             var indexers = _indexerService.AllForTag(tagId);
             var autoTags = _autoTaggingService.AllForTag(tagId);
             var downloadClients = _downloadClientFactory.AllForTag(tagId);
@@ -122,7 +122,7 @@ namespace Playarr.Core.Tags
             var notifications = _notificationFactory.All();
             var releaseProfiles = _releaseProfileService.All();
             var excludedReleaseProfiles = _releaseProfileService.All();
-            var game = _seriesService.GetAllGameTags();
+            var game = _gameService.GetAllGameTags();
             var indexers = _indexerService.All();
             var autoTags = _autoTaggingService.All();
             var downloadClients = _downloadClientFactory.All();

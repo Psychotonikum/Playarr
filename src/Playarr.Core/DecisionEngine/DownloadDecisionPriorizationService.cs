@@ -23,13 +23,13 @@ namespace Playarr.Core.DecisionEngine
 
         public List<DownloadDecision> PrioritizeDecisions(List<DownloadDecision> decisions)
         {
-            return decisions.Where(c => c.RemoteEpisode.Game != null)
-                            .GroupBy(c => c.RemoteEpisode.Game.Id, (gameId, downloadDecisions) =>
+            return decisions.Where(c => c.RemoteRom.Game != null)
+                            .GroupBy(c => c.RemoteRom.Game.Id, (gameId, downloadDecisions) =>
                                 {
                                     return downloadDecisions.OrderByDescending(decision => decision, new DownloadDecisionComparer(_configService, _delayProfileService));
                                 })
                             .SelectMany(c => c)
-                            .Union(decisions.Where(c => c.RemoteEpisode.Game == null))
+                            .Union(decisions.Where(c => c.RemoteRom.Game == null))
                             .ToList();
         }
     }

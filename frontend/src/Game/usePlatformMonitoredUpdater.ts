@@ -1,3 +1,3 @@
-const useSeasonMonitoredUpdater = () => {};
+const usePlatformMonitoredUpdater = () => {};
 
-export default useSeasonMonitoredUpdater;
+export default usePlatformMonitoredUpdater;

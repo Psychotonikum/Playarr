@@ -27,7 +27,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         private void GivenEpisodesInFile(List<Rom> roms)
         {
             Mocker.GetMock<IRomService>()
-                  .Setup(s => s.GetEpisodesByFileId(It.IsAny<int>()))
+                  .Setup(s => s.GetRomsByFileId(It.IsAny<int>()))
                   .Returns(roms);
         }
 
@@ -62,11 +62,11 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                            .BuildList();
 
             Mocker.GetMock<IRomService>()
-                  .Setup(s => s.GetEpisodesByFileId(roms.First().EpisodeFileId))
+                  .Setup(s => s.GetRomsByFileId(roms.First().EpisodeFileId))
                   .Returns(new List<Rom> { roms.First() });
 
             Mocker.GetMock<IRomService>()
-                  .Setup(s => s.GetEpisodesByFileId(roms.Last().EpisodeFileId))
+                  .Setup(s => s.GetRomsByFileId(roms.Last().EpisodeFileId))
                   .Returns(new List<Rom> { roms.Last() });
 
             Subject.IsSatisfiedBy(roms).Should().BeTrue();

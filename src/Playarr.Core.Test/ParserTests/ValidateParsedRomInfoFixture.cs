@@ -34,7 +34,7 @@ namespace Playarr.Core.Test.ParserTests
 
         private void GivenDailySeries()
         {
-            _series.SeriesType = GameTypes.Daily;
+            _series.SeriesType = GameTypes.Standard;
         }
 
         [Test]

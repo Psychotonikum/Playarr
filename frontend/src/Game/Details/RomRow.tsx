@@ -7,17 +7,17 @@ import Column from 'Components/Table/Column';
 import TableRow from 'Components/Table/TableRow';
 import Popover from 'Components/Tooltip/Popover';
 import Tooltip from 'Components/Tooltip/Tooltip';
+import { useSingleGame } from 'Game/useGame';
+import { icons } from 'Helpers/Props';
+import IndexerFlags from 'Rom/IndexerFlags';
 import RomFormats from 'Rom/RomFormats';
 import RomNumber from 'Rom/RomNumber';
 import RomSearchCell from 'Rom/RomSearchCell';
 import RomStatus from 'Rom/RomStatus';
 import RomTitleLink from 'Rom/RomTitleLink';
-import IndexerFlags from 'Rom/IndexerFlags';
+import MediaInfo from 'RomFile/MediaInfo';
 import RomFileLanguages from 'RomFile/RomFileLanguages';
 import { useRomFile } from 'RomFile/RomFileProvider';
-import MediaInfo from 'RomFile/MediaInfo';
-import { icons } from 'Helpers/Props';
-import { useSingleGame } from 'Game/useGame';
 import MediaInfoModel from 'typings/MediaInfo';
 import formatBytes from 'Utilities/Number/formatBytes';
 import formatCustomFormatScore from 'Utilities/Number/formatCustomFormatScore';
@@ -130,9 +130,7 @@ function RomRow({
             <TableRowCell
               key={name}
               className={
-                gameType === 'anime'
-                  ? styles.romNumberAnime
-                  : styles.romNumber
+                gameType === 'anime' ? styles.romNumberAnime : styles.romNumber
               }
             >
               <RomNumber
@@ -254,10 +252,7 @@ function RomRow({
         if (name === 'videoDynamicRangeType') {
           return (
             <TableRowCell key={name} className={styles.videoDynamicRangeType}>
-              <MediaInfo
-                type="videoDynamicRangeType"
-                romFileId={romFileId}
-              />
+              <MediaInfo type="videoDynamicRangeType" romFileId={romFileId} />
             </TableRowCell>
           );
         }
@@ -285,9 +280,7 @@ function RomRow({
                 <Popover
                   anchor={<Icon name={icons.FLAG} kind="default" />}
                   title={translate('IndexerFlags')}
-                  body={
-                    <IndexerFlags indexerFlags={romFile?.indexerFlags} />
-                  }
+                  body={<IndexerFlags indexerFlags={romFile?.indexerFlags} />}
                   position="left"
                 />
               ) : null}

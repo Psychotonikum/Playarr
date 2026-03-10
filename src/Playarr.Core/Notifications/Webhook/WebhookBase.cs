@@ -39,7 +39,7 @@ namespace Playarr.Core.Notifications.Webhook
                 EventType = WebhookEventType.Grab,
                 InstanceName = _configFileProvider.InstanceName,
                 ApplicationUrl = _configService.ApplicationUrl,
-                Game = GetSeries(message.Game),
+                Game = GetGame(message.Game),
                 Roms = remoteRom.Roms.ConvertAll(x => new WebhookEpisode(x)),
                 Release = new WebhookRelease(quality, remoteRom),
                 DownloadClient = message.DownloadClientName,
@@ -58,7 +58,7 @@ namespace Playarr.Core.Notifications.Webhook
                 EventType = WebhookEventType.Download,
                 InstanceName = _configFileProvider.InstanceName,
                 ApplicationUrl = _configService.ApplicationUrl,
-                Game = GetSeries(message.Game),
+                Game = GetGame(message.Game),
                 Roms = romFile.Roms.Value.ConvertAll(x => new WebhookEpisode(x)),
                 RomFile = new WebhookRomFile(romFile)
                 {
@@ -93,7 +93,7 @@ namespace Playarr.Core.Notifications.Webhook
                 EventType = WebhookEventType.Download,
                 InstanceName = _configFileProvider.InstanceName,
                 ApplicationUrl = _configService.ApplicationUrl,
-                Game = GetSeries(message.Game),
+                Game = GetGame(message.Game),
                 Roms = message.Roms.ConvertAll(x => new WebhookEpisode(x)),
                 RomFiles = romFiles.ConvertAll(e => new WebhookRomFile(e)),
                 Release = new WebhookGrabbedRelease(message.Release, romFiles.First().IndexerFlags, romFiles.First().ReleaseType),
@@ -114,7 +114,7 @@ namespace Playarr.Core.Notifications.Webhook
                 EventType = WebhookEventType.RomFileDelete,
                 InstanceName = _configFileProvider.InstanceName,
                 ApplicationUrl = _configService.ApplicationUrl,
-                Game = GetSeries(deleteMessage.Game),
+                Game = GetGame(deleteMessage.Game),
                 Roms = deleteMessage.RomFile.Roms.Value.ConvertAll(x => new WebhookEpisode(x)),
                 RomFile = new WebhookRomFile(deleteMessage.RomFile),
                 DeleteReason = deleteMessage.Reason
@@ -128,7 +128,7 @@ namespace Playarr.Core.Notifications.Webhook
                 EventType = WebhookEventType.SeriesAdd,
                 InstanceName = _configFileProvider.InstanceName,
                 ApplicationUrl = _configService.ApplicationUrl,
-                Game = GetSeries(addMessage.Game),
+                Game = GetGame(addMessage.Game),
             };
         }
 
@@ -139,7 +139,7 @@ namespace Playarr.Core.Notifications.Webhook
                 EventType = WebhookEventType.SeriesDelete,
                 InstanceName = _configFileProvider.InstanceName,
                 ApplicationUrl = _configService.ApplicationUrl,
-                Game = GetSeries(deleteMessage.Game),
+                Game = GetGame(deleteMessage.Game),
                 DeletedFiles = deleteMessage.DeletedFiles
             };
         }
@@ -151,7 +151,7 @@ namespace Playarr.Core.Notifications.Webhook
                 EventType = WebhookEventType.Rename,
                 InstanceName = _configFileProvider.InstanceName,
                 ApplicationUrl = _configService.ApplicationUrl,
-                Game = GetSeries(game),
+                Game = GetGame(game),
                 RenamedRomFiles = renamedFiles.ConvertAll(x => new WebhookRenamedRomFile(x))
             };
         }
@@ -204,7 +204,7 @@ namespace Playarr.Core.Notifications.Webhook
                 EventType = WebhookEventType.ManualInteractionRequired,
                 InstanceName = _configFileProvider.InstanceName,
                 ApplicationUrl = _configService.ApplicationUrl,
-                Game = GetSeries(message.Game),
+                Game = GetGame(message.Game),
                 Roms = remoteRom.Roms.ConvertAll(x => new WebhookEpisode(x)),
                 DownloadInfo = new WebhookDownloadClientItem(quality, message.TrackedDownload.DownloadItem),
                 DownloadClient = message.DownloadClientInfo?.Name,
@@ -245,7 +245,7 @@ namespace Playarr.Core.Notifications.Webhook
             };
         }
 
-        private WebhookSeries GetSeries(Game game)
+        private WebhookSeries GetGame(Game game)
         {
             if (game == null)
             {

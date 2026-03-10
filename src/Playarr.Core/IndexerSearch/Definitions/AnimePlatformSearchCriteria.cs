@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Playarr.Core.IndexerSearch.Definitions
 {
     public class AnimeSeasonSearchCriteria : SearchCriteriaBase
@@ -6,7 +8,9 @@ namespace Playarr.Core.IndexerSearch.Definitions
 
         public override string ToString()
         {
-            return $"[{Game.Title} : S{PlatformNumber:00}]";
+            var platformName = Game.Platforms?.FirstOrDefault(p => p.PlatformNumber == PlatformNumber)?.Title ?? $"Platform {PlatformNumber}";
+
+            return $"[{Game.Title} | {platformName}]";
         }
     }
 }

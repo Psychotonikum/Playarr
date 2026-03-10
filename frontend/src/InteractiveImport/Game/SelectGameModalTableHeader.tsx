@@ -8,9 +8,7 @@ interface SelectGameModalTableHeaderProps {
   columns: Column[];
 }
 
-function SelectGameModalTableHeader(
-  props: SelectGameModalTableHeaderProps
-) {
+function SelectGameModalTableHeader(props: SelectGameModalTableHeaderProps) {
   const { columns } = props;
 
   return (

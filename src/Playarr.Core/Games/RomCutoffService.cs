@@ -14,12 +14,12 @@ namespace Playarr.Core.Games
 
     public class EpisodeCutoffService : IEpisodeCutoffService
     {
-        private readonly IRomRepository _episodeRepository;
+        private readonly IRomRepository _romRepository;
         private readonly IQualityProfileService _qualityProfileService;
 
         public EpisodeCutoffService(IRomRepository episodeRepository, IQualityProfileService qualityProfileService)
         {
-            _episodeRepository = episodeRepository;
+            _romRepository = episodeRepository;
             _qualityProfileService = qualityProfileService;
         }
 
@@ -48,7 +48,7 @@ namespace Playarr.Core.Games
                 return pagingSpec;
             }
 
-            return _episodeRepository.EpisodesWhereCutoffUnmet(pagingSpec, qualitiesBelowCutoff, false);
+            return _romRepository.EpisodesWhereCutoffUnmet(pagingSpec, qualitiesBelowCutoff, false);
         }
     }
 }

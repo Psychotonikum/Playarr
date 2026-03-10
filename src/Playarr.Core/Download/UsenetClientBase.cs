@@ -35,9 +35,9 @@ namespace Playarr.Core.Download
 
         public override DownloadProtocol Protocol => DownloadProtocol.Usenet;
 
-        protected abstract string AddFromNzbFile(RemoteEpisode remoteRom, string filename, byte[] fileContent);
+        protected abstract string AddFromNzbFile(RemoteRom remoteRom, string filename, byte[] fileContent);
 
-        public override async Task<string> Download(RemoteEpisode remoteRom, IIndexer indexer)
+        public override async Task<string> Download(RemoteRom remoteRom, IIndexer indexer)
         {
             var url = remoteRom.Release.DownloadUrl;
             var filename =  FileNameBuilder.CleanFileName(remoteRom.Release.Title) + ".nzb";

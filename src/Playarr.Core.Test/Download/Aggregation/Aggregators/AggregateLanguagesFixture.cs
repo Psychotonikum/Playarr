@@ -17,7 +17,7 @@ namespace Playarr.Core.Test.Download.Aggregation.Aggregators
     [TestFixture]
     public class AggregateLanguagesFixture : CoreTest<AggregateLanguages>
     {
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
         private Game _series;
         private string _simpleReleaseTitle = "Game.Title.S01E01.xyz-RlsGroup";
 
@@ -31,7 +31,7 @@ namespace Playarr.Core.Test.Download.Aggregation.Aggregators
                        .With(m => m.OriginalLanguage = Language.English)
                        .Build();
 
-            _remoteRom = Builder<RemoteEpisode>.CreateNew()
+            _remoteRom = Builder<RemoteRom>.CreateNew()
                                                  .With(l => l.ParsedRomInfo = null)
                                                  .With(l => l.Roms = roms)
                                                  .With(l => l.Game = _series)

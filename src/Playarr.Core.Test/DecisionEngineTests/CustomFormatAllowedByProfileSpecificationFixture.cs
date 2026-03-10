@@ -18,7 +18,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
     public class CustomFormatAllowedByProfileSpecificationFixture : CoreTest<CustomFormatAllowedbyProfileSpecification>
     {
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         private CustomFormat _format1;
         private CustomFormat _format2;
@@ -40,7 +40,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 })
                 .Build();
 
-            _remoteRom = new RemoteEpisode
+            _remoteRom = new RemoteRom
             {
                 Game = fakeSeries,
                 ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)) },

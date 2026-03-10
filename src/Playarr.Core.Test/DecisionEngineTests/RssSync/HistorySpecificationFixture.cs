@@ -29,8 +29,8 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
 
         private HistorySpecification _upgradeHistory;
 
-        private RemoteEpisode _parseResultMulti;
-        private RemoteEpisode _parseResultSingle;
+        private RemoteRom _parseResultMulti;
+        private RemoteRom _parseResultSingle;
         private Tuple<QualityModel, Language> _upgradableQuality;
         private Tuple<QualityModel, Language> _notupgradableQuality;
         private Game _fakeSeries;
@@ -62,7 +62,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                 })
                 .Build();
 
-            _parseResultMulti = new RemoteEpisode
+            _parseResultMulti = new RemoteRom
             {
                 Game = _fakeSeries,
                 ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)), Languages = new List<Language> { Language.English } },
@@ -70,7 +70,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                 CustomFormats = new List<CustomFormat>()
             };
 
-            _parseResultSingle = new RemoteEpisode
+            _parseResultSingle = new RemoteRom
             {
                 Game = _fakeSeries,
                 ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)), Languages = new List<Language> { Language.English } },
@@ -91,9 +91,9 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                   .Returns(new List<CustomFormat>());
         }
 
-        private void GivenMostRecentForEpisode(int romId, string downloadId, Tuple<QualityModel, Language> quality, DateTime date, EpisodeHistoryEventType eventType)
+        private void GivenMostRecentForRom(int romId, string downloadId, Tuple<QualityModel, Language> quality, DateTime date, EpisodeHistoryEventType eventType)
         {
-            Mocker.GetMock<IHistoryService>().Setup(s => s.MostRecentForEpisode(romId))
+            Mocker.GetMock<IHistoryService>().Setup(s => s.MostRecentForRom(romId))
                   .Returns(new EpisodeHistory { DownloadId = downloadId, Quality = quality.Item1, Date = date, EventType = eventType, Languages = new List<Language> { quality.Item2 } });
         }
 
@@ -113,67 +113,67 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
         [Test]
         public void should_return_true_if_latest_history_item_is_null()
         {
-            Mocker.GetMock<IHistoryService>().Setup(s => s.MostRecentForEpisode(It.IsAny<int>())).Returns((EpisodeHistory)null);
+            Mocker.GetMock<IHistoryService>().Setup(s => s.MostRecentForRom(It.IsAny<int>())).Returns((EpisodeHistory)null);
             _upgradeHistory.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeTrue();
         }
 
         [Test]
         public void should_return_true_if_latest_history_item_is_not_grabbed()
         {
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.DownloadFailed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.DownloadFailed);
             _upgradeHistory.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeTrue();
         }
 
 // [Test]
 //        public void should_return_true_if_latest_history_has_a_download_id_and_cdh_is_enabled()
 //        {
-//            GivenMostRecentForEpisode(FIRST_EPISODE_ID, "test", _notupgradableQuality, DateTime.UtcNow, HistoryEventType.Grabbed);
+//            GivenMostRecentForRom(FIRST_EPISODE_ID, "test", _notupgradableQuality, DateTime.UtcNow, HistoryEventType.Grabbed);
 //            _upgradeHistory.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeTrue();
 //        }
 
         [Test]
         public void should_return_true_if_latest_history_item_is_older_than_twelve_hours()
         {
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow.AddHours(-13), EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow.AddHours(-13), EpisodeHistoryEventType.Grabbed);
             _upgradeHistory.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeTrue();
         }
 
         [Test]
         public void should_be_upgradable_if_only_episode_is_upgradable()
         {
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
             _upgradeHistory.IsSatisfiedBy(_parseResultSingle, new()).Accepted.Should().BeTrue();
         }
 
         [Test]
         public void should_be_upgradable_if_both_episodes_are_upgradable()
         {
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
-            GivenMostRecentForEpisode(SECOND_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(SECOND_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
             _upgradeHistory.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeTrue();
         }
 
         [Test]
         public void should_not_be_upgradable_if_both_episodes_are_not_upgradable()
         {
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
-            GivenMostRecentForEpisode(SECOND_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(SECOND_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
             _upgradeHistory.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeFalse();
         }
 
         [Test]
         public void should_be_not_upgradable_if_only_first_episodes_is_upgradable()
         {
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
             _upgradeHistory.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeFalse();
         }
 
         [Test]
         public void should_be_not_upgradable_if_only_second_episodes_is_upgradable()
         {
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
-            GivenMostRecentForEpisode(SECOND_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(SECOND_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
             _upgradeHistory.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeFalse();
         }
 
@@ -184,7 +184,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
             _parseResultSingle.ParsedRomInfo.Quality = new QualityModel(Quality.WEBDL1080p, new Revision(version: 1));
             _upgradableQuality = new Tuple<QualityModel, Language>(new QualityModel(Quality.WEBDL1080p, new Revision(version: 1)), Language.English);
 
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
 
             _upgradeHistory.IsSatisfiedBy(_parseResultSingle, new()).Accepted.Should().BeFalse();
         }
@@ -196,7 +196,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
             _parseResultSingle.ParsedRomInfo.Quality = new QualityModel(Quality.WEBDL1080p, new Revision(version: 1));
             _upgradableQuality = new Tuple<QualityModel, Language>(new QualityModel(Quality.WEBDL1080p, new Revision(version: 1)), Language.Spanish);
 
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _upgradableQuality, DateTime.UtcNow, EpisodeHistoryEventType.Grabbed);
 
             _upgradeHistory.IsSatisfiedBy(_parseResultSingle, new()).Accepted.Should().BeFalse();
         }
@@ -204,7 +204,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
         [Test]
         public void should_return_false_if_latest_history_item_is_only_one_hour_old()
         {
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow.AddHours(-1), EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, string.Empty, _notupgradableQuality, DateTime.UtcNow.AddHours(-1), EpisodeHistoryEventType.Grabbed);
             _upgradeHistory.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeFalse();
         }
 
@@ -212,7 +212,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
         public void should_return_false_if_latest_history_has_a_download_id_and_cdh_is_disabled()
         {
             GivenCdhDisabled();
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, "test", _upgradableQuality, DateTime.UtcNow.AddDays(-100), EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, "test", _upgradableQuality, DateTime.UtcNow.AddDays(-100), EpisodeHistoryEventType.Grabbed);
             _upgradeHistory.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeTrue();
         }
 
@@ -224,7 +224,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
             _parseResultSingle.ParsedRomInfo.Quality = new QualityModel(Quality.Bluray1080p, new Revision(version: 1));
             _upgradableQuality = new Tuple<QualityModel, Language>(new QualityModel(Quality.WEBDL1080p, new Revision(version: 1)), Language.Spanish);
 
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, "test", _upgradableQuality, DateTime.UtcNow.AddDays(-100), EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, "test", _upgradableQuality, DateTime.UtcNow.AddDays(-100), EpisodeHistoryEventType.Grabbed);
 
             _upgradeHistory.IsSatisfiedBy(_parseResultSingle, new()).Accepted.Should().BeFalse();
         }
@@ -233,7 +233,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
         public void should_return_false_if_only_episode_is_not_upgradable_and_cdh_is_disabled()
         {
             GivenCdhDisabled();
-            GivenMostRecentForEpisode(FIRST_EPISODE_ID, "test", _notupgradableQuality, DateTime.UtcNow.AddDays(-100), EpisodeHistoryEventType.Grabbed);
+            GivenMostRecentForRom(FIRST_EPISODE_ID, "test", _notupgradableQuality, DateTime.UtcNow.AddDays(-100), EpisodeHistoryEventType.Grabbed);
             _upgradeHistory.IsSatisfiedBy(_parseResultSingle, new()).Accepted.Should().BeFalse();
         }
     }

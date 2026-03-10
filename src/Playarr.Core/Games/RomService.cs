@@ -15,7 +15,7 @@ namespace Playarr.Core.Games
     public interface IRomService
     {
         Rom GetEpisode(int id);
-        List<Rom> GetEpisodes(IEnumerable<int> ids);
+        List<Rom> GetRoms(IEnumerable<int> ids);
         Rom FindEpisode(int gameId, int platformNumber, int romNumber);
         Rom FindEpisode(int gameId, int absoluteRomNumber);
         Rom FindEpisodeByTitle(int gameId, int platformNumber, string releaseTitle);
@@ -23,12 +23,12 @@ namespace Playarr.Core.Games
         List<Rom> FindEpisodesBySceneNumbering(int gameId, int sceneAbsoluteRomNumber);
         Rom FindEpisode(int gameId, string date, int? part);
         List<Rom> GetEpisodeBySeries(int gameId);
-        List<Rom> GetEpisodesBySeries(List<int> gameIds);
-        List<Rom> GetEpisodesBySeason(int gameId, int platformNumber);
-        List<Rom> GetEpisodesBySceneSeason(int gameId, int scenePlatformNumber);
+        List<Rom> GetRomsByGame(List<int> gameIds);
+        List<Rom> GetRomsByPlatform(int gameId, int platformNumber);
+        List<Rom> GetRomsByScenePlatform(int gameId, int scenePlatformNumber);
         List<Rom> EpisodesWithFiles(int gameId);
         PagingSpec<Rom> EpisodesWithoutFiles(PagingSpec<Rom> pagingSpec);
-        List<Rom> GetEpisodesByFileId(int romFileId);
+        List<Rom> GetRomsByFileId(int romFileId);
         void UpdateEpisode(Rom rom);
         void SetEpisodeMonitored(int romId, bool monitored);
         void SetMonitored(IEnumerable<int> ids, bool monitored);
@@ -47,14 +47,14 @@ namespace Playarr.Core.Games
                                   IHandleAsync<SeriesDeletedEvent>,
                                   IHandleAsync<SeriesScannedEvent>
     {
-        private readonly IRomRepository _episodeRepository;
+        private readonly IRomRepository _romRepository;
         private readonly IConfigService _configService;
         private readonly ICached<HashSet<int>> _cache;
         private readonly Logger _logger;
 
         public RomService(IRomRepository episodeRepository, IConfigService configService, ICacheManager cacheManager, Logger logger)
         {
-            _episodeRepository = episodeRepository;
+            _romRepository = episodeRepository;
             _configService = configService;
             _cache = cacheManager.GetCache<HashSet<int>>(GetType());
             _logger = logger;
@@ -62,32 +62,32 @@ namespace Playarr.Core.Games
 
         public Rom GetEpisode(int id)
         {
-            return _episodeRepository.Get(id);
+            return _romRepository.Get(id);
         }
 
-        public List<Rom> GetEpisodes(IEnumerable<int> ids)
+        public List<Rom> GetRoms(IEnumerable<int> ids)
         {
-            return _episodeRepository.Get(ids).ToList();
+            return _romRepository.Get(ids).ToList();
         }
 
         public Rom FindEpisode(int gameId, int platformNumber, int romNumber)
         {
-            return _episodeRepository.Find(gameId, platformNumber, romNumber);
+            return _romRepository.Find(gameId, platformNumber, romNumber);
         }
 
         public Rom FindEpisode(int gameId, int absoluteRomNumber)
         {
-            return _episodeRepository.Find(gameId, absoluteRomNumber);
+            return _romRepository.Find(gameId, absoluteRomNumber);
         }
 
         public List<Rom> FindEpisodesBySceneNumbering(int gameId, int platformNumber, int romNumber)
         {
-            return _episodeRepository.FindEpisodesBySceneNumbering(gameId, platformNumber, romNumber);
+            return _romRepository.FindEpisodesBySceneNumbering(gameId, platformNumber, romNumber);
         }
 
         public List<Rom> FindEpisodesBySceneNumbering(int gameId, int sceneAbsoluteRomNumber)
         {
-            return _episodeRepository.FindEpisodesBySceneNumbering(gameId, sceneAbsoluteRomNumber);
+            return _romRepository.FindEpisodesBySceneNumbering(gameId, sceneAbsoluteRomNumber);
         }
 
         public Rom FindEpisode(int gameId, string date, int? part)
@@ -97,22 +97,22 @@ namespace Playarr.Core.Games
 
         public List<Rom> GetEpisodeBySeries(int gameId)
         {
-            return _episodeRepository.GetEpisodes(gameId).ToList();
+            return _romRepository.GetRoms(gameId).ToList();
         }
 
-        public List<Rom> GetEpisodesBySeries(List<int> gameIds)
+        public List<Rom> GetRomsByGame(List<int> gameIds)
         {
-            return _episodeRepository.GetEpisodesByGameIds(gameIds).ToList();
+            return _romRepository.GetRomsByGameIds(gameIds).ToList();
         }
 
-        public List<Rom> GetEpisodesBySeason(int gameId, int platformNumber)
+        public List<Rom> GetRomsByPlatform(int gameId, int platformNumber)
         {
-            return _episodeRepository.GetEpisodes(gameId, platformNumber);
+            return _romRepository.GetRoms(gameId, platformNumber);
         }
 
-        public List<Rom> GetEpisodesBySceneSeason(int gameId, int scenePlatformNumber)
+        public List<Rom> GetRomsByScenePlatform(int gameId, int scenePlatformNumber)
         {
-            return _episodeRepository.GetEpisodesBySceneSeason(gameId, scenePlatformNumber);
+            return _romRepository.GetRomsByScenePlatform(gameId, scenePlatformNumber);
         }
 
         public Rom FindEpisodeByTitle(int gameId, int platformNumber, string releaseTitle)
@@ -120,7 +120,7 @@ namespace Playarr.Core.Games
             // TODO: can replace this search mechanism with something smarter/faster/better
             var normalizedReleaseTitle = Parser.Parser.NormalizeRomTitle(releaseTitle);
             var cleanNormalizedReleaseTitle = Parser.Parser.CleanGameTitle(normalizedReleaseTitle);
-            var roms = _episodeRepository.GetEpisodes(gameId, platformNumber);
+            var roms = _romRepository.GetRoms(gameId, platformNumber);
 
             var possibleMatches = roms.SelectMany(
                 rom => new[]
@@ -155,79 +155,79 @@ namespace Playarr.Core.Games
 
         public List<Rom> EpisodesWithFiles(int gameId)
         {
-            return _episodeRepository.EpisodesWithFiles(gameId);
+            return _romRepository.EpisodesWithFiles(gameId);
         }
 
         public PagingSpec<Rom> EpisodesWithoutFiles(PagingSpec<Rom> pagingSpec)
         {
-            var episodeResult = _episodeRepository.EpisodesWithoutFiles(pagingSpec, true);
+            var episodeResult = _romRepository.EpisodesWithoutFiles(pagingSpec, true);
 
             return episodeResult;
         }
 
-        public List<Rom> GetEpisodesByFileId(int romFileId)
+        public List<Rom> GetRomsByFileId(int romFileId)
         {
-            return _episodeRepository.GetEpisodeByFileId(romFileId);
+            return _romRepository.GetEpisodeByFileId(romFileId);
         }
 
         public void UpdateEpisode(Rom rom)
         {
-            _episodeRepository.Update(rom);
+            _romRepository.Update(rom);
         }
 
         public void SetEpisodeMonitored(int romId, bool monitored)
         {
-            var rom = _episodeRepository.Get(romId);
-            _episodeRepository.SetMonitoredFlat(rom, monitored);
+            var rom = _romRepository.Get(romId);
+            _romRepository.SetMonitoredFlat(rom, monitored);
 
             _logger.Debug("Monitored flag for Rom:{0} was set to {1}", romId, monitored);
         }
 
         public void SetMonitored(IEnumerable<int> ids, bool monitored)
         {
-            _episodeRepository.SetMonitored(ids, monitored);
+            _romRepository.SetMonitored(ids, monitored);
         }
 
         public void SetEpisodeMonitoredBySeason(int gameId, int platformNumber, bool monitored)
         {
-            _episodeRepository.SetMonitoredBySeason(gameId, platformNumber, monitored);
+            _romRepository.SetMonitoredBySeason(gameId, platformNumber, monitored);
         }
 
         public void UpdateEpisodes(List<Rom> roms)
         {
-            _episodeRepository.UpdateMany(roms);
+            _romRepository.UpdateMany(roms);
         }
 
         public void UpdateLastSearchTime(List<Rom> roms)
         {
-            _episodeRepository.SetFields(roms, e => e.LastSearchTime);
+            _romRepository.SetFields(roms, e => e.LastSearchTime);
         }
 
         public List<Rom> EpisodesBetweenDates(DateTime start, DateTime end, bool includeUnmonitored, bool includeSpecials)
         {
-            var roms = _episodeRepository.EpisodesBetweenDates(start.ToUniversalTime(), end.ToUniversalTime(), includeUnmonitored, includeSpecials);
+            var roms = _romRepository.EpisodesBetweenDates(start.ToUniversalTime(), end.ToUniversalTime(), includeUnmonitored, includeSpecials);
 
             return roms;
         }
 
         public void InsertMany(List<Rom> roms)
         {
-            _episodeRepository.InsertMany(roms);
+            _romRepository.InsertMany(roms);
         }
 
         public void UpdateMany(List<Rom> roms)
         {
-            _episodeRepository.UpdateMany(roms);
+            _romRepository.UpdateMany(roms);
         }
 
         public void DeleteMany(List<Rom> roms)
         {
-            _episodeRepository.DeleteMany(roms);
+            _romRepository.DeleteMany(roms);
         }
 
         private Rom FindOneByAirDate(int gameId, string date, int? part)
         {
-            var roms = _episodeRepository.Find(gameId, date);
+            var roms = _romRepository.Find(gameId, date);
 
             if (!roms.Any())
             {
@@ -262,7 +262,7 @@ namespace Playarr.Core.Games
 
         public void Handle(RomFileDeletedEvent message)
         {
-            foreach (var rom in GetEpisodesByFileId(message.RomFile.Id))
+            foreach (var rom in GetRomsByFileId(message.RomFile.Id))
             {
                 _logger.Debug("Detaching rom {0} from file.", rom.Id);
 
@@ -283,7 +283,7 @@ namespace Playarr.Core.Games
                     }
                 }
 
-                _episodeRepository.ClearFileId(rom, unmonitorForReason && unmonitorEpisodes);
+                _romRepository.ClearFileId(rom, unmonitorForReason && unmonitorEpisodes);
             }
         }
 
@@ -291,7 +291,7 @@ namespace Playarr.Core.Games
         {
             foreach (var rom in message.RomFile.Roms.Value)
             {
-                _episodeRepository.SetFileId(rom, message.RomFile.Id);
+                _romRepository.SetFileId(rom, message.RomFile.Id);
 
                 lock (_cache)
                 {
@@ -309,8 +309,8 @@ namespace Playarr.Core.Games
 
         public void HandleAsync(SeriesDeletedEvent message)
         {
-            var roms = _episodeRepository.GetEpisodesByGameIds(message.Game.Select(s => s.Id).ToList());
-            _episodeRepository.DeleteMany(roms);
+            var roms = _romRepository.GetRomsByGameIds(message.Game.Select(s => s.Id).ToList());
+            _romRepository.DeleteMany(roms);
         }
 
         public void HandleAsync(SeriesScannedEvent message)
@@ -321,7 +321,7 @@ namespace Playarr.Core.Games
 
                 if (ids?.Any() == true)
                 {
-                    _episodeRepository.SetMonitored(ids, false);
+                    _romRepository.SetMonitored(ids, false);
                 }
 
                 _cache.Remove(message.Game.Id.ToString());

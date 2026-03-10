@@ -24,7 +24,7 @@ namespace Playarr.Core.ImportLists
         private readonly IImportListItemService _importListItemService;
         private readonly IFetchAndParseImportList _listFetcherAndParser;
         private readonly ISearchForNewSeries _seriesSearchService;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IAddGameService _addGameService;
         private readonly IConfigService _configService;
         private readonly ITaskManager _taskManager;
@@ -48,7 +48,7 @@ namespace Playarr.Core.ImportLists
             _importListItemService = importListItemService;
             _listFetcherAndParser = listFetcherAndParser;
             _seriesSearchService = seriesSearchService;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _addGameService = addGameService;
             _configService = configService;
             _taskManager = taskManager;
@@ -132,7 +132,7 @@ namespace Playarr.Core.ImportLists
 
             var listExclusions = _importListExclusionService.All();
             var importLists = _importListFactory.All();
-            var existingIgdbIds = _seriesService.AllSeriesIgdbIds();
+            var existingIgdbIds = _gameService.AllGameIgdbIds();
 
             foreach (var item in items)
             {
@@ -296,7 +296,7 @@ namespace Playarr.Core.ImportLists
             }
 
             var gamesToUpdate = new List<Game>();
-            var seriesInLibrary = _seriesService.GetAllSeries();
+            var seriesInLibrary = _gameService.GetAllGames();
             var allListItems = _importListItemService.All();
 
             foreach (var game in seriesInLibrary)
@@ -331,7 +331,7 @@ namespace Playarr.Core.ImportLists
                 }
             }
 
-            _seriesService.UpdateSeries(gamesToUpdate, true);
+            _gameService.UpdateSeries(gamesToUpdate, true);
             _importListStatusService.MarkListsAsCleaned();
         }
 

@@ -16,7 +16,7 @@ public class MediaManagementSettingsController : SettingsController<MediaManagem
         PathExistsValidator pathExistsValidator,
         FolderChmodValidator folderChmodValidator,
         FolderWritableValidator folderWritableValidator,
-        SeriesPathValidator seriesPathValidator,
+        GamePathValidator seriesPathValidator,
         StartupFolderValidator startupFolderValidator,
         SystemFolderValidator systemFolderValidator,
         RootFolderAncestorValidator rootFolderAncestorValidator,

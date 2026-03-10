@@ -7,9 +7,7 @@ import React, {
 import { RomFile } from './RomFile';
 import useRomFiles, { RomFileFilter } from './useRomFiles';
 
-export const RomFileContext = createContext<RomFile[] | undefined>(
-  undefined
-);
+export const RomFileContext = createContext<RomFile[] | undefined>(undefined);
 
 export default function RomFileProvider({
   children,
@@ -18,9 +16,7 @@ export default function RomFileProvider({
   const { data } = useRomFiles(filter);
 
   return (
-    <RomFileContext.Provider value={data}>
-      {children}
-    </RomFileContext.Provider>
+    <RomFileContext.Provider value={data}>{children}</RomFileContext.Provider>
   );
 }
 

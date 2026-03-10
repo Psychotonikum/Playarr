@@ -7,17 +7,17 @@ import TableOptionsModalWrapper from 'Components/Table/TableOptions/TableOptions
 import VirtualTableHeader from 'Components/Table/VirtualTableHeader';
 import VirtualTableHeaderCell from 'Components/Table/VirtualTableHeaderCell';
 import VirtualTableSelectAllHeaderCell from 'Components/Table/VirtualTableSelectAllHeaderCell';
-import { icons } from 'Helpers/Props';
-import { SortDirection } from 'Helpers/Props/sortDirections';
 import {
   setGameOption,
   setGameSort,
   setGameTableOptions,
 } from 'Game/gameOptionsStore';
+import { icons } from 'Helpers/Props';
+import { SortDirection } from 'Helpers/Props/sortDirections';
 import { CheckInputChanged } from 'typings/inputs';
 import { TableOptionsChangePayload } from 'typings/Table';
-import hasGrowableColumns from './hasGrowableColumns';
 import GameIndexTableOptions from './GameIndexTableOptions';
+import hasGrowableColumns from './hasGrowableColumns';
 import styles from './GameIndexTableHeader.css';
 
 interface GameIndexTableHeaderProps {

@@ -67,7 +67,7 @@ namespace Playarr.Core.MediaCover
         {
             var heightSuffix = height.HasValue ? "-" + height.ToString() : "";
 
-            return Path.Combine(GetSeriesCoverPath(gameId), coverType.ToString().ToLower() + heightSuffix + GetExtension(coverType));
+            return Path.Combine(GetGameCoverPath(gameId), coverType.ToString().ToLower() + heightSuffix + GetExtension(coverType));
         }
 
         public void ConvertToLocalUrls(int gameId, IEnumerable<MediaCover> covers)
@@ -102,7 +102,7 @@ namespace Playarr.Core.MediaCover
             }
         }
 
-        private string GetSeriesCoverPath(int gameId)
+        private string GetGameCoverPath(int gameId)
         {
             return Path.Combine(_coverRootFolder, gameId.ToString());
         }
@@ -241,7 +241,7 @@ namespace Playarr.Core.MediaCover
         {
             foreach (var game in message.Game)
             {
-                var path = GetSeriesCoverPath(game.Id);
+                var path = GetGameCoverPath(game.Id);
                 if (_diskProvider.FolderExists(path))
                 {
                     _diskProvider.DeleteFolder(path, true);

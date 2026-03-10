@@ -6,6 +6,6 @@ namespace Playarr.Core.MetadataSource
 {
     public interface IProvideSeriesInfo
     {
-        Tuple<Game, List<Rom>> GetSeriesInfo(int igdbGameId);
+        Tuple<Game, List<Rom>> GetGameInfo(int igdbGameId);
     }
 }

@@ -9,13 +9,13 @@ import ModalBody from 'Components/Modal/ModalBody';
 import ModalContent from 'Components/Modal/ModalContent';
 import ModalFooter from 'Components/Modal/ModalFooter';
 import ModalHeader from 'Components/Modal/ModalHeader';
-import { inputTypes, kinds } from 'Helpers/Props';
 import Game from 'Game/Game';
 import {
   setGameDeleteOptions,
   useGameDeleteOptions,
 } from 'Game/gameOptionsStore';
 import useGame, { useBulkDeleteGame } from 'Game/useGame';
+import { inputTypes, kinds } from 'Helpers/Props';
 import { InputChanged } from 'typings/inputs';
 import formatBytes from 'Utilities/Number/formatBytes';
 import translate from 'Utilities/String/translate';
@@ -25,9 +25,7 @@ export interface DeleteGameModalContentProps {
   onModalClose(): void;
 }
 
-function DeleteGameModalContent({
-  onModalClose,
-}: DeleteGameModalContentProps) {
+function DeleteGameModalContent({ onModalClose }: DeleteGameModalContentProps) {
   const { addImportListExclusion } = useGameDeleteOptions();
   const { data: allGames } = useGame();
   const { bulkDeleteGame } = useBulkDeleteGame();

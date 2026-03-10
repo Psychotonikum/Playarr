@@ -5,9 +5,9 @@ import { useCalendarOptions } from 'Calendar/calendarOptionsStore';
 import getStatusStyle from 'Calendar/getStatusStyle';
 import Icon from 'Components/Icon';
 import Link from 'Components/Link/Link';
-import getFinaleTypeName from 'Rom/getFinaleTypeName';
-import { icons, kinds } from 'Helpers/Props';
 import { useSingleGame } from 'Game/useGame';
+import { icons, kinds } from 'Helpers/Props';
+import getFinaleTypeName from 'Rom/getFinaleTypeName';
 import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
 import { CalendarItem } from 'typings/Calendar';
 import { convertToTimezone } from 'Utilities/Date/convertToTimezone';
@@ -94,9 +94,7 @@ function CalendarEventGroup({
     anyMonitored
   );
   const isMissingAbsoluteNumber =
-    game.gameType === 'anime' &&
-    platformNumber > 0 &&
-    !allAbsoluteRomNumbers;
+    game.gameType === 'anime' && platformNumber > 0 && !allAbsoluteRomNumbers;
 
   const handleExpandPress = useCallback(() => {
     setIsExpanded((state) => !state);
@@ -183,9 +181,7 @@ function CalendarEventGroup({
                   : icons.FINALE_SEASON
               }
               kind={
-                lastEpisode.finaleType === 'game'
-                  ? kinds.DANGER
-                  : kinds.WARNING
+                lastEpisode.finaleType === 'game' ? kinds.DANGER : kinds.WARNING
               }
               title={getFinaleTypeName(lastEpisode.finaleType)}
             />

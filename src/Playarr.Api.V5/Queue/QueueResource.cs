@@ -46,7 +46,7 @@ namespace Playarr.Api.V5.Queue
     {
         public static QueueResource ToResource(this Playarr.Core.Queue.Queue model, bool includeSeries, bool includeEpisodes)
         {
-            var customFormats = model.RemoteEpisode?.CustomFormats;
+            var customFormats = model.RemoteRom?.CustomFormats;
             var customFormatScore = model.Game?.QualityProfile?.Value?.CalculateCustomFormatScore(customFormats) ?? 0;
 
             return new QueueResource
@@ -79,7 +79,7 @@ namespace Playarr.Api.V5.Queue
                 Indexer = model.Indexer,
                 OutputPath = model.OutputPath,
                 EpisodesWithFilesCount = model.Roms?.Count(e => e.HasFile) ?? 0,
-                IsFullSeason = model.RemoteEpisode?.ParsedRomInfo?.FullSeason ?? false
+                IsFullSeason = model.RemoteRom?.ParsedRomInfo?.FullSeason ?? false
             };
         }
 

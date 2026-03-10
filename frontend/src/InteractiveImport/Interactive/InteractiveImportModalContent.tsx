@@ -21,16 +21,11 @@ import ModalHeader from 'Components/Modal/ModalHeader';
 import Column from 'Components/Table/Column';
 import Table from 'Components/Table/Table';
 import TableBody from 'Components/Table/TableBody';
-import { RomFile } from 'RomFile/RomFile';
-import {
-  useDeleteRomFiles,
-  useUpdateRomFiles,
-} from 'RomFile/useRomFiles';
+import Game from 'Game/Game';
 import usePrevious from 'Helpers/Hooks/usePrevious';
 import { align, icons, kinds, scrollDirections } from 'Helpers/Props';
 import { SortDirection } from 'Helpers/Props/sortDirections';
-import SelectRomModal from 'InteractiveImport/Rom/SelectRomModal';
-import { SelectedEpisode } from 'InteractiveImport/Rom/SelectRomModalContent';
+import SelectGameModal from 'InteractiveImport/Game/SelectGameModal';
 import ImportMode from 'InteractiveImport/ImportMode';
 import SelectIndexerFlagsModal from 'InteractiveImport/IndexerFlags/SelectIndexerFlagsModal';
 import InteractiveImport, {
@@ -42,12 +37,13 @@ import {
   useInteractiveImportOptions,
 } from 'InteractiveImport/interactiveImportOptionsStore';
 import SelectLanguageModal from 'InteractiveImport/Language/SelectLanguageModal';
+import SelectPlatformModal from 'InteractiveImport/Platform/SelectPlatformModal';
 import SelectQualityModal from 'InteractiveImport/Quality/SelectQualityModal';
 import SelectReleaseGroupModal from 'InteractiveImport/ReleaseGroup/SelectReleaseGroupModal';
 import ReleaseType from 'InteractiveImport/ReleaseType';
 import SelectReleaseTypeModal from 'InteractiveImport/ReleaseType/SelectReleaseTypeModal';
-import SelectPlatformModal from 'InteractiveImport/Platform/SelectPlatformModal';
-import SelectGameModal from 'InteractiveImport/Game/SelectGameModal';
+import SelectRomModal from 'InteractiveImport/Rom/SelectRomModal';
+import { SelectedEpisode } from 'InteractiveImport/Rom/SelectRomModalContent';
 import useInteractiveImport, {
   useReprocessInteractiveImportItems,
   useUpdateInteractiveImportItem,
@@ -55,7 +51,8 @@ import useInteractiveImport, {
 } from 'InteractiveImport/useInteractiveImport';
 import Language from 'Language/Language';
 import { QualityModel } from 'Quality/Quality';
-import Game from 'Game/Game';
+import { RomFile } from 'RomFile/RomFile';
+import { useDeleteRomFiles, useUpdateRomFiles } from 'RomFile/useRomFiles';
 import { SortCallback } from 'typings/callbacks';
 import { CheckInputChanged } from 'typings/inputs';
 import getErrorMessage from 'Utilities/Object/getErrorMessage';
@@ -271,16 +268,13 @@ function InteractiveImportModalContentInner(
 
   const items = data;
 
-  const { isDeleting, deleteRomFiles, deleteError } =
-    useDeleteRomFiles();
+  const { isDeleting, deleteRomFiles, deleteError } = useDeleteRomFiles();
 
   const { updateRomFiles } = useUpdateRomFiles();
 
   const [invalidRowsSelected, setInvalidRowsSelected] = useState<number[]>([]);
-  const [
-    withoutRomFileIdRowsSelected,
-    setWithoutRomFileIdRowsSelected,
-  ] = useState<number[]>([]);
+  const [withoutRomFileIdRowsSelected, setWithoutRomFileIdRowsSelected] =
+    useState<number[]>([]);
   const [selectModalOpen, setSelectModalOpen] = useState<SelectType | null>(
     null
   );
@@ -338,7 +332,8 @@ function InteractiveImportModalContentInner(
         acc.seasonSelectDisabled ||= !item.game;
         acc.episodeSelectDisabled ||=
           item.platformNumber === undefined ||
-          (lastSelectedSeason >= 0 && item.platformNumber !== lastSelectedSeason);
+          (lastSelectedSeason >= 0 &&
+            item.platformNumber !== lastSelectedSeason);
         acc.lastSelectedSeason = item.platformNumber ?? -1;
 
         return acc;

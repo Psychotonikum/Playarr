@@ -12,9 +12,9 @@ namespace Playarr.Core.DataAugmentation.Xem
 {
     public class XemService : ISceneMappingProvider, IHandle<SeriesUpdatedEvent>, IHandle<SeriesRefreshStartingEvent>
     {
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly IXemProxy _xemProxy;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly Logger _logger;
         private readonly ICachedDictionary<bool> _cache;
 
@@ -24,9 +24,9 @@ namespace Playarr.Core.DataAugmentation.Xem
                            ICacheManager cacheManager,
                            Logger logger)
         {
-            _episodeService = episodeService;
+            _romService = episodeService;
             _xemProxy = xemProxy;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _logger = logger;
             _cache = cacheManager.GetCacheDictionary<bool>(GetType(), "mappedIgdbid");
         }
@@ -45,7 +45,7 @@ namespace Playarr.Core.DataAugmentation.Xem
                     return;
                 }
 
-                var roms = _episodeService.GetEpisodeBySeries(game.Id);
+                var roms = _romService.GetEpisodeBySeries(game.Id);
 
                 foreach (var rom in roms)
                 {
@@ -85,9 +85,9 @@ namespace Playarr.Core.DataAugmentation.Xem
                     ExtrapolateMappings(game, roms, mappings);
                 }
 
-                _episodeService.UpdateEpisodes(roms);
+                _romService.UpdateEpisodes(roms);
                 game.UseSceneNumbering = mappings.Any();
-                _seriesService.UpdateSeries(game);
+                _gameService.UpdateSeries(game);
 
                 _logger.Debug("XEM mapping updated for {0}", game);
             }

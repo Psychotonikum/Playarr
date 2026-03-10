@@ -52,7 +52,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
             .ToList();
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetEpisodes(parsedRomInfo, It.IsAny<Game>(), true, null))
+                  .Setup(s => s.GetRoms(parsedRomInfo, It.IsAny<Game>(), true, null))
                   .Returns(roms);
         }
 
@@ -275,7 +275,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
                 .Build();
 
             Mocker.GetMock<IParsingService>()
-                .Setup(s => s.GetEpisodes(_localRom.FileRomInfo, It.IsAny<Game>(), true, null))
+                .Setup(s => s.GetRoms(_localRom.FileRomInfo, It.IsAny<Game>(), true, null))
                 .Returns(new List<Rom> { rom });
 
             GivenEpisodes(_localRom.FolderRomInfo, new[] { 1, 2, 3, 4, 5 });

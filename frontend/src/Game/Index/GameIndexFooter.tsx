@@ -19,15 +19,9 @@ export default function GameIndexFooter() {
   let totalFileSize = 0;
 
   game.forEach((s) => {
-    const {
-      statistics = { romCount: 0, romFileCount: 0, sizeOnDisk: 0 },
-    } = s;
+    const { statistics = { romCount: 0, romFileCount: 0, sizeOnDisk: 0 } } = s;
 
-    const {
-      romCount = 0,
-      romFileCount = 0,
-      sizeOnDisk = 0,
-    } = statistics;
+    const { romCount = 0, romFileCount = 0, sizeOnDisk = 0 } = statistics;
 
     roms += romCount;
     romFiles += romFileCount;
@@ -127,10 +121,7 @@ export default function GameIndexFooter() {
               </DescriptionList>
 
               <DescriptionList>
-                <DescriptionListItem
-                  title={translate('Roms')}
-                  data={roms}
-                />
+                <DescriptionListItem title={translate('Roms')} data={roms} />
 
                 <DescriptionListItem
                   title={translate('Files')}

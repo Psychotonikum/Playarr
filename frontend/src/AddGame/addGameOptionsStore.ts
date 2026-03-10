@@ -1,5 +1,5 @@
-import { createOptionsStore } from 'Helpers/Hooks/useOptionsStore';
 import { GameMonitor } from 'Game/Game';
+import { createOptionsStore } from 'Helpers/Hooks/useOptionsStore';
 
 export interface AddGameOptions {
   rootFolderPath: string;
@@ -14,8 +14,9 @@ export interface AddGameOptions {
   preferredModifications: string[];
 }
 
-const { useOptions, useOption, setOption } =
-  createOptionsStore<AddGameOptions>('add_series_options', () => {
+const { useOptions, useOption, setOption } = createOptionsStore<AddGameOptions>(
+  'add_series_options',
+  () => {
     return {
       rootFolderPath: '',
       monitor: 'all',
@@ -28,7 +29,8 @@ const { useOptions, useOption, setOption } =
       preferredReleaseTypes: [],
       preferredModifications: [],
     };
-  });
+  }
+);
 
 export const useAddGameOptions = useOptions;
 export const useAddGameOption = useOption;

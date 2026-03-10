@@ -17,7 +17,7 @@ namespace Playarr.Core.Extras.Others
         private readonly Logger _logger;
         private readonly IDiskProvider _diskProvider;
         private readonly IRecycleBinProvider _recycleBinProvider;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IOtherExtraFileService _otherExtraFileService;
 
         public OtherExtraFileRenamer(IOtherExtraFileService otherExtraFileService,
@@ -29,7 +29,7 @@ namespace Playarr.Core.Extras.Others
             _logger = logger;
             _diskProvider = diskProvider;
             _recycleBinProvider = recycleBinProvider;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _otherExtraFileService = otherExtraFileService;
         }
 

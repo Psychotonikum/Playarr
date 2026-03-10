@@ -97,11 +97,11 @@ namespace Playarr.Core.Test.ImportListTests
             var mockImportList = new Mock<IImportList>();
 
             Mocker.GetMock<IGameService>()
-                  .Setup(v => v.AllSeriesIgdbIds())
+                  .Setup(v => v.AllGameIgdbIds())
                   .Returns(new List<int>());
 
             Mocker.GetMock<IGameService>()
-                .Setup(v => v.GetAllSeries())
+                .Setup(v => v.GetAllGames())
                 .Returns(_existingGame);
 
             Mocker.GetMock<ISearchForNewSeries>()
@@ -161,7 +161,7 @@ namespace Playarr.Core.Test.ImportListTests
         private void WithExistingSeries()
         {
             Mocker.GetMock<IGameService>()
-                  .Setup(v => v.AllSeriesIgdbIds())
+                  .Setup(v => v.AllGameIgdbIds())
                   .Returns(new List<int> { _list1Series.First().IgdbId });
         }
 
@@ -257,7 +257,7 @@ namespace Playarr.Core.Test.ImportListTests
             Subject.Execute(_commandAll);
 
             Mocker.GetMock<IGameService>()
-                  .Verify(v => v.GetAllSeries(), Times.Never());
+                  .Verify(v => v.GetAllGames(), Times.Never());
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.UpdateSeries(It.IsAny<List<Game>>(), true), Times.Never());
@@ -273,7 +273,7 @@ namespace Playarr.Core.Test.ImportListTests
             Subject.Execute(_commandAll);
 
             Mocker.GetMock<IGameService>()
-                  .Verify(v => v.GetAllSeries(), Times.Never());
+                  .Verify(v => v.GetAllGames(), Times.Never());
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.UpdateSeries(new List<Game>(), true), Times.Never());
@@ -289,7 +289,7 @@ namespace Playarr.Core.Test.ImportListTests
             Subject.Execute(_commandAll);
 
             Mocker.GetMock<IGameService>()
-                  .Verify(v => v.GetAllSeries(), Times.Once());
+                  .Verify(v => v.GetAllGames(), Times.Once());
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.DeleteGame(It.IsAny<List<int>>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never());
@@ -309,7 +309,7 @@ namespace Playarr.Core.Test.ImportListTests
             Subject.Execute(_commandAll);
 
             Mocker.GetMock<IGameService>()
-                  .Verify(v => v.GetAllSeries(), Times.Once());
+                  .Verify(v => v.GetAllGames(), Times.Once());
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.DeleteGame(It.IsAny<List<int>>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never());
@@ -423,7 +423,7 @@ namespace Playarr.Core.Test.ImportListTests
             Subject.Execute(_commandAll);
 
             Mocker.GetMock<IGameService>()
-                  .Verify(v => v.GetAllSeries(), Times.Once());
+                  .Verify(v => v.GetAllGames(), Times.Once());
 
             VerifyDidAddTag(_existingGame.Count, 1);
         }
@@ -438,7 +438,7 @@ namespace Playarr.Core.Test.ImportListTests
             Subject.Execute(_commandAll);
 
             Mocker.GetMock<IGameService>()
-                  .Verify(v => v.GetAllSeries(), Times.Never());
+                  .Verify(v => v.GetAllGames(), Times.Never());
 
             Mocker.GetMock<IGameService>()
                   .Verify(v => v.UpdateSeries(It.IsAny<List<Game>>(), It.IsAny<bool>()), Times.Never());

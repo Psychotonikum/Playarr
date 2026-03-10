@@ -21,8 +21,8 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
 
     public class ProperSpecificationFixture : CoreTest<ProperSpecification>
     {
-        private RemoteEpisode _parseResultMulti;
-        private RemoteEpisode _parseResultSingle;
+        private RemoteRom _parseResultMulti;
+        private RemoteRom _parseResultSingle;
         private RomFile _firstFile;
         private RomFile _secondFile;
 
@@ -41,14 +41,14 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                          .With(c => c.QualityProfile = new QualityProfile { Cutoff = Quality.Bluray1080p.Id })
                          .Build();
 
-            _parseResultMulti = new RemoteEpisode
+            _parseResultMulti = new RemoteRom
             {
                 Game = fakeSeries,
                 ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)) },
                 Roms = doubleEpisodeList
             };
 
-            _parseResultSingle = new RemoteEpisode
+            _parseResultSingle = new RemoteRom
             {
                 Game = fakeSeries,
                 ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)) },

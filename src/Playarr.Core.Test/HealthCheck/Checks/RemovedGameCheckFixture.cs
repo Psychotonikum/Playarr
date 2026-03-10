@@ -38,7 +38,7 @@ namespace Playarr.Core.Test.HealthCheck.Checks
             }
 
             Mocker.GetMock<IGameService>()
-                .Setup(v => v.GetAllSeries())
+                .Setup(v => v.GetAllGames())
                 .Returns(game);
 
             Mocker.GetMock<ILocalizationService>()

@@ -22,7 +22,7 @@ namespace Playarr.Core.Download.Aggregation.Aggregators
             _logger = logger;
         }
 
-        public RemoteEpisode Aggregate(RemoteEpisode remoteRom)
+        public RemoteRom Aggregate(RemoteRom remoteRom)
         {
             var parsedRomInfo = remoteRom.ParsedRomInfo;
             var releaseInfo = remoteRom.Release;

@@ -53,12 +53,12 @@ namespace Playarr.Core.Test.TvTests
             _gameOfThrones = new Tuple<Game, List<Rom>>(game, roms);
         }
 
-        private List<Rom> GetEpisodes()
+        private List<Rom> GetRoms()
         {
             return _gameOfThrones.Item2.JsonClone();
         }
 
-        private Game GetSeries()
+        private Game GetGame()
         {
             var game = _gameOfThrones.Item1.JsonClone();
 
@@ -68,7 +68,7 @@ namespace Playarr.Core.Test.TvTests
         private Game GetAnimeSeries()
         {
             var game = Builder<Game>.CreateNew().Build();
-            game.SeriesType = GameTypes.Anime;
+            game.SeriesType = GameTypes.Standard;
 
             return game;
         }
@@ -96,9 +96,9 @@ namespace Playarr.Core.Test.TvTests
             Mocker.GetMock<IRomService>().Setup(c => c.GetEpisodeBySeries(It.IsAny<int>()))
                 .Returns(new List<Rom>());
 
-            Subject.RefreshRomInfo(GetSeries(), GetEpisodes());
+            Subject.RefreshRomInfo(GetGame(), GetRoms());
 
-            _insertedEpisodes.Should().HaveSameCount(GetEpisodes());
+            _insertedEpisodes.Should().HaveSameCount(GetRoms());
             _updatedEpisodes.Should().BeEmpty();
             _deletedEpisodes.Should().BeEmpty();
 
@@ -109,12 +109,12 @@ namespace Playarr.Core.Test.TvTests
         public void should_update_all_when_all_existing_episodes()
         {
             Mocker.GetMock<IRomService>().Setup(c => c.GetEpisodeBySeries(It.IsAny<int>()))
-                .Returns(GetEpisodes());
+                .Returns(GetRoms());
 
-            Subject.RefreshRomInfo(GetSeries(), GetEpisodes());
+            Subject.RefreshRomInfo(GetGame(), GetRoms());
 
             _insertedEpisodes.Should().BeEmpty();
-            _updatedEpisodes.Should().HaveSameCount(GetEpisodes());
+            _updatedEpisodes.Should().HaveSameCount(GetRoms());
             _deletedEpisodes.Should().BeEmpty();
         }
 
@@ -122,58 +122,58 @@ namespace Playarr.Core.Test.TvTests
         public void should_delete_all_when_all_existing_episodes_are_gone_from_datasource()
         {
             Mocker.GetMock<IRomService>().Setup(c => c.GetEpisodeBySeries(It.IsAny<int>()))
-                .Returns(GetEpisodes());
+                .Returns(GetRoms());
 
-            Subject.RefreshRomInfo(GetSeries(), new List<Rom>());
+            Subject.RefreshRomInfo(GetGame(), new List<Rom>());
 
             _insertedEpisodes.Should().BeEmpty();
             _updatedEpisodes.Should().BeEmpty();
-            _deletedEpisodes.Should().HaveSameCount(GetEpisodes());
+            _deletedEpisodes.Should().HaveSameCount(GetRoms());
         }
 
         [Test]
         public void should_delete_duplicated_episodes_based_on_season_episode_number()
         {
-            var duplicateEpisodes = GetEpisodes().Skip(5).Take(2).ToList();
+            var duplicateEpisodes = GetRoms().Skip(5).Take(2).ToList();
 
             Mocker.GetMock<IRomService>().Setup(c => c.GetEpisodeBySeries(It.IsAny<int>()))
-                .Returns(GetEpisodes().Union(duplicateEpisodes).ToList());
+                .Returns(GetRoms().Union(duplicateEpisodes).ToList());
 
-            Subject.RefreshRomInfo(GetSeries(), GetEpisodes());
+            Subject.RefreshRomInfo(GetGame(), GetRoms());
 
             _insertedEpisodes.Should().BeEmpty();
-            _updatedEpisodes.Should().HaveSameCount(GetEpisodes());
+            _updatedEpisodes.Should().HaveSameCount(GetRoms());
             _deletedEpisodes.Should().HaveSameCount(duplicateEpisodes);
         }
 
         [Test]
         public void should_not_change_monitored_status_for_existing_episodes()
         {
-            var game = GetSeries();
+            var game = GetGame();
             game.Platforms = new List<Platform>();
             game.Platforms.Add(new Platform { PlatformNumber = 1, Monitored = false });
 
-            var roms = GetEpisodes();
+            var roms = GetRoms();
 
             roms.ForEach(e => e.Monitored = true);
 
             Mocker.GetMock<IRomService>().Setup(c => c.GetEpisodeBySeries(It.IsAny<int>()))
                 .Returns(roms);
 
-            Subject.RefreshRomInfo(game, GetEpisodes());
+            Subject.RefreshRomInfo(game, GetRoms());
 
-            _updatedEpisodes.Should().HaveSameCount(GetEpisodes());
+            _updatedEpisodes.Should().HaveSameCount(GetRoms());
             _updatedEpisodes.Should().OnlyContain(e => e.Monitored == true);
         }
 
         [Test]
         public void should_not_set_monitored_status_for_old_episodes_to_false_if_episodes_existed()
         {
-            var game = GetSeries();
+            var game = GetGame();
             game.Platforms = new List<Platform>();
             game.Platforms.Add(new Platform { PlatformNumber = 1, Monitored = true });
 
-            var roms = GetEpisodes().OrderBy(v => v.PlatformNumber).ThenBy(v => v.EpisodeNumber).Take(5).ToList();
+            var roms = GetRoms().OrderBy(v => v.PlatformNumber).ThenBy(v => v.EpisodeNumber).Take(5).ToList();
 
             roms[1].AirDateUtc = DateTime.UtcNow.AddDays(-15);
             roms[2].AirDateUtc = DateTime.UtcNow.AddDays(-10);
@@ -210,7 +210,7 @@ namespace Playarr.Core.Test.TvTests
                                            .Build()
                                            .ToList();
 
-            Subject.RefreshRomInfo(GetSeries(), roms);
+            Subject.RefreshRomInfo(GetGame(), roms);
 
             _insertedEpisodes.Should().HaveCount(roms.Count - 1);
             _updatedEpisodes.Should().BeEmpty();
@@ -274,7 +274,7 @@ namespace Playarr.Core.Test.TvTests
         [Test]
         public void should_override_empty_airdate_for_direct_to_dvd()
         {
-            var game = GetSeries();
+            var game = GetGame();
             game.Status = GameStatusType.Ended;
 
             var roms = Builder<Rom>.CreateListOfSize(10)
@@ -308,7 +308,7 @@ namespace Playarr.Core.Test.TvTests
                                            .Build()
                                            .ToList();
 
-            Subject.RefreshRomInfo(GetSeries(), roms);
+            Subject.RefreshRomInfo(GetGame(), roms);
 
             _insertedEpisodes.First().Title.Should().Be("TBA");
         }
@@ -320,7 +320,7 @@ namespace Playarr.Core.Test.TvTests
                 .Returns(new List<Rom>());
 
             var now = DateTime.UtcNow;
-            var game = GetSeries();
+            var game = GetGame();
 
             var roms = Builder<Rom>.CreateListOfSize(2)
                                            .All()
@@ -343,7 +343,7 @@ namespace Playarr.Core.Test.TvTests
                 .Returns(new List<Rom>());
 
             var now = DateTime.UtcNow;
-            var game = GetSeries();
+            var game = GetGame();
 
             var roms = Builder<Rom>.CreateListOfSize(4)
                                            .All()
@@ -421,7 +421,7 @@ namespace Playarr.Core.Test.TvTests
         [Test]
         public void should_monitor_new_episode_if_season_is_monitored()
         {
-            var game = GetSeries();
+            var game = GetGame();
             game.Platforms = new List<Platform>();
             game.Platforms.Add(new Platform { PlatformNumber = 1, Monitored = true });
 
@@ -451,7 +451,7 @@ namespace Playarr.Core.Test.TvTests
         [Test]
         public void should_not_monitor_new_episode_if_season_is_not_monitored()
         {
-            var game = GetSeries();
+            var game = GetGame();
             game.Platforms = new List<Platform>();
             game.Platforms.Add(new Platform { PlatformNumber = 1, Monitored = false });
 

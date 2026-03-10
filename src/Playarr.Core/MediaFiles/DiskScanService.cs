@@ -36,7 +36,7 @@ namespace Playarr.Core.MediaFiles
         private readonly IMakeImportDecision _importDecisionMaker;
         private readonly IImportApprovedEpisodes _importApprovedEpisodes;
         private readonly IConfigService _configService;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IMediaFileService _mediaFileService;
         private readonly IMediaFileTableCleanupService _mediaFileTableCleanupService;
         private readonly IRootFolderService _rootFolderService;
@@ -60,7 +60,7 @@ namespace Playarr.Core.MediaFiles
             _importDecisionMaker = importDecisionMaker;
             _importApprovedEpisodes = importApprovedEpisodes;
             _configService = configService;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _mediaFileService = mediaFileService;
             _mediaFileTableCleanupService = mediaFileTableCleanupService;
             _rootFolderService = rootFolderService;
@@ -302,12 +302,12 @@ namespace Playarr.Core.MediaFiles
         {
             if (message.GameId.HasValue)
             {
-                var game = _seriesService.GetSeries(message.GameId.Value);
+                var game = _gameService.GetGame(message.GameId.Value);
                 Scan(game);
             }
             else
             {
-                var allGames = _seriesService.GetAllSeries();
+                var allGames = _gameService.GetAllGames();
 
                 foreach (var game in allGames)
                 {

@@ -127,7 +127,7 @@ namespace Playarr.Core.Download.Clients.FreeboxDownload
             return queueItems;
         }
 
-        protected override string AddFromMagnetLink(RemoteEpisode remoteRom, string hash, string magnetLink)
+        protected override string AddFromMagnetLink(RemoteRom remoteRom, string hash, string magnetLink)
         {
             return _proxy.AddTaskFromUrl(magnetLink,
                                          GetDownloadDirectory().EncodeBase64(),
@@ -137,7 +137,7 @@ namespace Playarr.Core.Download.Clients.FreeboxDownload
                                          Settings);
         }
 
-        protected override string AddFromTorrentFile(RemoteEpisode remoteRom, string hash, string filename, byte[] fileContent)
+        protected override string AddFromTorrentFile(RemoteRom remoteRom, string hash, string filename, byte[] fileContent)
         {
             return _proxy.AddTaskFromFile(filename,
                                           fileContent,
@@ -208,7 +208,7 @@ namespace Playarr.Core.Download.Clients.FreeboxDownload
             return Settings.AddPaused;
         }
 
-        private bool ToBeQueuedFirst(RemoteEpisode remoteRom)
+        private bool ToBeQueuedFirst(RemoteRom remoteRom)
         {
             if ((remoteRom.IsRecentEpisode() && Settings.RecentPriority == (int)FreeboxDownloadPriority.First) ||
                 (!remoteRom.IsRecentEpisode() && Settings.OlderPriority == (int)FreeboxDownloadPriority.First))
@@ -219,7 +219,7 @@ namespace Playarr.Core.Download.Clients.FreeboxDownload
             return false;
         }
 
-        private double? GetSeedRatio(RemoteEpisode remoteRom)
+        private double? GetSeedRatio(RemoteRom remoteRom)
         {
             if (remoteRom.SeedConfiguration == null || remoteRom.SeedConfiguration.Ratio == null)
             {

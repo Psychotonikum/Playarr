@@ -32,8 +32,8 @@ namespace Playarr.Api.V5.Calendar
         {
             var startUse = start ?? DateTime.Today;
             var endUse = end ?? DateTime.Today.AddDays(2);
-            var roms = _episodeService.EpisodesBetweenDates(startUse, endUse, includeUnmonitored, includeSpecials);
-            var allGames = _seriesService.GetAllSeries();
+            var roms = _romService.EpisodesBetweenDates(startUse, endUse, includeUnmonitored, includeSpecials);
+            var allGames = _gameService.GetAllGames();
             var parsedTags = new List<int>();
             var result = new List<Rom>();
 

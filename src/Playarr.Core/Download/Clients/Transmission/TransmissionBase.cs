@@ -213,7 +213,7 @@ namespace Playarr.Core.Download.Clients.Transmission
             };
         }
 
-        protected override string AddFromMagnetLink(RemoteEpisode remoteRom, string hash, string magnetLink)
+        protected override string AddFromMagnetLink(RemoteRom remoteRom, string hash, string magnetLink)
         {
             _proxy.AddTorrentFromUrl(magnetLink, GetDownloadDirectory(), Settings);
             _proxy.SetTorrentSeedingConfiguration(hash, remoteRom.SeedConfiguration, Settings);
@@ -229,7 +229,7 @@ namespace Playarr.Core.Download.Clients.Transmission
             return hash;
         }
 
-        protected override string AddFromTorrentFile(RemoteEpisode remoteRom, string hash, string filename, byte[] fileContent)
+        protected override string AddFromTorrentFile(RemoteRom remoteRom, string hash, string filename, byte[] fileContent)
         {
             _proxy.AddTorrentFromData(fileContent, GetDownloadDirectory(), Settings);
             _proxy.SetTorrentSeedingConfiguration(hash, remoteRom.SeedConfiguration, Settings);

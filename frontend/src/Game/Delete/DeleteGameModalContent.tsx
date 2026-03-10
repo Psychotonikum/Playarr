@@ -9,13 +9,13 @@ import ModalBody from 'Components/Modal/ModalBody';
 import ModalContent from 'Components/Modal/ModalContent';
 import ModalFooter from 'Components/Modal/ModalFooter';
 import ModalHeader from 'Components/Modal/ModalHeader';
-import { icons, inputTypes, kinds } from 'Helpers/Props';
 import { Statistics } from 'Game/Game';
 import {
   setGameDeleteOptions,
   useGameDeleteOptions,
 } from 'Game/gameOptionsStore';
 import { useDeleteGame, useSingleGame } from 'Game/useGame';
+import { icons, inputTypes, kinds } from 'Helpers/Props';
 import { CheckInputChanged } from 'typings/inputs';
 import formatBytes from 'Utilities/Number/formatBytes';
 import translate from 'Utilities/String/translate';
@@ -30,11 +30,7 @@ function DeleteGameModalContent({
   gameId,
   onModalClose,
 }: DeleteGameModalContentProps) {
-  const {
-    title,
-    path,
-    statistics = {} as Statistics,
-  } = useSingleGame(gameId)!;
+  const { title, path, statistics = {} as Statistics } = useSingleGame(gameId)!;
 
   const { addImportListExclusion } = useGameDeleteOptions();
   const { romFileCount = 0, sizeOnDisk = 0 } = statistics;
@@ -67,9 +63,7 @@ function DeleteGameModalContent({
 
   return (
     <ModalContent onModalClose={onModalClose}>
-      <ModalHeader>
-        {translate('DeleteGameModalHeader', { title })}
-      </ModalHeader>
+      <ModalHeader>{translate('DeleteGameModalHeader', { title })}</ModalHeader>
 
       <ModalBody>
         <div className={styles.pathContainer}>

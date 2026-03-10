@@ -26,11 +26,11 @@ namespace Playarr.Core.MediaFiles
                                             IExecute<RenameFilesCommand>,
                                             IExecute<RenameSeriesCommand>
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IMediaFileService _mediaFileService;
         private readonly IMoveRomFiles _romFileMover;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly IBuildFileNames _filenameBuilder;
         private readonly IDiskProvider _diskProvider;
         private readonly Logger _logger;
@@ -44,11 +44,11 @@ namespace Playarr.Core.MediaFiles
                                         IDiskProvider diskProvider,
                                         Logger logger)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _mediaFileService = mediaFileService;
             _romFileMover = romFileMover;
             _eventAggregator = eventAggregator;
-            _episodeService = episodeService;
+            _romService = episodeService;
             _filenameBuilder = filenameBuilder;
             _diskProvider = diskProvider;
             _logger = logger;
@@ -56,8 +56,8 @@ namespace Playarr.Core.MediaFiles
 
         public List<RenameRomFilePreview> GetRenamePreviews(int gameId)
         {
-            var game = _seriesService.GetSeries(gameId);
-            var roms = _episodeService.GetEpisodeBySeries(gameId);
+            var game = _gameService.GetGame(gameId);
+            var roms = _romService.GetEpisodeBySeries(gameId);
             var files = _mediaFileService.GetFilesBySeries(gameId);
 
             return GetPreviews(game, roms, files)
@@ -68,8 +68,8 @@ namespace Playarr.Core.MediaFiles
 
         public List<RenameRomFilePreview> GetRenamePreviews(int gameId, int platformNumber)
         {
-            var game = _seriesService.GetSeries(gameId);
-            var roms = _episodeService.GetEpisodesBySeason(gameId, platformNumber);
+            var game = _gameService.GetGame(gameId);
+            var roms = _romService.GetRomsByPlatform(gameId, platformNumber);
             var files = _mediaFileService.GetFilesBySeason(gameId, platformNumber);
 
             return GetPreviews(game, roms, files)
@@ -78,11 +78,11 @@ namespace Playarr.Core.MediaFiles
 
         public List<RenameRomFilePreview> GetRenamePreviews(List<int> gameIds)
         {
-            var seriesList = _seriesService.GetSeries(gameIds);
-            var episodesList = _episodeService.GetEpisodesBySeries(gameIds).ToLookup(e => e.GameId);
+            var gameList = _gameService.GetGame(gameIds);
+            var episodesList = _romService.GetRomsByGame(gameIds).ToLookup(e => e.GameId);
             var filesList = _mediaFileService.GetFilesByGameIds(gameIds).ToLookup(f => f.GameId);
 
-            return seriesList.SelectMany(game =>
+            return gameList.SelectMany(game =>
                 {
                     var roms = episodesList[game.Id].ToList();
                     var files = filesList[game.Id].ToList();
@@ -180,7 +180,7 @@ namespace Playarr.Core.MediaFiles
 
         public void Execute(RenameFilesCommand message)
         {
-            var game = _seriesService.GetSeries(message.GameId);
+            var game = _gameService.GetGame(message.GameId);
             var romFiles = _mediaFileService.Get(message.Files);
 
             _logger.ProgressInfo("Renaming {0} files for {1}", romFiles.Count, game.Title);
@@ -193,9 +193,9 @@ namespace Playarr.Core.MediaFiles
         public void Execute(RenameSeriesCommand message)
         {
             _logger.Debug("Renaming all files for selected game");
-            var seriesToRename = _seriesService.GetSeries(message.GameIds);
+            var gamesToRename = _gameService.GetGame(message.GameIds);
 
-            foreach (var game in seriesToRename)
+            foreach (var game in gamesToRename)
             {
                 var romFiles = _mediaFileService.GetFilesBySeries(game.Id);
                 _logger.ProgressInfo("Renaming all files in game: {0}", game.Title);

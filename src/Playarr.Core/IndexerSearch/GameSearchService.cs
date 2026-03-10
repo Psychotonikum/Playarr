@@ -9,30 +9,30 @@ using Playarr.Core.Games;
 
 namespace Playarr.Core.IndexerSearch
 {
-    public class SeriesSearchService : IExecute<SeriesSearchCommand>
+    public class GameSearchService : IExecute<GameSearchCommand>
     {
-        private readonly IGameService _seriesService;
-        private readonly IRomService _episodeService;
+        private readonly IGameService _gameService;
+        private readonly IRomService _romService;
         private readonly ISearchForReleases _releaseSearchService;
         private readonly IProcessDownloadDecisions _processDownloadDecisions;
         private readonly Logger _logger;
 
-        public SeriesSearchService(IGameService seriesService,
+        public GameSearchService(IGameService seriesService,
                                    IRomService episodeService,
                                    ISearchForReleases releaseSearchService,
                                    IProcessDownloadDecisions processDownloadDecisions,
                                    Logger logger)
         {
-            _seriesService = seriesService;
-            _episodeService = episodeService;
+            _gameService = seriesService;
+            _romService = episodeService;
             _releaseSearchService = releaseSearchService;
             _processDownloadDecisions = processDownloadDecisions;
             _logger = logger;
         }
 
-        public void Execute(SeriesSearchCommand message)
+        public void Execute(GameSearchCommand message)
         {
-            var game = _seriesService.GetSeries(message.GameId);
+            var game = _gameService.GetGame(message.GameId);
             var downloadedCount = 0;
             var userInvokedSearch = message.Trigger == CommandTrigger.Manual;
             var profile = game.QualityProfile.Value;
@@ -41,7 +41,7 @@ namespace Playarr.Core.IndexerSearch
             {
                 _logger.Debug("No platforms of {0} are monitored, searching for all monitored roms", game.Title);
 
-                var roms = _episodeService.GetEpisodeBySeries(game.Id)
+                var roms = _romService.GetEpisodeBySeries(game.Id)
                     .Where(e => e.Monitored &&
                                 !e.HasFile &&
                                 e.AirDateUtc.HasValue &&
@@ -50,7 +50,7 @@ namespace Playarr.Core.IndexerSearch
 
                 foreach (var rom in roms)
                 {
-                    var decisions = _releaseSearchService.EpisodeSearch(rom, userInvokedSearch, false).GetAwaiter().GetResult();
+                    var decisions = _releaseSearchService.RomSearch(rom, userInvokedSearch, false).GetAwaiter().GetResult();
                     var processDecisions = _processDownloadDecisions.ProcessDecisions(decisions).GetAwaiter().GetResult();
                     downloadedCount += processDecisions.Grabbed.Count;
                 }
@@ -65,7 +65,7 @@ namespace Playarr.Core.IndexerSearch
                         continue;
                     }
 
-                    var decisions = _releaseSearchService.SeasonSearch(message.GameId, platform.PlatformNumber, !profile.UpgradeAllowed, true, userInvokedSearch, false).GetAwaiter().GetResult();
+                    var decisions = _releaseSearchService.PlatformSearch(message.GameId, platform.PlatformNumber, !profile.UpgradeAllowed, true, userInvokedSearch, false).GetAwaiter().GetResult();
                     var processDecisions = _processDownloadDecisions.ProcessDecisions(decisions).GetAwaiter().GetResult();
                     downloadedCount += processDecisions.Grabbed.Count;
                 }

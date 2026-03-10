@@ -14,7 +14,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Specifications
     {
         private readonly IConfigService _configService;
         private readonly IBuildFileNames _buildFileNames;
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly Logger _logger;
 
         public RomTitleSpecification(IConfigService configService,
@@ -24,7 +24,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Specifications
         {
             _configService = configService;
             _buildFileNames = buildFileNames;
-            _episodeService = episodeService;
+            _romService = episodeService;
             _logger = logger;
         }
 
@@ -52,7 +52,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Specifications
 
             var roms = localRom.Roms;
             var firstEpisode = roms.First();
-            var episodesInSeason = _episodeService.GetEpisodesBySeason(firstEpisode.GameId, firstEpisode.EpisodeNumber);
+            var episodesInSeason = _romService.GetRomsByPlatform(firstEpisode.GameId, firstEpisode.EpisodeNumber);
             var allEpisodesOnTheSameDay = firstEpisode.AirDateUtc.HasValue && roms.All(e =>
                                               !e.AirDateUtc.HasValue ||
                                               e.AirDateUtc.Value == firstEpisode.AirDateUtc.Value);

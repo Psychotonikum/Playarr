@@ -6,7 +6,7 @@ namespace Playarr.Core.DecisionEngine
 {
     public class DownloadDecision
     {
-        public RemoteEpisode RemoteEpisode { get; private set; }
+        public RemoteRom RemoteRom { get; private set; }
         public IEnumerable<DownloadRejection> Rejections { get; private set; }
 
         public bool Approved => !Rejections.Any();
@@ -27,9 +27,9 @@ namespace Playarr.Core.DecisionEngine
             }
         }
 
-        public DownloadDecision(RemoteEpisode rom, params DownloadRejection[] rejections)
+        public DownloadDecision(RemoteRom rom, params DownloadRejection[] rejections)
         {
-            RemoteEpisode = rom;
+            RemoteRom = rom;
             Rejections = rejections.ToList();
         }
 
@@ -37,10 +37,10 @@ namespace Playarr.Core.DecisionEngine
         {
             if (Approved)
             {
-                return "[OK] " + RemoteEpisode;
+                return "[OK] " + RemoteRom;
             }
 
-            return "[Rejected " + Rejections.Count() + "]" + RemoteEpisode;
+            return "[Rejected " + Rejections.Count() + "]" + RemoteRom;
         }
     }
 }

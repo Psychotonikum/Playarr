@@ -5,9 +5,9 @@ import Link from 'Components/Link/Link';
 import useKeyboardShortcuts from 'Helpers/Hooks/useKeyboardShortcuts';
 import { icons } from 'Helpers/Props';
 import translate from 'Utilities/String/translate';
+import GameSearchInput from './GameSearchInput';
 import KeyboardShortcutsModal from './KeyboardShortcutsModal';
 import PageHeaderActionsMenu from './PageHeaderActionsMenu';
-import GameSearchInput from './GameSearchInput';
 import styles from './PageHeader.css';
 
 function PageHeader() {

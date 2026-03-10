@@ -76,10 +76,6 @@ namespace Playarr.Core.Indexers
         public abstract Task<IList<ReleaseInfo>> FetchRecent();
         public abstract Task<IList<ReleaseInfo>> Fetch(SeasonSearchCriteria searchCriteria);
         public abstract Task<IList<ReleaseInfo>> Fetch(SingleEpisodeSearchCriteria searchCriteria);
-        public abstract Task<IList<ReleaseInfo>> Fetch(DailyEpisodeSearchCriteria searchCriteria);
-        public abstract Task<IList<ReleaseInfo>> Fetch(DailySeasonSearchCriteria searchCriteria);
-        public abstract Task<IList<ReleaseInfo>> Fetch(AnimeEpisodeSearchCriteria searchCriteria);
-        public abstract Task<IList<ReleaseInfo>> Fetch(AnimeSeasonSearchCriteria searchCriteria);
         public abstract Task<IList<ReleaseInfo>> Fetch(SpecialEpisodeSearchCriteria searchCriteria);
         public abstract HttpRequest GetDownloadRequest(string link);
 

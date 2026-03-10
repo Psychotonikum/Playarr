@@ -9,16 +9,16 @@ import RelativeDateCell from 'Components/Table/Cells/RelativeDateCell';
 import TableRowCell from 'Components/Table/Cells/TableRowCell';
 import TableRow from 'Components/Table/TableRow';
 import Popover from 'Components/Tooltip/Popover';
+import { useSingleGame } from 'Game/useGame';
+import { icons, kinds, tooltipPositions } from 'Helpers/Props';
+import Language from 'Language/Language';
+import { QualityModel } from 'Quality/Quality';
+import PlatformRomNumber from 'Rom/PlatformRomNumber';
 import RomFormats from 'Rom/RomFormats';
 import RomLanguages from 'Rom/RomLanguages';
 import RomNumber from 'Rom/RomNumber';
 import RomQuality from 'Rom/RomQuality';
-import PlatformRomNumber from 'Rom/PlatformRomNumber';
 import useRom from 'Rom/useRom';
-import { icons, kinds, tooltipPositions } from 'Helpers/Props';
-import Language from 'Language/Language';
-import { QualityModel } from 'Quality/Quality';
-import { useSingleGame } from 'Game/useGame';
 import CustomFormat from 'typings/CustomFormat';
 import { HistoryData, HistoryEventType } from 'typings/History';
 import formatCustomFormatScore from 'Utilities/Number/formatCustomFormatScore';
@@ -124,10 +124,7 @@ function GameHistoryRow({
       </TableRowCell>
 
       <TableRowCell>
-        <RomQuality
-          quality={quality}
-          isCutoffNotMet={qualityCutoffNotMet}
-        />
+        <RomQuality quality={quality} isCutoffNotMet={qualityCutoffNotMet} />
       </TableRowCell>
 
       <TableRowCell>

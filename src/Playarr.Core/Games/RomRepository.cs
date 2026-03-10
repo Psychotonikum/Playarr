@@ -15,10 +15,10 @@ namespace Playarr.Core.Games
         Rom Find(int gameId, int platform, int romNumber);
         Rom Find(int gameId, int absoluteRomNumber);
         List<Rom> Find(int gameId, string date);
-        List<Rom> GetEpisodes(int gameId);
-        List<Rom> GetEpisodes(int gameId, int platformNumber);
-        List<Rom> GetEpisodesByGameIds(List<int> gameIds);
-        List<Rom> GetEpisodesBySceneSeason(int gameId, int scenePlatformNumber);
+        List<Rom> GetRoms(int gameId);
+        List<Rom> GetRoms(int gameId, int platformNumber);
+        List<Rom> GetRomsByGameIds(List<int> gameIds);
+        List<Rom> GetRomsByScenePlatform(int gameId, int scenePlatformNumber);
         List<Rom> GetEpisodeByFileId(int fileId);
         List<Rom> EpisodesWithFiles(int gameId);
         PagingSpec<Rom> EpisodesWithoutFiles(PagingSpec<Rom> pagingSpec, bool includeSpecials);
@@ -67,22 +67,22 @@ namespace Playarr.Core.Games
             return Query(s => s.GameId == gameId && s.AirDate == date).ToList();
         }
 
-        public List<Rom> GetEpisodes(int gameId)
+        public List<Rom> GetRoms(int gameId)
         {
             return Query(s => s.GameId == gameId).ToList();
         }
 
-        public List<Rom> GetEpisodes(int gameId, int platformNumber)
+        public List<Rom> GetRoms(int gameId, int platformNumber)
         {
             return Query(s => s.GameId == gameId && s.PlatformNumber == platformNumber).ToList();
         }
 
-        public List<Rom> GetEpisodesByGameIds(List<int> gameIds)
+        public List<Rom> GetRomsByGameIds(List<int> gameIds)
         {
             return Query(s => gameIds.Contains(s.GameId)).ToList();
         }
 
-        public List<Rom> GetEpisodesBySceneSeason(int gameId, int platformNumber)
+        public List<Rom> GetRomsByScenePlatform(int gameId, int platformNumber)
         {
             return Query(s => s.GameId == gameId && s.ScenePlatformNumber == platformNumber).ToList();
         }

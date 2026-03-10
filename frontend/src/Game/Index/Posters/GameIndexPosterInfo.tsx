@@ -1,9 +1,9 @@
 import React from 'react';
-import HeartRating from 'Components/HeartRating';
 import GameTagList from 'Components/GameTagList';
+import HeartRating from 'Components/HeartRating';
+import { Ratings } from 'Game/Game';
 import useCountryName from 'Internationalization/useCountryName';
 import Language from 'Language/Language';
-import { Ratings } from 'Game/Game';
 import { QualityProfileModel } from 'Settings/Profiles/Quality/useQualityProfiles';
 import formatDateTime from 'Utilities/Date/formatDateTime';
 import getRelativeDate from 'Utilities/Date/getRelativeDate';

@@ -121,7 +121,7 @@ namespace Playarr.Core.Download.TrackedDownloads
 
                 if (parsedRomInfo != null)
                 {
-                    trackedDownload.RemoteEpisode = _parsingService.Map(parsedRomInfo, 0, 0, null);
+                    trackedDownload.RemoteRom = _parsingService.Map(parsedRomInfo, 0, 0, null);
                 }
 
                 var downloadHistory = _downloadHistoryService.GetLatestDownloadHistoryItem(downloadItem.DownloadId);
@@ -141,8 +141,8 @@ namespace Playarr.Core.Download.TrackedDownloads
                     trackedDownload.Added = grabbedEvent?.Date;
 
                     if (parsedRomInfo == null ||
-                        trackedDownload.RemoteEpisode?.Game == null ||
-                        trackedDownload.RemoteEpisode.Roms.Empty())
+                        trackedDownload.RemoteRom?.Game == null ||
+                        trackedDownload.RemoteRom.Roms.Empty())
                     {
                         // Try parsing the original source title and if that fails, try parsing it as a special
                         // TODO: Pass the IGDB ID and TVRage IDs in as well so we have a better chance for finding the item
@@ -151,41 +151,41 @@ namespace Playarr.Core.Download.TrackedDownloads
 
                         if (parsedRomInfo != null)
                         {
-                            trackedDownload.RemoteEpisode = _parsingService.Map(parsedRomInfo,
+                            trackedDownload.RemoteRom = _parsingService.Map(parsedRomInfo,
                                 firstHistoryItem.GameId,
                                 historyItems.Where(v => v.EventType == EpisodeHistoryEventType.Grabbed)
                                     .Select(h => h.EpisodeId).Distinct());
                         }
                     }
 
-                    if (trackedDownload.RemoteEpisode != null)
+                    if (trackedDownload.RemoteRom != null)
                     {
-                        trackedDownload.RemoteEpisode.Release ??= new ReleaseInfo();
-                        trackedDownload.RemoteEpisode.Release.Indexer = trackedDownload.Indexer;
-                        trackedDownload.RemoteEpisode.Release.Title = trackedDownload.RemoteEpisode.ParsedRomInfo?.ReleaseTitle;
+                        trackedDownload.RemoteRom.Release ??= new ReleaseInfo();
+                        trackedDownload.RemoteRom.Release.Indexer = trackedDownload.Indexer;
+                        trackedDownload.RemoteRom.Release.Title = trackedDownload.RemoteRom.ParsedRomInfo?.ReleaseTitle;
 
                         if (Enum.TryParse(grabbedEvent?.Data?.GetValueOrDefault("indexerFlags"), true, out IndexerFlags flags))
                         {
-                            trackedDownload.RemoteEpisode.Release.IndexerFlags = flags;
+                            trackedDownload.RemoteRom.Release.IndexerFlags = flags;
                         }
 
                         if (downloadHistory != null)
                         {
-                            trackedDownload.RemoteEpisode.Release.IndexerId = downloadHistory.IndexerId;
+                            trackedDownload.RemoteRom.Release.IndexerId = downloadHistory.IndexerId;
                         }
                     }
                 }
 
-                if (trackedDownload.RemoteEpisode != null)
+                if (trackedDownload.RemoteRom != null)
                 {
-                    _aggregationService.Augment(trackedDownload.RemoteEpisode);
+                    _aggregationService.Augment(trackedDownload.RemoteRom);
 
                     // Calculate custom formats
-                    trackedDownload.RemoteEpisode.CustomFormats = _formatCalculator.ParseCustomFormat(trackedDownload.RemoteEpisode, downloadItem.TotalSize);
+                    trackedDownload.RemoteRom.CustomFormats = _formatCalculator.ParseCustomFormat(trackedDownload.RemoteRom, downloadItem.TotalSize);
                 }
 
                 // Track it so it can be displayed in the queue even though we can't determine which game it is for
-                if (trackedDownload.RemoteEpisode == null)
+                if (trackedDownload.RemoteRom == null)
                 {
                     _logger.Trace("No Rom found for download '{0}'", trackedDownload.DownloadItem.Title);
                 }
@@ -237,7 +237,7 @@ namespace Playarr.Core.Download.TrackedDownloads
                     downloadItem.Status,
                     downloadItem.CanBeRemoved ? "" : downloadItem.CanMoveFiles ? " (busy)" : " (readonly)",
                     trackedDownload.State,
-                    trackedDownload.RemoteEpisode?.ParsedRomInfo,
+                    trackedDownload.RemoteRom?.ParsedRomInfo,
                     downloadItem.OutputPath);
             }
         }
@@ -246,9 +246,9 @@ namespace Playarr.Core.Download.TrackedDownloads
         {
             var parsedRomInfo = Parser.Parser.ParseTitle(trackedDownload.DownloadItem.Title);
 
-            trackedDownload.RemoteEpisode = parsedRomInfo == null ? null : _parsingService.Map(parsedRomInfo, 0, 0, null);
+            trackedDownload.RemoteRom = parsedRomInfo == null ? null : _parsingService.Map(parsedRomInfo, 0, 0, null);
 
-            _aggregationService.Augment(trackedDownload.RemoteEpisode);
+            _aggregationService.Augment(trackedDownload.RemoteRom);
         }
 
         private static TrackedDownloadState GetStateFromHistory(DownloadHistoryEventType eventType)
@@ -273,8 +273,8 @@ namespace Playarr.Core.Download.TrackedDownloads
             foreach (var rom in message.Removed)
             {
                 var cachedItems = _cache.Values.Where(t =>
-                                            t.RemoteEpisode?.Roms != null &&
-                                            t.RemoteEpisode.Roms.Any(e => e.Id == rom.Id))
+                                            t.RemoteRom?.Roms != null &&
+                                            t.RemoteRom.Roms.Any(e => e.Id == rom.Id))
                                         .ToList();
 
                 if (cachedItems.Any())
@@ -295,8 +295,8 @@ namespace Playarr.Core.Download.TrackedDownloads
         {
             var cachedItems = _cache.Values
                 .Where(t =>
-                    t.RemoteEpisode?.Game == null ||
-                    message.Game?.IgdbId == t.RemoteEpisode.Game.IgdbId)
+                    t.RemoteRom?.Game == null ||
+                    message.Game?.IgdbId == t.RemoteRom.Game.IgdbId)
                 .ToList();
 
             if (cachedItems.Any())
@@ -311,8 +311,8 @@ namespace Playarr.Core.Download.TrackedDownloads
         {
             var cachedItems = _cache.Values
                 .Where(t =>
-                    t.RemoteEpisode?.Game != null &&
-                    (t.RemoteEpisode.Game.Id == message.Game?.Id || t.RemoteEpisode.Game.IgdbId == message.Game?.IgdbId))
+                    t.RemoteRom?.Game != null &&
+                    (t.RemoteRom.Game.Id == message.Game?.Id || t.RemoteRom.Game.IgdbId == message.Game?.IgdbId))
                 .ToList();
 
             if (cachedItems.Any())
@@ -327,8 +327,8 @@ namespace Playarr.Core.Download.TrackedDownloads
         {
             var cachedItems = _cache.Values
                 .Where(t =>
-                    t.RemoteEpisode?.Game != null &&
-                    message.Game.Any(s => s.Id == t.RemoteEpisode.Game.Id || s.IgdbId == t.RemoteEpisode.Game.IgdbId))
+                    t.RemoteRom?.Game != null &&
+                    message.Game.Any(s => s.Id == t.RemoteRom.Game.Id || s.IgdbId == t.RemoteRom.Game.IgdbId))
                 .ToList();
 
             if (cachedItems.Any())
@@ -343,8 +343,8 @@ namespace Playarr.Core.Download.TrackedDownloads
         {
             var cachedItems = _cache.Values
                 .Where(t =>
-                    t.RemoteEpisode?.Game != null &&
-                    message.Game.Any(s => s.Id == t.RemoteEpisode.Game.Id || s.IgdbId == t.RemoteEpisode.Game.IgdbId))
+                    t.RemoteRom?.Game != null &&
+                    message.Game.Any(s => s.Id == t.RemoteRom.Game.Id || s.IgdbId == t.RemoteRom.Game.IgdbId))
                 .ToList();
 
             if (cachedItems.Any())

@@ -38,7 +38,7 @@ namespace Playarr.Core.ImportLists.Playarr
             var anyFailure = false;
             try
             {
-                var remoteGame = _playarrV3Proxy.GetSeries(Settings);
+                var remoteGame = _playarrV3Proxy.GetGame(Settings);
 
                 foreach (var item in remoteGame)
                 {

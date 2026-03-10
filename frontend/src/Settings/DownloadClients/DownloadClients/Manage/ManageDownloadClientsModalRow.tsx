@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSelect } from 'App/Select/SelectContext';
-import Label from 'Components/Label';
 import GameTagList from 'Components/GameTagList';
+import Label from 'Components/Label';
 import TableRowCell from 'Components/Table/Cells/TableRowCell';
 import TableSelectCell from 'Components/Table/Cells/TableSelectCell';
 import Column from 'Components/Table/Column';

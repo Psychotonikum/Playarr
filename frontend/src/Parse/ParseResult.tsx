@@ -1,7 +1,7 @@
 import React from 'react';
 import FieldSet from 'Components/FieldSet';
-import RomFormats from 'Rom/RomFormats';
 import GameTitleLink from 'Game/GameTitleLink';
+import RomFormats from 'Rom/RomFormats';
 import translate from 'Utilities/String/translate';
 import { ParseModel } from './ParseModel';
 import ParseResultItem from './ParseResultItem';
@@ -97,9 +97,7 @@ function ParseResult(props: ParseResultProps) {
             <ParseResultItem
               title={translate('AbsoluteRomNumbers')}
               data={
-                absoluteRomNumbers.length
-                  ? absoluteRomNumbers.join(', ')
-                  : '-'
+                absoluteRomNumbers.length ? absoluteRomNumbers.join(', ') : '-'
               }
             />
 
@@ -188,10 +186,7 @@ function ParseResult(props: ParseResultProps) {
           title={translate('MatchedToSeries')}
           data={
             game ? (
-              <GameTitleLink
-                titleSlug={game.titleSlug}
-                title={game.title}
-              />
+              <GameTitleLink titleSlug={game.titleSlug} title={game.title} />
             ) : (
               '-'
             )
@@ -229,11 +224,7 @@ function ParseResult(props: ParseResultProps) {
         <ParseResultItem
           title={translate('CustomFormats')}
           data={
-            customFormats?.length ? (
-              <RomFormats formats={customFormats} />
-            ) : (
-              '-'
-            )
+            customFormats?.length ? <RomFormats formats={customFormats} /> : '-'
           }
         />
 

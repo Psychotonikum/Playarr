@@ -27,7 +27,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
         private QualityProfile _profile;
         private ReleaseInfo _release;
         private ParsedRomInfo _parsedRomInfo;
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
         private List<PendingRelease> _heldReleases;
 
         [SetUp]
@@ -60,7 +60,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
                 .With(p => p.AirDate = null)
                 .Build();
 
-            _remoteRom = new RemoteEpisode();
+            _remoteRom = new RemoteRom();
             _remoteRom.Roms = new List<Rom> { _episode };
             _remoteRom.Game = _series;
             _remoteRom.ParsedRomInfo = _parsedRomInfo;
@@ -79,15 +79,15 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
                   .Returns<int>(i => _heldReleases.Where(v => v.GameId == i).ToList());
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetSeries(It.IsAny<int>()))
+                  .Setup(s => s.GetGame(It.IsAny<int>()))
                   .Returns(_series);
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetSeries(It.IsAny<IEnumerable<int>>()))
+                  .Setup(s => s.GetGame(It.IsAny<IEnumerable<int>>()))
                   .Returns(new List<Game> { _series });
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetEpisodes(It.IsAny<ParsedRomInfo>(), _series, true, null))
+                  .Setup(s => s.GetRoms(It.IsAny<ParsedRomInfo>(), _series, true, null))
                   .Returns(new List<Rom> { _episode });
 
             Mocker.GetMock<IParsingService>()

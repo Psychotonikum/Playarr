@@ -29,13 +29,13 @@ namespace Playarr.Core.Datastore.Migration
                     while (seriesReader.Read())
                     {
                         var gameId = seriesReader.GetInt32(0);
-                        var seriesPath = seriesReader.GetString(1) + Path.DirectorySeparatorChar;
+                        var gamePath = seriesReader.GetString(1) + Path.DirectorySeparatorChar;
 
                         using (var updateCmd = conn.CreateCommand())
                         {
                             updateCmd.Transaction = tran;
                             updateCmd.CommandText = "UPDATE \"EpisodeFiles\" SET \"RelativePath\" = REPLACE(\"Path\", ?, '') WHERE \"SeriesId\" = ?";
-                            updateCmd.AddParameter(seriesPath);
+                            updateCmd.AddParameter(gamePath);
                             updateCmd.AddParameter(gameId);
 
                             updateCmd.ExecuteNonQuery();

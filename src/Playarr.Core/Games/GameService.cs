@@ -11,8 +11,8 @@ namespace Playarr.Core.Games
 {
     public interface IGameService
     {
-        Game GetSeries(int gameId);
-        List<Game> GetSeries(IEnumerable<int> gameIds);
+        Game GetGame(int gameId);
+        List<Game> GetGame(IEnumerable<int> gameIds);
         Game AddGame(Game newGame);
         List<Game> AddGame(List<Game> newGame);
         Game FindByIgdbId(int igdbId);
@@ -23,9 +23,9 @@ namespace Playarr.Core.Games
         Game FindByTitleInexact(string title);
         Game FindByPath(string path);
         void DeleteGame(List<int> gameIds, bool deleteFiles, bool addImportListExclusion);
-        List<Game> GetAllSeries();
-        List<int> AllSeriesIgdbIds();
-        Dictionary<int, string> GetAllSeriesPaths();
+        List<Game> GetAllGames();
+        List<int> AllGameIgdbIds();
+        Dictionary<int, string> GetAllGamePaths();
         Dictionary<int, List<int>> GetAllGameTags();
         List<Game> AllForTag(int tagId);
         Game UpdateSeries(Game game, bool updateEpisodesToMatchSeason = true, bool publishUpdatedEvent = true);
@@ -37,9 +37,9 @@ namespace Playarr.Core.Games
 
     public class GameService : IGameService
     {
-        private readonly IGameRepository _seriesRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly IBuildSeriesPaths _seriesPathBuilder;
         private readonly IAutoTaggingService _autoTaggingService;
         private readonly Logger _logger;
@@ -51,35 +51,35 @@ namespace Playarr.Core.Games
                              IAutoTaggingService autoTaggingService,
                              Logger logger)
         {
-            _seriesRepository = seriesRepository;
+            _gameRepository = seriesRepository;
             _eventAggregator = eventAggregator;
-            _episodeService = episodeService;
+            _romService = episodeService;
             _seriesPathBuilder = seriesPathBuilder;
             _autoTaggingService = autoTaggingService;
             _logger = logger;
         }
 
-        public Game GetSeries(int gameId)
+        public Game GetGame(int gameId)
         {
-            return _seriesRepository.Get(gameId);
+            return _gameRepository.Get(gameId);
         }
 
-        public List<Game> GetSeries(IEnumerable<int> gameIds)
+        public List<Game> GetGame(IEnumerable<int> gameIds)
         {
-            return _seriesRepository.Get(gameIds).ToList();
+            return _gameRepository.Get(gameIds).ToList();
         }
 
         public Game AddGame(Game newGame)
         {
-            _seriesRepository.Insert(newGame);
-            _eventAggregator.PublishEvent(new SeriesAddedEvent(GetSeries(newGame.Id)));
+            _gameRepository.Insert(newGame);
+            _eventAggregator.PublishEvent(new SeriesAddedEvent(GetGame(newGame.Id)));
 
             return newGame;
         }
 
         public List<Game> AddGame(List<Game> newGame)
         {
-            _seriesRepository.InsertMany(newGame);
+            _gameRepository.InsertMany(newGame);
             _eventAggregator.PublishEvent(new GameImportedEvent(newGame.Select(s => s.Id).ToList()));
 
             return newGame;
@@ -87,29 +87,29 @@ namespace Playarr.Core.Games
 
         public Game FindByIgdbId(int mobyGamesId)
         {
-            return _seriesRepository.FindByIgdbId(mobyGamesId);
+            return _gameRepository.FindByIgdbId(mobyGamesId);
         }
 
         public Game FindByMobyGamesId(int mobyGamesId)
         {
-            return _seriesRepository.FindByMobyGamesId(mobyGamesId);
+            return _gameRepository.FindByMobyGamesId(mobyGamesId);
         }
 
         public Game FindByImdbId(string imdbId)
         {
-            return _seriesRepository.FindByImdbId(imdbId);
+            return _gameRepository.FindByImdbId(imdbId);
         }
 
         public Game FindByTitle(string title)
         {
-            return _seriesRepository.FindByTitle(title.CleanGameTitle());
+            return _gameRepository.FindByTitle(title.CleanGameTitle());
         }
 
         public Game FindByTitleInexact(string title)
         {
             // find any game clean title within the provided release title
             var cleanTitle = title.CleanGameTitle();
-            var list = _seriesRepository.FindByTitleInexact(cleanTitle);
+            var list = _gameRepository.FindByTitleInexact(cleanTitle);
             if (!list.Any())
             {
                 // no game matched
@@ -151,44 +151,44 @@ namespace Playarr.Core.Games
 
         public Game FindByPath(string path)
         {
-            return _seriesRepository.FindByPath(path);
+            return _gameRepository.FindByPath(path);
         }
 
         public Game FindByTitle(string title, int year)
         {
-            return _seriesRepository.FindByTitle(title.CleanGameTitle(), year);
+            return _gameRepository.FindByTitle(title.CleanGameTitle(), year);
         }
 
         public void DeleteGame(List<int> gameIds, bool deleteFiles, bool addImportListExclusion)
         {
-            var game = _seriesRepository.Get(gameIds).ToList();
-            _seriesRepository.DeleteMany(gameIds);
+            var game = _gameRepository.Get(gameIds).ToList();
+            _gameRepository.DeleteMany(gameIds);
             _eventAggregator.PublishEvent(new SeriesDeletedEvent(game, deleteFiles, addImportListExclusion));
         }
 
-        public List<Game> GetAllSeries()
+        public List<Game> GetAllGames()
         {
-            return _seriesRepository.All().ToList();
+            return _gameRepository.All().ToList();
         }
 
-        public List<int> AllSeriesIgdbIds()
+        public List<int> AllGameIgdbIds()
         {
-            return _seriesRepository.AllSeriesIgdbIds().ToList();
+            return _gameRepository.AllGameIgdbIds().ToList();
         }
 
-        public Dictionary<int, string> GetAllSeriesPaths()
+        public Dictionary<int, string> GetAllGamePaths()
         {
-            return _seriesRepository.AllSeriesPaths();
+            return _gameRepository.AllGamePaths();
         }
 
         public Dictionary<int, List<int>> GetAllGameTags()
         {
-            return _seriesRepository.AllGameTags();
+            return _gameRepository.AllGameTags();
         }
 
         public List<Game> AllForTag(int tagId)
         {
-            return GetAllSeries().Where(s => s.Tags.Contains(tagId))
+            return GetAllGames().Where(s => s.Tags.Contains(tagId))
                                  .ToList();
         }
 
@@ -196,7 +196,7 @@ namespace Playarr.Core.Games
         // TODO: Remove when platforms are split from game (or we come up with a better way to address this)
         public Game UpdateSeries(Game game, bool updateEpisodesToMatchSeason = true, bool publishUpdatedEvent = true)
         {
-            var storedSeries = GetSeries(game.Id);
+            var storedGame = GetGame(game.Id);
 
             var episodeMonitoredChanged = false;
 
@@ -204,24 +204,24 @@ namespace Playarr.Core.Games
             {
                 foreach (var platform in game.Platforms)
                 {
-                    var storedSeason = storedSeries.Platforms.SingleOrDefault(s => s.PlatformNumber == platform.PlatformNumber);
+                    var storedSeason = storedGame.Platforms.SingleOrDefault(s => s.PlatformNumber == platform.PlatformNumber);
 
                     if (storedSeason != null && platform.Monitored != storedSeason.Monitored)
                     {
-                        _episodeService.SetEpisodeMonitoredBySeason(game.Id, platform.PlatformNumber, platform.Monitored);
+                        _romService.SetEpisodeMonitoredBySeason(game.Id, platform.PlatformNumber, platform.Monitored);
                         episodeMonitoredChanged = true;
                     }
                 }
             }
 
             // Never update AddOptions when updating a game, keep it the same as the existing stored game.
-            game.AddOptions = storedSeries.AddOptions;
+            game.AddOptions = storedGame.AddOptions;
             UpdateTags(game);
 
-            var updatedSeries = _seriesRepository.Update(game);
+            var updatedSeries = _gameRepository.Update(game);
             if (publishUpdatedEvent)
             {
-                _eventAggregator.PublishEvent(new SeriesEditedEvent(updatedSeries, storedSeries, episodeMonitoredChanged));
+                _eventAggregator.PublishEvent(new SeriesEditedEvent(updatedSeries, storedGame, episodeMonitoredChanged));
             }
 
             return updatedSeries;
@@ -249,7 +249,7 @@ namespace Playarr.Core.Games
                 UpdateTags(s);
             }
 
-            _seriesRepository.UpdateMany(game);
+            _gameRepository.UpdateMany(game);
             _logger.Debug("{0} game updated", game.Count);
             _eventAggregator.PublishEvent(new SeriesBulkEditedEvent(game));
 
@@ -258,12 +258,12 @@ namespace Playarr.Core.Games
 
         public bool SeriesPathExists(string folder)
         {
-            return _seriesRepository.SeriesPathExists(folder);
+            return _gameRepository.SeriesPathExists(folder);
         }
 
         public void RemoveAddOptions(Game game)
         {
-            _seriesRepository.SetFields(game, s => s.AddOptions);
+            _gameRepository.SetFields(game, s => s.AddOptions);
         }
 
         public bool UpdateTags(Game game)

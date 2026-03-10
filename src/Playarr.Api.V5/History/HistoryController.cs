@@ -20,8 +20,8 @@ public class HistoryController : Controller
     private readonly ICustomFormatCalculationService _formatCalculator;
     private readonly IUpgradableSpecification _upgradableSpecification;
     private readonly IFailedDownloadService _failedDownloadService;
-    private readonly IGameService _seriesService;
-    private readonly IRomService _episodeService;
+    private readonly IGameService _gameService;
+    private readonly IRomService _romService;
 
     public HistoryController(IHistoryService historyService,
                          ICustomFormatCalculationService formatCalculator,
@@ -34,8 +34,8 @@ public class HistoryController : Controller
         _formatCalculator = formatCalculator;
         _upgradableSpecification = upgradableSpecification;
         _failedDownloadService = failedDownloadService;
-        _seriesService = seriesService;
-        _episodeService = episodeService;
+        _gameService = seriesService;
+        _romService = episodeService;
     }
 
     protected HistoryResource MapToResource(EpisodeHistory model, bool includeSeries, bool includeEpisode)
@@ -114,7 +114,7 @@ public class HistoryController : Controller
     [Produces("application/json")]
     public List<HistoryResource> GetSeriesHistory(int gameId, EpisodeHistoryEventType? eventType = null, [FromQuery] HistorySubresource[]? includeSubresources = null)
     {
-        var game = _seriesService.GetSeries(gameId);
+        var game = _gameService.GetGame(gameId);
         var includeSeries = includeSubresources.Contains(HistorySubresource.Game);
         var includeEpisode = includeSubresources.Contains(HistorySubresource.Rom);
 
@@ -130,7 +130,7 @@ public class HistoryController : Controller
     [Produces("application/json")]
     public List<HistoryResource> GetSeasonHistory(int gameId, int platformNumber, EpisodeHistoryEventType? eventType = null, [FromQuery] HistorySubresource[]? includeSubresources = null)
     {
-        var game = _seriesService.GetSeries(gameId);
+        var game = _gameService.GetGame(gameId);
         var includeSeries = includeSubresources.Contains(HistorySubresource.Game);
         var includeEpisode = includeSubresources.Contains(HistorySubresource.Rom);
 
@@ -146,8 +146,8 @@ public class HistoryController : Controller
     [Produces("application/json")]
     public List<HistoryResource> GetEpisodeHistory(int romId, EpisodeHistoryEventType? eventType = null, [FromQuery] HistorySubresource[]? includeSubresources = null)
     {
-        var rom = _episodeService.GetEpisode(romId);
-        var game = _seriesService.GetSeries(rom.GameId);
+        var rom = _romService.GetEpisode(romId);
+        var game = _gameService.GetGame(rom.GameId);
         var includeSeries = includeSubresources.Contains(HistorySubresource.Game);
         var includeEpisode = includeSubresources.Contains(HistorySubresource.Rom);
 

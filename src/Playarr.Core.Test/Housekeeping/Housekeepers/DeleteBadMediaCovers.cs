@@ -34,7 +34,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
                .Build().ToList();
 
             Mocker.GetMock<IGameService>()
-                .Setup(c => c.GetAllSeriesPaths())
+                .Setup(c => c.GetAllGamePaths())
                 .Returns(_series);
 
             Mocker.GetMock<IMetadataFileService>()
@@ -73,7 +73,7 @@ namespace Playarr.Core.Test.Housekeeping.Housekeepers
             Subject.Clean();
 
             Mocker.GetMock<IConfigService>().VerifySet(c => c.CleanupMetadataImages = true, Times.Never());
-            Mocker.GetMock<IGameService>().Verify(c => c.GetAllSeries(), Times.Never());
+            Mocker.GetMock<IGameService>().Verify(c => c.GetAllGames(), Times.Never());
 
             AssertImageWasNotRemoved();
         }

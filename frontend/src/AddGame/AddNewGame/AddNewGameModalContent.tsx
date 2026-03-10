@@ -19,9 +19,9 @@ import ModalContent from 'Components/Modal/ModalContent';
 import ModalFooter from 'Components/Modal/ModalFooter';
 import ModalHeader from 'Components/Modal/ModalHeader';
 import Popover from 'Components/Tooltip/Popover';
+import GamePoster from 'Game/GamePoster';
 import { getValidationFailures } from 'Helpers/Hooks/useApiMutation';
 import { icons, inputTypes, kinds, tooltipPositions } from 'Helpers/Props';
-import GamePoster from 'Game/GamePoster';
 import selectSettings from 'Store/Selectors/selectSettings';
 import { useIsWindows } from 'System/Status/useSystemStatus';
 import { InputChanged } from 'typings/inputs';
@@ -194,15 +194,13 @@ function AddNewGameModalContent({
                   type={inputTypes.LANGUAGE_SELECT}
                   name="language"
                   value={0}
-                  onChange={handleInputChange as any}
                   helpText={translate('LanguageHelpText')}
+                  onChange={handleInputChange as any}
                 />
               </FormGroup>
 
               <FormGroup>
-                <FormLabel>
-                  {translate('GamePlatform')}
-                </FormLabel>
+                <FormLabel>{translate('GamePlatform')}</FormLabel>
 
                 <FormInputGroup
                   type={inputTypes.SELECT}
@@ -215,8 +213,8 @@ function AddNewGameModalContent({
                       value: p.title || `Platform ${p.platformNumber}`,
                     })),
                   ]}
-                  onChange={handleInputChange}
                   helpText={translate('GamePlatformHelpText')}
+                  onChange={handleInputChange}
                 />
               </FormGroup>
 

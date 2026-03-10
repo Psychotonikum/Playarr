@@ -26,7 +26,7 @@ public class RomFileController : RestControllerWithSignalR<RomFileResource, RomF
 {
     private readonly IMediaFileService _mediaFileService;
     private readonly IDeleteMediaFiles _mediaFileDeletionService;
-    private readonly IGameService _seriesService;
+    private readonly IGameService _gameService;
     private readonly ICustomFormatCalculationService _formatCalculator;
     private readonly IUpgradableSpecification _upgradableSpecification;
 
@@ -40,7 +40,7 @@ public class RomFileController : RestControllerWithSignalR<RomFileResource, RomF
     {
         _mediaFileService = mediaFileService;
         _mediaFileDeletionService = mediaFileDeletionService;
-        _seriesService = seriesService;
+        _gameService = seriesService;
         _formatCalculator = formatCalculator;
         _upgradableSpecification = upgradableSpecification;
     }
@@ -48,7 +48,7 @@ public class RomFileController : RestControllerWithSignalR<RomFileResource, RomF
     protected override RomFileResource GetResourceById(int id)
     {
         var romFile = _mediaFileService.Get(id);
-        var game = _seriesService.GetSeries(romFile.GameId);
+        var game = _gameService.GetGame(romFile.GameId);
 
         var resource = romFile.ToResource(game, _upgradableSpecification, _formatCalculator);
 
@@ -66,7 +66,7 @@ public class RomFileController : RestControllerWithSignalR<RomFileResource, RomF
 
         if (gameId.HasValue)
         {
-            var game = _seriesService.GetSeries(gameId.Value);
+            var game = _gameService.GetGame(gameId.Value);
             var files = _mediaFileService.GetFilesBySeries(gameId.Value);
 
             if (files == null)
@@ -82,7 +82,7 @@ public class RomFileController : RestControllerWithSignalR<RomFileResource, RomF
 
             return romFiles.GroupBy(e => e.GameId)
                                .SelectMany(f => f.ToList()
-                                                 .ConvertAll(e => e.ToResource(_seriesService.GetSeries(f.Key), _upgradableSpecification, _formatCalculator)))
+                                                 .ConvertAll(e => e.ToResource(_gameService.GetGame(f.Key), _upgradableSpecification, _formatCalculator)))
                                .ToList();
         }
     }
@@ -118,7 +118,7 @@ public class RomFileController : RestControllerWithSignalR<RomFileResource, RomF
             throw new PlayarrClientException(HttpStatusCode.NotFound, "Rom file not found");
         }
 
-        var game = _seriesService.GetSeries(romFile.GameId);
+        var game = _gameService.GetGame(romFile.GameId);
 
         _mediaFileDeletionService.DeleteRomFile(game, romFile);
     }
@@ -128,7 +128,7 @@ public class RomFileController : RestControllerWithSignalR<RomFileResource, RomF
     public object DeleteRomFiles([FromBody] RomFileListResource resource)
     {
         var romFiles = _mediaFileService.GetFiles(resource.RomFileIds);
-        var game = _seriesService.GetSeries(romFiles.First().GameId);
+        var game = _gameService.GetGame(romFiles.First().GameId);
 
         foreach (var romFile in romFiles)
         {
@@ -182,7 +182,7 @@ public class RomFileController : RestControllerWithSignalR<RomFileResource, RomF
 
         _mediaFileService.Update(romFiles);
 
-        var game = _seriesService.GetSeries(romFiles.First().GameId);
+        var game = _gameService.GetGame(romFiles.First().GameId);
 
         return Accepted(romFiles.ConvertAll(f => f.ToResource(game, _upgradableSpecification, _formatCalculator)));
     }

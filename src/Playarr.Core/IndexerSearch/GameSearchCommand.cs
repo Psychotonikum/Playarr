@@ -2,17 +2,17 @@
 
 namespace Playarr.Core.IndexerSearch
 {
-    public class SeriesSearchCommand : Command
+    public class GameSearchCommand : Command
     {
         public int GameId { get; set; }
 
         public override bool SendUpdatesToClient => true;
 
-        public SeriesSearchCommand()
+        public GameSearchCommand()
         {
         }
 
-        public SeriesSearchCommand(int gameId)
+        public GameSearchCommand(int gameId)
         {
             GameId = gameId;
         }

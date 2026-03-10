@@ -48,7 +48,7 @@ namespace Playarr.Api.V3.Wanted
                 pagingSpec.FilterExpressions.Add(v => v.Monitored == false || v.Game.Monitored == false);
             }
 
-            var resource = pagingSpec.ApplyToPage(_episodeService.EpisodesWithoutFiles, v => MapToResource(v, includeSeries, false, includeImages));
+            var resource = pagingSpec.ApplyToPage(_romService.EpisodesWithoutFiles, v => MapToResource(v, includeSeries, false, includeImages));
 
             return resource;
         }

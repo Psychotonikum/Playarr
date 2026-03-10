@@ -75,7 +75,7 @@ public class ReleasePushController : RestController<ReleasePushResource>
             _downloadDecisionProcessor.ProcessDecision(decision, downloadClientId).GetAwaiter().GetResult();
         }
 
-        if (decision?.RemoteEpisode.ParsedRomInfo == null)
+        if (decision?.RemoteRom.ParsedRomInfo == null)
         {
             throw new ValidationException(new List<ValidationFailure> { new("Title", "Unable to parse", release.Title) });
         }

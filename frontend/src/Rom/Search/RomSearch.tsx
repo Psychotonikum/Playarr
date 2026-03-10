@@ -9,17 +9,17 @@ import useReleases from 'InteractiveSearch/useReleases';
 import translate from 'Utilities/String/translate';
 import styles from './RomSearch.css';
 
-interface EpisodeSearchProps {
+interface RomSearchProps {
   romId: number;
   startInteractiveSearch: boolean;
   onModalClose: () => void;
 }
 
-function EpisodeSearch({
+function RomSearch({
   romId,
   startInteractiveSearch,
   onModalClose,
-}: EpisodeSearchProps) {
+}: RomSearchProps) {
   const executeCommand = useExecuteCommand();
   const { isFetched } = useReleases({ romId });
 
@@ -74,4 +74,4 @@ function EpisodeSearch({
   );
 }
 
-export default EpisodeSearch;
+export default RomSearch;

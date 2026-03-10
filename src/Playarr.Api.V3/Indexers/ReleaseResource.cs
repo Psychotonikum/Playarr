@@ -98,10 +98,10 @@ namespace Playarr.Api.V3.Indexers
     {
         public static ReleaseResource ToResource(this DownloadDecision model)
         {
-            var releaseInfo = model.RemoteEpisode.Release;
-            var parsedRomInfo = model.RemoteEpisode.ParsedRomInfo;
-            var remoteRom = model.RemoteEpisode;
-            var torrentInfo = (model.RemoteEpisode.Release as TorrentInfo) ?? new TorrentInfo();
+            var releaseInfo = model.RemoteRom.Release;
+            var parsedRomInfo = model.RemoteRom.ParsedRomInfo;
+            var remoteRom = model.RemoteRom;
+            var torrentInfo = (model.RemoteRom.Release as TorrentInfo) ?? new TorrentInfo();
             var indexerFlags = torrentInfo.IndexerFlags;
 
             return new ReleaseResource

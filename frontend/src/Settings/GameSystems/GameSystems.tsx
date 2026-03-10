@@ -3,12 +3,12 @@ import FieldSet from 'Components/FieldSet';
 import Icon from 'Components/Icon';
 import Modal from 'Components/Modal/Modal';
 import PageSectionContent from 'Components/Page/PageSectionContent';
-import { icons, sizes } from 'Helpers/Props';
 import useGameSystems from 'GameSystem/useGameSystems';
+import { icons, sizes } from 'Helpers/Props';
 import AddGameSystemModalContent from './AddGameSystemModalContent';
 import EditGameSystemModal from './EditGameSystemModal';
-import { GameSystemPreset } from './gameSystemPresets';
 import GameSystemCard from './GameSystemCard';
+import { GameSystemPreset } from './gameSystemPresets';
 import styles from './GameSystems.css';
 
 function GameSystems() {
@@ -32,14 +32,11 @@ function GameSystems() {
     setIsEditModalOpen(true);
   }, []);
 
-  const handlePresetSelect = useCallback(
-    (preset: GameSystemPreset | null) => {
-      setSelectedPreset(preset);
-      setIsAddModalOpen(false);
-      setIsEditModalOpen(true);
-    },
-    []
-  );
+  const handlePresetSelect = useCallback((preset: GameSystemPreset | null) => {
+    setSelectedPreset(preset);
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(true);
+  }, []);
 
   const handleAddModalClose = useCallback(() => {
     setIsAddModalOpen(false);
@@ -68,10 +65,7 @@ function GameSystems() {
             />
           ))}
 
-          <div
-            className={styles.addSystem}
-            onClick={handleAddPress}
-          >
+          <div className={styles.addSystem} onClick={handleAddPress}>
             <div className={styles.center}>
               <Icon name={icons.ADD} size={45} />
             </div>

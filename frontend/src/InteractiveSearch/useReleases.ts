@@ -5,6 +5,7 @@ import { FilterBuilderTag } from 'Components/Filter/Builder/FilterBuilderRowValu
 import type DownloadProtocol from 'DownloadClient/DownloadProtocol';
 import { Filter, FilterBuilderProp } from 'Filters/Filter';
 import { useCustomFiltersList } from 'Filters/useCustomFilters';
+import { AlternateTitle } from 'Game/Game';
 import useApiMutation from 'Helpers/Hooks/useApiMutation';
 import useApiQuery from 'Helpers/Hooks/useApiQuery';
 import { applySort } from 'Helpers/Hooks/useOptionsStore';
@@ -14,7 +15,6 @@ import getFilterTypePredicate from 'Helpers/Props/getFilterTypePredicate';
 import { SortDirection } from 'Helpers/Props/sortDirections';
 import Language from 'Language/Language';
 import { QualityModel } from 'Quality/Quality';
-import { AlternateTitle } from 'Game/Game';
 import CustomFormat from 'typings/CustomFormat';
 import Rejection from 'typings/Rejection';
 import sortByProp from 'Utilities/Array/sortByProp';

@@ -36,19 +36,19 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
                   .Returns(_pending);
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetSeries(It.IsAny<int>()))
+                  .Setup(s => s.GetGame(It.IsAny<int>()))
                   .Returns(new Game());
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetSeries(It.IsAny<IEnumerable<int>>()))
+                  .Setup(s => s.GetGame(It.IsAny<IEnumerable<int>>()))
                   .Returns(new List<Game> { new Game() });
 
             Mocker.GetMock<IParsingService>()
                   .Setup(s => s.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<Game>()))
-                  .Returns(new RemoteEpisode { Roms = new List<Rom> { _episode } });
+                  .Returns(new RemoteRom { Roms = new List<Rom> { _episode } });
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetEpisodes(It.IsAny<ParsedRomInfo>(), It.IsAny<Game>(), It.IsAny<bool>(), null))
+                  .Setup(s => s.GetRoms(It.IsAny<ParsedRomInfo>(), It.IsAny<Game>(), It.IsAny<bool>(), null))
                   .Returns(new List<Rom> { _episode });
         }
 

@@ -19,7 +19,7 @@ namespace Playarr.Core.Download
 {
     public interface IDownloadService
     {
-        Task DownloadReport(RemoteEpisode remoteRom, int? downloadClientId);
+        Task DownloadReport(RemoteRom remoteRom, int? downloadClientId);
     }
 
     public class DownloadService : IDownloadService
@@ -52,7 +52,7 @@ namespace Playarr.Core.Download
             _logger = logger;
         }
 
-        public async Task DownloadReport(RemoteEpisode remoteRom, int? downloadClientId)
+        public async Task DownloadReport(RemoteRom remoteRom, int? downloadClientId)
         {
             var filterBlockedClients = remoteRom.Release.PendingReleaseReason == PendingReleaseReason.DownloadClientUnavailable;
 
@@ -118,7 +118,7 @@ namespace Playarr.Core.Download
             throw new DownloadClientUnavailableException("All '{0}' download clients failed", remoteRom.Release.DownloadProtocol);
         }
 
-        private async Task DownloadReport(RemoteEpisode remoteRom, IDownloadClient downloadClient)
+        private async Task DownloadReport(RemoteRom remoteRom, IDownloadClient downloadClient)
         {
             Ensure.That(remoteRom.Game, () => remoteRom.Game).IsNotNull();
             Ensure.That(remoteRom.Roms, () => remoteRom.Roms).HasItems();

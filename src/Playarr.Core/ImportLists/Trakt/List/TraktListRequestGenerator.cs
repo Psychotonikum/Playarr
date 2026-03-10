@@ -13,12 +13,12 @@ namespace Playarr.Core.ImportLists.Trakt.List
         {
             var pageableRequests = new ImportListPageableRequestChain();
 
-            pageableRequests.Add(GetSeriesRequest());
+            pageableRequests.Add(GetGameRequest());
 
             return pageableRequests;
         }
 
-        private IEnumerable<ImportListRequest> GetSeriesRequest()
+        private IEnumerable<ImportListRequest> GetGameRequest()
         {
             var link = Settings.BaseUrl.Trim();
 

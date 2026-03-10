@@ -6,16 +6,16 @@ namespace Playarr.Core.Housekeeping.Housekeepers
 {
     public class UpdateCleanTitleForSeries : IHousekeepingTask
     {
-        private readonly IGameRepository _seriesRepository;
+        private readonly IGameRepository _gameRepository;
 
         public UpdateCleanTitleForSeries(IGameRepository seriesRepository)
         {
-            _seriesRepository = seriesRepository;
+            _gameRepository = seriesRepository;
         }
 
         public void Clean()
         {
-            var game = _seriesRepository.All().ToList();
+            var game = _gameRepository.All().ToList();
 
             game.ForEach(s =>
             {
@@ -23,7 +23,7 @@ namespace Playarr.Core.Housekeeping.Housekeepers
                 if (s.CleanTitle != cleanTitle)
                 {
                     s.CleanTitle = cleanTitle;
-                    _seriesRepository.Update(s);
+                    _gameRepository.Update(s);
                 }
             });
         }

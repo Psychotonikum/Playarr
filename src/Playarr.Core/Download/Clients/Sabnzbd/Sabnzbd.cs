@@ -37,7 +37,7 @@ namespace Playarr.Core.Download.Clients.Sabnzbd
         // patch can be a number (releases) or 'x' (git)
         private static readonly Regex VersionRegex = new Regex(@"(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+|x)", RegexOptions.Compiled);
 
-        protected override string AddFromNzbFile(RemoteEpisode remoteRom, string filename, byte[] fileContent)
+        protected override string AddFromNzbFile(RemoteRom remoteRom, string filename, byte[] fileContent)
         {
             var category = Settings.GameCategory;
             var priority = remoteRom.IsRecentEpisode() ? Settings.RecentTvPriority : Settings.OlderTvPriority;

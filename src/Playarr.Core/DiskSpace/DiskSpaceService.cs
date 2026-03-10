@@ -18,7 +18,7 @@ namespace Playarr.Core.DiskSpace
 
     public class DiskSpaceService : IDiskSpaceService
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IRootFolderService _rootFolderService;
         private readonly IDiskProvider _diskProvider;
         private readonly Logger _logger;
@@ -27,7 +27,7 @@ namespace Playarr.Core.DiskSpace
 
         public DiskSpaceService(IGameService seriesService, IRootFolderService rootFolderService, IDiskProvider diskProvider, Logger logger)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _rootFolderService = rootFolderService;
             _diskProvider = diskProvider;
             _logger = logger;
@@ -35,7 +35,7 @@ namespace Playarr.Core.DiskSpace
 
         public List<DiskSpace> GetFreeSpace()
         {
-            var importantRootFolders = GetSeriesRootPaths().Distinct().ToList();
+            var importantRootFolders = GetGameRootPaths().Distinct().ToList();
 
             var optionalRootFolders = GetFixedDisksRootPaths().Except(importantRootFolders).Distinct().ToList();
 
@@ -47,12 +47,12 @@ namespace Playarr.Core.DiskSpace
             return diskSpace;
         }
 
-        private IEnumerable<string> GetSeriesRootPaths()
+        private IEnumerable<string> GetGameRootPaths()
         {
             // Get all game paths and find the correct root folder for each. For each unique root folder path,
             // ensure the path exists and get its path root and return all unique path roots.
 
-            return _seriesService.GetAllSeriesPaths()
+            return _gameService.GetAllGamePaths()
                 .Where(s => s.Value.IsPathValid(PathValidationType.CurrentOs))
                 .Select(s => _rootFolderService.GetBestRootFolderPath(s.Value))
                 .Distinct()

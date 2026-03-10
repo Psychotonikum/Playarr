@@ -50,7 +50,7 @@ namespace Playarr.Core.Download
 
             foreach (var report in prioritizedDecisions)
             {
-                var downloadProtocol = report.RemoteEpisode.Release.DownloadProtocol;
+                var downloadProtocol = report.RemoteRom.Release.DownloadProtocol;
 
                 // Skip if already grabbed
                 if (IsEpisodeProcessed(grabbed, report))
@@ -161,14 +161,14 @@ namespace Playarr.Core.Download
         internal bool IsQualifiedReport(DownloadDecision decision)
         {
             // Process both approved and temporarily rejected
-            return (decision.Approved || decision.TemporarilyRejected) && decision.RemoteEpisode.Roms.Any();
+            return (decision.Approved || decision.TemporarilyRejected) && decision.RemoteRom.Roms.Any();
         }
 
         private bool IsEpisodeProcessed(List<DownloadDecision> decisions, DownloadDecision report)
         {
-            var romIds = report.RemoteEpisode.Roms.Select(e => e.Id).ToList();
+            var romIds = report.RemoteRom.Roms.Select(e => e.Id).ToList();
 
-            return decisions.SelectMany(r => r.RemoteEpisode.Roms)
+            return decisions.SelectMany(r => r.RemoteRom.Roms)
                             .Select(e => e.Id)
                             .ToList()
                             .Intersect(romIds)
@@ -195,7 +195,7 @@ namespace Playarr.Core.Download
 
         private async Task<ProcessedDecisionResult> ProcessDecisionInternal(DownloadDecision decision, int? downloadClientId = null)
         {
-            var remoteRom = decision.RemoteEpisode;
+            var remoteRom = decision.RemoteRom;
             var remoteIndexer = remoteRom.Release.Indexer;
 
             try

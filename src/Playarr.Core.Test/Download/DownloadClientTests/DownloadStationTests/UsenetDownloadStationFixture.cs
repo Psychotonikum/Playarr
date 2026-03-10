@@ -33,7 +33,7 @@ namespace Playarr.Core.Test.Download.DownloadClientTests.DownloadStationTests
         protected string _defaultDestination = "somepath";
         protected OsPath _physicalPath = new OsPath("/mnt/sdb1/mydata");
 
-        protected RemoteEpisode _remoteRom;
+        protected RemoteRom _remoteRom;
 
         protected Dictionary<string, object> _downloadStationConfigItems;
 

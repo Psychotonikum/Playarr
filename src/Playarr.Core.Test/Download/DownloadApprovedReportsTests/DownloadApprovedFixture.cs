@@ -39,9 +39,9 @@ namespace Playarr.Core.Test.Download.DownloadApprovedReportsTests
                             .Build();
         }
 
-        private RemoteEpisode GetRemoteEpisode(List<Rom> roms, QualityModel quality, DownloadProtocol downloadProtocol = DownloadProtocol.Usenet)
+        private RemoteRom GetRemoteEpisode(List<Rom> roms, QualityModel quality, DownloadProtocol downloadProtocol = DownloadProtocol.Usenet)
         {
-            var remoteRom = new RemoteEpisode();
+            var remoteRom = new RemoteRom();
             remoteRom.ParsedRomInfo = new ParsedRomInfo();
             remoteRom.ParsedRomInfo.Quality = quality;
 
@@ -69,7 +69,7 @@ namespace Playarr.Core.Test.Download.DownloadApprovedReportsTests
             decisions.Add(new DownloadDecision(remoteRom));
 
             await Subject.ProcessDecisions(decisions);
-            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.IsAny<RemoteEpisode>(), null), Times.Once());
+            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.IsAny<RemoteRom>(), null), Times.Once());
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace Playarr.Core.Test.Download.DownloadApprovedReportsTests
             decisions.Add(new DownloadDecision(remoteRom));
 
             await Subject.ProcessDecisions(decisions);
-            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.IsAny<RemoteEpisode>(), null), Times.Once());
+            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.IsAny<RemoteRom>(), null), Times.Once());
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace Playarr.Core.Test.Download.DownloadApprovedReportsTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             await Subject.ProcessDecisions(decisions);
-            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.IsAny<RemoteEpisode>(), null), Times.Once());
+            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.IsAny<RemoteRom>(), null), Times.Once());
         }
 
         [Test]
@@ -173,7 +173,7 @@ namespace Playarr.Core.Test.Download.DownloadApprovedReportsTests
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom));
 
-            Mocker.GetMock<IDownloadService>().Setup(s => s.DownloadReport(It.IsAny<RemoteEpisode>(), null)).Throws(new Exception());
+            Mocker.GetMock<IDownloadService>().Setup(s => s.DownloadReport(It.IsAny<RemoteRom>(), null)).Throws(new Exception());
 
             var result = await Subject.ProcessDecisions(decisions);
 
@@ -202,7 +202,7 @@ namespace Playarr.Core.Test.Download.DownloadApprovedReportsTests
             decisions.Add(new DownloadDecision(remoteRom, new DownloadRejection(DownloadRejectionReason.Unknown, "Failure!", RejectionType.Temporary)));
 
             await Subject.ProcessDecisions(decisions);
-            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.IsAny<RemoteEpisode>(), null), Times.Never());
+            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.IsAny<RemoteRom>(), null), Times.Never());
         }
 
         [Test]
@@ -243,11 +243,11 @@ namespace Playarr.Core.Test.Download.DownloadApprovedReportsTests
             decisions.Add(new DownloadDecision(remoteRom));
             decisions.Add(new DownloadDecision(remoteRom));
 
-            Mocker.GetMock<IDownloadService>().Setup(s => s.DownloadReport(It.IsAny<RemoteEpisode>(), null))
+            Mocker.GetMock<IDownloadService>().Setup(s => s.DownloadReport(It.IsAny<RemoteRom>(), null))
                   .Throws(new DownloadClientUnavailableException("Download client failed"));
 
             await Subject.ProcessDecisions(decisions);
-            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.IsAny<RemoteEpisode>(), null), Times.Once());
+            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.IsAny<RemoteRom>(), null), Times.Once());
         }
 
         [Test]
@@ -261,12 +261,12 @@ namespace Playarr.Core.Test.Download.DownloadApprovedReportsTests
             decisions.Add(new DownloadDecision(remoteRom));
             decisions.Add(new DownloadDecision(remoteRom2));
 
-            Mocker.GetMock<IDownloadService>().Setup(s => s.DownloadReport(It.Is<RemoteEpisode>(r => r.Release.DownloadProtocol == DownloadProtocol.Usenet), null))
+            Mocker.GetMock<IDownloadService>().Setup(s => s.DownloadReport(It.Is<RemoteRom>(r => r.Release.DownloadProtocol == DownloadProtocol.Usenet), null))
                   .Throws(new DownloadClientUnavailableException("Download client failed"));
 
             await Subject.ProcessDecisions(decisions);
-            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.Is<RemoteEpisode>(r => r.Release.DownloadProtocol == DownloadProtocol.Usenet), null), Times.Once());
-            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.Is<RemoteEpisode>(r => r.Release.DownloadProtocol == DownloadProtocol.Torrent), null), Times.Once());
+            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.Is<RemoteRom>(r => r.Release.DownloadProtocol == DownloadProtocol.Usenet), null), Times.Once());
+            Mocker.GetMock<IDownloadService>().Verify(v => v.DownloadReport(It.Is<RemoteRom>(r => r.Release.DownloadProtocol == DownloadProtocol.Torrent), null), Times.Once());
         }
 
         [Test]
@@ -279,7 +279,7 @@ namespace Playarr.Core.Test.Download.DownloadApprovedReportsTests
             decisions.Add(new DownloadDecision(remoteRom));
 
             Mocker.GetMock<IDownloadService>()
-                  .Setup(s => s.DownloadReport(It.IsAny<RemoteEpisode>(), null))
+                  .Setup(s => s.DownloadReport(It.IsAny<RemoteRom>(), null))
                   .Throws(new ReleaseUnavailableException(remoteRom.Release, "That 404 Error is not just a Quirk"));
 
             var result = await Subject.ProcessDecisions(decisions);

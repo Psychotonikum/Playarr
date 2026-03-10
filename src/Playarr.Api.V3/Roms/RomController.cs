@@ -25,24 +25,24 @@ namespace Playarr.Api.V3.Roms
 
         [HttpGet]
         [Produces("application/json")]
-        public List<RomResource> GetEpisodes(int? gameId, int? platformNumber, [FromQuery]List<int> romIds, int? romFileId, bool includeSeries = false, bool includeRomFile = false, bool includeImages = false)
+        public List<RomResource> GetRoms(int? gameId, int? platformNumber, [FromQuery]List<int> romIds, int? romFileId, bool includeSeries = false, bool includeRomFile = false, bool includeImages = false)
         {
             if (gameId.HasValue)
             {
                 if (platformNumber.HasValue)
                 {
-                    return MapToResource(_episodeService.GetEpisodesBySeason(gameId.Value, platformNumber.Value), includeSeries, includeRomFile, includeImages);
+                    return MapToResource(_romService.GetRomsByPlatform(gameId.Value, platformNumber.Value), includeSeries, includeRomFile, includeImages);
                 }
 
-                return MapToResource(_episodeService.GetEpisodeBySeries(gameId.Value), includeSeries, includeRomFile, includeImages);
+                return MapToResource(_romService.GetEpisodeBySeries(gameId.Value), includeSeries, includeRomFile, includeImages);
             }
             else if (romIds.Any())
             {
-                return MapToResource(_episodeService.GetEpisodes(romIds), includeSeries, includeRomFile, includeImages);
+                return MapToResource(_romService.GetRoms(romIds), includeSeries, includeRomFile, includeImages);
             }
             else if (romFileId.HasValue)
             {
-                return MapToResource(_episodeService.GetEpisodesByFileId(romFileId.Value), includeSeries, includeRomFile, includeImages);
+                return MapToResource(_romService.GetRomsByFileId(romFileId.Value), includeSeries, includeRomFile, includeImages);
             }
 
             throw new BadRequestException("gameId or romIds must be provided");
@@ -52,9 +52,9 @@ namespace Playarr.Api.V3.Roms
         [Consumes("application/json")]
         public ActionResult<RomResource> SetEpisodeMonitored([FromRoute] int id, [FromBody] RomResource resource)
         {
-            _episodeService.SetEpisodeMonitored(id, resource.Monitored);
+            _romService.SetEpisodeMonitored(id, resource.Monitored);
 
-            resource = MapToResource(_episodeService.GetEpisode(id), false, false, false);
+            resource = MapToResource(_romService.GetEpisode(id), false, false, false);
 
             return Accepted(resource);
         }
@@ -65,14 +65,14 @@ namespace Playarr.Api.V3.Roms
         {
             if (resource.RomIds.Count == 1)
             {
-                _episodeService.SetEpisodeMonitored(resource.RomIds.First(), resource.Monitored);
+                _romService.SetEpisodeMonitored(resource.RomIds.First(), resource.Monitored);
             }
             else
             {
-                _episodeService.SetMonitored(resource.RomIds, resource.Monitored);
+                _romService.SetMonitored(resource.RomIds, resource.Monitored);
             }
 
-            var resources = MapToResource(_episodeService.GetEpisodes(resource.RomIds), false, false, includeImages);
+            var resources = MapToResource(_romService.GetRoms(resource.RomIds), false, false, includeImages);
 
             return Accepted(resources);
         }

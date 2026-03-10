@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import React, { useCallback } from 'react';
 import MonitorToggleButton from 'Components/MonitorToggleButton';
-import formatPlatform from 'Platform/formatPlatform';
 import { Statistics } from 'Game/Game';
 import { useToggleSeasonMonitored } from 'Game/useGame';
+import formatPlatform from 'Platform/formatPlatform';
 import translate from 'Utilities/String/translate';
 import styles from './PlatformPassPlatform.css';
 
@@ -56,9 +56,7 @@ function PlatformPassPlatform(props: PlatformPassPlatformProps) {
           totalRomCount,
         })}
       >
-        {totalRomCount === 0
-          ? '0/0'
-          : `${romFileCount}/${totalRomCount}`}
+        {totalRomCount === 0 ? '0/0' : `${romFileCount}/${totalRomCount}`}
       </div>
     </div>
   );

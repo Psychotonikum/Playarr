@@ -1,8 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query';
 import AddGame from 'AddGame/AddGame';
+import Game from 'Game/Game';
 import useApiMutation from 'Helpers/Hooks/useApiMutation';
 import useApiQuery from 'Helpers/Hooks/useApiQuery';
-import Game from 'Game/Game';
 
 interface AddGamePayload extends AddGame {
   rootFolderPath: string;
@@ -38,23 +38,21 @@ export const useLookupSeries = (query: string, isEnabled = true) => {
 export const useAddGame = () => {
   const queryClient = useQueryClient();
 
-  const { isPending, error, mutate } = useApiMutation<Game, AddGamePayload>(
-    {
-      path: '/game',
-      method: 'POST',
-      mutationOptions: {
-        onSuccess: (newSeries) => {
-          queryClient.setQueryData<Game[]>(['/game'], (oldSeries) => {
-            if (!oldSeries) {
-              return [newSeries];
-            }
+  const { isPending, error, mutate } = useApiMutation<Game, AddGamePayload>({
+    path: '/game',
+    method: 'POST',
+    mutationOptions: {
+      onSuccess: (newSeries) => {
+        queryClient.setQueryData<Game[]>(['/game'], (oldSeries) => {
+          if (!oldSeries) {
+            return [newSeries];
+          }
 
-            return [...oldSeries, newSeries];
-          });
-        },
+          return [...oldSeries, newSeries];
+        });
       },
-    }
-  );
+    },
+  });
 
   return {
     isAdding: isPending,

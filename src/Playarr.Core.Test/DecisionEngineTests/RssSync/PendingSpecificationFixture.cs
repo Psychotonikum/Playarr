@@ -23,7 +23,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
     {
         private Game _series;
         private Rom _episode;
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         private Game _otherGame;
         private Rom _otherEpisode;
@@ -64,7 +64,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
             _releaseInfo = Builder<ReleaseInfo>.CreateNew()
                                                .Build();
 
-            _remoteRom = Builder<RemoteEpisode>.CreateNew()
+            _remoteRom = Builder<RemoteRom>.CreateNew()
                                                    .With(r => r.Game = _series)
                                                    .With(r => r.Roms = new List<Rom> { _episode })
                                                    .With(r => r.ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD), Languages = new List<Language> { Language.Spanish } })
@@ -72,7 +72,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                                                    .Build();
 
             Mocker.GetMock<ICustomFormatCalculationService>()
-                  .Setup(x => x.ParseCustomFormat(It.IsAny<RemoteEpisode>(), It.IsAny<long>()))
+                  .Setup(x => x.ParseCustomFormat(It.IsAny<RemoteRom>(), It.IsAny<long>()))
                   .Returns(new List<CustomFormat>());
         }
 
@@ -83,11 +83,11 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                 .Returns(new List<Queue.Queue>());
         }
 
-        private void GivenPendingQueue(IEnumerable<RemoteEpisode> remoteRoms)
+        private void GivenPendingQueue(IEnumerable<RemoteRom> remoteRoms)
         {
             var queue = remoteRoms.Select(remoteRom => new Queue.Queue
             {
-                RemoteEpisode = remoteRom
+                RemoteRom = remoteRom
             });
 
             Mocker.GetMock<IPendingReleaseService>()
@@ -130,7 +130,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                 {
                     new()
                     {
-                        RemoteEpisode = new RemoteEpisode
+                        RemoteRom = new RemoteRom
                         {
                             Game = _otherGame,
                             Roms = new List<Rom> { _otherEpisode }
@@ -157,7 +157,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                 {
                     new()
                     {
-                        RemoteEpisode = new RemoteEpisode
+                        RemoteRom = new RemoteRom
                         {
                             Game = _series,
                             Roms = new List<Rom> { _otherEpisode }
@@ -182,7 +182,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                 {
                     new()
                     {
-                        RemoteEpisode = new RemoteEpisode
+                        RemoteRom = new RemoteRom
                         {
                             Game = _series,
                             Roms = new List<Rom> { _episode }

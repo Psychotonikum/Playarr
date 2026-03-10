@@ -31,7 +31,7 @@ namespace Playarr.Core.Test.HealthCheck.Checks
                                         .ToList();
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetAllSeriesPaths())
+                  .Setup(s => s.GetAllGamePaths())
                   .Returns(game.ToDictionary(s => s.Id, s => s.Path));
 
             Mocker.GetMock<IRootFolderService>()
@@ -47,7 +47,7 @@ namespace Playarr.Core.Test.HealthCheck.Checks
         public void should_not_return_error_when_no_series()
         {
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetAllSeriesPaths())
+                  .Setup(s => s.GetAllGamePaths())
                   .Returns(new Dictionary<int, string>());
 
             Subject.Check().ShouldBeOk();

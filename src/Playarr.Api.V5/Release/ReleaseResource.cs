@@ -33,9 +33,9 @@ public static class ReleaseResourceMapper
 {
     public static ReleaseResource ToResource(this DownloadDecision model)
     {
-        var releaseInfo = model.RemoteEpisode.Release;
-        var parsedRomInfo = model.RemoteEpisode.ParsedRomInfo;
-        var remoteRom = model.RemoteEpisode;
+        var releaseInfo = model.RemoteRom.Release;
+        var parsedRomInfo = model.RemoteRom.ParsedRomInfo;
+        var remoteRom = model.RemoteRom;
 
         return new ReleaseResource
         {

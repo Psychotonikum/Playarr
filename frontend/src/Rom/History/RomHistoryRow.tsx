@@ -9,12 +9,12 @@ import RelativeDateCell from 'Components/Table/Cells/RelativeDateCell';
 import TableRowCell from 'Components/Table/Cells/TableRowCell';
 import TableRow from 'Components/Table/TableRow';
 import Popover from 'Components/Tooltip/Popover';
-import RomFormats from 'Rom/RomFormats';
-import RomLanguages from 'Rom/RomLanguages';
-import RomQuality from 'Rom/RomQuality';
 import { icons, kinds, tooltipPositions } from 'Helpers/Props';
 import Language from 'Language/Language';
 import { QualityModel } from 'Quality/Quality';
+import RomFormats from 'Rom/RomFormats';
+import RomLanguages from 'Rom/RomLanguages';
+import RomQuality from 'Rom/RomQuality';
 import CustomFormat from 'typings/CustomFormat';
 import { HistoryData, HistoryEventType } from 'typings/History';
 import formatCustomFormatScore from 'Utilities/Number/formatCustomFormatScore';
@@ -94,10 +94,7 @@ function RomHistoryRow({
       </TableRowCell>
 
       <TableRowCell>
-        <RomQuality
-          quality={quality}
-          isCutoffNotMet={qualityCutoffNotMet}
-        />
+        <RomQuality quality={quality} isCutoffNotMet={qualityCutoffNotMet} />
       </TableRowCell>
 
       <TableRowCell>

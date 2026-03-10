@@ -15,13 +15,13 @@ namespace Playarr.Core.Games
 
     public class RefreshRomService : IRefreshRomService
     {
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly IEventAggregator _eventAggregator;
         private readonly Logger _logger;
 
         public RefreshRomService(IRomService episodeService, IEventAggregator eventAggregator, Logger logger)
         {
-            _episodeService = episodeService;
+            _romService = episodeService;
             _eventAggregator = eventAggregator;
             _logger = logger;
         }
@@ -32,18 +32,13 @@ namespace Playarr.Core.Games
             var successCount = 0;
             var failCount = 0;
 
-            var existingRoms = _episodeService.GetEpisodeBySeries(game.Id);
+            var existingRoms = _romService.GetEpisodeBySeries(game.Id);
             var platforms = game.Platforms;
             var hasExisting = existingRoms.Any();
 
             var updateList = new List<Rom>();
             var newList = new List<Rom>();
             var dupeFreeRemoteEpisodes = remoteRoms.DistinctBy(m => new { m.PlatformNumber, m.EpisodeNumber }).ToList();
-
-            if (game.SeriesType == GameTypes.Anime)
-            {
-                dupeFreeRemoteEpisodes = MapAbsoluteRomNumbers(dupeFreeRemoteEpisodes);
-            }
 
             var orderedEpisodes = OrderEpisodes(game, dupeFreeRemoteEpisodes).ToList();
             var episodesPerSeason = orderedEpisodes.GroupBy(s => s.PlatformNumber).ToDictionary(g => g.Key, g => g.Count());
@@ -59,14 +54,6 @@ namespace Playarr.Core.Games
                     {
                         existingRoms.Remove(episodeToUpdate);
                         updateList.Add(episodeToUpdate);
-
-                        // Anime game with newly added absolute rom number
-                        if (game.SeriesType == GameTypes.Anime &&
-                            !episodeToUpdate.AbsoluteEpisodeNumber.HasValue &&
-                            rom.AbsoluteEpisodeNumber.HasValue)
-                        {
-                            episodeToUpdate.AbsoluteRomNumberAdded = true;
-                        }
                     }
                     else
                     {
@@ -124,9 +111,9 @@ namespace Playarr.Core.Games
             AdjustMultiEpisodeAirTime(game, allEpisodes);
             AdjustDirectToDvdAirDate(game, allEpisodes);
 
-            _episodeService.DeleteMany(existingRoms);
-            _episodeService.UpdateMany(updateList);
-            _episodeService.InsertMany(newList);
+            _romService.DeleteMany(existingRoms);
+            _romService.UpdateMany(updateList);
+            _romService.InsertMany(newList);
 
             _eventAggregator.PublishEvent(new RomInfoRefreshedEvent(game, newList, updateList, existingRoms));
 
@@ -237,18 +224,6 @@ namespace Playarr.Core.Games
 
         private IEnumerable<Rom> OrderEpisodes(Game game, List<Rom> roms)
         {
-            if (game.SeriesType == GameTypes.Anime)
-            {
-                var withAbs = roms.Where(e => e.AbsoluteEpisodeNumber.HasValue)
-                                      .OrderBy(e => e.AbsoluteEpisodeNumber);
-
-                var withoutAbs = roms.Where(e => !e.AbsoluteEpisodeNumber.HasValue)
-                                         .OrderBy(e => e.PlatformNumber)
-                                         .ThenBy(e => e.EpisodeNumber);
-
-                return withAbs.Concat(withoutAbs);
-            }
-
             return roms.OrderBy(e => e.PlatformNumber).ThenBy(e => e.EpisodeNumber);
         }
     }

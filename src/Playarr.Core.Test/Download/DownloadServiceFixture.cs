@@ -20,7 +20,7 @@ namespace Playarr.Core.Test.Download
     [TestFixture]
     public class DownloadServiceFixture : CoreTest<DownloadService>
     {
-        private RemoteEpisode _parseResult;
+        private RemoteRom _parseResult;
         private List<IDownloadClient> _downloadClients;
 
         [SetUp]
@@ -47,7 +47,7 @@ namespace Playarr.Core.Test.Download
                 .With(v => v.DownloadUrl = "http://test.site/download1.ext")
                 .Build();
 
-            _parseResult = Builder<RemoteEpisode>.CreateNew()
+            _parseResult = Builder<RemoteRom>.CreateNew()
                    .With(c => c.Game = Builder<Game>.CreateNew().Build())
                    .With(c => c.Release = releaseInfo)
                    .With(c => c.Roms = roms)
@@ -82,7 +82,7 @@ namespace Playarr.Core.Test.Download
         public async Task Download_report_should_publish_on_grab_event()
         {
             var mock = WithUsenetClient();
-            mock.Setup(s => s.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()));
+            mock.Setup(s => s.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()));
 
             await Subject.DownloadReport(_parseResult, null);
 
@@ -93,18 +93,18 @@ namespace Playarr.Core.Test.Download
         public async Task Download_report_should_grab_using_client()
         {
             var mock = WithUsenetClient();
-            mock.Setup(s => s.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()));
+            mock.Setup(s => s.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()));
 
             await Subject.DownloadReport(_parseResult, null);
 
-            mock.Verify(s => s.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()), Times.Once());
+            mock.Verify(s => s.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()), Times.Once());
         }
 
         [Test]
         public void Download_report_should_not_publish_on_failed_grab_event()
         {
             var mock = WithUsenetClient();
-            mock.Setup(s => s.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()))
+            mock.Setup(s => s.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()))
                 .Throws(new WebException());
 
             Assert.ThrowsAsync<DownloadClientUnavailableException>(async () => await Subject.DownloadReport(_parseResult, null));
@@ -116,8 +116,8 @@ namespace Playarr.Core.Test.Download
         public void Download_report_should_trigger_indexer_backoff_on_indexer_error()
         {
             var mock = WithUsenetClient();
-            mock.Setup(s => s.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()))
-                .Callback<RemoteEpisode, IIndexer>((v, indexer) =>
+            mock.Setup(s => s.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()))
+                .Callback<RemoteRom, IIndexer>((v, indexer) =>
                 {
                     throw new ReleaseDownloadException(v.Release, "Error", new WebException());
                 });
@@ -136,8 +136,8 @@ namespace Playarr.Core.Test.Download
             response.Headers["Retry-After"] = "300";
 
             var mock = WithUsenetClient();
-            mock.Setup(s => s.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()))
-                .Callback<RemoteEpisode, IIndexer>((v, indexer) =>
+            mock.Setup(s => s.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()))
+                .Callback<RemoteRom, IIndexer>((v, indexer) =>
                 {
                     throw new ReleaseDownloadException(v.Release, "Error", new TooManyRequestsException(request, response));
                 });
@@ -156,8 +156,8 @@ namespace Playarr.Core.Test.Download
             response.Headers["Retry-After"] = DateTime.UtcNow.AddSeconds(300).ToString("r");
 
             var mock = WithUsenetClient();
-            mock.Setup(s => s.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()))
-                .Callback<RemoteEpisode, IIndexer>((v, indexer) =>
+            mock.Setup(s => s.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()))
+                .Callback<RemoteRom, IIndexer>((v, indexer) =>
                 {
                     throw new ReleaseDownloadException(v.Release, "Error", new TooManyRequestsException(request, response));
                 });
@@ -174,7 +174,7 @@ namespace Playarr.Core.Test.Download
         public void Download_report_should_not_trigger_indexer_backoff_on_downloadclient_error()
         {
             var mock = WithUsenetClient();
-            mock.Setup(s => s.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()))
+            mock.Setup(s => s.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()))
                 .Throws(new DownloadClientException("Some Error"));
 
             Assert.ThrowsAsync<DownloadClientUnavailableException>(async () => await Subject.DownloadReport(_parseResult, null));
@@ -187,8 +187,8 @@ namespace Playarr.Core.Test.Download
         public void Download_report_should_not_trigger_indexer_backoff_on_indexer_404_error()
         {
             var mock = WithUsenetClient();
-            mock.Setup(s => s.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()))
-                .Callback<RemoteEpisode, IIndexer>((v, indexer) =>
+            mock.Setup(s => s.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()))
+                .Callback<RemoteRom, IIndexer>((v, indexer) =>
                 {
                     throw new ReleaseUnavailableException(v.Release, "Error", new WebException());
                 });
@@ -204,7 +204,7 @@ namespace Playarr.Core.Test.Download
         {
             Assert.ThrowsAsync<DownloadClientUnavailableException>(async () => await Subject.DownloadReport(_parseResult, null));
 
-            Mocker.GetMock<IDownloadClient>().Verify(c => c.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()), Times.Never());
+            Mocker.GetMock<IDownloadClient>().Verify(c => c.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()), Times.Never());
             VerifyEventNotPublished<EpisodeGrabbedEvent>();
         }
 
@@ -227,7 +227,7 @@ namespace Playarr.Core.Test.Download
             await Subject.DownloadReport(_parseResult, null);
 
             Mocker.GetMock<IDownloadClientStatusService>().Verify(c => c.GetBlockedProviders(), Times.Never());
-            mockUsenet.Verify(c => c.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()), Times.Once());
+            mockUsenet.Verify(c => c.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()), Times.Once());
             VerifyEventPublished<EpisodeGrabbedEvent>();
         }
 
@@ -239,8 +239,8 @@ namespace Playarr.Core.Test.Download
 
             await Subject.DownloadReport(_parseResult, null);
 
-            mockTorrent.Verify(c => c.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()), Times.Never());
-            mockUsenet.Verify(c => c.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()), Times.Once());
+            mockTorrent.Verify(c => c.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()), Times.Never());
+            mockUsenet.Verify(c => c.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()), Times.Once());
         }
 
         [Test]
@@ -253,8 +253,8 @@ namespace Playarr.Core.Test.Download
 
             await Subject.DownloadReport(_parseResult, null);
 
-            mockTorrent.Verify(c => c.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()), Times.Once());
-            mockUsenet.Verify(c => c.Download(It.IsAny<RemoteEpisode>(), It.IsAny<IIndexer>()), Times.Never());
+            mockTorrent.Verify(c => c.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()), Times.Once());
+            mockUsenet.Verify(c => c.Download(It.IsAny<RemoteRom>(), It.IsAny<IIndexer>()), Times.Never());
         }
     }
 }

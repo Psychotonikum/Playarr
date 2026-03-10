@@ -7,20 +7,20 @@ namespace Playarr.Api.V5.PlatformPass;
 [V5ApiController]
 public class PlatformPassController : Controller
 {
-    private readonly IGameService _seriesService;
-    private readonly IEpisodeMonitoredService _episodeMonitoredService;
+    private readonly IGameService _gameService;
+    private readonly IEpisodeMonitoredService _romMonitoredService;
 
     public PlatformPassController(IGameService seriesService, IEpisodeMonitoredService episodeMonitoredService)
     {
-        _seriesService = seriesService;
-        _episodeMonitoredService = episodeMonitoredService;
+        _gameService = seriesService;
+        _romMonitoredService = episodeMonitoredService;
     }
 
     [HttpPost]
     [Consumes("application/json")]
     public IActionResult UpdateAll([FromBody] PlatformPassResource resource)
     {
-        var gamesToUpdate = _seriesService.GetSeries(resource.Game.Select(s => s.Id));
+        var gamesToUpdate = _gameService.GetGame(resource.Game.Select(s => s.Id));
 
         foreach (var s in resource.Game)
         {
@@ -49,7 +49,7 @@ public class PlatformPassController : Controller
                 game.Monitored = false;
             }
 
-            _episodeMonitoredService.SetEpisodeMonitoredStatus(game, resource.MonitoringOptions.ToModel());
+            _romMonitoredService.SetEpisodeMonitoredStatus(game, resource.MonitoringOptions.ToModel());
         }
 
         return NoContent();

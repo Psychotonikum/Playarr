@@ -29,14 +29,14 @@ public class ReleaseController : RestController<ReleaseResource>
     private readonly IMakeDownloadDecision _downloadDecisionMaker;
     private readonly IPrioritizeDownloadDecision _prioritizeDownloadDecision;
     private readonly IDownloadService _downloadService;
-    private readonly IGameService _seriesService;
-    private readonly IRomService _episodeService;
+    private readonly IGameService _gameService;
+    private readonly IRomService _romService;
     private readonly IParsingService _parsingService;
     private readonly IHistoryService _historyService;
     private readonly Logger _logger;
 
     private readonly QualityProfile _qualityProfile;
-    private readonly ICached<RemoteEpisode> _remoteRomCache;
+    private readonly ICached<RemoteRom> _remoteRomCache;
 
     public ReleaseController(IFetchAndParseRss rssFetcherAndParser,
                          ISearchForReleases releaseSearchService,
@@ -56,14 +56,14 @@ public class ReleaseController : RestController<ReleaseResource>
         _downloadDecisionMaker = downloadDecisionMaker;
         _prioritizeDownloadDecision = prioritizeDownloadDecision;
         _downloadService = downloadService;
-        _seriesService = seriesService;
-        _episodeService = episodeService;
+        _gameService = seriesService;
+        _romService = episodeService;
         _parsingService = parsingService;
         _historyService = historyService;
         _logger = logger;
 
         _qualityProfile = qualityProfileService.GetDefaultProfile(string.Empty);
-        _remoteRomCache = cacheManager.GetCache<RemoteEpisode>(GetType(), "remoteRoms");
+        _remoteRomCache = cacheManager.GetCache<RemoteRom>(GetType(), "remoteRoms");
 
         PostValidator.RuleFor(s => s.Release).NotNull();
         PostValidator.RuleFor(s => s.Release!.IndexerId).ValidId();
@@ -107,7 +107,7 @@ public class ReleaseController : RestController<ReleaseResource>
                 Ensure.That(overrideInfo.Languages, () => overrideInfo.Languages).IsNotNull();
 
                 // Clone the remote rom so we don't overwrite anything on the original
-                remoteRom = new RemoteEpisode
+                remoteRom = new RemoteRom
                 {
                     Release = remoteRom.Release,
                     ParsedRomInfo = remoteRom.ParsedRomInfo.JsonClone(),
@@ -122,8 +122,8 @@ public class ReleaseController : RestController<ReleaseResource>
                     ReleaseSource = remoteRom.ReleaseSource
                 };
 
-                remoteRom.Game = _seriesService.GetSeries(overrideInfo.GameId!.Value);
-                remoteRom.Roms = _episodeService.GetEpisodes(overrideInfo.RomIds);
+                remoteRom.Game = _gameService.GetGame(overrideInfo.GameId!.Value);
+                remoteRom.Roms = _romService.GetRoms(overrideInfo.RomIds);
                 remoteRom.ParsedRomInfo.Quality = overrideInfo.Quality;
                 remoteRom.Languages = overrideInfo.Languages;
             }
@@ -132,15 +132,15 @@ public class ReleaseController : RestController<ReleaseResource>
             {
                 if (release.SearchInfo?.EpisodeId.HasValue == true)
                 {
-                    var rom = _episodeService.GetEpisode(release.SearchInfo.EpisodeId.Value);
+                    var rom = _romService.GetEpisode(release.SearchInfo.EpisodeId.Value);
 
-                    remoteRom.Game = _seriesService.GetSeries(rom.GameId);
+                    remoteRom.Game = _gameService.GetGame(rom.GameId);
                     remoteRom.Roms = new List<Rom> { rom };
                 }
                 else if (release.SearchInfo?.GameId.HasValue == true)
                 {
-                    var game = _seriesService.GetSeries(release.SearchInfo.GameId.Value);
-                    var roms = _parsingService.GetEpisodes(remoteRom.ParsedRomInfo, game, true);
+                    var game = _gameService.GetGame(release.SearchInfo.GameId.Value);
+                    var roms = _parsingService.GetRoms(remoteRom.ParsedRomInfo, game, true);
 
                     if (roms.Empty())
                     {
@@ -157,11 +157,11 @@ public class ReleaseController : RestController<ReleaseResource>
             }
             else if (remoteRom.Roms.Empty())
             {
-                var roms = _parsingService.GetEpisodes(remoteRom.ParsedRomInfo, remoteRom.Game, true);
+                var roms = _parsingService.GetRoms(remoteRom.ParsedRomInfo, remoteRom.Game, true);
 
                 if (roms.Empty() && release.SearchInfo?.EpisodeId.HasValue == true)
                 {
-                    var rom = _episodeService.GetEpisode(release.SearchInfo.EpisodeId.Value);
+                    var rom = _romService.GetEpisode(release.SearchInfo.EpisodeId.Value);
 
                     roms = new List<Rom> { rom };
                 }
@@ -206,7 +206,7 @@ public class ReleaseController : RestController<ReleaseResource>
     {
         try
         {
-            var decisions = await _releaseSearchService.EpisodeSearch(romId, true, true);
+            var decisions = await _releaseSearchService.RomSearch(romId, true, true);
             var prioritizedDecisions = _prioritizeDownloadDecision.PrioritizeDecisions(decisions);
             var history = _historyService.FindByRomId(romId);
 
@@ -227,7 +227,7 @@ public class ReleaseController : RestController<ReleaseResource>
     {
         try
         {
-            var decisions = await _releaseSearchService.SeasonSearch(gameId, platformNumber, false, false, true, true);
+            var decisions = await _releaseSearchService.PlatformSearch(gameId, platformNumber, false, false, true, true);
             var prioritizedDecisions = _prioritizeDownloadDecision.PrioritizeDecisions(decisions);
             var history = _historyService.GetBySeason(gameId, platformNumber, null);
 
@@ -271,8 +271,8 @@ public class ReleaseController : RestController<ReleaseResource>
         {
             var release = downloadDecision.MapDecision(result.Count, _qualityProfile);
 
-            release.History = AddHistory(downloadDecision.RemoteEpisode.Release, history);
-            _remoteRomCache.Set(GetCacheKey(release), downloadDecision.RemoteEpisode, TimeSpan.FromMinutes(30));
+            release.History = AddHistory(downloadDecision.RemoteRom.Release, history);
+            _remoteRomCache.Set(GetCacheKey(release), downloadDecision.RemoteRom, TimeSpan.FromMinutes(30));
 
             result.Add(release);
         }

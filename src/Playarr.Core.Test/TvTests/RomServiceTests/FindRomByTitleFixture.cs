@@ -30,7 +30,7 @@ namespace Playarr.Core.Test.TvTests.RomServiceTests
             }
 
             Mocker.GetMock<IRomRepository>()
-                  .Setup(s => s.GetEpisodes(It.IsAny<int>(), It.IsAny<int>()))
+                  .Setup(s => s.GetRoms(It.IsAny<int>(), It.IsAny<int>()))
                   .Returns(_episodes);
         }
 

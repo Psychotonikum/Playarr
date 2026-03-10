@@ -31,7 +31,7 @@ namespace Playarr.Core.Test.MediaFiles
                                                 .ToList();
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetSeries(_series.Id))
+                  .Setup(s => s.GetGame(_series.Id))
                   .Returns(_series);
         }
 

@@ -10,19 +10,19 @@ namespace Playarr.Core.Housekeeping.Housekeepers
     public class CleanupExtraFilesInExcludedFolders : IHousekeepingTask
     {
         private readonly IExtraFileRepository<OtherExtraFile> _extraFileRepository;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IDiskScanService _diskScanService;
 
         public CleanupExtraFilesInExcludedFolders(IExtraFileRepository<OtherExtraFile> extraFileRepository, IGameService seriesService, IDiskScanService diskScanService)
         {
             _extraFileRepository = extraFileRepository;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _diskScanService = diskScanService;
         }
 
         public void Clean()
         {
-            var allGames = _seriesService.GetAllSeries();
+            var allGames = _gameService.GetAllGames();
 
             foreach (var game in allGames)
             {

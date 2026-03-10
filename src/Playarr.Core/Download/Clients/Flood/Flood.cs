@@ -39,7 +39,7 @@ namespace Playarr.Core.Download.Clients.Flood
             _downloadSeedConfigProvider = downloadSeedConfigProvider;
         }
 
-        private static IEnumerable<string> HandleTags(RemoteEpisode remoteRom, FloodSettings settings)
+        private static IEnumerable<string> HandleTags(RemoteRom remoteRom, FloodSettings settings)
         {
             var result = new HashSet<string>();
 
@@ -87,14 +87,14 @@ namespace Playarr.Core.Download.Clients.Flood
         public override string Name => "Flood";
         public override ProviderMessage Message => new ProviderMessage(_localizationService.GetLocalizedString("DownloadClientFloodSettingsRemovalInfo"), ProviderMessageType.Info);
 
-        protected override string AddFromTorrentFile(RemoteEpisode remoteRom, string hash, string filename, byte[] fileContent)
+        protected override string AddFromTorrentFile(RemoteRom remoteRom, string hash, string filename, byte[] fileContent)
         {
             _proxy.AddTorrentByFile(Convert.ToBase64String(fileContent), HandleTags(remoteRom, Settings), Settings);
 
             return hash;
         }
 
-        protected override string AddFromMagnetLink(RemoteEpisode remoteRom, string hash, string magnetLink)
+        protected override string AddFromMagnetLink(RemoteRom remoteRom, string hash, string magnetLink)
         {
             _proxy.AddTorrentByUrl(magnetLink, HandleTags(remoteRom, Settings), Settings);
 

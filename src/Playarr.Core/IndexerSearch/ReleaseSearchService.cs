@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using NLog;
@@ -8,7 +7,6 @@ using Playarr.Common.Extensions;
 using Playarr.Common.Instrumentation.Extensions;
 using Playarr.Core.DataAugmentation.Scene;
 using Playarr.Core.DecisionEngine;
-using Playarr.Core.Exceptions;
 using Playarr.Core.Indexers;
 using Playarr.Core.IndexerSearch.Definitions;
 using Playarr.Core.Parser;
@@ -19,18 +17,18 @@ namespace Playarr.Core.IndexerSearch
 {
     public interface ISearchForReleases
     {
-        Task<List<DownloadDecision>> EpisodeSearch(int romId, bool userInvokedSearch, bool interactiveSearch);
-        Task<List<DownloadDecision>> EpisodeSearch(Rom rom, bool userInvokedSearch, bool interactiveSearch);
-        Task<List<DownloadDecision>> SeasonSearch(int gameId, int platformNumber, bool missingOnly, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch);
-        Task<List<DownloadDecision>> SeasonSearch(int gameId, int platformNumber, List<Rom> roms, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch);
+        Task<List<DownloadDecision>> RomSearch(int romId, bool userInvokedSearch, bool interactiveSearch);
+        Task<List<DownloadDecision>> RomSearch(Rom rom, bool userInvokedSearch, bool interactiveSearch);
+        Task<List<DownloadDecision>> PlatformSearch(int gameId, int platformNumber, bool missingOnly, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch);
+        Task<List<DownloadDecision>> PlatformSearch(int gameId, int platformNumber, List<Rom> roms, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch);
     }
 
     public class ReleaseSearchService : ISearchForReleases
     {
         private readonly IIndexerFactory _indexerFactory;
         private readonly ISceneMappingService _sceneMapping;
-        private readonly IGameService _seriesService;
-        private readonly IRomService _episodeService;
+        private readonly IGameService _gameService;
+        private readonly IRomService _romService;
         private readonly IMakeDownloadDecision _makeDownloadDecision;
         private readonly Logger _logger;
 
@@ -43,46 +41,22 @@ namespace Playarr.Core.IndexerSearch
         {
             _indexerFactory = indexerFactory;
             _sceneMapping = sceneMapping;
-            _seriesService = seriesService;
-            _episodeService = episodeService;
+            _gameService = seriesService;
+            _romService = episodeService;
             _makeDownloadDecision = makeDownloadDecision;
             _logger = logger;
         }
 
-        public async Task<List<DownloadDecision>> EpisodeSearch(int romId, bool userInvokedSearch, bool interactiveSearch)
+        public async Task<List<DownloadDecision>> RomSearch(int romId, bool userInvokedSearch, bool interactiveSearch)
         {
-            var rom = _episodeService.GetEpisode(romId);
+            var rom = _romService.GetEpisode(romId);
 
-            return await EpisodeSearch(rom, userInvokedSearch, interactiveSearch);
+            return await RomSearch(rom, userInvokedSearch, interactiveSearch);
         }
 
-        public async Task<List<DownloadDecision>> EpisodeSearch(Rom rom, bool userInvokedSearch, bool interactiveSearch)
+        public async Task<List<DownloadDecision>> RomSearch(Rom rom, bool userInvokedSearch, bool interactiveSearch)
         {
-            var game = _seriesService.GetSeries(rom.GameId);
-
-            if (game.SeriesType == GameTypes.Daily)
-            {
-                if (string.IsNullOrWhiteSpace(rom.AirDate))
-                {
-                    _logger.Error("Daily rom is missing an air date. Try refreshing the game info.");
-                    throw new SearchFailedException("Air date is missing");
-                }
-
-                return await SearchDaily(game, rom, false, userInvokedSearch, interactiveSearch);
-            }
-
-            if (game.SeriesType == GameTypes.Anime)
-            {
-                if (rom.PlatformNumber == 0 &&
-                    rom.SceneAbsoluteEpisodeNumber == null &&
-                    rom.AbsoluteEpisodeNumber == null)
-                {
-                    // Search for special roms in platform 0 that don't have absolute rom numbers
-                    return await SearchSpecial(game, new List<Rom> { rom }, false, userInvokedSearch, interactiveSearch);
-                }
-
-                return await SearchAnime(game, rom, false, userInvokedSearch, interactiveSearch);
-            }
+            var game = _gameService.GetGame(rom.GameId);
 
             if (rom.PlatformNumber == 0)
             {
@@ -93,9 +67,9 @@ namespace Playarr.Core.IndexerSearch
             return await SearchSingle(game, rom, false, userInvokedSearch, interactiveSearch);
         }
 
-        public async Task<List<DownloadDecision>> SeasonSearch(int gameId, int platformNumber, bool missingOnly, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch)
+        public async Task<List<DownloadDecision>> PlatformSearch(int gameId, int platformNumber, bool missingOnly, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch)
         {
-            var roms = _episodeService.GetEpisodesBySeason(gameId, platformNumber);
+            var roms = _romService.GetRomsByPlatform(gameId, platformNumber);
 
             if (missingOnly)
             {
@@ -108,22 +82,12 @@ namespace Playarr.Core.IndexerSearch
                 return new List<DownloadDecision>();
             }
 
-            return await SeasonSearch(gameId, platformNumber, roms, monitoredOnly, userInvokedSearch, interactiveSearch);
+            return await PlatformSearch(gameId, platformNumber, roms, monitoredOnly, userInvokedSearch, interactiveSearch);
         }
 
-        public async Task<List<DownloadDecision>> SeasonSearch(int gameId, int platformNumber, List<Rom> roms, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch)
+        public async Task<List<DownloadDecision>> PlatformSearch(int gameId, int platformNumber, List<Rom> roms, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch)
         {
-            var game = _seriesService.GetSeries(gameId);
-
-            if (game.SeriesType == GameTypes.Anime)
-            {
-                return await SearchAnimeSeason(game, roms, monitoredOnly, userInvokedSearch, interactiveSearch);
-            }
-
-            if (game.SeriesType == GameTypes.Daily)
-            {
-                return await SearchDailySeason(game, roms, monitoredOnly, userInvokedSearch, interactiveSearch);
-            }
+            var game = _gameService.GetGame(gameId);
 
             var mappings = GetSceneSeasonMappings(game, roms);
 
@@ -339,32 +303,6 @@ namespace Playarr.Core.IndexerSearch
             return DeDupeDecisions(downloadDecisions);
         }
 
-        private async Task<List<DownloadDecision>> SearchDaily(Game game, Rom rom, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch)
-        {
-            var airDate = DateTime.ParseExact(rom.AirDate, Rom.AIR_DATE_FORMAT, CultureInfo.InvariantCulture);
-            var searchSpec = Get<DailyEpisodeSearchCriteria>(game, new List<Rom> { rom }, monitoredOnly, userInvokedSearch, interactiveSearch);
-            searchSpec.AirDate = airDate;
-
-            var downloadDecisions = await Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
-
-            return DeDupeDecisions(downloadDecisions);
-        }
-
-        private async Task<List<DownloadDecision>> SearchAnime(Game game, Rom rom, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch, bool isSeasonSearch = false)
-        {
-            var searchSpec = Get<AnimeEpisodeSearchCriteria>(game, new List<Rom> { rom }, monitoredOnly, userInvokedSearch, interactiveSearch);
-
-            searchSpec.IsSeasonSearch = isSeasonSearch;
-
-            searchSpec.PlatformNumber = rom.ScenePlatformNumber ?? rom.PlatformNumber;
-            searchSpec.EpisodeNumber = rom.SceneEpisodeNumber ?? rom.EpisodeNumber;
-            searchSpec.AbsoluteEpisodeNumber = rom.SceneAbsoluteEpisodeNumber ?? rom.AbsoluteEpisodeNumber ?? 0;
-
-            var downloadDecisions = await Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
-
-            return DeDupeDecisions(downloadDecisions);
-        }
-
         private async Task<List<DownloadDecision>> SearchSpecial(Game game, List<Rom> roms, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch)
         {
             var downloadDecisions = new List<DownloadDecision>();
@@ -390,71 +328,6 @@ namespace Playarr.Core.IndexerSearch
                 }
 
                 downloadDecisions.AddRange(await SearchSingle(game, rom, monitoredOnly, userInvokedSearch, interactiveSearch));
-            }
-
-            return DeDupeDecisions(downloadDecisions);
-        }
-
-        private async Task<List<DownloadDecision>> SearchAnimeSeason(Game game, List<Rom> roms, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch)
-        {
-            var downloadDecisions = new List<DownloadDecision>();
-
-            var searchSpec = Get<AnimeSeasonSearchCriteria>(game, roms, monitoredOnly, userInvokedSearch, interactiveSearch);
-
-            // Rom needs to be monitored if it's not an interactive search
-            // and Ensure rom has an airdate and has already aired
-            var episodesToSearch = roms
-                .Where(ep => interactiveSearch || !monitoredOnly || ep.Monitored)
-                .Where(ep => ep.AirDateUtc.HasValue && ep.AirDateUtc.Value.Before(DateTime.UtcNow))
-                .ToList();
-
-            var seasonsToSearch = GetSceneSeasonMappings(game, episodesToSearch)
-                .GroupBy(ep => ep.PlatformNumber)
-                .Select(epList => epList.First())
-                .ToList();
-
-            foreach (var platform in seasonsToSearch)
-            {
-                searchSpec.PlatformNumber = platform.PlatformNumber;
-
-                var decisions = await Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
-                downloadDecisions.AddRange(decisions);
-            }
-
-            foreach (var rom in episodesToSearch)
-            {
-                downloadDecisions.AddRange(await SearchAnime(game, rom, monitoredOnly, userInvokedSearch, interactiveSearch, true));
-            }
-
-            return DeDupeDecisions(downloadDecisions);
-        }
-
-        private async Task<List<DownloadDecision>> SearchDailySeason(Game game, List<Rom> roms, bool monitoredOnly, bool userInvokedSearch, bool interactiveSearch)
-        {
-            var downloadDecisions = new List<DownloadDecision>();
-
-            // Rom needs to be monitored if it's not an interactive search
-            // and Ensure rom has an airdate
-            var episodesToSearch = roms
-                .Where(ep => interactiveSearch || !monitoredOnly || ep.Monitored)
-                .Where(ep => ep.AirDate.IsNotNullOrWhiteSpace())
-                .ToList();
-
-            foreach (var yearGroup in episodesToSearch.GroupBy(v => DateTime.ParseExact(v.AirDate, Rom.AIR_DATE_FORMAT, CultureInfo.InvariantCulture).Year))
-            {
-                var yearEpisodes = yearGroup.ToList();
-
-                if (yearEpisodes.Count > 1)
-                {
-                    var searchSpec = Get<DailySeasonSearchCriteria>(game, yearEpisodes, monitoredOnly, userInvokedSearch, interactiveSearch);
-                    searchSpec.Year = yearGroup.Key;
-
-                    downloadDecisions.AddRange(await Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec));
-                }
-                else
-                {
-                    downloadDecisions.AddRange(await SearchDaily(game, yearEpisodes.First(), monitoredOnly, userInvokedSearch, interactiveSearch));
-                }
             }
 
             return DeDupeDecisions(downloadDecisions);
@@ -543,7 +416,7 @@ namespace Playarr.Core.IndexerSearch
                 _logger.Debug("Setting last search time to: {0}", lastSearchTime);
 
                 criteriaBase.Roms.ForEach(e => e.LastSearchTime = lastSearchTime);
-                _episodeService.UpdateLastSearchTime(criteriaBase.Roms);
+                _romService.UpdateLastSearchTime(criteriaBase.Roms);
             }
 
             return _makeDownloadDecision.GetSearchDecision(reports, criteriaBase).ToList();
@@ -566,8 +439,8 @@ namespace Playarr.Core.IndexerSearch
         private List<DownloadDecision> DeDupeDecisions(List<DownloadDecision> decisions)
         {
             // De-dupe reports by guid so duplicate results aren't returned. Pick the one with the least rejections and higher indexer priority.
-            return decisions.GroupBy(d => d.RemoteEpisode.Release.Guid)
-                .Select(d => d.OrderBy(v => v.Rejections.Count()).ThenBy(v => v.RemoteEpisode?.Release?.IndexerPriority ?? IndexerDefinition.DefaultPriority).First())
+            return decisions.GroupBy(d => d.RemoteRom.Release.Guid)
+                .Select(d => d.OrderBy(v => v.Rejections.Count()).ThenBy(v => v.RemoteRom?.Release?.IndexerPriority ?? IndexerDefinition.DefaultPriority).First())
                 .ToList();
         }
     }

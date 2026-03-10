@@ -117,7 +117,7 @@ namespace Playarr.Core.Notifications.Emby
             }
         }
 
-        public void Update(MediaBrowserSettings settings, string seriesPath, string updateType)
+        public void Update(MediaBrowserSettings settings, string gamePath, string updateType)
         {
             var path = "/Library/Media/Updated";
             var request = BuildRequest(path, settings);
@@ -129,7 +129,7 @@ namespace Playarr.Core.Notifications.Emby
                 {
                     new
                     {
-                        Path = seriesPath,
+                        Path = gamePath,
                         UpdateType = updateType
                     }
                 }

@@ -144,9 +144,9 @@ namespace Playarr.Core.MediaFiles.EpisodeImport
                     {
                         var trackedDownload = _trackedDownloadService.Find(downloadClientItem.DownloadId);
 
-                        if (trackedDownload?.RemoteEpisode?.Release?.IndexerFlags != null)
+                        if (trackedDownload?.RemoteRom?.Release?.IndexerFlags != null)
                         {
-                            localRom.IndexerFlags = trackedDownload.RemoteEpisode.Release.IndexerFlags;
+                            localRom.IndexerFlags = trackedDownload.RemoteRom.Release.IndexerFlags;
                         }
                     }
 

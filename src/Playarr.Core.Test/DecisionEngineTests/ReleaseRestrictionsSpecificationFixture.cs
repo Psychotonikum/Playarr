@@ -14,12 +14,12 @@ namespace Playarr.Core.Test.DecisionEngineTests
     [TestFixture]
     public class ReleaseRestrictionsSpecificationFixture : CoreTest<ReleaseRestrictionsSpecification>
     {
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         [SetUp]
         public void Setup()
         {
-            _remoteRom = new RemoteEpisode
+            _remoteRom = new RemoteRom
                            {
                                Game = new Game
                                         {

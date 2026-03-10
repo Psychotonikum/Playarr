@@ -30,7 +30,7 @@ namespace Playarr.Core.Test.NotificationTests.Xbmc.Json
                                          .ToList();
 
             Mocker.GetMock<IXbmcJsonApiProxy>()
-                  .Setup(s => s.GetSeries(_settings))
+                  .Setup(s => s.GetGame(_settings))
                   .Returns(_xbmcSeries);
 
             Mocker.GetMock<IXbmcJsonApiProxy>()

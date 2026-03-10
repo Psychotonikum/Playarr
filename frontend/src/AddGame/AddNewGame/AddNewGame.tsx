@@ -7,10 +7,10 @@ import Link from 'Components/Link/Link';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
 import PageContent from 'Components/Page/PageContent';
 import PageContentBody from 'Components/Page/PageContentBody';
+import { useHasSeries } from 'Game/useGame';
 import useDebounce from 'Helpers/Hooks/useDebounce';
 import useQueryParams from 'Helpers/Hooks/useQueryParams';
 import { icons, kinds } from 'Helpers/Props';
-import { useHasSeries } from 'Game/useGame';
 import { InputChanged } from 'typings/inputs';
 import getErrorMessage from 'Utilities/Object/getErrorMessage';
 import translate from 'Utilities/String/translate';
@@ -88,9 +88,7 @@ function AddNewGame() {
         {!isFetching && !error && !!data.length ? (
           <div className={styles.searchResults}>
             {data.map((item) => {
-              return (
-                <AddNewGameSearchResult key={item.igdbId} game={item} />
-              );
+              return <AddNewGameSearchResult key={item.igdbId} game={item} />;
             })}
           </div>
         ) : null}

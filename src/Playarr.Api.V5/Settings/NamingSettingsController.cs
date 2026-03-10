@@ -26,8 +26,6 @@ public class NamingSettingsController : RestController<NamingSettingsResource>
 
         SharedValidator.RuleFor(c => c.MultiEpisodeStyle).InclusiveBetween(0, 5);
         SharedValidator.RuleFor(c => c.StandardEpisodeFormat).ValidEpisodeFormat();
-        SharedValidator.RuleFor(c => c.DailyEpisodeFormat).ValidDailyEpisodeFormat();
-        SharedValidator.RuleFor(c => c.AnimeEpisodeFormat).ValidAnimeEpisodeFormat();
         SharedValidator.RuleFor(c => c.SeriesFolderFormat).ValidGameFolderFormat();
         SharedValidator.RuleFor(c => c.PlatformFolderFormat).ValidPlatformFolderFormat();
         SharedValidator.RuleFor(c => c.SpecialsFolderFormat).ValidSpecialsFolderFormat();
@@ -72,9 +70,6 @@ public class NamingSettingsController : RestController<NamingSettingsResource>
 
         var singleEpisodeSampleResult = _filenameSampleService.GetStandardSample(nameSpec);
         var multiEpisodeSampleResult = _filenameSampleService.GetMultiEpisodeSample(nameSpec);
-        var dailyEpisodeSampleResult = _filenameSampleService.GetDailySample(nameSpec);
-        var animeEpisodeSampleResult = _filenameSampleService.GetAnimeSample(nameSpec);
-        var animeMultiEpisodeSampleResult = _filenameSampleService.GetAnimeMultiEpisodeSample(nameSpec);
 
         sampleResource.SingleEpisodeExample = _filenameValidationService.ValidateStandardFilename(singleEpisodeSampleResult) != null
                 ? null
@@ -83,18 +78,6 @@ public class NamingSettingsController : RestController<NamingSettingsResource>
         sampleResource.MultiEpisodeExample = _filenameValidationService.ValidateStandardFilename(multiEpisodeSampleResult) != null
                 ? null
                 : multiEpisodeSampleResult.FileName;
-
-        sampleResource.DailyEpisodeExample = _filenameValidationService.ValidateDailyFilename(dailyEpisodeSampleResult) != null
-                ? null
-                : dailyEpisodeSampleResult.FileName;
-
-        sampleResource.AnimeEpisodeExample = _filenameValidationService.ValidateAnimeFilename(animeEpisodeSampleResult) != null
-                ? null
-                : animeEpisodeSampleResult.FileName;
-
-        sampleResource.AnimeMultiEpisodeExample = _filenameValidationService.ValidateAnimeFilename(animeMultiEpisodeSampleResult) != null
-                ? null
-                : animeMultiEpisodeSampleResult.FileName;
 
         sampleResource.GameFolderExample = nameSpec.GameFolderFormat.IsNullOrWhiteSpace()
             ? null
@@ -115,23 +98,14 @@ public class NamingSettingsController : RestController<NamingSettingsResource>
     {
         var singleEpisodeSampleResult = _filenameSampleService.GetStandardSample(nameSpec);
         var multiEpisodeSampleResult = _filenameSampleService.GetMultiEpisodeSample(nameSpec);
-        var dailyEpisodeSampleResult = _filenameSampleService.GetDailySample(nameSpec);
-        var animeEpisodeSampleResult = _filenameSampleService.GetAnimeSample(nameSpec);
-        var animeMultiEpisodeSampleResult = _filenameSampleService.GetAnimeMultiEpisodeSample(nameSpec);
 
         var singleEpisodeValidationResult = _filenameValidationService.ValidateStandardFilename(singleEpisodeSampleResult);
         var multiEpisodeValidationResult = _filenameValidationService.ValidateStandardFilename(multiEpisodeSampleResult);
-        var dailyEpisodeValidationResult = _filenameValidationService.ValidateDailyFilename(dailyEpisodeSampleResult);
-        var animeEpisodeValidationResult = _filenameValidationService.ValidateAnimeFilename(animeEpisodeSampleResult);
-        var animeMultiEpisodeValidationResult = _filenameValidationService.ValidateAnimeFilename(animeMultiEpisodeSampleResult);
 
         var validationFailures = new List<ValidationFailure>();
 
         validationFailures.AddIfNotNull(singleEpisodeValidationResult);
         validationFailures.AddIfNotNull(multiEpisodeValidationResult);
-        validationFailures.AddIfNotNull(dailyEpisodeValidationResult);
-        validationFailures.AddIfNotNull(animeEpisodeValidationResult);
-        validationFailures.AddIfNotNull(animeMultiEpisodeValidationResult);
 
         if (validationFailures.Any())
         {

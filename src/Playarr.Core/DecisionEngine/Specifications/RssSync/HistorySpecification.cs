@@ -32,7 +32,7 @@ namespace Playarr.Core.DecisionEngine.Specifications.RssSync
         public SpecificationPriority Priority => SpecificationPriority.Database;
         public RejectionType Type => RejectionType.Permanent;
 
-        public virtual DownloadSpecDecision IsSatisfiedBy(RemoteEpisode subject, ReleaseDecisionInformation information)
+        public virtual DownloadSpecDecision IsSatisfiedBy(RemoteRom subject, ReleaseDecisionInformation information)
         {
             if (information.SearchCriteria != null)
             {
@@ -48,7 +48,7 @@ namespace Playarr.Core.DecisionEngine.Specifications.RssSync
             foreach (var rom in subject.Roms)
             {
                 _logger.Debug("Checking current status of rom [{0}] in history", rom.Id);
-                var mostRecent = _historyService.MostRecentForEpisode(rom.Id);
+                var mostRecent = _historyService.MostRecentForRom(rom.Id);
 
                 if (mostRecent != null && mostRecent.EventType == EpisodeHistoryEventType.Grabbed)
                 {

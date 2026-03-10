@@ -276,18 +276,9 @@ namespace Playarr.Core.Notifications.Slack
                 return game.Title;
             }
 
-            if (game.SeriesType == GameTypes.Daily)
-            {
-                var rom = roms.First();
-
-                return $"{game.Title} - {rom.AirDate} - {rom.Title}";
-            }
-
-            var romNumbers = string.Concat(roms.Select(e => $"x{e.EpisodeNumber:00}"));
-
             var romTitles = string.Join(" + ", roms.Select(e => e.Title));
 
-            return $"{game.Title} - {roms.First().PlatformNumber}{romNumbers} - {romTitles}";
+            return $"{game.Title} - {romTitles}";
         }
     }
 }

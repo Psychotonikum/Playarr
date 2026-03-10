@@ -32,7 +32,9 @@ function SceneInfo(props: SceneInfoProps) {
       let suffix = '';
 
       const altScenePlatformNumber =
-        scenePlatformNumber === undefined ? platformNumber : scenePlatformNumber;
+        scenePlatformNumber === undefined
+          ? platformNumber
+          : scenePlatformNumber;
       const altSceneRomNumber =
         sceneRomNumber === undefined ? romNumber : sceneRomNumber;
 
@@ -46,9 +48,7 @@ function SceneInfo(props: SceneInfoProps) {
           ? alternateTitle.scenePlatformNumber
           : mappingPlatformNumber;
       const altRomNumber =
-        alternateTitle.sceneOrigin === 'igdb'
-          ? romNumber
-          : altSceneRomNumber;
+        alternateTitle.sceneOrigin === 'igdb' ? romNumber : altSceneRomNumber;
 
       if (altRomNumber !== altSceneRomNumber) {
         suffix = `S${padNumber(altPlatformNumber as number, 2)}E${padNumber(

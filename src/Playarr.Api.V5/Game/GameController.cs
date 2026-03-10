@@ -35,7 +35,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
                             IHandle<SeriesBulkEditedEvent>,
                             IHandle<MediaCoversUpdatedEvent>
 {
-    private readonly IGameService _seriesService;
+    private readonly IGameService _gameService;
     private readonly IAddGameService _addGameService;
     private readonly ISeriesStatisticsService _seriesStatisticsService;
     private readonly ISceneMappingService _sceneMappingService;
@@ -55,16 +55,16 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
                         IRootFolderService rootFolderService,
                         RootFolderValidator rootFolderValidator,
                         MappedNetworkDriveValidator mappedNetworkDriveValidator,
-                        SeriesPathValidator seriesPathValidator,
-                        SeriesExistsValidator seriesExistsValidator,
-                        SeriesAncestorValidator seriesAncestorValidator,
+                        GamePathValidator seriesPathValidator,
+                        GameExistsValidator seriesExistsValidator,
+                        GameAncestorValidator seriesAncestorValidator,
                         SystemFolderValidator systemFolderValidator,
                         QualityProfileExistsValidator qualityProfileExistsValidator,
                         RootFolderExistsValidator rootFolderExistsValidator,
                         GameFolderAsRootFolderValidator seriesFolderAsRootFolderValidator)
         : base(signalRBroadcaster)
     {
-        _seriesService = seriesService;
+        _gameService = seriesService;
         _addGameService = addGameService;
         _seriesStatisticsService = seriesStatisticsService;
         _sceneMappingService = sceneMappingService;
@@ -115,11 +115,11 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
 
         if (igdbId.HasValue)
         {
-            seriesResources.AddIfNotNull(_seriesService.FindByIgdbId(igdbId.Value).ToResource(includeSeasonImages));
+            seriesResources.AddIfNotNull(_gameService.FindByIgdbId(igdbId.Value).ToResource(includeSeasonImages));
         }
         else
         {
-            seriesResources.AddRange(_seriesService.GetAllSeries().Select(s => s.ToResource(includeSeasonImages)));
+            seriesResources.AddRange(_gameService.GetAllGames().Select(s => s.ToResource(includeSeasonImages)));
         }
 
         MapCoversToLocal(seriesResources.ToArray());
@@ -173,7 +173,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
 
     private GameResource? GetGameResourceById(int id, bool includeSeasonImages)
     {
-        var game = _seriesService.GetSeries(id);
+        var game = _gameService.GetGame(id);
 
         return GetGameResource(game, includeSeasonImages);
     }
@@ -193,7 +193,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
     [Produces("application/json")]
     public ActionResult<GameResource> UpdateSeries([FromBody] GameResource seriesResource, [FromQuery] bool moveFiles = false)
     {
-        var game = _seriesService.GetSeries(seriesResource.Id);
+        var game = _gameService.GetGame(seriesResource.Id);
 
         if (moveFiles)
         {
@@ -211,7 +211,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
 
         var model = seriesResource.ToModel(game);
 
-        _seriesService.UpdateSeries(model);
+        _gameService.UpdateSeries(model);
 
         BroadcastResourceChange(ModelAction.Updated, seriesResource);
 
@@ -225,7 +225,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
     {
         lock (_seriesLockPool.GetLock(id))
         {
-            var game = _seriesService.GetSeries(id);
+            var game = _gameService.GetGame(id);
             var platform = game.Platforms.FirstOrDefault(s => s.PlatformNumber == seasonResource.PlatformNumber);
 
             if (platform == null)
@@ -235,7 +235,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
 
             platform.Monitored = seasonResource.Monitored;
 
-            _seriesService.UpdateSeries(game);
+            _gameService.UpdateSeries(game);
 
             BroadcastResourceChange(ModelAction.Updated, game.ToResource());
 
@@ -246,7 +246,7 @@ public class GameController : RestControllerWithSignalR<GameResource, Playarr.Co
     [RestDeleteById]
     public ActionResult DeleteGame(int id, bool deleteFiles = false, bool addImportListExclusion = false)
     {
-        _seriesService.DeleteGame(new List<int> { id }, deleteFiles, addImportListExclusion);
+        _gameService.DeleteGame(new List<int> { id }, deleteFiles, addImportListExclusion);
 
         return NoContent();
     }

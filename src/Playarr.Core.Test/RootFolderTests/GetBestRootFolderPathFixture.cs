@@ -34,10 +34,10 @@ namespace Playarr.Core.Test.RootFolderTests
         [Test]
         public void should_get_parent_path_from_os_path_if_matching_root_folder_is_not_found()
         {
-            var seriesPath = @"T:\Test\TV\Game Title".AsOsAgnostic();
+            var gamePath = @"T:\Test\TV\Game Title".AsOsAgnostic();
 
             GivenRootFolders(@"C:\Test\TV".AsOsAgnostic(), @"D:\Test\TV".AsOsAgnostic());
-            Subject.GetBestRootFolderPath(seriesPath).Should().Be(@"T:\Test\TV".AsOsAgnostic());
+            Subject.GetBestRootFolderPath(gamePath).Should().Be(@"T:\Test\TV".AsOsAgnostic());
         }
 
         [Test]
@@ -45,10 +45,10 @@ namespace Playarr.Core.Test.RootFolderTests
         {
             WindowsOnly();
 
-            var seriesPath = "/mnt/tv/Game Title";
+            var gamePath = "/mnt/tv/Game Title";
 
             GivenRootFolders(@"C:\Test\TV".AsOsAgnostic(), @"D:\Test\TV".AsOsAgnostic());
-            Subject.GetBestRootFolderPath(seriesPath).Should().Be(@"/mnt/tv");
+            Subject.GetBestRootFolderPath(gamePath).Should().Be(@"/mnt/tv");
         }
 
         [Test]
@@ -56,10 +56,10 @@ namespace Playarr.Core.Test.RootFolderTests
         {
             PosixOnly();
 
-            var seriesPath = @"T:\Test\TV\Game Title";
+            var gamePath = @"T:\Test\TV\Game Title";
 
             GivenRootFolders(@"C:\Test\TV".AsOsAgnostic(), @"D:\Test\TV".AsOsAgnostic());
-            Subject.GetBestRootFolderPath(seriesPath).Should().Be(@"T:\Test\TV");
+            Subject.GetBestRootFolderPath(gamePath).Should().Be(@"T:\Test\TV");
         }
     }
 }

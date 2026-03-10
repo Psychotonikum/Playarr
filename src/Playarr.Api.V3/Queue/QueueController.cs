@@ -323,7 +323,7 @@ namespace Playarr.Api.V3.Queue
         {
             if (blocklist)
             {
-                _blocklistService.Block(pendingRelease.RemoteEpisode, "Pending release manually blocklisted", null);
+                _blocklistService.Block(pendingRelease.RemoteRom, "Pending release manually blocklisted", null);
             }
 
             _pendingReleaseService.RemovePendingQueueItemsObsolete(pendingRelease.Id);

@@ -138,7 +138,7 @@ namespace Playarr.Core.DecisionEngine
 
                         if (parsedRomInfo.GameTitle.IsNullOrWhiteSpace())
                         {
-                            var remoteRom = new RemoteEpisode
+                            var remoteRom = new RemoteRom
                             {
                                 Release = report,
                                 ReleaseSource = GetReleaseSource(pushedRelease, searchCriteria),
@@ -154,7 +154,7 @@ namespace Playarr.Core.DecisionEngine
                 {
                     _logger.Error(e, "Couldn't process release.");
 
-                    var remoteRom = new RemoteEpisode { Release = report, ReleaseSource = GetReleaseSource(pushedRelease, searchCriteria) };
+                    var remoteRom = new RemoteRom { Release = report, ReleaseSource = GetReleaseSource(pushedRelease, searchCriteria) };
 
                     decision = new DownloadDecision(remoteRom, new DownloadRejection(DownloadRejectionReason.Error, "Unexpected error processing release"));
                 }
@@ -177,7 +177,7 @@ namespace Playarr.Core.DecisionEngine
             }
         }
 
-        private DownloadDecision GetDecisionForReport(RemoteEpisode remoteRom, ReleaseDecisionInformation information)
+        private DownloadDecision GetDecisionForReport(RemoteRom remoteRom, ReleaseDecisionInformation information)
         {
             var reasons = Array.Empty<DownloadRejection>();
 
@@ -196,7 +196,7 @@ namespace Playarr.Core.DecisionEngine
             return new DownloadDecision(remoteRom, reasons.ToArray());
         }
 
-        private DownloadRejection EvaluateSpec(IDownloadDecisionEngineSpecification spec, RemoteEpisode remoteRom, ReleaseDecisionInformation information)
+        private DownloadRejection EvaluateSpec(IDownloadDecisionEngineSpecification spec, RemoteRom remoteRom, ReleaseDecisionInformation information)
         {
             try
             {

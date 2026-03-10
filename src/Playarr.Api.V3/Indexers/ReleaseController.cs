@@ -30,12 +30,12 @@ namespace Playarr.Api.V3.Indexers
         private readonly IMakeDownloadDecision _downloadDecisionMaker;
         private readonly IPrioritizeDownloadDecision _prioritizeDownloadDecision;
         private readonly IDownloadService _downloadService;
-        private readonly IGameService _seriesService;
-        private readonly IRomService _episodeService;
+        private readonly IGameService _gameService;
+        private readonly IRomService _romService;
         private readonly IParsingService _parsingService;
         private readonly Logger _logger;
 
-        private readonly ICached<RemoteEpisode> _remoteRomCache;
+        private readonly ICached<RemoteRom> _remoteRomCache;
 
         public ReleaseController(IFetchAndParseRss rssFetcherAndParser,
                              ISearchForReleases releaseSearchService,
@@ -55,15 +55,15 @@ namespace Playarr.Api.V3.Indexers
             _downloadDecisionMaker = downloadDecisionMaker;
             _prioritizeDownloadDecision = prioritizeDownloadDecision;
             _downloadService = downloadService;
-            _seriesService = seriesService;
-            _episodeService = episodeService;
+            _gameService = seriesService;
+            _romService = episodeService;
             _parsingService = parsingService;
             _logger = logger;
 
             PostValidator.RuleFor(s => s.IndexerId).ValidId();
             PostValidator.RuleFor(s => s.Guid).NotEmpty();
 
-            _remoteRomCache = cacheManager.GetCache<RemoteEpisode>(GetType(), "remoteRoms");
+            _remoteRomCache = cacheManager.GetCache<RemoteRom>(GetType(), "remoteRoms");
         }
 
         [HttpPost]
@@ -90,7 +90,7 @@ namespace Playarr.Api.V3.Indexers
                     Ensure.That(release.Languages, () => release.Languages).IsNotNull();
 
                     // Clone the remote rom so we don't overwrite anything on the original
-                    remoteRom = new RemoteEpisode
+                    remoteRom = new RemoteRom
                     {
                         Release = remoteRom.Release,
                         ParsedRomInfo = remoteRom.ParsedRomInfo.JsonClone(),
@@ -105,8 +105,8 @@ namespace Playarr.Api.V3.Indexers
                         ReleaseSource = remoteRom.ReleaseSource
                     };
 
-                    remoteRom.Game = _seriesService.GetSeries(release.GameId!.Value);
-                    remoteRom.Roms = _episodeService.GetEpisodes(release.RomIds);
+                    remoteRom.Game = _gameService.GetGame(release.GameId!.Value);
+                    remoteRom.Roms = _romService.GetRoms(release.RomIds);
                     remoteRom.ParsedRomInfo.Quality = release.Quality;
                     remoteRom.Languages = release.Languages;
                 }
@@ -115,15 +115,15 @@ namespace Playarr.Api.V3.Indexers
                 {
                     if (release.EpisodeId.HasValue)
                     {
-                        var rom = _episodeService.GetEpisode(release.EpisodeId.Value);
+                        var rom = _romService.GetEpisode(release.EpisodeId.Value);
 
-                        remoteRom.Game = _seriesService.GetSeries(rom.GameId);
+                        remoteRom.Game = _gameService.GetGame(rom.GameId);
                         remoteRom.Roms = new List<Rom> { rom };
                     }
                     else if (release.GameId.HasValue)
                     {
-                        var game = _seriesService.GetSeries(release.GameId.Value);
-                        var roms = _parsingService.GetEpisodes(remoteRom.ParsedRomInfo, game, true);
+                        var game = _gameService.GetGame(release.GameId.Value);
+                        var roms = _parsingService.GetRoms(remoteRom.ParsedRomInfo, game, true);
 
                         if (roms.Empty())
                         {
@@ -140,11 +140,11 @@ namespace Playarr.Api.V3.Indexers
                 }
                 else if (remoteRom.Roms.Empty())
                 {
-                    var roms = _parsingService.GetEpisodes(remoteRom.ParsedRomInfo, remoteRom.Game, true);
+                    var roms = _parsingService.GetRoms(remoteRom.ParsedRomInfo, remoteRom.Game, true);
 
                     if (roms.Empty() && release.EpisodeId.HasValue)
                     {
-                        var rom = _episodeService.GetEpisode(release.EpisodeId.Value);
+                        var rom = _romService.GetEpisode(release.EpisodeId.Value);
 
                         roms = new List<Rom> { rom };
                     }
@@ -189,7 +189,7 @@ namespace Playarr.Api.V3.Indexers
         {
             try
             {
-                var decisions = await _releaseSearchService.EpisodeSearch(romId, true, true);
+                var decisions = await _releaseSearchService.RomSearch(romId, true, true);
                 var prioritizedDecisions = _prioritizeDownloadDecision.PrioritizeDecisions(decisions);
 
                 return MapDecisions(prioritizedDecisions);
@@ -209,7 +209,7 @@ namespace Playarr.Api.V3.Indexers
         {
             try
             {
-                var decisions = await _releaseSearchService.SeasonSearch(gameId, platformNumber, false, false, true, true);
+                var decisions = await _releaseSearchService.PlatformSearch(gameId, platformNumber, false, false, true, true);
                 var prioritizedDecisions = _prioritizeDownloadDecision.PrioritizeDecisions(decisions);
 
                 return MapDecisions(prioritizedDecisions);
@@ -237,7 +237,7 @@ namespace Playarr.Api.V3.Indexers
         protected override ReleaseResource MapDecision(DownloadDecision decision, int initialWeight)
         {
             var resource = base.MapDecision(decision, initialWeight);
-            _remoteRomCache.Set(GetCacheKey(resource), decision.RemoteEpisode, TimeSpan.FromMinutes(30));
+            _remoteRomCache.Set(GetCacheKey(resource), decision.RemoteRom, TimeSpan.FromMinutes(30));
 
             return resource;
         }

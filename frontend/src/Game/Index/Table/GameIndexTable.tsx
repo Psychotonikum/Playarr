@@ -2,12 +2,9 @@ import React, { RefObject, useEffect, useMemo, useRef } from 'react';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import Column from 'Components/Table/Column';
 import VirtualTable from 'Components/Table/VirtualTable';
-import { SortDirection } from 'Helpers/Props/sortDirections';
 import Game from 'Game/Game';
-import {
-  useGameOption,
-  useGameTableOptions,
-} from 'Game/gameOptionsStore';
+import { useGameOption, useGameTableOptions } from 'Game/gameOptionsStore';
+import { SortDirection } from 'Helpers/Props/sortDirections';
 import getIndexOfFirstCharacter from 'Utilities/Array/getIndexOfFirstCharacter';
 import GameIndexRow from './GameIndexRow';
 import GameIndexTableHeader from './GameIndexTableHeader';

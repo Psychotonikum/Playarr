@@ -3,8 +3,8 @@ import { useSelect } from 'App/Select/SelectContext';
 import TableRowCell from 'Components/Table/Cells/TableRowCell';
 import TableSelectCell from 'Components/Table/Cells/TableSelectCell';
 import TableRowButton from 'Components/Table/TableRowButton';
-import Rom from 'Rom/Rom';
 import { icons, kinds } from 'Helpers/Props';
+import Rom from 'Rom/Rom';
 import { SelectStateInputProps } from 'typings/props';
 import translate from 'Utilities/String/translate';
 import Icon from '../../Components/Icon';
@@ -82,9 +82,7 @@ function SelectRomRow({
 
       <TableRowCell>
         {romNumber}
-        {isAnime && !!absoluteRomNumber
-          ? ` (${absoluteRomNumber})`
-          : ''}
+        {isAnime && !!absoluteRomNumber ? ` (${absoluteRomNumber})` : ''}
         {warningMessage ? (
           <Icon
             className={styles.warning}

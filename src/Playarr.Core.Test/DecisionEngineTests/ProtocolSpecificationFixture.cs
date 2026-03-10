@@ -14,13 +14,13 @@ namespace Playarr.Core.Test.DecisionEngineTests
     [TestFixture]
     public class ProtocolSpecificationFixture : CoreTest<ProtocolSpecification>
     {
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
         private DelayProfile _delayProfile;
 
         [SetUp]
         public void Setup()
         {
-            _remoteRom = new RemoteEpisode();
+            _remoteRom = new RemoteRom();
             _remoteRom.Release = new ReleaseInfo();
             _remoteRom.Game = new Game();
 

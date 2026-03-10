@@ -218,7 +218,7 @@ namespace Playarr.Core.Download.Clients.Tribler
             }
         }
 
-        protected override string AddFromMagnetLink(RemoteEpisode remoteRom, string hash, string magnetLink)
+        protected override string AddFromMagnetLink(RemoteRom remoteRom, string hash, string magnetLink)
         {
             var addDownloadRequestObject = new AddDownloadRequest
             {
@@ -231,7 +231,7 @@ namespace Playarr.Core.Download.Clients.Tribler
             return _proxy.AddFromMagnetLink(Settings, addDownloadRequestObject);
         }
 
-        protected override string AddFromTorrentFile(RemoteEpisode remoteRom, string hash, string filename, byte[] fileContent)
+        protected override string AddFromTorrentFile(RemoteRom remoteRom, string hash, string filename, byte[] fileContent)
         {
             // TODO: Tribler 8.x does support adding from a torrent file, but it's not a simple put command.
             throw new NotSupportedException("Tribler does not support torrent files, only magnet links");

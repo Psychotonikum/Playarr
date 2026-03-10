@@ -6,20 +6,20 @@ import ModalContent from 'Components/Modal/ModalContent';
 import ModalFooter from 'Components/Modal/ModalFooter';
 import ModalHeader from 'Components/Modal/ModalHeader';
 import MonitorToggleButton from 'Components/MonitorToggleButton';
+import Game from 'Game/Game';
+import { useSingleGame } from 'Game/useGame';
 import Rom from 'Rom/Rom';
 import RomDetailsTab from 'Rom/RomDetailsTab';
 import romEntities from 'Rom/romEntities';
 import useRom, {
-  RomEntity,
   getQueryKey,
+  RomEntity,
   useToggleEpisodesMonitored,
 } from 'Rom/useRom';
-import Game from 'Game/Game';
-import { useSingleGame } from 'Game/useGame';
 import translate from 'Utilities/String/translate';
 import RomHistory from './History/RomHistory';
-import EpisodeSearch from './Search/RomSearch';
 import PlatformRomNumber from './PlatformRomNumber';
+import RomSearch from './Search/RomSearch';
 import RomSummary from './Summary/RomSummary';
 import styles from './RomDetailsModalContent.css';
 
@@ -158,7 +158,7 @@ function RomDetailsModalContent({
 
           <TabPanel>
             {/* Don't wrap in tabContent so we not have a top margin */}
-            <EpisodeSearch
+            <RomSearch
               romId={romId}
               startInteractiveSearch={startInteractiveSearch}
               onModalClose={onModalClose}

@@ -44,7 +44,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
             _trackedDownload = Builder<TrackedDownload>.CreateNew()
                     .With(c => c.State = TrackedDownloadState.Downloading)
                     .With(c => c.DownloadItem = completed)
-                    .With(c => c.RemoteEpisode = remoteRom)
+                    .With(c => c.RemoteRom = remoteRom)
                     .Build();
 
             Mocker.GetMock<IDownloadClient>()
@@ -60,7 +60,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
                   .Returns(new EpisodeHistory());
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetSeries("Drone.S01E01.HDTV"))
+                  .Setup(s => s.GetGame("Drone.S01E01.HDTV"))
                   .Returns(remoteRom.Game);
 
             Mocker.GetMock<IHistoryService>()
@@ -72,13 +72,13 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
                   .Returns<DownloadClientItem, DownloadClientItem>((i, p) => i);
 
             Mocker.GetMock<IRomService>()
-                .Setup(s => s.GetEpisodes(It.IsAny<IEnumerable<int>>()))
+                .Setup(s => s.GetRoms(It.IsAny<IEnumerable<int>>()))
                 .Returns(new List<Rom>());
         }
 
-        private RemoteEpisode BuildRemoteEpisode()
+        private RemoteRom BuildRemoteEpisode()
         {
-            return new RemoteEpisode
+            return new RemoteRom
             {
                 Game = new Game(),
                 Roms = new List<Rom>
@@ -97,19 +97,19 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
                .Returns(new EpisodeHistory() { SourceTitle = "Droned S01E01" });
 
             Mocker.GetMock<IParsingService>()
-               .Setup(s => s.GetSeries(It.IsAny<string>()))
+               .Setup(s => s.GetGame(It.IsAny<string>()))
                .Returns((Game)null);
 
             Mocker.GetMock<IParsingService>()
-                .Setup(s => s.GetSeries("Droned S01E01"))
+                .Setup(s => s.GetGame("Droned S01E01"))
                 .Returns(BuildRemoteEpisode().Game);
         }
 
         private void GivenSeriesMatch()
         {
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetSeries(It.IsAny<string>()))
-                  .Returns(_trackedDownload.RemoteEpisode.Game);
+                  .Setup(s => s.GetGame(It.IsAny<string>()))
+                  .Returns(_trackedDownload.RemoteRom.Game);
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
                                    "Test Failure")
                            });
 
-            _trackedDownload.RemoteEpisode.Roms.Clear();
+            _trackedDownload.RemoteRom.Roms.Clear();
 
             Subject.Import(_trackedDownload);
 
@@ -184,7 +184,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
         [Test]
         public void should_not_mark_as_imported_if_some_of_episodes_were_not_imported()
         {
-            _trackedDownload.RemoteEpisode.Roms = new List<Rom>
+            _trackedDownload.RemoteRom.Roms = new List<Rom>
             {
                 new Rom(),
                 new Rom(),
@@ -212,7 +212,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
         [Test]
         public void should_not_mark_as_imported_if_some_of_episodes_were_not_imported_including_history()
         {
-            _trackedDownload.RemoteEpisode.Roms = new List<Rom>
+            _trackedDownload.RemoteRom.Roms = new List<Rom>
                                                       {
                                                           new Rom(),
                                                           new Rom(),
@@ -249,7 +249,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
         {
             var episode1 = new Rom { Id = 1 };
             var episode2 = new Rom { Id = 2 };
-            _trackedDownload.RemoteEpisode.Roms = new List<Rom> { episode1, episode2 };
+            _trackedDownload.RemoteRom.Roms = new List<Rom> { episode1, episode2 };
 
             Mocker.GetMock<IDownloadedEpisodesImportService>()
                   .Setup(v => v.ProcessPath(It.IsAny<string>(), It.IsAny<ImportMode>(), It.IsAny<Game>(), It.IsAny<DownloadClientItem>()))
@@ -274,7 +274,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
         {
             var episode1 = new Rom { Id = 1 };
             var episode2 = new Rom { Id = 2 };
-            _trackedDownload.RemoteEpisode.Roms = new List<Rom> { episode1, episode2 };
+            _trackedDownload.RemoteRom.Roms = new List<Rom> { episode1, episode2 };
 
             Mocker.GetMock<IDownloadedEpisodesImportService>()
                 .Setup(v => v.ProcessPath(It.IsAny<string>(), It.IsAny<ImportMode>(), It.IsAny<Game>(), It.IsAny<DownloadClientItem>()))
@@ -318,7 +318,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
         {
             var episode1 = new Rom { Id = 1 };
             var episode2 = new Rom { Id = 2 };
-            _trackedDownload.RemoteEpisode.Roms = new List<Rom> { episode1, episode2 };
+            _trackedDownload.RemoteRom.Roms = new List<Rom> { episode1, episode2 };
 
             Mocker.GetMock<IDownloadedEpisodesImportService>()
                   .Setup(v => v.ProcessPath(It.IsAny<string>(), It.IsAny<ImportMode>(), It.IsAny<Game>(), It.IsAny<DownloadClientItem>()))
@@ -339,7 +339,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
         {
             GivenSeriesMatch();
 
-            _trackedDownload.RemoteEpisode.Roms = new List<Rom>
+            _trackedDownload.RemoteRom.Roms = new List<Rom>
                                                       {
                                                           new Rom()
                                                       };
@@ -348,7 +348,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
                   .Setup(v => v.ProcessPath(It.IsAny<string>(), It.IsAny<ImportMode>(), It.IsAny<Game>(), It.IsAny<DownloadClientItem>()))
                   .Returns(new List<ImportResult>
                            {
-                               new ImportResult(new ImportDecision(new LocalEpisode { Path = @"C:\TestPath\Droned.S01E01.mkv", Roms = _trackedDownload.RemoteEpisode.Roms })),
+                               new ImportResult(new ImportDecision(new LocalEpisode { Path = @"C:\TestPath\Droned.S01E01.mkv", Roms = _trackedDownload.RemoteRom.Roms })),
                                new ImportResult(new ImportDecision(new LocalEpisode { Path = @"C:\TestPath\Droned.S01E01.mkv" }), "Test Failure")
                            });
 
@@ -366,11 +366,11 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
                   .Setup(v => v.ProcessPath(It.IsAny<string>(), It.IsAny<ImportMode>(), It.IsAny<Game>(), It.IsAny<DownloadClientItem>()))
                   .Returns(new List<ImportResult>
                            {
-                               new ImportResult(new ImportDecision(new LocalEpisode { Path = @"C:\TestPath\Droned.S01E01.mkv", Roms = _trackedDownload.RemoteEpisode.Roms }))
+                               new ImportResult(new ImportDecision(new LocalEpisode { Path = @"C:\TestPath\Droned.S01E01.mkv", Roms = _trackedDownload.RemoteRom.Roms }))
                            });
 
             Mocker.GetMock<IGameService>()
-                  .Setup(v => v.GetSeries(It.IsAny<int>()))
+                  .Setup(v => v.GetGame(It.IsAny<int>()))
                   .Returns(BuildRemoteEpisode().Game);
 
             Subject.Import(_trackedDownload);
@@ -389,7 +389,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
         private void AssertImported()
         {
             Mocker.GetMock<IDownloadedEpisodesImportService>()
-                .Verify(v => v.ProcessPath(_trackedDownload.DownloadItem.OutputPath.FullPath, ImportMode.Auto, _trackedDownload.RemoteEpisode.Game, _trackedDownload.DownloadItem), Times.Once());
+                .Verify(v => v.ProcessPath(_trackedDownload.DownloadItem.OutputPath.FullPath, ImportMode.Auto, _trackedDownload.RemoteRom.Game, _trackedDownload.DownloadItem), Times.Once());
 
             Mocker.GetMock<IEventAggregator>()
                   .Verify(v => v.PublishEvent(It.IsAny<DownloadCompletedEvent>()), Times.Once());

@@ -19,7 +19,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
     {
         private IndexerTagSpecification _specification;
 
-        private RemoteEpisode _parseResultMulti;
+        private RemoteRom _parseResultMulti;
         private IndexerDefinition _fakeIndexerDefinition;
         private Game _fakeSeries;
         private Rom _firstEpisode;
@@ -61,7 +61,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
 
             var doubleEpisodeList = new List<Rom> { _firstEpisode, _secondEpisode };
 
-            _parseResultMulti = new RemoteEpisode
+            _parseResultMulti = new RemoteRom
             {
                 Game = _fakeSeries,
                 Roms = doubleEpisodeList,

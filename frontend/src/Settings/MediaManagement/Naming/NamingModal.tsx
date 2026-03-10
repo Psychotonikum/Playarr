@@ -77,14 +77,12 @@ const fileNameTokens = [
   {
     token:
       '{Game TitleYear} - S{platform:00}E{rom:00} - {Rom CleanTitle} {Quality Full}',
-    example:
-      "The Game Title's! (2010) - S01E01 - Rom Title WEBDL-1080p Proper",
+    example: "The Game Title's! (2010) - S01E01 - Rom Title WEBDL-1080p Proper",
   },
   {
     token:
       '{Game TitleYear} - {platform:0}x{rom:00} - {Rom CleanTitle} {Quality Full}',
-    example:
-      "The Game Title's! (2010) - 1x01 - Rom Title WEBDL-1080p Proper",
+    example: "The Game Title's! (2010) - 1x01 - Rom Title WEBDL-1080p Proper",
   },
   {
     token:
@@ -95,16 +93,13 @@ const fileNameTokens = [
 
 const fileNameDailyTokens = [
   {
-    token:
-      '{Game TitleYear} - {Air-Date} - {Rom CleanTitle} {Quality Full}',
+    token: '{Game TitleYear} - {Air-Date} - {Rom CleanTitle} {Quality Full}',
     example:
       "The Game Title's! (2010) - 2013-10-30 - Rom Title WEBDL-1080p Proper",
   },
   {
-    token:
-      '{Game.CleanTitleYear}.{Air.Date}.{Rom.CleanTitle}.{Quality.Full}',
-    example:
-      "The.Game.Title's!.2010.2013.10.30.Rom.Title.WEBDL-1080p.Proper",
+    token: '{Game.CleanTitleYear}.{Air.Date}.{Rom.CleanTitle}.{Quality.Full}',
+    example: "The.Game.Title's!.2010.2013.10.30.Rom.Title.WEBDL-1080p.Proper",
   },
 ];
 
@@ -124,8 +119,7 @@ const fileNameAnimeTokens = [
   {
     token:
       '{Game.CleanTitleYear}.S{platform:00}E{rom:00}.{absolute:000}.{Rom.CleanTitle}.{Quality.Full}',
-    example:
-      "The.Game.Title's!.2010.S01E01.001.Rom.Title.WEBDL-1080p.Proper",
+    example: "The.Game.Title's!.2010.S01E01.001.Rom.Title.WEBDL-1080p.Proper",
   },
 ];
 
@@ -366,9 +360,7 @@ function NamingModal(props: NamingModalProps) {
     <Modal isOpen={isOpen} onModalClose={onModalClose}>
       <ModalContent onModalClose={onModalClose}>
         <ModalHeader>
-          {rom
-            ? translate('FileNameTokens')
-            : translate('FolderNameTokens')}
+          {rom ? translate('FileNameTokens') : translate('FolderNameTokens')}
         </ModalHeader>
 
         <ModalBody>

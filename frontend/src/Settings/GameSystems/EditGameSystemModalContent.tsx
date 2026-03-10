@@ -4,18 +4,18 @@ import Form from 'Components/Form/Form';
 import FormGroup from 'Components/Form/FormGroup';
 import FormInputGroup from 'Components/Form/FormInputGroup';
 import FormLabel from 'Components/Form/FormLabel';
-import SpinnerErrorButton from 'Components/Link/SpinnerErrorButton';
 import Button from 'Components/Link/Button';
+import SpinnerErrorButton from 'Components/Link/SpinnerErrorButton';
 import ModalBody from 'Components/Modal/ModalBody';
 import ModalContent from 'Components/Modal/ModalContent';
 import ModalFooter from 'Components/Modal/ModalFooter';
 import ModalHeader from 'Components/Modal/ModalHeader';
-import { inputTypes, kinds } from 'Helpers/Props';
 import GameSystem from 'GameSystem/GameSystem';
 import useGameSystems, {
   useAddGameSystem,
   useUpdateGameSystem,
 } from 'GameSystem/useGameSystems';
+import { inputTypes, kinds } from 'Helpers/Props';
 import { InputChanged } from 'typings/inputs';
 import translate from 'Utilities/String/translate';
 import { GameSystemPreset } from './gameSystemPresets';
@@ -43,12 +43,14 @@ function EditGameSystemModalContent({
 }: EditGameSystemModalContentProps) {
   const { data: systems } = useGameSystems();
   const sourceId = id ?? cloneId;
-  const existing = sourceId ? systems.find((s) => s.id === sourceId) : undefined;
+  const existing = sourceId
+    ? systems.find((s) => s.id === sourceId)
+    : undefined;
 
   const defaults = preset ?? existing;
 
   const [name, setName] = useState(
-    cloneId && existing ? `${existing.name} (Copy)` : (defaults?.name ?? '')
+    cloneId && existing ? `${existing.name} (Copy)` : defaults?.name ?? ''
   );
   const [folderName, setFolderName] = useState(defaults?.folderName ?? '');
   const [systemType, setSystemType] = useState(defaults?.systemType ?? 0);
@@ -74,11 +76,7 @@ function EditGameSystemModalContent({
     defaults?.dlcFolderName ?? 'dlc'
   );
 
-  const {
-    addGameSystem,
-    isAdding,
-    addError,
-  } = useAddGameSystem();
+  const { addGameSystem, isAdding, addError } = useAddGameSystem();
 
   const updateHook = id ? useUpdateGameSystem(id) : null;
 
@@ -175,9 +173,7 @@ function EditGameSystemModalContent({
 
   return (
     <ModalContent onModalClose={onModalClose}>
-      <ModalHeader>
-        {isNew ? 'Add Game System' : `Edit ${name}`}
-      </ModalHeader>
+      <ModalHeader>{isNew ? 'Add Game System' : `Edit ${name}`}</ModalHeader>
 
       <ModalBody>
         <Form>

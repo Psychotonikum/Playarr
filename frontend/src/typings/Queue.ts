@@ -1,8 +1,8 @@
 import ModelBase from 'App/ModelBase';
 import DownloadProtocol from 'DownloadClient/DownloadProtocol';
-import Rom from 'Rom/Rom';
 import Language from 'Language/Language';
 import { QualityModel } from 'Quality/Quality';
+import Rom from 'Rom/Rom';
 import CustomFormat from 'typings/CustomFormat';
 
 export type QueueTrackedDownloadStatus = 'ok' | 'warning' | 'error';

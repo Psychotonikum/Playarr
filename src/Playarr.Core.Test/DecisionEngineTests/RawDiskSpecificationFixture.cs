@@ -11,12 +11,12 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
     public class RawDiskSpecificationFixture : CoreTest<RawDiskSpecification>
     {
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         [SetUp]
         public void Setup()
         {
-            _remoteRom = new RemoteEpisode
+            _remoteRom = new RemoteRom
             {
                 Release = new ReleaseInfo
                           {

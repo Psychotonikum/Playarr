@@ -6,11 +6,11 @@ namespace Playarr.Core.Games
 {
     public class GameTitleSlugValidator : PropertyValidator
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
 
         public GameTitleSlugValidator(IGameService seriesService)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
         }
 
         protected override string GetDefaultMessageTemplate() =>
@@ -27,7 +27,7 @@ namespace Playarr.Core.Games
             var instanceId = (int)instance.Id;
             var slug = context.PropertyValue.ToString();
 
-            var conflictingSeries = _seriesService.GetAllSeries()
+            var conflictingSeries = _gameService.GetAllGames()
                                                   .FirstOrDefault(s => s.TitleSlug.IsNotNullOrWhiteSpace() &&
                                                               s.TitleSlug.Equals(context.PropertyValue.ToString()) &&
                                                               s.Id != instanceId);

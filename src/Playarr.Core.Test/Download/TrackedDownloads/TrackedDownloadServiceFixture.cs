@@ -41,7 +41,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
         {
             GivenDownloadHistory();
 
-            var remoteRom = new RemoteEpisode
+            var remoteRom = new RemoteRom
             {
                 Game = new Game() { Id = 5 },
                 Roms = new List<Rom> { new Rom { Id = 4 } },
@@ -78,12 +78,12 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
             var trackedDownload = Subject.TrackDownload(client, item);
 
             trackedDownload.Should().NotBeNull();
-            trackedDownload.RemoteEpisode.Should().NotBeNull();
-            trackedDownload.RemoteEpisode.Game.Should().NotBeNull();
-            trackedDownload.RemoteEpisode.Game.Id.Should().Be(5);
-            trackedDownload.RemoteEpisode.Roms.First().Id.Should().Be(4);
-            trackedDownload.RemoteEpisode.ParsedRomInfo.PlatformNumber.Should().Be(1);
-            trackedDownload.RemoteEpisode.MappedPlatformNumber.Should().Be(1);
+            trackedDownload.RemoteRom.Should().NotBeNull();
+            trackedDownload.RemoteRom.Game.Should().NotBeNull();
+            trackedDownload.RemoteRom.Game.Id.Should().Be(5);
+            trackedDownload.RemoteRom.Roms.First().Id.Should().Be(4);
+            trackedDownload.RemoteRom.ParsedRomInfo.PlatformNumber.Should().Be(1);
+            trackedDownload.RemoteRom.MappedPlatformNumber.Should().Be(1);
         }
 
         [Test]
@@ -118,7 +118,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
                 .Setup(v => v.All())
                 .Returns(new List<IndexerDefinition>() { indexerDefinition });
 
-            var remoteRom = new RemoteEpisode
+            var remoteRom = new RemoteRom
             {
                 Game = new Game() { Id = 5 },
                 Roms = new List<Rom> { new Rom { Id = 4 } },
@@ -155,15 +155,15 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
             var trackedDownload = Subject.TrackDownload(client, item);
 
             trackedDownload.Should().NotBeNull();
-            trackedDownload.RemoteEpisode.Should().NotBeNull();
-            trackedDownload.RemoteEpisode.Release.Should().NotBeNull();
-            trackedDownload.RemoteEpisode.Release.Indexer.Should().Be("MyIndexer (Prowlarr)");
+            trackedDownload.RemoteRom.Should().NotBeNull();
+            trackedDownload.RemoteRom.Release.Should().NotBeNull();
+            trackedDownload.RemoteRom.Release.Indexer.Should().Be("MyIndexer (Prowlarr)");
         }
 
         [Test]
         public void should_parse_as_special_when_source_title_parsing_fails()
         {
-            var remoteRom = new RemoteEpisode
+            var remoteRom = new RemoteRom
             {
                 Game = new Game() { Id = 5 },
                 Roms = new List<Rom> { new Rom { Id = 4 } },
@@ -218,12 +218,12 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
             var trackedDownload = Subject.TrackDownload(client, item);
 
             trackedDownload.Should().NotBeNull();
-            trackedDownload.RemoteEpisode.Should().NotBeNull();
-            trackedDownload.RemoteEpisode.Game.Should().NotBeNull();
-            trackedDownload.RemoteEpisode.Game.Id.Should().Be(5);
-            trackedDownload.RemoteEpisode.Roms.First().Id.Should().Be(4);
-            trackedDownload.RemoteEpisode.ParsedRomInfo.PlatformNumber.Should().Be(0);
-            trackedDownload.RemoteEpisode.MappedPlatformNumber.Should().Be(0);
+            trackedDownload.RemoteRom.Should().NotBeNull();
+            trackedDownload.RemoteRom.Game.Should().NotBeNull();
+            trackedDownload.RemoteRom.Game.Id.Should().Be(5);
+            trackedDownload.RemoteRom.Roms.First().Id.Should().Be(4);
+            trackedDownload.RemoteRom.ParsedRomInfo.PlatformNumber.Should().Be(0);
+            trackedDownload.RemoteRom.MappedPlatformNumber.Should().Be(0);
         }
 
         [Test]
@@ -231,7 +231,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
         {
             GivenDownloadHistory();
 
-            var remoteRom = new RemoteEpisode
+            var remoteRom = new RemoteRom
                                 {
                                     Game = new Game() { Id = 5 },
                                     Roms = new List<Rom> { new Rom { Id = 4 } },
@@ -276,13 +276,13 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
 
             Mocker.GetMock<IParsingService>()
                   .Setup(s => s.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), null))
-                  .Returns(default(RemoteEpisode));
+                  .Returns(default(RemoteRom));
 
             Subject.Handle(new RomInfoRefreshedEvent(remoteRom.Game, new List<Rom>(), new List<Rom>(), remoteRom.Roms));
 
             var trackedDownloads = Subject.GetTrackedDownloads();
             trackedDownloads.Should().HaveCount(1);
-            trackedDownloads.First().RemoteEpisode.Should().BeNull();
+            trackedDownloads.First().RemoteRom.Should().BeNull();
         }
 
         [Test]
@@ -290,7 +290,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
         {
             GivenDownloadHistory();
 
-            var remoteRom = new RemoteEpisode
+            var remoteRom = new RemoteRom
             {
                 Game = new Game() { Id = 5 },
                 Roms = new List<Rom> { new Rom { Id = 4 } },
@@ -305,7 +305,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
 
             Mocker.GetMock<IParsingService>()
                   .Setup(s => s.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), null))
-                  .Returns(default(RemoteEpisode));
+                  .Returns(default(RemoteRom));
 
             Mocker.GetMock<IHistoryService>()
                   .Setup(s => s.FindByDownloadId(It.IsAny<string>()))
@@ -335,13 +335,13 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
 
             Mocker.GetMock<IParsingService>()
                   .Setup(s => s.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), null))
-                  .Returns(default(RemoteEpisode));
+                  .Returns(default(RemoteRom));
 
             Subject.Handle(new RomInfoRefreshedEvent(remoteRom.Game, new List<Rom>(), new List<Rom>(), remoteRom.Roms));
 
             var trackedDownloads = Subject.GetTrackedDownloads();
             trackedDownloads.Should().HaveCount(1);
-            trackedDownloads.First().RemoteEpisode.Should().BeNull();
+            trackedDownloads.First().RemoteRom.Should().BeNull();
         }
 
         [Test]
@@ -349,7 +349,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
         {
             GivenDownloadHistory();
 
-            var remoteRom = new RemoteEpisode
+            var remoteRom = new RemoteRom
             {
                 Game = new Game() { Id = 5 },
                 Roms = new List<Rom> { new Rom { Id = 4 } },
@@ -364,7 +364,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
 
             Mocker.GetMock<IParsingService>()
                   .Setup(s => s.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), null))
-                  .Returns(default(RemoteEpisode));
+                  .Returns(default(RemoteRom));
 
             Mocker.GetMock<IHistoryService>()
                   .Setup(s => s.FindByDownloadId(It.IsAny<string>()))
@@ -394,13 +394,13 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
 
             Mocker.GetMock<IParsingService>()
                   .Setup(s => s.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), null))
-                  .Returns(default(RemoteEpisode));
+                  .Returns(default(RemoteRom));
 
             Subject.Handle(new SeriesDeletedEvent(new List<Game> { remoteRom.Game }, true, true));
 
             var trackedDownloads = Subject.GetTrackedDownloads();
             trackedDownloads.Should().HaveCount(1);
-            trackedDownloads.First().RemoteEpisode.Should().BeNull();
+            trackedDownloads.First().RemoteRom.Should().BeNull();
         }
     }
 }

@@ -2,10 +2,10 @@ import React, { useCallback } from 'react';
 import Icon from 'Components/Icon';
 import MonitorToggleButton from 'Components/MonitorToggleButton';
 import VirtualTableRowCell from 'Components/Table/Cells/TableRowCell';
-import { icons } from 'Helpers/Props';
 import { GameStatus } from 'Game/Game';
 import { getGameStatusDetails } from 'Game/GameStatus';
 import { useToggleGameMonitored } from 'Game/useGame';
+import { icons } from 'Helpers/Props';
 import translate from 'Utilities/String/translate';
 import styles from './GameStatusCell.css';
 

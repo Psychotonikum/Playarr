@@ -10,10 +10,10 @@ namespace Playarr.Core.Games
     public class SeriesScannedHandler : IHandle<SeriesScannedEvent>,
                                         IHandle<SeriesScanSkippedEvent>
     {
-        private readonly IEpisodeMonitoredService _episodeMonitoredService;
-        private readonly IGameService _seriesService;
+        private readonly IEpisodeMonitoredService _romMonitoredService;
+        private readonly IGameService _gameService;
         private readonly IManageCommandQueue _commandQueueManager;
-        private readonly IEpisodeRefreshedService _episodeRefreshedService;
+        private readonly IEpisodeRefreshedService _romRefreshedService;
         private readonly IEventAggregator _eventAggregator;
 
         private readonly Logger _logger;
@@ -25,10 +25,10 @@ namespace Playarr.Core.Games
                                     IEventAggregator eventAggregator,
                                     Logger logger)
         {
-            _episodeMonitoredService = episodeMonitoredService;
-            _seriesService = seriesService;
+            _romMonitoredService = episodeMonitoredService;
+            _gameService = seriesService;
             _commandQueueManager = commandQueueManager;
-            _episodeRefreshedService = episodeRefreshedService;
+            _romRefreshedService = episodeRefreshedService;
             _eventAggregator = eventAggregator;
             _logger = logger;
         }
@@ -39,12 +39,12 @@ namespace Playarr.Core.Games
 
             if (addOptions == null)
             {
-                _episodeRefreshedService.Search(game.Id);
+                _romRefreshedService.Search(game.Id);
                 return;
             }
 
             _logger.Info("[{0}] was recently added, performing post-add actions", game.Title);
-            _episodeMonitoredService.SetEpisodeMonitoredStatus(game, addOptions);
+            _romMonitoredService.SetEpisodeMonitoredStatus(game, addOptions);
 
             _eventAggregator.PublishEvent(new SeriesAddCompletedEvent(game));
 
@@ -54,23 +54,23 @@ namespace Playarr.Core.Games
 
             if (addOptions.SearchForMissingEpisodes && addOptions.SearchForCutoffUnmetEpisodes)
             {
-                _commandQueueManager.Push(new SeriesSearchCommand(game.Id));
+                _commandQueueManager.Push(new GameSearchCommand(game.Id));
             }
             else
             {
                 if (addOptions.SearchForMissingEpisodes)
                 {
-                    _commandQueueManager.Push(new MissingEpisodeSearchCommand(game.Id));
+                    _commandQueueManager.Push(new MissingRomSearchCommand(game.Id));
                 }
 
                 if (addOptions.SearchForCutoffUnmetEpisodes)
                 {
-                    _commandQueueManager.Push(new CutoffUnmetEpisodeSearchCommand(game.Id));
+                    _commandQueueManager.Push(new CutoffUnmetRomSearchCommand(game.Id));
                 }
             }
 
             game.AddOptions = null;
-            _seriesService.RemoveAddOptions(game);
+            _gameService.RemoveAddOptions(game);
         }
 
         public void Handle(SeriesScannedEvent message)

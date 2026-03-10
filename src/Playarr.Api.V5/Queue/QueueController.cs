@@ -321,7 +321,7 @@ namespace Playarr.Api.V5.Queue
         {
             if (blocklist)
             {
-                _blocklistService.Block(pendingRelease.RemoteEpisode, message ?? "Pending release manually blocklisted", Request.GetSource());
+                _blocklistService.Block(pendingRelease.RemoteRom, message ?? "Pending release manually blocklisted", Request.GetSource());
             }
 
             _pendingReleaseService.RemovePendingQueueItems(pendingRelease.Id);

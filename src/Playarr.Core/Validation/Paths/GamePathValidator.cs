@@ -6,13 +6,13 @@ using Playarr.Core.Games;
 
 namespace Playarr.Core.Validation.Paths
 {
-    public class SeriesPathValidator : PropertyValidator
+    public class GamePathValidator : PropertyValidator
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
 
-        public SeriesPathValidator(IGameService seriesService)
+        public GamePathValidator(IGameService seriesService)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
         }
 
         protected override string GetDefaultMessageTemplate() => "Path '{path}' is already configured for another game";
@@ -30,7 +30,7 @@ namespace Playarr.Core.Validation.Paths
             var instanceId = (int)instance.Id;
 
             // Skip the path for this game and any invalid paths
-            return !_seriesService.GetAllSeriesPaths().Any(s => s.Key != instanceId &&
+            return !_gameService.GetAllGamePaths().Any(s => s.Key != instanceId &&
                                                                 s.Value.IsPathValid(PathValidationType.CurrentOs) &&
                                                                 s.Value.PathEquals(context.PropertyValue.ToString()));
         }

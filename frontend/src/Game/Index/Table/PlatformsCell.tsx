@@ -1,8 +1,8 @@
 import React from 'react';
 import VirtualTableRowCell from 'Components/Table/Cells/VirtualTableRowCell';
 import Popover from 'Components/Tooltip/Popover';
-import PlatformDetails from 'Game/Index/Select/PlatformPass/PlatformDetails';
 import { Platform } from 'Game/Game';
+import PlatformDetails from 'Game/Index/Select/PlatformPass/PlatformDetails';
 import translate from 'Utilities/String/translate';
 import styles from './PlatformsCell.css';
 

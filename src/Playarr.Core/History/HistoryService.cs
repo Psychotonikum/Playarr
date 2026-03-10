@@ -17,7 +17,7 @@ namespace Playarr.Core.History
     public interface IHistoryService
     {
         PagingSpec<EpisodeHistory> Paged(PagingSpec<EpisodeHistory> pagingSpec, int[] languages, int[] qualities);
-        EpisodeHistory MostRecentForEpisode(int romId);
+        EpisodeHistory MostRecentForRom(int romId);
         List<EpisodeHistory> FindByRomId(int romId);
         EpisodeHistory MostRecentForDownloadId(string downloadId);
         EpisodeHistory Get(int historyId);
@@ -53,9 +53,9 @@ namespace Playarr.Core.History
             return _historyRepository.GetPaged(pagingSpec, languages, qualities);
         }
 
-        public EpisodeHistory MostRecentForEpisode(int romId)
+        public EpisodeHistory MostRecentForRom(int romId)
         {
-            return _historyRepository.MostRecentForEpisode(romId);
+            return _historyRepository.MostRecentForRom(romId);
         }
 
         public List<EpisodeHistory> FindByRomId(int romId)
@@ -256,9 +256,9 @@ namespace Playarr.Core.History
                 history.Data.Add("DownloadClientName", message.TrackedDownload?.DownloadItem.DownloadClientInfo.Name);
                 history.Data.Add("Message", message.Message);
                 history.Data.Add("Source", message.Source);
-                history.Data.Add("ReleaseGroup", message.TrackedDownload?.RemoteEpisode?.ParsedRomInfo?.ReleaseGroup ?? message.Data.GetValueOrDefault(EpisodeHistory.RELEASE_GROUP));
+                history.Data.Add("ReleaseGroup", message.TrackedDownload?.RemoteRom?.ParsedRomInfo?.ReleaseGroup ?? message.Data.GetValueOrDefault(EpisodeHistory.RELEASE_GROUP));
                 history.Data.Add("Size", message.TrackedDownload?.DownloadItem.TotalSize.ToString() ?? message.Data.GetValueOrDefault(EpisodeHistory.SIZE));
-                history.Data.Add("Indexer", message.TrackedDownload?.RemoteEpisode?.Release?.Indexer ?? message.Data.GetValueOrDefault(EpisodeHistory.INDEXER));
+                history.Data.Add("Indexer", message.TrackedDownload?.RemoteRom?.Release?.Indexer ?? message.Data.GetValueOrDefault(EpisodeHistory.INDEXER));
 
                 _historyRepository.Insert(history);
             }
@@ -354,10 +354,10 @@ namespace Playarr.Core.History
                 history.Data.Add("DownloadClient", message.DownloadClientInfo.Type);
                 history.Data.Add("DownloadClientName", message.DownloadClientInfo.Name);
                 history.Data.Add("Message", message.Message);
-                history.Data.Add("ReleaseGroup", message.TrackedDownload?.RemoteEpisode?.ParsedRomInfo?.ReleaseGroup);
+                history.Data.Add("ReleaseGroup", message.TrackedDownload?.RemoteRom?.ParsedRomInfo?.ReleaseGroup);
                 history.Data.Add("Size", message.TrackedDownload?.DownloadItem.TotalSize.ToString());
-                history.Data.Add("Indexer", message.TrackedDownload?.RemoteEpisode?.Release?.Indexer);
-                history.Data.Add("ReleaseType", message.TrackedDownload?.RemoteEpisode?.ParsedRomInfo?.ReleaseType.ToString());
+                history.Data.Add("Indexer", message.TrackedDownload?.RemoteRom?.Release?.Indexer);
+                history.Data.Add("ReleaseType", message.TrackedDownload?.RemoteRom?.ParsedRomInfo?.ReleaseType.ToString());
 
                 historyToAdd.Add(history);
             }

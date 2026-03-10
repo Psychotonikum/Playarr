@@ -35,11 +35,11 @@ const createSeriesEqualSelector = createSelectorCreator(
   gameListEqual
 );
 
-function createSeriesClientSideCollectionItemsSelector(uiSection) {
+function createGameClientSideCollectionItemsSelector(uiSection) {
   return createSeriesEqualSelector(
     createUnoptimizedSelector(uiSection),
     (game) => game
   );
 }
 
-export default createSeriesClientSideCollectionItemsSelector;
+export default createGameClientSideCollectionItemsSelector;

@@ -9,9 +9,7 @@ interface GameIndexSelectAllMenuItemProps {
   isSelectMode: boolean;
 }
 
-function GameIndexSelectAllMenuItem(
-  props: GameIndexSelectAllMenuItemProps
-) {
+function GameIndexSelectAllMenuItem(props: GameIndexSelectAllMenuItemProps) {
   const { isSelectMode } = props;
   const { allSelected, allUnselected, selectAll, unselectAll } = useSelect();
 

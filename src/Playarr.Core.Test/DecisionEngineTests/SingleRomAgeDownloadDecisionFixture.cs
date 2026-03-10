@@ -17,8 +17,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
     [TestFixture]
     public class SingleEpisodeAgeDownloadDecisionFixture : CoreTest<SeasonPackOnlySpecification>
     {
-        private RemoteEpisode _parseResultMulti;
-        private RemoteEpisode _parseResultSingle;
+        private RemoteRom _parseResultMulti;
+        private RemoteRom _parseResultSingle;
         private Game _series;
         private List<Rom> _episodes;
         private SeasonSearchCriteria _multiSearch;
@@ -43,7 +43,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _multiSearch.PlatformNumber = 1;
             _multiInfo = new ReleaseDecisionInformation(false, _multiSearch);
 
-            _parseResultMulti = new RemoteEpisode
+            _parseResultMulti = new RemoteRom
             {
                 Game = _series,
                 Release = new ReleaseInfo(),
@@ -51,7 +51,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 Roms = _episodes.ToList()
             };
 
-            _parseResultSingle = new RemoteEpisode
+            _parseResultSingle = new RemoteRom
             {
                 Game = _series,
                 Release = new ReleaseInfo(),

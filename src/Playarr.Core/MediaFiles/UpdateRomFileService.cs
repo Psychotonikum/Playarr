@@ -24,7 +24,7 @@ namespace Playarr.Core.MediaFiles
     {
         private readonly IDiskProvider _diskProvider;
         private readonly IConfigService _configService;
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly Logger _logger;
 
         public UpdateRomFileService(IDiskProvider diskProvider,
@@ -34,7 +34,7 @@ namespace Playarr.Core.MediaFiles
         {
             _diskProvider = diskProvider;
             _configService = configService;
-            _episodeService = episodeService;
+            _romService = episodeService;
             _logger = logger;
         }
 
@@ -107,7 +107,7 @@ namespace Playarr.Core.MediaFiles
                 return;
             }
 
-            var roms = _episodeService.EpisodesWithFiles(message.Game.Id);
+            var roms = _romService.EpisodesWithFiles(message.Game.Id);
 
             var romFiles = new List<RomFile>();
             var updated = new List<RomFile>();

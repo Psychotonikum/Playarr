@@ -92,7 +92,7 @@ namespace Playarr.Core.Test.Download.DownloadClientTests.Blackhole
             _magnetFilePath = Path.ChangeExtension(_filePath, extension);
         }
 
-        protected override RemoteEpisode CreateRemoteEpisode()
+        protected override RemoteRom CreateRemoteEpisode()
         {
             var remoteRom = base.CreateRemoteEpisode();
             var torrentInfo = new TorrentInfo();

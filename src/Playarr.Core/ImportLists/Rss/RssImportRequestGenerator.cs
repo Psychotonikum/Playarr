@@ -12,12 +12,12 @@ namespace Playarr.Core.ImportLists.Rss
         {
             var pageableRequests = new ImportListPageableRequestChain();
 
-            pageableRequests.Add(GetSeriesRequest());
+            pageableRequests.Add(GetGameRequest());
 
             return pageableRequests;
         }
 
-        private IEnumerable<ImportListRequest> GetSeriesRequest()
+        private IEnumerable<ImportListRequest> GetGameRequest()
         {
             yield return new ImportListRequest(Settings.Url, HttpAccept.Rss);
         }

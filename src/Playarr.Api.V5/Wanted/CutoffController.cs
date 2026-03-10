@@ -13,7 +13,7 @@ namespace Playarr.Api.V5.Wanted;
 [V5ApiController("wanted/cutoff")]
 public class CutoffController : RomControllerWithSignalR
 {
-    private readonly IEpisodeCutoffService _episodeCutoffService;
+    private readonly IEpisodeCutoffService _romCutoffService;
 
     public CutoffController(IEpisodeCutoffService episodeCutoffService,
                         IRomService episodeService,
@@ -23,7 +23,7 @@ public class CutoffController : RomControllerWithSignalR
                         IBroadcastSignalRMessage signalRBroadcaster)
         : base(episodeService, seriesService, upgradableSpecification, formatCalculator, signalRBroadcaster)
     {
-        _episodeCutoffService = episodeCutoffService;
+        _romCutoffService = episodeCutoffService;
     }
 
     [HttpGet]
@@ -54,7 +54,7 @@ public class CutoffController : RomControllerWithSignalR
         var includeRomFile = includeSubresources.Contains(CutoffSubresource.RomFile);
         var includeImages = includeSubresources.Contains(CutoffSubresource.Images);
 
-        var resource = pagingSpec.ApplyToPage(_episodeCutoffService.EpisodesWhereCutoffUnmet, v => MapToResource(v, includeSeries, includeRomFile, includeImages));
+        var resource = pagingSpec.ApplyToPage(_romCutoffService.EpisodesWhereCutoffUnmet, v => MapToResource(v, includeSeries, includeRomFile, includeImages));
 
         return resource;
     }

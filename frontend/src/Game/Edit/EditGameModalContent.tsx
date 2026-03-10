@@ -13,6 +13,9 @@ import ModalContent from 'Components/Modal/ModalContent';
 import ModalFooter from 'Components/Modal/ModalFooter';
 import ModalHeader from 'Components/Modal/ModalHeader';
 import Popover from 'Components/Tooltip/Popover';
+import Game from 'Game/Game';
+import MoveGameModal from 'Game/MoveGame/MoveGameModal';
+import { useSaveSeries, useSingleGame } from 'Game/useGame';
 import { usePendingChangesStore } from 'Helpers/Hooks/usePendingChangesStore';
 import usePrevious from 'Helpers/Hooks/usePrevious';
 import {
@@ -22,9 +25,6 @@ import {
   sizes,
   tooltipPositions,
 } from 'Helpers/Props';
-import MoveGameModal from 'Game/MoveGame/MoveGameModal';
-import Game from 'Game/Game';
-import { useSaveSeries, useSingleGame } from 'Game/useGame';
 import selectSettings from 'Store/Selectors/selectSettings';
 import { InputChanged } from 'typings/inputs';
 import translate from 'Utilities/String/translate';
@@ -60,9 +60,7 @@ function EditGameModalContent({
     rootFolderPath: initialRootFolderPath,
   } = game;
 
-  const { pendingChanges, setPendingChange } = usePendingChangesStore<Game>(
-    {}
-  );
+  const { pendingChanges, setPendingChange } = usePendingChangesStore<Game>({});
 
   const [isRootFolderModalOpen, setIsRootFolderModalOpen] = useState(false);
   const [rootFolderPath, setRootFolderPath] = useState(initialRootFolderPath);
@@ -286,7 +284,9 @@ function EditGameModalContent({
             <FormInputGroup
               type={inputTypes.SELECT}
               name="preferredRegions"
-              value={(settings.preferredRegions?.value ?? []) as unknown as number[]}
+              value={
+                (settings.preferredRegions?.value ?? []) as unknown as number[]
+              }
               values={[
                 { key: 'USA', value: 'USA' },
                 { key: 'Europe', value: 'Europe' },
@@ -308,7 +308,10 @@ function EditGameModalContent({
             <FormInputGroup
               type={inputTypes.SELECT}
               name="preferredReleaseTypes"
-              value={(settings.preferredReleaseTypes?.value ?? []) as unknown as number[]}
+              value={
+                (settings.preferredReleaseTypes?.value ??
+                  []) as unknown as number[]
+              }
               values={[
                 { key: 'Retail', value: 'Retail' },
                 { key: 'Prototype', value: 'Prototype' },
@@ -330,7 +333,10 @@ function EditGameModalContent({
             <FormInputGroup
               type={inputTypes.SELECT}
               name="preferredModifications"
-              value={(settings.preferredModifications?.value ?? []) as unknown as number[]}
+              value={
+                (settings.preferredModifications?.value ??
+                  []) as unknown as number[]
+              }
               values={[
                 { key: 'Original', value: 'Original' },
                 { key: 'Hack', value: 'Hack' },

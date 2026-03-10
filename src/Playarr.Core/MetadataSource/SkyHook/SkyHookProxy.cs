@@ -8,7 +8,6 @@ using Playarr.Common.Disk;
 using Playarr.Common.Extensions;
 using Playarr.Common.Http;
 using Playarr.Core.Configuration;
-using Playarr.Core.DataAugmentation.DailySeries;
 using Playarr.Core.Exceptions;
 using Playarr.Core.Games;
 using Playarr.Core.Languages;
@@ -24,15 +23,13 @@ namespace Playarr.Core.MetadataSource.SkyHook
 
         private readonly IIgdbClient _igdbClient;
         private readonly Logger _logger;
-        private readonly IGameService _seriesService;
-        private readonly IDailyGameService _dailyGameService;
+        private readonly IGameService _gameService;
         private readonly IConfigService _configService;
         private readonly IMetacriticProxy _metacriticProxy;
         private readonly ITinfoilProxy _tinfoilProxy;
 
         public SkyHookProxy(IIgdbClient igdbClient,
                             IGameService seriesService,
-                            IDailyGameService dailyGameService,
                             IConfigService configService,
                             IMetacriticProxy metacriticProxy,
                             ITinfoilProxy tinfoilProxy,
@@ -40,14 +37,13 @@ namespace Playarr.Core.MetadataSource.SkyHook
         {
             _igdbClient = igdbClient;
             _logger = logger;
-            _seriesService = seriesService;
-            _dailyGameService = dailyGameService;
+            _gameService = seriesService;
             _configService = configService;
             _metacriticProxy = metacriticProxy;
             _tinfoilProxy = tinfoilProxy;
         }
 
-        public Tuple<Game, List<Rom>> GetSeriesInfo(int igdbGameId)
+        public Tuple<Game, List<Rom>> GetGameInfo(int igdbGameId)
         {
             var query = $"{GameFields} where id = {igdbGameId}; limit 1;";
             var games = _igdbClient.SearchGames(query);
@@ -254,13 +250,13 @@ namespace Playarr.Core.MetadataSource.SkyHook
 
                     try
                     {
-                        var existingGame = _seriesService.FindByIgdbId(igdbId);
+                        var existingGame = _gameService.FindByIgdbId(igdbId);
                         if (existingGame != null)
                         {
                             return new List<Game> { existingGame };
                         }
 
-                        return new List<Game> { GetSeriesInfo(igdbId).Item1 };
+                        return new List<Game> { GetGameInfo(igdbId).Item1 };
                     }
                     catch (SeriesNotFoundException)
                     {
@@ -403,7 +399,7 @@ namespace Playarr.Core.MetadataSource.SkyHook
             }
 
             var gameId = (int)igdbGame.Id.Value;
-            var existingGame = _seriesService.FindByIgdbId(gameId);
+            var existingGame = _gameService.FindByIgdbId(gameId);
 
             if (existingGame != null)
             {
@@ -435,11 +431,6 @@ namespace Playarr.Core.MetadataSource.SkyHook
                 Genres = new List<string>(),
                 Actors = new List<Actor>()
             };
-
-            if (_dailyGameService.IsDailySeries(game.IgdbId))
-            {
-                game.SeriesType = GameTypes.Daily;
-            }
 
             if (igdbGame.FirstReleaseDate.HasValue)
             {

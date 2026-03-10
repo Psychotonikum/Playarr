@@ -17,7 +17,7 @@ public class RenameRomController : Controller
 
     [HttpGet]
     [Produces("application/json")]
-    public List<RenameRomResource> GetEpisodes(int gameId, int? platformNumber)
+    public List<RenameRomResource> GetRoms(int gameId, int? platformNumber)
     {
         if (platformNumber.HasValue)
         {
@@ -29,7 +29,7 @@ public class RenameRomController : Controller
 
     [HttpGet("bulk")]
     [Produces("application/json")]
-    public List<RenameRomResource> GetEpisodes([FromQuery] List<int> gameIds)
+    public List<RenameRomResource> GetRoms([FromQuery] List<int> gameIds)
     {
         if (gameIds is { Count: 0 })
         {

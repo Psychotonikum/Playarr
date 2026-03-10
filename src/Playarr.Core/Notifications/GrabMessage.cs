@@ -8,7 +8,7 @@ namespace Playarr.Core.Notifications
     {
         public string Message { get; set; }
         public Game Game { get; set; }
-        public RemoteEpisode Rom { get; set; }
+        public RemoteRom Rom { get; set; }
         public QualityModel Quality { get; set; }
         public string DownloadClientType { get; set; }
         public string DownloadClientName { get; set; }

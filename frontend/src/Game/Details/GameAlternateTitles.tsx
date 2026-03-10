@@ -6,9 +6,7 @@ interface GameAlternateTitlesProps {
   alternateTitles: AlternateTitle[];
 }
 
-function GameAlternateTitles({
-  alternateTitles,
-}: GameAlternateTitlesProps) {
+function GameAlternateTitles({ alternateTitles }: GameAlternateTitlesProps) {
   return (
     <ul>
       {alternateTitles.map((alternateTitle) => {

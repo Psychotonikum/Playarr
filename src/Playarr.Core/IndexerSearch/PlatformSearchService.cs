@@ -5,13 +5,13 @@ using Playarr.Core.Messaging.Commands;
 
 namespace Playarr.Core.IndexerSearch
 {
-    public class SeasonSearchService : IExecute<SeasonSearchCommand>
+    public class PlatformSearchService : IExecute<PlatformSearchCommand>
     {
         private readonly ISearchForReleases _releaseSearchService;
         private readonly IProcessDownloadDecisions _processDownloadDecisions;
         private readonly Logger _logger;
 
-        public SeasonSearchService(ISearchForReleases releaseSearchService,
+        public PlatformSearchService(ISearchForReleases releaseSearchService,
                                    IProcessDownloadDecisions processDownloadDecisions,
                                    Logger logger)
         {
@@ -20,9 +20,9 @@ namespace Playarr.Core.IndexerSearch
             _logger = logger;
         }
 
-        public void Execute(SeasonSearchCommand message)
+        public void Execute(PlatformSearchCommand message)
         {
-            var decisions = _releaseSearchService.SeasonSearch(message.GameId, message.PlatformNumber, false, true, message.Trigger == CommandTrigger.Manual, false).GetAwaiter().GetResult();
+            var decisions = _releaseSearchService.PlatformSearch(message.GameId, message.PlatformNumber, false, true, message.Trigger == CommandTrigger.Manual, false).GetAwaiter().GetResult();
             var processed = _processDownloadDecisions.ProcessDecisions(decisions).GetAwaiter().GetResult();
 
             _logger.ProgressInfo("Platform search completed. {0} reports downloaded.", processed.Grabbed.Count);

@@ -61,7 +61,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
 
         private void GivenDailySeries()
         {
-            _series.SeriesType = GameTypes.Daily;
+            _series.SeriesType = GameTypes.Standard;
         }
 
         private void GivenDailyParseResult()
@@ -219,7 +219,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
 
             _parsedRomInfo.Special = true;
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
                   .Verify(v => v.FindEpisodesBySceneNumbering(It.IsAny<int>(), 0, It.IsAny<int>()), Times.Never());
@@ -243,7 +243,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
                   .Setup(s => s.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()))
                   .Returns(new List<Rom>());
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
                   .Verify(v => v.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()), Times.Once());
@@ -267,7 +267,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
                   .Setup(s => s.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()))
                   .Returns(new List<Rom> { _episodes.First() });
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
                   .Verify(v => v.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()), Times.Once());
@@ -288,7 +288,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
                   .Setup(s => s.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()))
                   .Returns(new List<Rom> { _episodes.First() });
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
                   .Verify(v => v.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()), Times.Once());
@@ -313,7 +313,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
                   .Setup(s => s.FindEpisode(It.IsAny<int>(), platformNumber, It.IsAny<int>()))
                   .Returns(_episodes.First());
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
                   .Verify(v => v.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()), Times.Once());
@@ -334,7 +334,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
                   .Setup(s => s.FindEpisodesBySceneNumbering(It.IsAny<int>(), It.IsAny<int>()))
                   .Returns(new List<Rom> { _episodes.First() });
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
                   .Verify(v => v.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()), Times.Never());
@@ -358,7 +358,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
                   .Setup(s => s.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()))
                   .Returns(Builder<Rom>.CreateListOfSize(5).Build().ToList());
 
-            var result = Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            var result = Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             result.Should().HaveCount(5);
 
@@ -384,7 +384,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
                   .Setup(s => s.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()))
                   .Returns(new List<Rom>());
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
                   .Verify(v => v.FindEpisodesBySceneNumbering(It.IsAny<int>(), platformNumber, It.IsAny<int>()), Times.Once());
@@ -402,7 +402,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
                   .Setup(v => v.FindSceneMapping(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                   .Returns<string, string, int>((s, r, sn) => new SceneMapping { ScenePlatformNumber = 1, PlatformNumber = igdbPlatformNumber });
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
                 .Verify(v => v.FindEpisode(_series.Id, _parsedRomInfo.PlatformNumber, _parsedRomInfo.RomNumbers.First()), Times.Never());
@@ -420,7 +420,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
                   .Setup(v => v.FindSceneMapping(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                   .Returns<string, string, int>((s, r, sn) => new SceneMapping { ScenePlatformNumber = 101, PlatformNumber = igdbPlatformNumber });
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
                 .Verify(v => v.FindEpisode(_series.Id, igdbPlatformNumber, _parsedRomInfo.RomNumbers.First()), Times.Never());
@@ -434,7 +434,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         {
             const int igdbPlatformNumber = 5;
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, false, null);
+            Subject.GetRoms(_parsedRomInfo, _series, false, null);
 
             Mocker.GetMock<IRomService>()
                 .Verify(v => v.FindEpisode(_series.Id, igdbPlatformNumber, _parsedRomInfo.RomNumbers.First()), Times.Never());
@@ -452,7 +452,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
                   .Setup(s => s.FindSceneMapping(_parsedRomInfo.GameTitle, It.IsAny<string>(), It.IsAny<int>()))
                   .Returns(new SceneMapping { PlatformNumber = igdbPlatformNumber, ScenePlatformNumber = _parsedRomInfo.PlatformNumber });
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
                 .Verify(v => v.FindEpisode(_series.Id, igdbPlatformNumber, _parsedRomInfo.RomNumbers.First()), Times.Never());
@@ -467,16 +467,16 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
             GivenFullSeason();
 
             Mocker.GetMock<IRomService>()
-                .Setup(s => s.GetEpisodesBySeason(_series.Id, _parsedRomInfo.PlatformNumber))
+                .Setup(s => s.GetRomsByPlatform(_series.Id, _parsedRomInfo.PlatformNumber))
                 .Returns(_episodes);
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
-                .Verify(v => v.GetEpisodesBySeason(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+                .Verify(v => v.GetRomsByPlatform(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
 
             Mocker.GetMock<IRomService>()
-                .Verify(v => v.GetEpisodesBySceneSeason(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
+                .Verify(v => v.GetRomsByScenePlatform(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
         }
 
         [Test]
@@ -486,16 +486,16 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
             GivenFullSeason();
 
             Mocker.GetMock<IRomService>()
-                .Setup(s => s.GetEpisodesBySceneSeason(_series.Id, _parsedRomInfo.PlatformNumber))
+                .Setup(s => s.GetRomsByScenePlatform(_series.Id, _parsedRomInfo.PlatformNumber))
                 .Returns(_episodes);
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
-                .Verify(v => v.GetEpisodesBySeason(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
+                .Verify(v => v.GetRomsByPlatform(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
 
             Mocker.GetMock<IRomService>()
-                .Verify(v => v.GetEpisodesBySceneSeason(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+                .Verify(v => v.GetRomsByScenePlatform(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
         }
 
         [Test]
@@ -505,20 +505,20 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
             GivenFullSeason();
 
             Mocker.GetMock<IRomService>()
-                .Setup(s => s.GetEpisodesBySceneSeason(_series.Id, _parsedRomInfo.PlatformNumber))
+                .Setup(s => s.GetRomsByScenePlatform(_series.Id, _parsedRomInfo.PlatformNumber))
                 .Returns(new List<Rom>());
 
             Mocker.GetMock<IRomService>()
-                .Setup(s => s.GetEpisodesBySeason(_series.Id, _parsedRomInfo.PlatformNumber))
+                .Setup(s => s.GetRomsByPlatform(_series.Id, _parsedRomInfo.PlatformNumber))
                 .Returns(_episodes);
 
-            Subject.GetEpisodes(_parsedRomInfo, _series, true, null);
+            Subject.GetRoms(_parsedRomInfo, _series, true, null);
 
             Mocker.GetMock<IRomService>()
-                .Verify(v => v.GetEpisodesBySeason(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+                .Verify(v => v.GetRomsByPlatform(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
 
             Mocker.GetMock<IRomService>()
-                .Verify(v => v.GetEpisodesBySceneSeason(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+                .Verify(v => v.GetRomsByScenePlatform(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
         }
 
         [Test]

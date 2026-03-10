@@ -79,7 +79,7 @@ namespace Playarr.Core.Download.Clients.RTorrent
             }
         }
 
-        protected override string AddFromMagnetLink(RemoteEpisode remoteRom, string hash, string magnetLink)
+        protected override string AddFromMagnetLink(RemoteRom remoteRom, string hash, string magnetLink)
         {
             var priority = (RTorrentPriority)(remoteRom.IsRecentEpisode() ? Settings.RecentTvPriority : Settings.OlderTvPriority);
 
@@ -99,7 +99,7 @@ namespace Playarr.Core.Download.Clients.RTorrent
             return hash;
         }
 
-        protected override string AddFromTorrentFile(RemoteEpisode remoteRom, string hash, string filename, byte[] fileContent)
+        protected override string AddFromTorrentFile(RemoteRom remoteRom, string hash, string filename, byte[] fileContent)
         {
             var priority = (RTorrentPriority)(remoteRom.IsRecentEpisode() ? Settings.RecentTvPriority : Settings.OlderTvPriority);
 

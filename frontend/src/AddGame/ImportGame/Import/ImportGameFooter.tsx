@@ -12,8 +12,8 @@ import SpinnerButton from 'Components/Link/SpinnerButton';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
 import PageContentFooter from 'Components/Page/PageContentFooter';
 import Popover from 'Components/Tooltip/Popover';
-import { icons, inputTypes, kinds, tooltipPositions } from 'Helpers/Props';
 import { GameMonitor } from 'Game/Game';
+import { icons, inputTypes, kinds, tooltipPositions } from 'Helpers/Props';
 import { InputChanged } from 'typings/inputs';
 import translate from 'Utilities/String/translate';
 import {
@@ -30,9 +30,7 @@ import styles from './ImportGameFooter.css';
 type MixedType = 'mixed';
 
 function ImportGameFooter() {
-  const {
-    monitor: defaultMonitor,
-  } = useAddGameOptions();
+  const { monitor: defaultMonitor } = useAddGameOptions();
 
   const items = useImportGameItems();
   const isLookingUpSeries = useLookupQueueHasItems();
@@ -45,10 +43,7 @@ function ImportGameFooter() {
 
   const { importSeries, isImporting, importError } = useImportGame();
 
-  const {
-    hasUnsearchedItems,
-    isMonitorMixed,
-  } = useMemo(() => {
+  const { hasUnsearchedItems, isMonitorMixed } = useMemo(() => {
     let isMonitorMixed = false;
     let hasUnsearchedItems = false;
 
@@ -66,11 +61,7 @@ function ImportGameFooter() {
       hasUnsearchedItems: !isLookingUpSeries && hasUnsearchedItems,
       isMonitorMixed,
     };
-  }, [
-    defaultMonitor,
-    items,
-    isLookingUpSeries,
-  ]);
+  }, [defaultMonitor, items, isLookingUpSeries]);
 
   const handleInputChange = useCallback(
     ({ name, value }: InputChanged<string | number | boolean | number[]>) => {

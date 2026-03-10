@@ -153,9 +153,7 @@ const SORT_PREDICATES = {
     const romCount = statistics?.romCount ?? 0;
     const romFileCount = statistics?.romFileCount ?? 0;
 
-    const progress = romCount
-      ? (romFileCount / romCount) * 100
-      : 100;
+    const progress = romCount ? (romFileCount / romCount) * 100 : 100;
 
     return progress + romCount / 1000000;
   },
@@ -191,9 +189,7 @@ const FILTER_PREDICATES = {
     const romCount = statistics?.romCount ?? 0;
     const romFileCount = statistics?.romFileCount ?? 0;
 
-    const progress = romCount
-      ? (romFileCount / romCount) * 100
-      : 100;
+    const progress = romCount ? (romFileCount / romCount) * 100 : 100;
 
     const predicate = getFilterTypePredicate(type);
     return predicate(progress, filterValue);
@@ -330,8 +326,7 @@ const FILTER_PREDICATES = {
     // for platforms monitored status so we should to exclude them here too.
 
     const monitoredCount =
-      monitoredRomCount -
-      (specials?.statistics?.monitoredRomCount ?? 0);
+      monitoredRomCount - (specials?.statistics?.monitoredRomCount ?? 0);
 
     const totalCount =
       totalRomCount - (specials?.statistics?.totalRomCount ?? 0);
@@ -688,10 +683,7 @@ interface SaveGameEditorPayload {
 export const useSaveSeries = (moveFiles?: boolean) => {
   const queryClient = useQueryClient();
 
-  const { mutate, isPending, error } = useApiMutation<
-    Game,
-    SaveSeriesPayload
-  >({
+  const { mutate, isPending, error } = useApiMutation<Game, SaveSeriesPayload>({
     path: '/game',
     queryParams: {
       moveFiles,
@@ -726,10 +718,7 @@ export const useSaveSeries = (moveFiles?: boolean) => {
   };
 };
 
-export const useDeleteGame = (
-  gameId: number,
-  options: DeleteGamePayload
-) => {
+export const useDeleteGame = (gameId: number, options: DeleteGamePayload) => {
   const queryClient = useQueryClient();
 
   const { mutate, isPending, error } = useApiMutation<unknown, void>({
@@ -870,9 +859,7 @@ export const useUpdateGameMonitor = (
           }
 
           return oldSeries.map((game) => {
-            const updatedSeries = variables.game.find(
-              (s) => s.id === game.id
-            );
+            const updatedSeries = variables.game.find((s) => s.id === game.id);
 
             if (!updatedSeries) {
               return game;

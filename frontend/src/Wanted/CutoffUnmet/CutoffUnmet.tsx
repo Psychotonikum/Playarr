@@ -23,12 +23,12 @@ import Table from 'Components/Table/Table';
 import TableBody from 'Components/Table/TableBody';
 import TableOptionsModalWrapper from 'Components/Table/TableOptions/TableOptionsModalWrapper';
 import TablePager from 'Components/Table/TablePager';
-import Rom from 'Rom/Rom';
-import { useToggleEpisodesMonitored } from 'Rom/useRom';
-import RomFileProvider from 'RomFile/RomFileProvider';
 import { Filter } from 'Filters/Filter';
 import { align, icons, kinds } from 'Helpers/Props';
 import { SortDirection } from 'Helpers/Props/sortDirections';
+import Rom from 'Rom/Rom';
+import { useToggleEpisodesMonitored } from 'Rom/useRom';
+import RomFileProvider from 'RomFile/RomFileProvider';
 import { CheckInputChanged } from 'typings/inputs';
 import { TableOptionsChangePayload } from 'typings/Table';
 import getFilterValue from 'Utilities/Filter/getFilterValue';
@@ -200,10 +200,7 @@ function CutoffUnmetContent() {
   }, [refetch]);
 
   return (
-    <CutoffUnmetProvider
-      romIds={romIds}
-      romFileIds={romFileIds}
-    >
+    <CutoffUnmetProvider romIds={romIds} romFileIds={romFileIds}>
       <PageContent title={translate('CutoffUnmet')}>
         <PageToolbar>
           <PageToolbarSection>
@@ -350,9 +347,7 @@ function CutoffUnmetProvider({
 }: PropsWithChildren<{ romIds: number[]; romFileIds: number[] }>) {
   return (
     <QueueDetailsProvider romIds={romIds}>
-      <RomFileProvider romFileIds={romFileIds}>
-        {children}
-      </RomFileProvider>
+      <RomFileProvider romFileIds={romFileIds}>{children}</RomFileProvider>
     </QueueDetailsProvider>
   );
 }

@@ -76,13 +76,9 @@ function MetadataSourceProviderCard({
       </div>
 
       <div className={styles.enabled}>
-        {enableSearch ? (
-          <Label kind={kinds.SUCCESS}>Search</Label>
-        ) : null}
+        {enableSearch ? <Label kind={kinds.SUCCESS}>Search</Label> : null}
 
-        {enableCalendar ? (
-          <Label kind={kinds.SUCCESS}>Calendar</Label>
-        ) : null}
+        {enableCalendar ? <Label kind={kinds.SUCCESS}>Calendar</Label> : null}
 
         {downloadMetadata ? (
           <Label kind={kinds.SUCCESS}>Download Metadata</Label>

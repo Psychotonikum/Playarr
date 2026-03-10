@@ -41,14 +41,14 @@ namespace Playarr.Core.Test.MediaFiles
                 .With(v => v.Status = DownloadItemStatus.Downloading)
                 .Build();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                 .With(v => v.Game = new Game())
                 .Build();
 
             _trackedDownload = new TrackedDownload
                     {
                         DownloadItem = downloadItem,
-                        RemoteEpisode = remoteRom,
+                        RemoteRom = remoteRom,
                         State = TrackedDownloadState.Downloading
                     };
         }
@@ -108,7 +108,7 @@ namespace Playarr.Core.Test.MediaFiles
 
             Subject.Execute(new DownloadedEpisodesScanCommand() { Path = _downloadFolder, DownloadClientId = "sab1" });
 
-            Mocker.GetMock<IDownloadedEpisodesImportService>().Verify(c => c.ProcessPath(_downloadFolder, ImportMode.Auto, _trackedDownload.RemoteEpisode.Game, _trackedDownload.DownloadItem), Times.Once());
+            Mocker.GetMock<IDownloadedEpisodesImportService>().Verify(c => c.ProcessPath(_downloadFolder, ImportMode.Auto, _trackedDownload.RemoteRom.Game, _trackedDownload.DownloadItem), Times.Once());
         }
 
         [Test]

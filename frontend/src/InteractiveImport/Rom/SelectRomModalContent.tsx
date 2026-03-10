@@ -10,14 +10,14 @@ import ModalHeader from 'Components/Modal/ModalHeader';
 import Scroller from 'Components/Scroller/Scroller';
 import Table from 'Components/Table/Table';
 import TableBody from 'Components/Table/TableBody';
+import { kinds, scrollDirections } from 'Helpers/Props';
+import { SortDirection } from 'Helpers/Props/sortDirections';
 import Rom from 'Rom/Rom';
 import {
   setEpisodeSelectionSort,
   useRomSelectionOptions,
 } from 'Rom/romSelectionOptionsStore';
 import useRoms from 'Rom/useRoms';
-import { kinds, scrollDirections } from 'Helpers/Props';
-import { SortDirection } from 'Helpers/Props/sortDirections';
 import { CheckInputChanged, InputChanged } from 'typings/inputs';
 import clientSideFilterAndSort from 'Utilities/Filter/clientSideFilterAndSort';
 import getErrorMessage from 'Utilities/Object/getErrorMessage';

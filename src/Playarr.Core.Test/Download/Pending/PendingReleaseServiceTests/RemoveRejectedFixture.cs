@@ -28,7 +28,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
         private QualityProfile _profile;
         private ReleaseInfo _release;
         private ParsedRomInfo _parsedRomInfo;
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         [SetUp]
         public void Setup()
@@ -58,7 +58,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
             _parsedRomInfo = Builder<ParsedRomInfo>.CreateNew().Build();
             _parsedRomInfo.Quality = new QualityModel(Quality.HDTV720p);
 
-            _remoteRom = new RemoteEpisode();
+            _remoteRom = new RemoteRom();
             _remoteRom.Roms = new List<Rom> { _episode };
             _remoteRom.Game = _series;
             _remoteRom.ParsedRomInfo = _parsedRomInfo;
@@ -71,19 +71,19 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
                   .Returns(new List<PendingRelease>());
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetSeries(It.IsAny<int>()))
+                  .Setup(s => s.GetGame(It.IsAny<int>()))
                   .Returns(_series);
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetSeries(It.IsAny<IEnumerable<int>>()))
+                  .Setup(s => s.GetGame(It.IsAny<IEnumerable<int>>()))
                   .Returns(new List<Game> { _series });
 
             Mocker.GetMock<IParsingService>()
                   .Setup(s => s.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<Game>()))
-                  .Returns(new RemoteEpisode { Roms = new List<Rom> { _episode } });
+                  .Returns(new RemoteRom { Roms = new List<Rom> { _episode } });
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetEpisodes(It.IsAny<ParsedRomInfo>(), _series, true, null))
+                  .Setup(s => s.GetRoms(It.IsAny<ParsedRomInfo>(), _series, true, null))
                   .Returns(new List<Rom> { _episode });
 
             Mocker.GetMock<IPrioritizeDownloadDecision>()

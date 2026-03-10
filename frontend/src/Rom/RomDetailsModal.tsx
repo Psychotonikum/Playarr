@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import Modal from 'Components/Modal/Modal';
+import { sizes } from 'Helpers/Props';
 import RomDetailsTab from 'Rom/RomDetailsTab';
 import { RomEntity } from 'Rom/useRom';
-import { sizes } from 'Helpers/Props';
 import RomDetailsModalContent from './RomDetailsModalContent';
 
 interface RomDetailsModalProps {

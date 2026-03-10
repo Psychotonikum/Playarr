@@ -15,10 +15,10 @@ import { useDispatch } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import Icon from 'Components/Icon';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
-import useKeyboardShortcuts from 'Helpers/Hooks/useKeyboardShortcuts';
-import { icons } from 'Helpers/Props';
 import Game from 'Game/Game';
 import useGame from 'Game/useGame';
+import useKeyboardShortcuts from 'Helpers/Hooks/useKeyboardShortcuts';
+import { icons } from 'Helpers/Props';
 import { Tag, useTagList } from 'Tags/useTags';
 import translate from 'Utilities/String/translate';
 import GameSearchResult from './GameSearchResult';
@@ -299,7 +299,9 @@ function GameSearchInput() {
       if (!suggestions.length || highlightedSectionIndex) {
         dispatch(
           push(
-            `${window.Playarr.urlBase}/add/new?term=${encodeURIComponent(value)}`
+            `${window.Playarr.urlBase}/add/new?term=${encodeURIComponent(
+              value
+            )}`
           )
         );
 
@@ -355,7 +357,9 @@ function GameSearchInput() {
       if ('type' in suggestion) {
         dispatch(
           push(
-            `${window.Playarr.urlBase}/add/new?term=${encodeURIComponent(value)}`
+            `${window.Playarr.urlBase}/add/new?term=${encodeURIComponent(
+              value
+            )}`
           )
         );
       } else {

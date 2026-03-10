@@ -11,9 +11,7 @@ function GameDetailsProvider({
 
   return (
     <QueueDetailsProvider gameId={gameId}>
-      <RomFileContext.Provider value={data}>
-        {children}
-      </RomFileContext.Provider>
+      <RomFileContext.Provider value={data}>{children}</RomFileContext.Provider>
     </QueueDetailsProvider>
   );
 }

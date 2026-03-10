@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import Card from 'Components/Card';
-import ConfirmModal from 'Components/Modal/ConfirmModal';
-import Label from 'Components/Label';
 import Icon from 'Components/Icon';
+import Label from 'Components/Label';
 import IconButton from 'Components/Link/IconButton';
-import { icons, kinds } from 'Helpers/Props';
+import ConfirmModal from 'Components/Modal/ConfirmModal';
 import GameSystem from 'GameSystem/GameSystem';
 import { useDeleteGameSystem } from 'GameSystem/useGameSystems';
+import { icons, kinds } from 'Helpers/Props';
 import translate from 'Utilities/String/translate';
 import EditGameSystemModal from './EditGameSystemModal';
 import styles from './GameSystemCard.css';
@@ -16,13 +16,7 @@ interface GameSystemCardProps extends GameSystem {
 }
 
 function GameSystemCard(props: GameSystemCardProps) {
-  const {
-    id,
-    name,
-    folderName,
-    systemType,
-    onClonePress,
-  } = props;
+  const { id, name, folderName, systemType, onClonePress } = props;
 
   const { deleteGameSystem } = useDeleteGameSystem(id);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -87,9 +81,7 @@ function GameSystemCard(props: GameSystemCardProps) {
           {isPatchable ? 'Patchable' : 'Classic'}
         </Label>
 
-        <Label kind={kinds.DEFAULT}>
-          /{folderName}/
-        </Label>
+        <Label kind={kinds.DEFAULT}>/{folderName}/</Label>
       </div>
 
       <EditGameSystemModal

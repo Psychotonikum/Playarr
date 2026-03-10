@@ -16,7 +16,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.Search
     public class TorrentSeedingSpecificationFixture : TestBase<TorrentSeedingSpecification>
     {
         private Game _series;
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
         private IndexerDefinition _indexerDefinition;
 
         [SetUp]
@@ -24,7 +24,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.Search
         {
             _series = Builder<Game>.CreateNew().With(s => s.Id = 1).Build();
 
-            _remoteRom = new RemoteEpisode
+            _remoteRom = new RemoteRom
             {
                 Game = _series,
                 Release = new TorrentInfo

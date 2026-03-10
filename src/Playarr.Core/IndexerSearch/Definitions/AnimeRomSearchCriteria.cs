@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Playarr.Core.IndexerSearch.Definitions
 {
     public class AnimeEpisodeSearchCriteria : SearchCriteriaBase
@@ -9,7 +11,10 @@ namespace Playarr.Core.IndexerSearch.Definitions
 
         public override string ToString()
         {
-            return $"[{Game.Title} : S{PlatformNumber:00}E{EpisodeNumber:00} ({AbsoluteEpisodeNumber:00})]";
+            var platformName = Game.Platforms?.FirstOrDefault(p => p.PlatformNumber == PlatformNumber)?.Title ?? $"Platform {PlatformNumber}";
+            var romTitle = Roms?.FirstOrDefault()?.Title ?? $"ROM {EpisodeNumber}";
+
+            return $"[{Game.Title} | {platformName} - {romTitle}]";
         }
     }
 }

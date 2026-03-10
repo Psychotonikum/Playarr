@@ -11,14 +11,14 @@ import Column from 'Components/Table/Column';
 import TableRow from 'Components/Table/TableRow';
 import Tooltip from 'Components/Tooltip/Tooltip';
 import DownloadProtocol from 'DownloadClient/DownloadProtocol';
-import RomFormats from 'Rom/RomFormats';
-import RomLanguages from 'Rom/RomLanguages';
-import { useRomsWithIds } from 'Rom/useRom';
+import GameTitleLink from 'Game/GameTitleLink';
+import { useSingleGame } from 'Game/useGame';
 import { icons, kinds, tooltipPositions } from 'Helpers/Props';
 import InteractiveImportModal from 'InteractiveImport/InteractiveImportModal';
 import Language from 'Language/Language';
-import GameTitleLink from 'Game/GameTitleLink';
-import { useSingleGame } from 'Game/useGame';
+import RomFormats from 'Rom/RomFormats';
+import RomLanguages from 'Rom/RomLanguages';
+import { useRomsWithIds } from 'Rom/useRom';
 import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
 import CustomFormat from 'typings/CustomFormat';
 import { SelectStateInputProps } from 'typings/props';
@@ -30,10 +30,10 @@ import Queue, {
 import formatBytes from 'Utilities/Number/formatBytes';
 import formatCustomFormatScore from 'Utilities/Number/formatCustomFormatScore';
 import translate from 'Utilities/String/translate';
-import RomCellContent from './RomCellContent';
-import RomTitleCellContent from './RomTitleCellContent';
 import QueueStatusCell from './QueueStatusCell';
 import RemoveQueueItemModal from './RemoveQueueItemModal';
+import RomCellContent from './RomCellContent';
+import RomTitleCellContent from './RomTitleCellContent';
 import TimeLeftCell from './TimeLeftCell';
 import { useGrabQueueItem, useRemoveQueueItem } from './useQueue';
 import styles from './QueueRow.css';
@@ -199,10 +199,7 @@ function QueueRow(props: QueueRowProps) {
           return (
             <TableRowCell key={name}>
               {game ? (
-                <GameTitleLink
-                  titleSlug={game.titleSlug}
-                  title={game.title}
-                />
+                <GameTitleLink titleSlug={game.titleSlug} title={game.title} />
               ) : (
                 title
               )}
@@ -237,9 +234,7 @@ function QueueRow(props: QueueRowProps) {
           }
 
           if (roms.length === 1) {
-            return (
-              <RelativeDateCell key={name} date={roms[0].airDateUtc} />
-            );
+            return <RelativeDateCell key={name} date={roms[0].airDateUtc} />;
           }
 
           return (
@@ -266,8 +261,6 @@ function QueueRow(props: QueueRowProps) {
             </TableRowCell>
           );
         }
-
-
 
         if (name === 'customFormatScore') {
           return (

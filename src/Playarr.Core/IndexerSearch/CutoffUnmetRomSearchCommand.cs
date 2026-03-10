@@ -2,7 +2,7 @@
 
 namespace Playarr.Core.IndexerSearch
 {
-    public class CutoffUnmetEpisodeSearchCommand : Command
+    public class CutoffUnmetRomSearchCommand : Command
     {
         public int? GameId { get; set; }
         public bool Monitored { get; set; }
@@ -15,12 +15,12 @@ namespace Playarr.Core.IndexerSearch
             }
         }
 
-        public CutoffUnmetEpisodeSearchCommand()
+        public CutoffUnmetRomSearchCommand()
         {
             Monitored = true;
         }
 
-        public CutoffUnmetEpisodeSearchCommand(int gameId)
+        public CutoffUnmetRomSearchCommand(int gameId)
         {
             GameId = gameId;
             Monitored = true;

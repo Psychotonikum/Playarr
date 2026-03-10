@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
-import Provider from 'typings/Provider';
 import {
-  useProviderSettings,
-  useManageProviderSettings,
-  useDeleteProvider,
-  useTestProvider,
-} from 'Settings/useProviderSettings';
-import {
+  SelectedSchema,
   useProviderSchema,
   useSelectedSchema,
-  SelectedSchema,
 } from 'Settings/useProviderSchema';
+import {
+  useDeleteProvider,
+  useManageProviderSettings,
+  useProviderSettings,
+  useTestProvider,
+} from 'Settings/useProviderSettings';
+import Provider from 'typings/Provider';
 import sortByProp from 'Utilities/Array/sortByProp';
 import translate from 'Utilities/String/translate';
 

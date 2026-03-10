@@ -1,7 +1,7 @@
 import Rom from 'Rom/Rom';
 import { update } from 'Store/Actions/baseActions';
 
-function updateEpisodes(
+function updateRoms(
   section: string,
   roms: Rom[],
   romIds: number[],
@@ -23,4 +23,4 @@ function updateEpisodes(
   return update({ section, data });
 }
 
-export default updateEpisodes;
+export default updateRoms;

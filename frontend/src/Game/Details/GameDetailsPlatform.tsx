@@ -16,6 +16,15 @@ import SpinnerIcon from 'Components/SpinnerIcon';
 import Table from 'Components/Table/Table';
 import TableBody from 'Components/Table/TableBody';
 import Popover from 'Components/Tooltip/Popover';
+import { Statistics } from 'Game/Game';
+import GameHistoryModal from 'Game/History/GameHistoryModal';
+import PlatformInteractiveSearchModal from 'Game/Search/PlatformInteractiveSearchModal';
+import { useSingleGame, useToggleSeasonMonitored } from 'Game/useGame';
+import usePrevious from 'Helpers/Hooks/usePrevious';
+import { align, icons, sortDirections, tooltipPositions } from 'Helpers/Props';
+import { SortDirection } from 'Helpers/Props/sortDirections';
+import InteractiveImportModal from 'InteractiveImport/InteractiveImportModal';
+import OrganizePreviewModal from 'Organize/OrganizePreviewModal';
 import Rom from 'Rom/Rom';
 import {
   setEpisodeOptions,
@@ -24,15 +33,6 @@ import {
 } from 'Rom/romOptionsStore';
 import { getQueryKey, useToggleEpisodesMonitored } from 'Rom/useRom';
 import { useSeasonEpisodes } from 'Rom/useRoms';
-import usePrevious from 'Helpers/Hooks/usePrevious';
-import { align, icons, sortDirections, tooltipPositions } from 'Helpers/Props';
-import { SortDirection } from 'Helpers/Props/sortDirections';
-import InteractiveImportModal from 'InteractiveImport/InteractiveImportModal';
-import OrganizePreviewModal from 'Organize/OrganizePreviewModal';
-import GameHistoryModal from 'Game/History/GameHistoryModal';
-import PlatformInteractiveSearchModal from 'Game/Search/PlatformInteractiveSearchModal';
-import { Statistics } from 'Game/Game';
-import { useSingleGame, useToggleSeasonMonitored } from 'Game/useGame';
 import { TableOptionsChangePayload } from 'typings/Table';
 import { findCommand, isCommandExecuting } from 'Utilities/Command';
 import isAfter from 'Utilities/Date/isAfter';
@@ -40,9 +40,9 @@ import isBefore from 'Utilities/Date/isBefore';
 import formatBytes from 'Utilities/Number/formatBytes';
 import translate from 'Utilities/String/translate';
 import getToggledRange from 'Utilities/Table/getToggledRange';
-import RomRow from './RomRow';
 import PlatformInfo from './PlatformInfo';
 import PlatformProgressLabel from './PlatformProgressLabel';
+import RomRow from './RomRow';
 import styles from './GameDetailsPlatform.css';
 
 function getPlatformStatistics(roms: Rom[]) {
@@ -54,10 +54,7 @@ function getPlatformStatistics(roms: Rom[]) {
   const sizeOnDisk = 0;
 
   roms.forEach((rom) => {
-    if (
-      rom.romFileId ||
-      (rom.monitored && isBefore(rom.airDateUtc))
-    ) {
+    if (rom.romFileId || (rom.monitored && isBefore(rom.airDateUtc))) {
       romCount++;
     }
 
@@ -171,11 +168,7 @@ function GameDetailsPlatform({
   }, [platformNumber, isExpanded, onExpandPress]);
 
   const handleMonitorEpisodePress = useCallback(
-    (
-      romId: number,
-      value: boolean,
-      { shiftKey }: { shiftKey: boolean }
-    ) => {
+    (romId: number, value: boolean, { shiftKey }: { shiftKey: boolean }) => {
       const lastToggled = lastToggledEpisode.current;
       const romIds = new Set([romId]);
 
@@ -395,10 +388,7 @@ function GameDetailsPlatform({
                 isDisabled={!romFileCount}
                 onPress={handleManageEpisodesPress}
               >
-                <Icon
-                  className={styles.actionMenuIcon}
-                  name={icons.ROM_FILE}
-                />
+                <Icon className={styles.actionMenuIcon} name={icons.ROM_FILE} />
 
                 {translate('ManageEpisodes')}
               </MenuItem>

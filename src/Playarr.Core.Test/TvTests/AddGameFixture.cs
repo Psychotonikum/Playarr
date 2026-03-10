@@ -33,7 +33,7 @@ namespace Playarr.Core.Test.TvTests
         private void GivenValidSeries(int igdbId)
         {
             Mocker.GetMock<IProvideSeriesInfo>()
-                  .Setup(s => s.GetSeriesInfo(igdbId))
+                  .Setup(s => s.GetGameInfo(igdbId))
                   .Returns(new Tuple<Game, List<Rom>>(_fakeSeries, new List<Rom>()));
         }
 
@@ -113,7 +113,7 @@ namespace Playarr.Core.Test.TvTests
             };
 
             Mocker.GetMock<IProvideSeriesInfo>()
-                  .Setup(s => s.GetSeriesInfo(newGame.IgdbId))
+                  .Setup(s => s.GetGameInfo(newGame.IgdbId))
                   .Throws(new SeriesNotFoundException(newGame.IgdbId));
 
             Mocker.GetMock<IAddGameValidator>()

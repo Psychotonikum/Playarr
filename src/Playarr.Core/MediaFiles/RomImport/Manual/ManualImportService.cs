@@ -33,8 +33,8 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
         private readonly IParsingService _parsingService;
         private readonly IDiskScanService _diskScanService;
         private readonly IMakeImportDecision _importDecisionMaker;
-        private readonly IGameService _seriesService;
-        private readonly IRomService _episodeService;
+        private readonly IGameService _gameService;
+        private readonly IRomService _romService;
         private readonly IImportApprovedEpisodes _importApprovedEpisodes;
         private readonly IAggregationService _aggregationService;
         private readonly ITrackedDownloadService _trackedDownloadService;
@@ -65,8 +65,8 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
             _parsingService = parsingService;
             _diskScanService = diskScanService;
             _importDecisionMaker = importDecisionMaker;
-            _seriesService = seriesService;
-            _episodeService = episodeService;
+            _gameService = seriesService;
+            _romService = episodeService;
             _aggregationService = aggregationService;
             _importApprovedEpisodes = importApprovedEpisodes;
             _trackedDownloadService = trackedDownloadService;
@@ -80,10 +80,10 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
 
         public List<ManualImportItem> GetMediaFiles(int gameId, int? platformNumber)
         {
-            var game = _seriesService.GetSeries(gameId);
+            var game = _gameService.GetGame(gameId);
             var directoryInfo = new DirectoryInfo(game.Path);
             var seriesFiles = platformNumber.HasValue ? _mediaFileService.GetFilesBySeason(gameId, platformNumber.Value) : _mediaFileService.GetFilesBySeries(gameId);
-            var roms = _episodeService.GetEpisodeBySeries(game.Id);
+            var roms = _romService.GetEpisodeBySeries(game.Id);
 
             var items = seriesFiles.Select(romFile => MapItem(romFile, game, directoryInfo.Name, roms)).ToList();
 
@@ -144,7 +144,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
         public ManualImportItem ReprocessItem(string path, string downloadId, int gameId, int? platformNumber, List<int> romIds, string releaseGroup, QualityModel quality, List<Language> languages, int indexerFlags, ReleaseType releaseType)
         {
             var rootFolder = Path.GetDirectoryName(path);
-            var game = _seriesService.GetSeries(gameId);
+            var game = _gameService.GetGame(gameId);
 
             var languageParse = LanguageParser.ParseLanguages(path);
 
@@ -157,7 +157,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
             if (romIds.Any())
             {
                 var downloadClientItem = GetTrackedDownload(downloadId)?.DownloadItem;
-                var roms = _episodeService.GetEpisodes(romIds);
+                var roms = _romService.GetRoms(romIds);
                 var finalReleaseGroup = releaseGroup.IsNullOrWhiteSpace()
                     ? Parser.ReleaseGroupParser.ParseReleaseGroup(path)
                     : releaseGroup;
@@ -242,13 +242,13 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
 
             if (gameId.HasValue)
             {
-                game = _seriesService.GetSeries(gameId.Value);
+                game = _gameService.GetGame(gameId.Value);
             }
             else
             {
                 try
                 {
-                    game = _parsingService.GetSeries(directoryInfo.Name);
+                    game = _parsingService.GetGame(directoryInfo.Name);
                 }
                 catch (MultipleSeriesFoundException e)
                 {
@@ -263,7 +263,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
 
                 if (game == null)
                 {
-                    game = trackedDownload.RemoteEpisode?.Game;
+                    game = trackedDownload.RemoteRom?.Game;
                 }
             }
 
@@ -307,17 +307,17 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
 
                 if (game == null)
                 {
-                    _parsingService.GetSeries(relativeFile.Split('\\', '/')[0]);
+                    _parsingService.GetGame(relativeFile.Split('\\', '/')[0]);
                 }
 
                 if (game == null)
                 {
-                    game = _parsingService.GetSeries(relativeFile);
+                    game = _parsingService.GetGame(relativeFile);
                 }
 
                 if (trackedDownload != null && game == null)
                 {
-                    game = trackedDownload?.RemoteEpisode?.Game;
+                    game = trackedDownload?.RemoteRom?.Game;
                 }
 
                 if (game == null)
@@ -326,7 +326,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
 
                     if (relativeParseInfo != null)
                     {
-                        game = _seriesService.FindByTitle(relativeParseInfo.GameTitle);
+                        game = _gameService.FindByTitle(relativeParseInfo.GameTitle);
                     }
                 }
 
@@ -495,8 +495,8 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
                 _logger.ProgressTrace("Processing file {0} of {1}", i + 1, message.Files.Count);
 
                 var file = message.Files[i];
-                var game = _seriesService.GetSeries(file.GameId);
-                var roms = _episodeService.GetEpisodes(file.RomIds);
+                var game = _gameService.GetGame(file.GameId);
+                var roms = _romService.GetRoms(file.RomIds);
                 var fileRomInfo = Parser.Parser.ParsePath(file.Path) ?? new ParsedRomInfo();
                 var existingFile = game.Path.IsParentPath(file.Path);
 
@@ -520,7 +520,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
                 if (file.DownloadId.IsNotNullOrWhiteSpace())
                 {
                     trackedDownload = _trackedDownloadService.Find(file.DownloadId);
-                    localRom.DownloadClientRomInfo = trackedDownload?.RemoteEpisode?.ParsedRomInfo;
+                    localRom.DownloadClientRomInfo = trackedDownload?.RemoteRom?.ParsedRomInfo;
                     localRom.DownloadItem = trackedDownload?.DownloadItem;
                 }
 
@@ -614,7 +614,7 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Manual
 
                 var allEpisodesImported = importedResults
                                                                 .SelectMany(c => c.ImportDecision.LocalEpisode.Roms).Count() >=
-                                                                    Math.Max(1, trackedDownload.RemoteEpisode?.Roms?.Count ?? 1);
+                                                                    Math.Max(1, trackedDownload.RemoteRom?.Roms?.Count ?? 1);
 
                 if (allEpisodesImported)
                 {

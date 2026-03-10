@@ -9,7 +9,7 @@ using Playarr.Core.Games;
 
 namespace Playarr.Core.Parser.Model
 {
-    public class RemoteEpisode
+    public class RemoteRom
     {
         public ReleaseInfo Release { get; set; }
         public ParsedRomInfo ParsedRomInfo { get; set; }
@@ -26,7 +26,7 @@ namespace Playarr.Core.Parser.Model
         public List<Language> Languages { get; set; }
         public ReleaseSourceType ReleaseSource { get; set; }
 
-        public RemoteEpisode()
+        public RemoteRom()
         {
             Roms = new List<Rom>();
             CustomFormats = new List<CustomFormat>();

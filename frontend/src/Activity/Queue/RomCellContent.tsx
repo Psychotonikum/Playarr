@@ -1,7 +1,7 @@
 import React from 'react';
-import Rom from 'Rom/Rom';
-import PlatformRomNumber from 'Rom/PlatformRomNumber';
 import Game from 'Game/Game';
+import PlatformRomNumber from 'Rom/PlatformRomNumber';
+import Rom from 'Rom/Rom';
 import translate from 'Utilities/String/translate';
 
 interface RomCellContentProps {

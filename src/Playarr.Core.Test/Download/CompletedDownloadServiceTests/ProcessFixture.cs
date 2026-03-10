@@ -36,7 +36,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
             _trackedDownload = Builder<TrackedDownload>.CreateNew()
                     .With(c => c.State = TrackedDownloadState.Downloading)
                     .With(c => c.DownloadItem = completed)
-                    .With(c => c.RemoteEpisode = remoteRom)
+                    .With(c => c.RemoteRom = remoteRom)
                     .Build();
 
             Mocker.GetMock<IDownloadClient>()
@@ -56,13 +56,13 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
                   .Returns(new List<EpisodeHistory>());
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetSeries("Drone.S01E01.HDTV"))
+                  .Setup(s => s.GetGame("Drone.S01E01.HDTV"))
                   .Returns(remoteRom.Game);
         }
 
-        private RemoteEpisode BuildRemoteEpisode()
+        private RemoteRom BuildRemoteEpisode()
         {
-            return new RemoteEpisode
+            return new RemoteRom
             {
                 Game = new Game(),
                 Roms = new List<Rom> { new Rom { Id = 1 } }
@@ -79,8 +79,8 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
         private void GivenSeriesMatch()
         {
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetSeries(It.IsAny<string>()))
-                  .Returns(_trackedDownload.RemoteEpisode.Game);
+                  .Setup(s => s.GetGame(It.IsAny<string>()))
+                  .Returns(_trackedDownload.RemoteRom.Game);
         }
 
         private void GivenABadlyNamedDownload()
@@ -95,11 +95,11 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
                   });
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetSeries(It.IsAny<string>()))
+                  .Setup(s => s.GetGame(It.IsAny<string>()))
                   .Returns((Game)null);
 
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetSeries("Droned S01E01"))
+                  .Setup(s => s.GetGame("Droned S01E01"))
                   .Returns(BuildRemoteEpisode().Game);
         }
 
@@ -171,7 +171,7 @@ namespace Playarr.Core.Test.Download.CompletedDownloadServiceTests
         public void should_not_process_when_there_is_a_title_mismatch()
         {
             Mocker.GetMock<IParsingService>()
-                  .Setup(s => s.GetSeries("Drone.S01E01.HDTV"))
+                  .Setup(s => s.GetGame("Drone.S01E01.HDTV"))
                   .Returns((Game)null);
 
             Subject.Check(_trackedDownload);

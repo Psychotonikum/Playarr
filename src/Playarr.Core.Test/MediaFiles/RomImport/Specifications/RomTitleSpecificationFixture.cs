@@ -112,7 +112,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
                   .Returns(RomTitleRequiredType.BulkSeasonReleases);
 
             Mocker.GetMock<IRomService>()
-                  .Setup(s => s.GetEpisodesBySeason(It.IsAny<int>(), It.IsAny<int>()))
+                  .Setup(s => s.GetRomsByPlatform(It.IsAny<int>(), It.IsAny<int>()))
                   .Returns(Builder<Rom>.CreateListOfSize(5).BuildList());
 
             Subject.IsSatisfiedBy(_localRom, null).Accepted.Should().BeTrue();
@@ -126,7 +126,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
                   .Returns(RomTitleRequiredType.BulkSeasonReleases);
 
             Mocker.GetMock<IRomService>()
-                  .Setup(s => s.GetEpisodesBySeason(It.IsAny<int>(), It.IsAny<int>()))
+                  .Setup(s => s.GetRomsByPlatform(It.IsAny<int>(), It.IsAny<int>()))
                   .Returns(Builder<Rom>.CreateListOfSize(5)
                                            .All()
                                            .With(e => e.AirDateUtc == _localRom.Roms.First().AirDateUtc)
@@ -145,7 +145,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
                   .Returns(RomTitleRequiredType.BulkSeasonReleases);
 
             Mocker.GetMock<IRomService>()
-                  .Setup(s => s.GetEpisodesBySeason(It.IsAny<int>(), It.IsAny<int>()))
+                  .Setup(s => s.GetRomsByPlatform(It.IsAny<int>(), It.IsAny<int>()))
                   .Returns(Builder<Rom>.CreateListOfSize(5)
                                            .All()
                                            .With(e => e.AirDateUtc = _localRom.Roms.First().AirDateUtc)
@@ -164,7 +164,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Specifications
                   .Returns(RomTitleRequiredType.BulkSeasonReleases);
 
             Mocker.GetMock<IRomService>()
-                  .Setup(s => s.GetEpisodesBySeason(It.IsAny<int>(), It.IsAny<int>()))
+                  .Setup(s => s.GetRomsByPlatform(It.IsAny<int>(), It.IsAny<int>()))
                   .Returns(Builder<Rom>.CreateListOfSize(5)
                                            .All()
                                            .With(e => e.Title  = "TBA")

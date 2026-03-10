@@ -16,7 +16,7 @@ namespace Playarr.Core.DecisionEngine.Specifications
             _logger = logger;
         }
 
-        public DownloadSpecDecision IsSatisfiedBy(RemoteEpisode subject, ReleaseDecisionInformation information)
+        public DownloadSpecDecision IsSatisfiedBy(RemoteRom subject, ReleaseDecisionInformation information)
         {
             if (subject.Release.Title.ToLower().Contains("sample") && subject.Release.Size < 70.Megabytes())
             {

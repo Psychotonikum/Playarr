@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
 import NotFound from 'Components/NotFound';
-import usePrevious from 'Helpers/Hooks/usePrevious';
 import useGame from 'Game/useGame';
+import usePrevious from 'Helpers/Hooks/usePrevious';
 import translate from 'Utilities/String/translate';
 import GameDetails from './GameDetails';
 

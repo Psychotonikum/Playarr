@@ -26,7 +26,7 @@ namespace Playarr.Core.MediaFiles
         private readonly IDiskProvider _diskProvider;
         private readonly IRecycleBinProvider _recycleBinProvider;
         private readonly IMediaFileService _mediaFileService;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IConfigService _configService;
         private readonly IEventAggregator _eventAggregator;
         private readonly Logger _logger;
@@ -42,7 +42,7 @@ namespace Playarr.Core.MediaFiles
             _diskProvider = diskProvider;
             _recycleBinProvider = recycleBinProvider;
             _mediaFileService = mediaFileService;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _configService = configService;
             _eventAggregator = eventAggregator;
             _logger = logger;
@@ -92,7 +92,7 @@ namespace Playarr.Core.MediaFiles
         {
             if (message.DeleteFiles)
             {
-                var allGames = _seriesService.GetAllSeriesPaths();
+                var allGames = _gameService.GetAllGamePaths();
 
                 foreach (var game in message.Game)
                 {
@@ -135,10 +135,10 @@ namespace Playarr.Core.MediaFiles
             }
 
             var game = message.RomFile.Game.Value;
-            var seriesPath = game.Path;
+            var gamePath = game.Path;
             var folder = message.RomFile.Path.GetParentPath();
 
-            while (seriesPath.IsParentPath(folder))
+            while (gamePath.IsParentPath(folder))
             {
                 if (_diskProvider.FolderExists(folder))
                 {
@@ -148,11 +148,11 @@ namespace Playarr.Core.MediaFiles
                 folder = folder.GetParentPath();
             }
 
-            _diskProvider.RemoveEmptySubfolders(seriesPath);
+            _diskProvider.RemoveEmptySubfolders(gamePath);
 
-            if (_diskProvider.FolderEmpty(seriesPath))
+            if (_diskProvider.FolderEmpty(gamePath))
             {
-                _diskProvider.DeleteFolder(seriesPath, true);
+                _diskProvider.DeleteFolder(gamePath, true);
             }
         }
     }

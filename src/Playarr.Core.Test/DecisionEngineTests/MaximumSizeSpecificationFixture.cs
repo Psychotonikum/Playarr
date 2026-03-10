@@ -9,12 +9,12 @@ namespace Playarr.Core.Test.DecisionEngineTests
 {
     public class MaximumSizeSpecificationFixture : CoreTest<MaximumSizeSpecification>
     {
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         [SetUp]
         public void Setup()
         {
-            _remoteRom = new RemoteEpisode() { Release = new ReleaseInfo() };
+            _remoteRom = new RemoteRom() { Release = new ReleaseInfo() };
         }
 
         private void WithMaximumSize(int size)

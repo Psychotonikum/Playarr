@@ -1,11 +1,11 @@
 import { throttle } from 'lodash';
 import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { FixedSizeGrid as Grid, GridChildComponentProps } from 'react-window';
-import useMeasure from 'Helpers/Hooks/useMeasure';
-import { SortDirection } from 'Helpers/Props/sortDirections';
-import GameIndexPoster from 'Game/Index/Posters/GameIndexPoster';
 import Game from 'Game/Game';
 import { useGamePosterOptions } from 'Game/gameOptionsStore';
+import GameIndexPoster from 'Game/Index/Posters/GameIndexPoster';
+import useMeasure from 'Helpers/Hooks/useMeasure';
+import { SortDirection } from 'Helpers/Props/sortDirections';
 import dimensions from 'Styles/Variables/dimensions';
 import getIndexOfFirstCharacter from 'Utilities/Array/getIndexOfFirstCharacter';
 

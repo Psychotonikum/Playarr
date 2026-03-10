@@ -61,9 +61,9 @@ namespace Playarr.Core.Test.DecisionEngineTests
                             .Build();
         }
 
-        private RemoteEpisode GivenRemoteEpisode(List<Rom> roms, QualityModel quality, Language language, int age = 0, long size = 0, DownloadProtocol downloadProtocol = DownloadProtocol.Usenet, int indexerPriority = 25)
+        private RemoteRom GivenRemoteEpisode(List<Rom> roms, QualityModel quality, Language language, int age = 0, long size = 0, DownloadProtocol downloadProtocol = DownloadProtocol.Usenet, int indexerPriority = 25)
         {
-            var remoteRom = new RemoteEpisode();
+            var remoteRom = new RemoteRom();
             remoteRom.ParsedRomInfo = new ParsedRomInfo();
             remoteRom.ParsedRomInfo.Quality = quality;
             remoteRom.ParsedRomInfo.Languages = new List<Language> { language };
@@ -103,7 +103,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Revision.Real.Should().Be(1);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Revision.Real.Should().Be(1);
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Revision.Version.Should().Be(2);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Revision.Version.Should().Be(2);
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Quality.Should().Be(Quality.HDTV720p);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.HDTV720p);
         }
 
         [Test]
@@ -145,7 +145,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Roms.First().EpisodeNumber.Should().Be(1);
+            qualifiedReports.First().RemoteRom.Roms.First().EpisodeNumber.Should().Be(1);
         }
 
         [Test]
@@ -159,7 +159,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Roms.First().EpisodeNumber.Should().Be(1);
+            qualifiedReports.First().RemoteRom.Roms.First().EpisodeNumber.Should().Be(1);
         }
 
         [Test]
@@ -177,7 +177,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRomHdLargeYoung));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Should().Be(remoteRomHdLargeYoung);
+            qualifiedReports.First().RemoteRom.Should().Be(remoteRomHdLargeYoung);
         }
 
         [Test]
@@ -194,7 +194,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRomLarge));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Should().Be(remoteRomLarge);
+            qualifiedReports.First().RemoteRom.Should().Be(remoteRomLarge);
         }
 
         [Test]
@@ -215,7 +215,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom4));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Should().Be(remoteRom3);
+            qualifiedReports.First().RemoteRom.Should().Be(remoteRom3);
         }
 
         [Test]
@@ -229,7 +229,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Should().Be(remoteRom2);
+            qualifiedReports.First().RemoteRom.Should().Be(remoteRom2);
         }
 
         [Test]
@@ -260,7 +260,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Release.DownloadProtocol.Should().Be(DownloadProtocol.Usenet);
+            qualifiedReports.First().RemoteRom.Release.DownloadProtocol.Should().Be(DownloadProtocol.Usenet);
         }
 
         [Test]
@@ -276,7 +276,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Release.DownloadProtocol.Should().Be(DownloadProtocol.Torrent);
+            qualifiedReports.First().RemoteRom.Release.DownloadProtocol.Should().Be(DownloadProtocol.Torrent);
         }
 
         [Test]
@@ -292,7 +292,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.FullSeason.Should().BeTrue();
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.FullSeason.Should().BeTrue();
         }
 
         [Test]
@@ -301,15 +301,15 @@ namespace Playarr.Core.Test.DecisionEngineTests
             var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1), GivenEpisode(2) }, new QualityModel(Quality.HDTV720p), Language.English);
             var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
 
-            remoteRom1.Game.SeriesType = GameTypes.Anime;
-            remoteRom2.Game.SeriesType = GameTypes.Anime;
+            remoteRom1.Game.SeriesType = GameTypes.Standard;
+            remoteRom2.Game.SeriesType = GameTypes.Standard;
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Roms.Count.Should().Be(remoteRom1.Roms.Count);
+            qualifiedReports.First().RemoteRom.Roms.Count.Should().Be(remoteRom1.Roms.Count);
         }
 
         [Test]
@@ -323,7 +323,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Roms.Count.Should().Be(remoteRom2.Roms.Count);
+            qualifiedReports.First().RemoteRom.Roms.Count.Should().Be(remoteRom2.Roms.Count);
         }
 
         [Test]
@@ -349,7 +349,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            ((TorrentInfo)qualifiedReports.First().RemoteEpisode.Release).Seeders.Should().Be(torrentInfo2.Seeders);
+            ((TorrentInfo)qualifiedReports.First().RemoteRom.Release).Seeders.Should().Be(torrentInfo2.Seeders);
         }
 
         [Test]
@@ -376,7 +376,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            ((TorrentInfo)qualifiedReports.First().RemoteEpisode.Release).Peers.Should().Be(torrentInfo2.Peers);
+            ((TorrentInfo)qualifiedReports.First().RemoteRom.Release).Peers.Should().Be(torrentInfo2.Peers);
         }
 
         [Test]
@@ -404,7 +404,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            ((TorrentInfo)qualifiedReports.First().RemoteEpisode.Release).Peers.Should().Be(torrentInfo2.Peers);
+            ((TorrentInfo)qualifiedReports.First().RemoteRom.Release).Peers.Should().Be(torrentInfo2.Peers);
         }
 
         [Test]
@@ -433,7 +433,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            ((TorrentInfo)qualifiedReports.First().RemoteEpisode.Release).Should().Be(torrentInfo1);
+            ((TorrentInfo)qualifiedReports.First().RemoteRom.Release).Should().Be(torrentInfo1);
         }
 
         [Test]
@@ -453,7 +453,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Release.Should().Be(remoteRom1.Release);
+            qualifiedReports.First().RemoteRom.Release.Should().Be(remoteRom1.Release);
         }
 
         [Test]
@@ -482,7 +482,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            ((TorrentInfo)qualifiedReports.First().RemoteEpisode.Release).Should().Be(torrentInfo1);
+            ((TorrentInfo)qualifiedReports.First().RemoteRom.Release).Should().Be(torrentInfo1);
         }
 
         [Test]
@@ -496,7 +496,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Quality.Should().Be(Quality.HDTV720p);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.HDTV720p);
         }
 
         [Test]
@@ -513,7 +513,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.CustomFormatScore.Should().Be(10);
+            qualifiedReports.First().RemoteRom.CustomFormatScore.Should().Be(10);
         }
 
         [Test]
@@ -534,7 +534,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Revision.Version.Should().Be(2);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Revision.Version.Should().Be(2);
         }
 
         [Test]
@@ -555,7 +555,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Revision.Version.Should().Be(2);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Revision.Version.Should().Be(2);
         }
 
         [Test]
@@ -576,9 +576,9 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Quality.Should().Be(Quality.WEBDL1080p);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Revision.Version.Should().Be(1);
-            qualifiedReports.First().RemoteEpisode.CustomFormatScore.Should().Be(10);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.WEBDL1080p);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Revision.Version.Should().Be(1);
+            qualifiedReports.First().RemoteRom.CustomFormatScore.Should().Be(10);
         }
 
         [Test]
@@ -599,10 +599,10 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Quality.Should().Be(Quality.WEBDL1080p);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Revision.Version.Should().Be(1);
-            qualifiedReports.First().RemoteEpisode.ParsedRomInfo.Quality.Revision.Real.Should().Be(0);
-            qualifiedReports.First().RemoteEpisode.CustomFormatScore.Should().Be(10);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.WEBDL1080p);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Revision.Version.Should().Be(1);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Revision.Real.Should().Be(0);
+            qualifiedReports.First().RemoteRom.CustomFormatScore.Should().Be(10);
         }
 
         [Test]
@@ -616,9 +616,9 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.AddRange(new[] { new DownloadDecision(remoteRom1), new DownloadDecision(remoteRom2), new DownloadDecision(remoteRom3) });
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Should().Be(remoteRom3);
-            qualifiedReports.Skip(1).First().RemoteEpisode.Should().Be(remoteRom1);
-            qualifiedReports.Last().RemoteEpisode.Should().Be(remoteRom2);
+            qualifiedReports.First().RemoteRom.Should().Be(remoteRom3);
+            qualifiedReports.Skip(1).First().RemoteRom.Should().Be(remoteRom1);
+            qualifiedReports.Last().RemoteRom.Should().Be(remoteRom2);
         }
 
         [Test]
@@ -633,10 +633,10 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.AddRange(new[] { new DownloadDecision(remoteRom1), new DownloadDecision(remoteRom2), new DownloadDecision(remoteRom3), new DownloadDecision(remoteRom4) });
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteEpisode.Should().Be(remoteRom4);
-            qualifiedReports.Skip(1).First().RemoteEpisode.Should().Be(remoteRom2);
-            qualifiedReports.Skip(2).First().RemoteEpisode.Should().Be(remoteRom1);
-            qualifiedReports.Last().RemoteEpisode.Should().Be(remoteRom3);
+            qualifiedReports.First().RemoteRom.Should().Be(remoteRom4);
+            qualifiedReports.Skip(1).First().RemoteRom.Should().Be(remoteRom2);
+            qualifiedReports.Skip(2).First().RemoteRom.Should().Be(remoteRom1);
+            qualifiedReports.Last().RemoteRom.Should().Be(remoteRom3);
         }
     }
 }

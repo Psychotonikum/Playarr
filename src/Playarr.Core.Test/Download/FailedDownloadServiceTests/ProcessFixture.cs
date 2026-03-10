@@ -32,7 +32,7 @@ namespace Playarr.Core.Test.Download.FailedDownloadServiceTests
 
             _grabHistory = Builder<EpisodeHistory>.CreateListOfSize(2).BuildList();
 
-            var remoteRom = new RemoteEpisode
+            var remoteRom = new RemoteRom
             {
                 Game = new Game(),
                 Roms = new List<Rom> { new Rom { Id = 1 } }
@@ -41,7 +41,7 @@ namespace Playarr.Core.Test.Download.FailedDownloadServiceTests
             _trackedDownload = Builder<TrackedDownload>.CreateNew()
                     .With(c => c.State = TrackedDownloadState.Downloading)
                     .With(c => c.DownloadItem = completed)
-                    .With(c => c.RemoteEpisode = remoteRom)
+                    .With(c => c.RemoteRom = remoteRom)
                     .Build();
 
             Mocker.GetMock<IHistoryService>()

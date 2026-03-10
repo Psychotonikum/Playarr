@@ -26,7 +26,7 @@ namespace Playarr.Core.MediaFiles
     {
         private readonly IDiskProvider _diskProvider;
         private readonly IDiskScanService _diskScanService;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IParsingService _parsingService;
         private readonly IMakeImportDecision _importDecisionMaker;
         private readonly IImportApprovedEpisodes _importApprovedEpisodes;
@@ -48,7 +48,7 @@ namespace Playarr.Core.MediaFiles
         {
             _diskProvider = diskProvider;
             _diskScanService = diskScanService;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _parsingService = parsingService;
             _importDecisionMaker = importDecisionMaker;
             _importApprovedEpisodes = importApprovedEpisodes;
@@ -159,7 +159,7 @@ namespace Playarr.Core.MediaFiles
         private List<ImportResult> ProcessFolder(DirectoryInfo directoryInfo, ImportMode importMode, DownloadClientItem downloadClientItem)
         {
             var cleanedUpName = GetCleanedUpFolderName(directoryInfo.Name);
-            var game = _parsingService.GetSeries(cleanedUpName);
+            var game = _parsingService.GetGame(cleanedUpName);
 
             if (game == null)
             {
@@ -176,7 +176,7 @@ namespace Playarr.Core.MediaFiles
 
         private List<ImportResult> ProcessFolder(DirectoryInfo directoryInfo, ImportMode importMode, Game game, DownloadClientItem downloadClientItem)
         {
-            if (_seriesService.SeriesPathExists(directoryInfo.FullName))
+            if (_gameService.SeriesPathExists(directoryInfo.FullName))
             {
                 _logger.Warn("Unable to process folder that is mapped to an existing game");
                 return new List<ImportResult>
@@ -246,7 +246,7 @@ namespace Playarr.Core.MediaFiles
 
         private List<ImportResult> ProcessFile(FileInfo fileInfo, ImportMode importMode, DownloadClientItem downloadClientItem)
         {
-            var game = _parsingService.GetSeries(Path.GetFileNameWithoutExtension(fileInfo.Name));
+            var game = _parsingService.GetGame(Path.GetFileNameWithoutExtension(fileInfo.Name));
 
             if (game == null)
             {

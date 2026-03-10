@@ -5,13 +5,13 @@ using Playarr.Core.Games;
 
 namespace Playarr.Core.Validation.Paths
 {
-    public class SeriesExistsValidator : PropertyValidator
+    public class GameExistsValidator : PropertyValidator
     {
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
 
-        public SeriesExistsValidator(IGameService seriesService)
+        public GameExistsValidator(IGameService seriesService)
         {
-            _seriesService = seriesService;
+            _gameService = seriesService;
         }
 
         protected override string GetDefaultMessageTemplate() => "This game has already been added";
@@ -25,7 +25,7 @@ namespace Playarr.Core.Validation.Paths
 
             var igdbId = Convert.ToInt32(context.PropertyValue.ToString());
 
-            return !_seriesService.AllSeriesIgdbIds().Any(s => s == igdbId);
+            return !_gameService.AllGameIgdbIds().Any(s => s == igdbId);
         }
     }
 }

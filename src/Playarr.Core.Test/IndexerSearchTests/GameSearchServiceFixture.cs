@@ -17,14 +17,14 @@ using Playarr.Core.Games;
 namespace Playarr.Core.Test.IndexerSearchTests
 {
     [TestFixture]
-    public class SeriesSearchServiceFixture : CoreTest<SeriesSearchService>
+    public class GameSearchServiceFixture : CoreTest<GameSearchService>
     {
-        private Game _series;
+        private Game _game;
 
         [SetUp]
         public void Setup()
         {
-            _series = new Game
+            _game = new Game
                       {
                           Id = 1,
                           Title = "Title",
@@ -33,11 +33,11 @@ namespace Playarr.Core.Test.IndexerSearchTests
                       };
 
             Mocker.GetMock<IGameService>()
-                  .Setup(s => s.GetSeries(It.IsAny<int>()))
-                  .Returns(_series);
+                  .Setup(s => s.GetGame(It.IsAny<int>()))
+                  .Returns(_game);
 
             Mocker.GetMock<ISearchForReleases>()
-                  .Setup(s => s.SeasonSearch(_series.Id, It.IsAny<int>(), false, false, true, false))
+                  .Setup(s => s.PlatformSearch(_game.Id, It.IsAny<int>(), false, false, true, false))
                   .Returns(Task.FromResult(new List<DownloadDecision>()));
 
             Mocker.GetMock<IProcessDownloadDecisions>()
@@ -46,43 +46,43 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public void should_only_include_monitored_seasons()
+        public void should_only_include_monitored_platforms()
         {
-            _series.Platforms = new List<Platform>
+            _game.Platforms = new List<Platform>
                               {
                                   new Platform { PlatformNumber = 0, Monitored = false },
                                   new Platform { PlatformNumber = 1, Monitored = true }
                               };
 
-            Subject.Execute(new SeriesSearchCommand { GameId = _series.Id, Trigger = CommandTrigger.Manual });
+            Subject.Execute(new GameSearchCommand { GameId = _game.Id, Trigger = CommandTrigger.Manual });
 
             Mocker.GetMock<ISearchForReleases>()
-                .Verify(v => v.SeasonSearch(_series.Id, It.IsAny<int>(), false, true, true, false), Times.Exactly(_series.Platforms.Count(s => s.Monitored)));
+                .Verify(v => v.PlatformSearch(_game.Id, It.IsAny<int>(), false, true, true, false), Times.Exactly(_game.Platforms.Count(s => s.Monitored)));
         }
 
         [Test]
         public void should_only_search_missing_if_profile_does_not_allow_upgrades()
         {
-            _series.Platforms = new List<Platform>
+            _game.Platforms = new List<Platform>
             {
                 new Platform { PlatformNumber = 0, Monitored = false },
                 new Platform { PlatformNumber = 1, Monitored = true }
             };
 
-            _series.QualityProfile.Value.UpgradeAllowed = false;
+            _game.QualityProfile.Value.UpgradeAllowed = false;
 
-            Subject.Execute(new SeriesSearchCommand { GameId = _series.Id, Trigger = CommandTrigger.Manual });
+            Subject.Execute(new GameSearchCommand { GameId = _game.Id, Trigger = CommandTrigger.Manual });
 
             Mocker.GetMock<ISearchForReleases>()
-                .Verify(v => v.SeasonSearch(_series.Id, It.IsAny<int>(), true, true, true, false), Times.Exactly(_series.Platforms.Count(s => s.Monitored)));
+                .Verify(v => v.PlatformSearch(_game.Id, It.IsAny<int>(), true, true, true, false), Times.Exactly(_game.Platforms.Count(s => s.Monitored)));
         }
 
         [Test]
-        public void should_start_with_lower_seasons_first()
+        public void should_start_with_lower_platforms_first()
         {
             var seasonOrder = new List<int>();
 
-            _series.Platforms = new List<Platform>
+            _game.Platforms = new List<Platform>
                               {
                                   new Platform { PlatformNumber = 3, Monitored = true },
                                   new Platform { PlatformNumber = 1, Monitored = true },
@@ -90,13 +90,13 @@ namespace Playarr.Core.Test.IndexerSearchTests
                               };
 
             Mocker.GetMock<ISearchForReleases>()
-                  .Setup(s => s.SeasonSearch(_series.Id, It.IsAny<int>(), false, true, true, false))
+                  .Setup(s => s.PlatformSearch(_game.Id, It.IsAny<int>(), false, true, true, false))
                   .Returns(Task.FromResult(new List<DownloadDecision>()))
                   .Callback<int, int, bool, bool, bool, bool>((gameId, platformNumber, missingOnly, monitoredOnly, userInvokedSearch, interactiveSearch) => seasonOrder.Add(platformNumber));
 
-            Subject.Execute(new SeriesSearchCommand { GameId = _series.Id, Trigger = CommandTrigger.Manual });
+            Subject.Execute(new GameSearchCommand { GameId = _game.Id, Trigger = CommandTrigger.Manual });
 
-            seasonOrder.First().Should().Be(_series.Platforms.OrderBy(s => s.PlatformNumber).First().PlatformNumber);
+            seasonOrder.First().Should().Be(_game.Platforms.OrderBy(s => s.PlatformNumber).First().PlatformNumber);
         }
     }
 }

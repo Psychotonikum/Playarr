@@ -22,6 +22,9 @@ import DownloadClientSelectInput, {
 import EnhancedSelectInput, {
   EnhancedSelectInputProps,
 } from './Select/EnhancedSelectInput';
+import GameTypeSelectInput, {
+  GameTypeSelectInputProps,
+} from './Select/GameTypeSelectInput';
 import IndexerFlagsSelectInput, {
   IndexerFlagsSelectInputProps,
 } from './Select/IndexerFlagsSelectInput';
@@ -31,12 +34,12 @@ import IndexerSelectInput, {
 import LanguageSelectInput, {
   LanguageSelectInputProps,
 } from './Select/LanguageSelectInput';
-import MonitorRomsSelectInput, {
-  MonitorRomsSelectInputProps,
-} from './Select/MonitorRomsSelectInput';
 import MonitorNewItemsSelectInput, {
   MonitorNewItemsSelectInputProps,
 } from './Select/MonitorNewItemsSelectInput';
+import MonitorRomsSelectInput, {
+  MonitorRomsSelectInputProps,
+} from './Select/MonitorRomsSelectInput';
 import ProviderDataSelectInput, {
   ProviderOptionSelectInputProps,
 } from './Select/ProviderOptionSelectInput';
@@ -46,9 +49,6 @@ import QualityProfileSelectInput, {
 import RootFolderSelectInput, {
   RootFolderSelectInputProps,
 } from './Select/RootFolderSelectInput';
-import GameTypeSelectInput, {
-  GameTypeSelectInputProps,
-} from './Select/GameTypeSelectInput';
 import UMaskInput, { UMaskInputProps } from './Select/UMaskInput';
 import DeviceInput, { DeviceInputProps } from './Tag/DeviceInput';
 import GameTagInput, { GameTagInputProps } from './Tag/GameTagInput';

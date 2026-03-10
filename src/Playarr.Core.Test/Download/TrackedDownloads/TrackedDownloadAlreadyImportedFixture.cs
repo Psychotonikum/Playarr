@@ -23,7 +23,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
         {
             _episodes = new List<Rom>();
 
-            var remoteRom = Builder<RemoteEpisode>.CreateNew()
+            var remoteRom = Builder<RemoteRom>.CreateNew()
                                                       .With(r => r.Roms = _episodes)
                                                       .Build();
 
@@ -31,7 +31,7 @@ namespace Playarr.Core.Test.Download.TrackedDownloads
                                                          .Build();
 
             _trackedDownload = Builder<TrackedDownload>.CreateNew()
-                                                       .With(t => t.RemoteEpisode = remoteRom)
+                                                       .With(t => t.RemoteRom = remoteRom)
                                                        .With(t => t.DownloadItem = downloadItem)
                                                        .Build();
 

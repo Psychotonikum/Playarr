@@ -1,10 +1,10 @@
 import React from 'react';
 import Icon from 'Components/Icon';
 import Popover from 'Components/Tooltip/Popover';
-import { icons, kinds, tooltipPositions } from 'Helpers/Props';
 import { AlternateTitle, GameType } from 'Game/Game';
-import padNumber from 'Utilities/Number/padNumber';
+import { icons, kinds, tooltipPositions } from 'Helpers/Props';
 import filterAlternateTitles from 'Utilities/Game/filterAlternateTitles';
+import padNumber from 'Utilities/Number/padNumber';
 import translate from 'Utilities/String/translate';
 import SceneInfo from './SceneInfo';
 import styles from './RomNumber.css';
@@ -82,7 +82,9 @@ function RomNumber(props: RomNumberProps) {
         <Popover
           anchor={
             <span>
-              {showPlatformNumber && platformNumber != null && <>{platformNumber}x</>}
+              {showPlatformNumber && platformNumber != null && (
+                <>{platformNumber}x</>
+              )}
 
               {showPlatformNumber ? padNumber(romNumber, 2) : romNumber}
 
@@ -109,7 +111,9 @@ function RomNumber(props: RomNumberProps) {
         />
       ) : (
         <span>
-          {showPlatformNumber && platformNumber != null && <>{platformNumber}x</>}
+          {showPlatformNumber && platformNumber != null && (
+            <>{platformNumber}x</>
+          )}
 
           {showPlatformNumber ? padNumber(romNumber, 2) : romNumber}
 

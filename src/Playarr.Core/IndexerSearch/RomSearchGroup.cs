@@ -3,7 +3,7 @@ using Playarr.Core.Games;
 
 namespace Playarr.Core.IndexerSearch
 {
-    public class EpisodeSearchGroup
+    public class RomSearchGroup
     {
         public int GameId { get; set; }
         public int PlatformNumber { get; set; }

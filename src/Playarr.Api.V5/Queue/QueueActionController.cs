@@ -29,7 +29,7 @@ namespace Playarr.Api.V5.Queue
                 throw new NotFoundException();
             }
 
-            await _downloadService.DownloadReport(pendingRelease.RemoteEpisode, null);
+            await _downloadService.DownloadReport(pendingRelease.RemoteRom, null);
 
             return new { };
         }
@@ -47,7 +47,7 @@ namespace Playarr.Api.V5.Queue
                     throw new NotFoundException();
                 }
 
-                await _downloadService.DownloadReport(pendingRelease.RemoteEpisode, null);
+                await _downloadService.DownloadReport(pendingRelease.RemoteRom, null);
             }
 
             return new { };

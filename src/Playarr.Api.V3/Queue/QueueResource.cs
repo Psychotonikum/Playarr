@@ -63,7 +63,7 @@ namespace Playarr.Api.V3.Queue
                 return null;
             }
 
-            var customFormats = model.RemoteEpisode?.CustomFormats;
+            var customFormats = model.RemoteRom?.CustomFormats;
             var customFormatScore = model.Game?.QualityProfile?.Value?.CalculateCustomFormatScore(customFormats) ?? 0;
 
             return new QueueResource

@@ -6,10 +6,10 @@ import TableRowCell from 'Components/Table/Cells/TableRowCell';
 import TableSelectCell from 'Components/Table/Cells/TableSelectCell';
 import Column from 'Components/Table/Column';
 import TableRow from 'Components/Table/TableRow';
-import RomLanguages from 'Rom/RomLanguages';
-import { icons, kinds } from 'Helpers/Props';
 import GameTitleLink from 'Game/GameTitleLink';
 import { useSingleGame } from 'Game/useGame';
+import { icons, kinds } from 'Helpers/Props';
+import RomLanguages from 'Rom/RomLanguages';
 import Blocklist from 'typings/Blocklist';
 import { SelectStateInputProps } from 'typings/props';
 import translate from 'Utilities/String/translate';
@@ -80,10 +80,7 @@ function BlocklistRow({
         if (name === 'game.sortTitle') {
           return (
             <TableRowCell key={name}>
-              <GameTitleLink
-                titleSlug={game.titleSlug}
-                title={game.title}
-              />
+              <GameTitleLink titleSlug={game.titleSlug} title={game.title} />
             </TableRowCell>
           );
         }
@@ -99,8 +96,6 @@ function BlocklistRow({
             </TableRowCell>
           );
         }
-
-
 
         if (name === 'date') {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment

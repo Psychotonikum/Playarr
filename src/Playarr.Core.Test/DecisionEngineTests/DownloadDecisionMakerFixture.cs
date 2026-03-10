@@ -20,7 +20,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
     public class DownloadDecisionMakerFixture : CoreTest<DownloadDecisionMaker>
     {
         private List<ReleaseInfo> _reports;
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
 
         private Mock<IDownloadDecisionEngineSpecification> _pass1;
         private Mock<IDownloadDecisionEngineSpecification> _pass2;
@@ -45,19 +45,19 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             _failDelayed1 = new Mock<IDownloadDecisionEngineSpecification>();
 
-            _pass1.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Accept);
-            _pass2.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Accept);
-            _pass3.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Accept);
+            _pass1.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Accept);
+            _pass2.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Accept);
+            _pass3.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Accept);
 
-            _fail1.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Reject(DownloadRejectionReason.Unknown, "fail1"));
-            _fail2.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Reject(DownloadRejectionReason.Unknown, "fail2"));
-            _fail3.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Reject(DownloadRejectionReason.Unknown, "fail3"));
+            _fail1.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Reject(DownloadRejectionReason.Unknown, "fail1"));
+            _fail2.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Reject(DownloadRejectionReason.Unknown, "fail2"));
+            _fail3.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Reject(DownloadRejectionReason.Unknown, "fail3"));
 
-            _failDelayed1.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Reject(DownloadRejectionReason.MinimumAgeDelay, "failDelayed1"));
+            _failDelayed1.Setup(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>())).Returns(DownloadSpecDecision.Reject(DownloadRejectionReason.MinimumAgeDelay, "failDelayed1"));
             _failDelayed1.SetupGet(c => c.Priority).Returns(SpecificationPriority.Disk);
 
             _reports = new List<ReleaseInfo> { new ReleaseInfo { Title = "The.Office.S03E115.DVDRip.XviD-OSiTV" } };
-            _remoteRom = new RemoteEpisode
+            _remoteRom = new RemoteRom
             {
                 Game = new Game(),
                 Roms = new List<Rom> { new Rom() }
@@ -156,9 +156,9 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             Mocker.GetMock<IParsingService>().Verify(c => c.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<SearchCriteriaBase>()), Times.Never());
 
-            _pass1.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
-            _pass2.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
-            _pass3.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass1.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass2.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass3.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
         }
 
         [Test]
@@ -171,9 +171,9 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             Mocker.GetMock<IParsingService>().Verify(c => c.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<SearchCriteriaBase>()), Times.Never());
 
-            _pass1.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
-            _pass2.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
-            _pass3.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass1.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass2.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass3.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
 
             results.Should().BeEmpty();
         }
@@ -188,9 +188,9 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             Mocker.GetMock<IParsingService>().Verify(c => c.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<SearchCriteriaBase>()), Times.Never());
 
-            _pass1.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
-            _pass2.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
-            _pass3.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass1.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass2.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass3.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
         }
 
         [Test]
@@ -202,9 +202,9 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             Subject.GetRssDecision(_reports);
 
-            _pass1.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
-            _pass2.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
-            _pass3.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteEpisode>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass1.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass2.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
+            _pass3.Verify(c => c.IsSatisfiedBy(It.IsAny<RemoteRom>(), It.IsAny<ReleaseDecisionInformation>()), Times.Never());
         }
 
         [Test]
@@ -265,7 +265,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             Mocker.GetMock<IParsingService>()
                 .Setup(v => v.Map(It.IsAny<ParsedRomInfo>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<SearchCriteriaBase>()))
                 .Returns<ParsedRomInfo, int, int, string, SearchCriteriaBase>((p, _, _, _, _) =>
-                    new RemoteEpisode
+                    new RemoteRom
                     {
                         DownloadAllowed = true,
                         ParsedRomInfo = p,
@@ -296,7 +296,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             result.Should().HaveCount(1);
 
-            result.First().RemoteEpisode.DownloadAllowed.Should().BeFalse();
+            result.First().RemoteRom.DownloadAllowed.Should().BeFalse();
         }
 
         [Test]
@@ -310,7 +310,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
             result.Should().HaveCount(1);
 
-            result.First().RemoteEpisode.DownloadAllowed.Should().BeFalse();
+            result.First().RemoteRom.DownloadAllowed.Should().BeFalse();
         }
 
         [Test]

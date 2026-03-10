@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import Icon from 'Components/Icon';
 import Link from 'Components/Link/Link';
-import { icons } from 'Helpers/Props';
 import useExistingGame from 'Game/useExistingGame';
+import { icons } from 'Helpers/Props';
 import ImportGameTitle from './ImportGameTitle';
 import styles from './ImportGameSearchResult.css';
 
@@ -40,7 +40,9 @@ function ImportGameSearchResult({
 
       <Link
         className={styles.igdbLink}
-        to={`https://www.igdb.com/search?utf8=%E2%9C%93&q=${encodeURIComponent(title)}`}
+        to={`https://www.igdb.com/search?utf8=%E2%9C%93&q=${encodeURIComponent(
+          title
+        )}`}
       >
         <Icon
           className={styles.igdbLinkIcon}

@@ -18,8 +18,15 @@ import PageToolbarSection from 'Components/Page/Toolbar/PageToolbarSection';
 import PageToolbarSeparator from 'Components/Page/Toolbar/PageToolbarSeparator';
 import Popover from 'Components/Tooltip/Popover';
 import Tooltip from 'Components/Tooltip/Tooltip';
-import useRoms from 'Rom/useRoms';
-import useRomFiles from 'RomFile/useRomFiles';
+import DeleteGameModal from 'Game/Delete/DeleteGameModal';
+import EditGameModal from 'Game/Edit/EditGameModal';
+import { Image, Statistics } from 'Game/Game';
+import GameGenres from 'Game/GameGenres';
+import GamePoster from 'Game/GamePoster';
+import { getGameStatusDetails } from 'Game/GameStatus';
+import GameHistoryModal from 'Game/History/GameHistoryModal';
+import MonitoringOptionsModal from 'Game/MonitoringOptions/MonitoringOptionsModal';
+import useGame, { useSingleGame, useToggleGameMonitored } from 'Game/useGame';
 import { useGameSystem } from 'GameSystem/useGameSystems';
 import usePrevious from 'Helpers/Hooks/usePrevious';
 import {
@@ -33,33 +40,23 @@ import {
 import InteractiveImportModal from 'InteractiveImport/InteractiveImportModal';
 import useCountryName from 'Internationalization/useCountryName';
 import OrganizePreviewModal from 'Organize/OrganizePreviewModal';
-import DeleteGameModal from 'Game/Delete/DeleteGameModal';
-import EditGameModal from 'Game/Edit/EditGameModal';
-import GameHistoryModal from 'Game/History/GameHistoryModal';
-import MonitoringOptionsModal from 'Game/MonitoringOptions/MonitoringOptionsModal';
-import { Image, Statistics } from 'Game/Game';
-import GameGenres from 'Game/GameGenres';
-import GamePoster from 'Game/GamePoster';
-import { getGameStatusDetails } from 'Game/GameStatus';
-import useGame, {
-  useSingleGame,
-  useToggleGameMonitored,
-} from 'Game/useGame';
+import useRoms from 'Rom/useRoms';
+import useRomFiles from 'RomFile/useRomFiles';
 import QualityProfileName from 'Settings/Profiles/Quality/QualityProfileName';
 import sortByProp from 'Utilities/Array/sortByProp';
 import { findCommand, isCommandExecuting } from 'Utilities/Command';
+import filterAlternateTitles from 'Utilities/Game/filterAlternateTitles';
 import formatBytes from 'Utilities/Number/formatBytes';
 import {
   registerPagePopulator,
   unregisterPagePopulator,
 } from 'Utilities/pagePopulator';
-import filterAlternateTitles from 'Utilities/Game/filterAlternateTitles';
 import translate from 'Utilities/String/translate';
 import toggleSelected from 'Utilities/Table/toggleSelected';
 import GameAlternateTitles from './GameAlternateTitles';
 import GameDetailsLinks from './GameDetailsLinks';
-import GameDetailsProvider from './GameDetailsProvider';
 import GameDetailsPlatform from './GameDetailsPlatform';
+import GameDetailsProvider from './GameDetailsProvider';
 import GamePatchInfo from './GamePatchInfo';
 import GameProgressLabel from './GameProgressLabel';
 import GameTags from './GameTags';
@@ -185,9 +182,7 @@ function GameDetails({ gameId }: GameDetailsProps) {
 
   const { nextSeries, previousSeries } = useMemo(() => {
     const sortedSeries = [...allGames].sort(sortByProp('sortTitle'));
-    const seriesIndex = sortedSeries.findIndex(
-      (game) => game.id === gameId
-    );
+    const seriesIndex = sortedSeries.findIndex((game) => game.id === gameId);
 
     if (seriesIndex === -1) {
       return {
@@ -216,8 +211,7 @@ function GameDetails({ gameId }: GameDetailsProps) {
   const [isManageEpisodesOpen, setIsManageEpisodesOpen] = useState(false);
   const [isEditGameModalOpen, setIsEditGameModalOpen] = useState(false);
   const [isDeleteGameModalOpen, setIsDeleteGameModalOpen] = useState(false);
-  const [isGameHistoryModalOpen, setIsGameHistoryModalOpen] =
-    useState(false);
+  const [isGameHistoryModalOpen, setIsGameHistoryModalOpen] = useState(false);
   const [isMonitorOptionsModalOpen, setIsMonitorOptionsModalOpen] =
     useState(false);
   const [expandedState, setExpandedState] = useState<ExpandedState>({
@@ -818,9 +812,28 @@ function GameDetails({ gameId }: GameDetailsProps) {
               <div>
                 <GamePatchInfo
                   systemType={patchInfo.systemType}
-                  baseFile={patchInfo.baseFile ? { fileName: patchInfo.baseFile.relativePath, fileType: 0, version: patchInfo.baseFile.patchVersion, dlcIndex: patchInfo.baseFile.dlcIndex } : undefined}
-                  updates={patchInfo.updates.map((f) => ({ fileName: f.relativePath, fileType: 1, version: f.patchVersion, dlcIndex: f.dlcIndex }))}
-                  dlcs={patchInfo.dlcs.map((f) => ({ fileName: f.relativePath, fileType: 2, version: f.patchVersion, dlcIndex: f.dlcIndex }))}
+                  baseFile={
+                    patchInfo.baseFile
+                      ? {
+                          fileName: patchInfo.baseFile.relativePath,
+                          fileType: 0,
+                          version: patchInfo.baseFile.patchVersion,
+                          dlcIndex: patchInfo.baseFile.dlcIndex,
+                        }
+                      : undefined
+                  }
+                  updates={patchInfo.updates.map((f) => ({
+                    fileName: f.relativePath,
+                    fileType: 1,
+                    version: f.patchVersion,
+                    dlcIndex: f.dlcIndex,
+                  }))}
+                  dlcs={patchInfo.dlcs.map((f) => ({
+                    fileName: f.relativePath,
+                    fileType: 2,
+                    version: f.patchVersion,
+                    dlcIndex: f.dlcIndex,
+                  }))}
                   isMissingBase={patchInfo.isMissingBase}
                 />
                 {platforms
@@ -832,7 +845,9 @@ function GameDetails({ gameId }: GameDetailsProps) {
                         key={platform.platformNumber}
                         gameId={gameId}
                         {...platform}
-                        isExpanded={expandedState.platforms[platform.platformNumber]}
+                        isExpanded={
+                          expandedState.platforms[platform.platformNumber]
+                        }
                         onExpandPress={handleExpandPress}
                       />
                     );

@@ -63,10 +63,7 @@ export const setRomQueryKey = (
   }
 };
 
-const useRom = (
-  romId: number | undefined,
-  romEntity: RomEntity
-) => {
+const useRom = (romId: number | undefined, romEntity: RomEntity) => {
   const queryClient = useQueryClient();
   const queryKey = getQueryKey(romEntity);
 
@@ -80,16 +77,11 @@ const useRom = (
 
   if (romEntity === 'roms') {
     return queryKey
-      ? queryClient
-          .getQueryData<Rom[]>(queryKey)
-          ?.find((e) => e.id === romId)
+      ? queryClient.getQueryData<Rom[]>(queryKey)?.find((e) => e.id === romId)
       : undefined;
   }
 
-  if (
-    romEntity === 'wanted.cutoffUnmet' ||
-    romEntity === 'wanted.missing'
-  ) {
+  if (romEntity === 'wanted.cutoffUnmet' || romEntity === 'wanted.missing') {
     return queryKey
       ? queryClient
           .getQueryData<PagedQueryResponse<Rom>>(queryKey)
@@ -118,25 +110,22 @@ export const useToggleEpisodesMonitored = (queryKey: QueryKey) => {
     method: 'PUT',
     mutationOptions: {
       onSuccess: (_data, variables) => {
-        queryClient.setQueryData<Rom[] | undefined>(
-          queryKey,
-          (oldEpisodes) => {
-            if (!oldEpisodes) {
-              return oldEpisodes;
+        queryClient.setQueryData<Rom[] | undefined>(queryKey, (oldEpisodes) => {
+          if (!oldEpisodes) {
+            return oldEpisodes;
+          }
+
+          return oldEpisodes.map((oldEpisode) => {
+            if (variables.romIds.includes(oldEpisode.id)) {
+              return {
+                ...oldEpisode,
+                monitored: variables.monitored,
+              };
             }
 
-            return oldEpisodes.map((oldEpisode) => {
-              if (variables.romIds.includes(oldEpisode.id)) {
-                return {
-                  ...oldEpisode,
-                  monitored: variables.monitored,
-                };
-              }
-
-              return oldEpisode;
-            });
-          }
-        );
+            return oldEpisode;
+          });
+        });
       },
     },
   });

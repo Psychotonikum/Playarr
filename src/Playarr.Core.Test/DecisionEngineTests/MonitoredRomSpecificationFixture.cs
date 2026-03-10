@@ -17,8 +17,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
     {
         private MonitoredEpisodeSpecification _monitoredEpisodeSpecification;
 
-        private RemoteEpisode _parseResultMulti;
-        private RemoteEpisode _parseResultSingle;
+        private RemoteRom _parseResultMulti;
+        private RemoteRom _parseResultSingle;
         private Game _fakeSeries;
         private Rom _firstEpisode;
         private Rom _secondEpisode;
@@ -38,13 +38,13 @@ namespace Playarr.Core.Test.DecisionEngineTests
             var singleEpisodeList = new List<Rom> { _firstEpisode };
             var doubleEpisodeList = new List<Rom> { _firstEpisode, _secondEpisode };
 
-            _parseResultMulti = new RemoteEpisode
+            _parseResultMulti = new RemoteRom
             {
                 Game = _fakeSeries,
                 Roms = doubleEpisodeList
             };
 
-            _parseResultSingle = new RemoteEpisode
+            _parseResultSingle = new RemoteRom
             {
                 Game = _fakeSeries,
                 Roms = singleEpisodeList

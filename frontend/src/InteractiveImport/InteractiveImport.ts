@@ -1,9 +1,9 @@
 import ModelBase from 'App/ModelBase';
-import Rom from 'Rom/Rom';
+import Game from 'Game/Game';
 import ReleaseType from 'InteractiveImport/ReleaseType';
 import Language from 'Language/Language';
 import { QualityModel } from 'Quality/Quality';
-import Game from 'Game/Game';
+import Rom from 'Rom/Rom';
 import CustomFormat from 'typings/CustomFormat';
 import Rejection from 'typings/Rejection';
 

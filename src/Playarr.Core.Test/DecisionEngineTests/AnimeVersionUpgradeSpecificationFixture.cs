@@ -16,7 +16,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
     public class AnimeVersionUpgradeSpecificationFixture : CoreTest<AnimeVersionUpgradeSpecification>
     {
         private AnimeVersionUpgradeSpecification _subject;
-        private RemoteEpisode _remoteRom;
+        private RemoteRom _remoteRom;
         private RomFile _romFile;
 
         [SetUp]
@@ -35,8 +35,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
                                ReleaseGroup = "DRONE2"
                            };
 
-            _remoteRom = new RemoteEpisode();
-            _remoteRom.Game = new Game { SeriesType = GameTypes.Anime };
+            _remoteRom = new RemoteRom();
+            _remoteRom.Game = new Game { SeriesType = GameTypes.Standard };
             _remoteRom.ParsedRomInfo = new ParsedRomInfo
                                                {
                                                    Quality = new QualityModel(Quality.HDTV720p, new Revision(2)),

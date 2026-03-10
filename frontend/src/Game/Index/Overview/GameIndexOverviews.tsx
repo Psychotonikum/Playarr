@@ -1,9 +1,9 @@
 import { throttle } from 'lodash';
 import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
-import useMeasure from 'Helpers/Hooks/useMeasure';
 import Game from 'Game/Game';
 import { useGameOverviewOptions } from 'Game/gameOptionsStore';
+import useMeasure from 'Helpers/Hooks/useMeasure';
 import dimensions from 'Styles/Variables/dimensions';
 import getIndexOfFirstCharacter from 'Utilities/Array/getIndexOfFirstCharacter';
 import GameIndexOverview from './GameIndexOverview';

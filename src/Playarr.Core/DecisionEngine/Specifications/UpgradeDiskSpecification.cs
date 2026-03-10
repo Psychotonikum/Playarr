@@ -28,7 +28,7 @@ namespace Playarr.Core.DecisionEngine.Specifications
         public SpecificationPriority Priority => SpecificationPriority.Default;
         public RejectionType Type => RejectionType.Permanent;
 
-        public virtual DownloadSpecDecision IsSatisfiedBy(RemoteEpisode subject, ReleaseDecisionInformation information)
+        public virtual DownloadSpecDecision IsSatisfiedBy(RemoteRom subject, ReleaseDecisionInformation information)
         {
             var qualityProfile = subject.Game.QualityProfile.Value;
 
@@ -125,7 +125,7 @@ namespace Playarr.Core.DecisionEngine.Specifications
             return DownloadSpecDecision.Accept();
         }
 
-        private DownloadSpecDecision CheckUpgradeSpecification(Playarr.Core.MediaFiles.RomFile file, Playarr.Core.Profiles.Qualities.QualityProfile qualityProfile, RemoteEpisode subject)
+        private DownloadSpecDecision CheckUpgradeSpecification(Playarr.Core.MediaFiles.RomFile file, Playarr.Core.Profiles.Qualities.QualityProfile qualityProfile, RemoteRom subject)
         {
             if (file == null)
             {

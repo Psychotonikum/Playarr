@@ -35,7 +35,7 @@ namespace Playarr.Core.Download.Clients.Pneumatic
 
         public override DownloadProtocol Protocol => DownloadProtocol.Usenet;
 
-        public override async Task<string> Download(RemoteEpisode remoteRom, IIndexer indexer)
+        public override async Task<string> Download(RemoteRom remoteRom, IIndexer indexer)
         {
             var url = remoteRom.Release.DownloadUrl;
             var title = remoteRom.Release.Title;

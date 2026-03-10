@@ -24,12 +24,12 @@ public class RejectedImportService : IRejectedImportService
 
     public bool Process(TrackedDownload trackedDownload, ImportResult importResult)
     {
-        if (importResult.Result != ImportResultType.Rejected || trackedDownload.RemoteEpisode?.Release == null)
+        if (importResult.Result != ImportResultType.Rejected || trackedDownload.RemoteRom?.Release == null)
         {
             return false;
         }
 
-        var indexerSettings = _cachedIndexerSettingsProvider.GetSettings(trackedDownload.RemoteEpisode.Release.IndexerId);
+        var indexerSettings = _cachedIndexerSettingsProvider.GetSettings(trackedDownload.RemoteRom.Release.IndexerId);
         var rejectionReason = importResult.ImportDecision.Rejections.FirstOrDefault()?.Reason;
 
         if (indexerSettings == null)

@@ -3,8 +3,8 @@ import { useSelect } from 'App/Select/SelectContext';
 import FormInputGroup from 'Components/Form/FormInputGroup';
 import VirtualTableRowCell from 'Components/Table/Cells/VirtualTableRowCell';
 import VirtualTableSelectCell from 'Components/Table/Cells/VirtualTableSelectCell';
-import { inputTypes } from 'Helpers/Props';
 import useExistingGame from 'Game/useExistingGame';
+import { inputTypes } from 'Helpers/Props';
 import { InputChanged } from 'typings/inputs';
 import { SelectStateInputProps } from 'typings/props';
 import {
@@ -25,11 +25,7 @@ function ImportGameRow({ unmappedFolder }: ImportGameRowProps) {
 
   const item = useImportGameItem(unmappedFolder.id);
 
-  const {
-    relativePath,
-    monitor,
-    selectedSeries,
-  } = item ?? {};
+  const { relativePath, monitor, selectedSeries } = item ?? {};
 
   const isExistingSeries = useExistingGame(selectedSeries?.igdbId);
 

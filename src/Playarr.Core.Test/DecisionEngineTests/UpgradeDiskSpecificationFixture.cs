@@ -28,8 +28,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
     {
         private UpgradeDiskSpecification _upgradeDisk;
 
-        private RemoteEpisode _parseResultMulti;
-        private RemoteEpisode _parseResultSingle;
+        private RemoteRom _parseResultMulti;
+        private RemoteRom _parseResultSingle;
         private RomFile _firstFile;
         private RomFile _secondFile;
 
@@ -58,7 +58,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 })
                 .Build();
 
-            _parseResultMulti = new RemoteEpisode
+            _parseResultMulti = new RemoteRom
             {
                 Game = fakeSeries,
                 ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)), Languages = new List<Language> { Language.English } },
@@ -66,7 +66,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
                 CustomFormats = new List<CustomFormat>()
             };
 
-            _parseResultSingle = new RemoteEpisode
+            _parseResultSingle = new RemoteRom
             {
                 Game = fakeSeries,
                 ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)), Languages = new List<Language> { Language.English } },

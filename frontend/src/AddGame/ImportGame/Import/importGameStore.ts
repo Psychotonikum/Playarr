@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import { useAddGameOptions } from 'AddGame/addGameOptionsStore';
-import { UnmappedFolder } from 'RootFolder/useRootFolders';
 import Game, { GameMonitor } from 'Game/Game';
+import { UnmappedFolder } from 'RootFolder/useRootFolders';
 
 export interface UnamppedFolderItem extends UnmappedFolder {
   id: string;
@@ -36,13 +36,11 @@ const importGameStore = create<ImportGameState>()(() => defaultState);
 export const useEnsureImportGameItems = (
   unmappedFolders: UnamppedFolderItem[]
 ) => {
-  const { monitor } =
-    useAddGameOptions();
+  const { monitor } = useAddGameOptions();
 
   useEffect(() => {
     unmappedFolders.forEach((unmappedFolder) => {
-      const existingItem =
-        importGameStore.getState().items[unmappedFolder.id];
+      const existingItem = importGameStore.getState().items[unmappedFolder.id];
 
       if (existingItem) {
         return;

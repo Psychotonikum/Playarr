@@ -720,18 +720,9 @@ namespace Playarr.Core.Notifications.Discord
                 return game.Title.Replace("`", "\\`");
             }
 
-            if (game.SeriesType == GameTypes.Daily)
-            {
-                var rom = roms.First();
-
-                return $"{game.Title} - {rom.AirDate} - {rom.Title}".Replace("`", "\\`");
-            }
-
-            var romNumbers = string.Concat(roms.Select(e => $"x{e.EpisodeNumber:00}"));
-
             var romTitles = string.Join(" + ", roms.Select(e => e.Title));
 
-            var title = $"{game.Title} - {roms.First().PlatformNumber}{romNumbers} - {romTitles}".Replace("`", "\\`");
+            var title = $"{game.Title} - {romTitles}".Replace("`", "\\`");
 
             return title.Length > 256 ? $"{title.AsSpan(0, 253).TrimEnd('\\')}..." : title;
         }

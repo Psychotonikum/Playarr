@@ -31,7 +31,7 @@ namespace Playarr.Core.Extras.Files
         where TExtraFile : ExtraFile, new()
     {
         private readonly IExtraFileRepository<TExtraFile> _repository;
-        private readonly IGameService _seriesService;
+        private readonly IGameService _gameService;
         private readonly IDiskProvider _diskProvider;
         private readonly IRecycleBinProvider _recycleBinProvider;
         private readonly Logger _logger;
@@ -43,7 +43,7 @@ namespace Playarr.Core.Extras.Files
                                 Logger logger)
         {
             _repository = repository;
-            _seriesService = seriesService;
+            _gameService = seriesService;
             _diskProvider = diskProvider;
             _recycleBinProvider = recycleBinProvider;
             _logger = logger;
@@ -111,7 +111,7 @@ namespace Playarr.Core.Extras.Files
             }
             else
             {
-                var game = _seriesService.GetSeries(message.RomFile.GameId);
+                var game = _gameService.GetGame(message.RomFile.GameId);
 
                 foreach (var extra in _repository.GetFilesByRomFile(romFile.Id))
                 {

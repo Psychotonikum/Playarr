@@ -46,9 +46,9 @@ namespace Playarr.Core.Test.Download.DownloadClientTests
                 .Returns<string, OsPath>((h, r) => r);
         }
 
-        protected virtual RemoteEpisode CreateRemoteEpisode()
+        protected virtual RemoteRom CreateRemoteEpisode()
         {
-            var remoteRom = new RemoteEpisode();
+            var remoteRom = new RemoteRom();
             remoteRom.Release = new ReleaseInfo();
             remoteRom.Release.Title = _title;
             remoteRom.Release.DownloadUrl = _downloadUrl;

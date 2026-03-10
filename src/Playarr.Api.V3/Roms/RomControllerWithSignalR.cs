@@ -19,8 +19,8 @@ namespace Playarr.Api.V3.Roms
                                                          IHandle<EpisodeImportedEvent>,
                                                          IHandle<RomFileDeletedEvent>
     {
-        protected readonly IRomService _episodeService;
-        protected readonly IGameService _seriesService;
+        protected readonly IRomService _romService;
+        protected readonly IGameService _gameService;
         protected readonly IUpgradableSpecification _upgradableSpecification;
         protected readonly ICustomFormatCalculationService _formatCalculator;
 
@@ -31,8 +31,8 @@ namespace Playarr.Api.V3.Roms
                                            IBroadcastSignalRMessage signalRBroadcaster)
             : base(signalRBroadcaster)
         {
-            _episodeService = episodeService;
-            _seriesService = seriesService;
+            _romService = episodeService;
+            _gameService = seriesService;
             _upgradableSpecification = upgradableSpecification;
             _formatCalculator = formatCalculator;
         }
@@ -45,15 +45,15 @@ namespace Playarr.Api.V3.Roms
                                            string resource)
             : base(signalRBroadcaster)
         {
-            _episodeService = episodeService;
-            _seriesService = seriesService;
+            _romService = episodeService;
+            _gameService = seriesService;
             _upgradableSpecification = upgradableSpecification;
             _formatCalculator = formatCalculator;
         }
 
         protected override RomResource GetResourceById(int id)
         {
-            var rom = _episodeService.GetEpisode(id);
+            var rom = _romService.GetEpisode(id);
             var resource = MapToResource(rom, true, true, true);
             return resource;
         }
@@ -64,7 +64,7 @@ namespace Playarr.Api.V3.Roms
 
             if (includeSeries || includeRomFile || includeImages)
             {
-                var game = rom.Game ?? _seriesService.GetSeries(rom.GameId);
+                var game = rom.Game ?? _gameService.GetGame(rom.GameId);
 
                 if (includeSeries)
                 {
@@ -97,7 +97,7 @@ namespace Playarr.Api.V3.Roms
                     var rom = roms[i];
                     var resource = result[i];
 
-                    var game = rom.Game ?? seriesDict.GetValueOrDefault(roms[i].GameId) ?? _seriesService.GetSeries(roms[i].GameId);
+                    var game = rom.Game ?? seriesDict.GetValueOrDefault(roms[i].GameId) ?? _gameService.GetGame(roms[i].GameId);
                     seriesDict[game.Id] = game;
 
                     if (includeSeries)

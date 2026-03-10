@@ -12,12 +12,12 @@ namespace Playarr.Core.Games
 
     public class ShouldRefreshSeries : ICheckIfSeriesShouldBeRefreshed
     {
-        private readonly IRomService _episodeService;
+        private readonly IRomService _romService;
         private readonly Logger _logger;
 
         public ShouldRefreshSeries(IRomService episodeService, Logger logger)
         {
-            _episodeService = episodeService;
+            _romService = episodeService;
             _logger = logger;
         }
 
@@ -31,7 +31,7 @@ namespace Playarr.Core.Games
                     return true;
                 }
 
-                var roms = _episodeService.GetEpisodeBySeries(game.Id);
+                var roms = _romService.GetEpisodeBySeries(game.Id);
 
                 var atLeastOneAiredEpisodeWithoutTitle = roms.Any(e =>
                     e.PlatformNumber > 0 &&

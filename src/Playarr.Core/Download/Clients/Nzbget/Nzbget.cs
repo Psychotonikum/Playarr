@@ -36,7 +36,7 @@ namespace Playarr.Core.Download.Clients.Nzbget
             _proxy = proxy;
         }
 
-        protected override string AddFromNzbFile(RemoteEpisode remoteRom, string filename, byte[] fileContent)
+        protected override string AddFromNzbFile(RemoteRom remoteRom, string filename, byte[] fileContent)
         {
             var category = Settings.GameCategory;
             var priority = remoteRom.IsRecentEpisode() ? Settings.RecentTvPriority : Settings.OlderTvPriority;

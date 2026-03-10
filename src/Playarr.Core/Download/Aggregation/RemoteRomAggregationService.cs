@@ -8,7 +8,7 @@ namespace Playarr.Core.Download.Aggregation
 {
     public interface IRemoteEpisodeAggregationService
     {
-        RemoteEpisode Augment(RemoteEpisode remoteRom);
+        RemoteRom Augment(RemoteRom remoteRom);
     }
 
     public class RemoteEpisodeAggregationService : IRemoteEpisodeAggregationService
@@ -23,7 +23,7 @@ namespace Playarr.Core.Download.Aggregation
             _logger = logger;
         }
 
-        public RemoteEpisode Augment(RemoteEpisode remoteRom)
+        public RemoteRom Augment(RemoteRom remoteRom)
         {
             if (remoteRom == null)
             {

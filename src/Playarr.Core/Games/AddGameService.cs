@@ -23,8 +23,8 @@ namespace Playarr.Core.Games
 
     public class AddGameService : IAddGameService
     {
-        private readonly IGameService _seriesService;
-        private readonly IProvideSeriesInfo _seriesInfo;
+        private readonly IGameService _gameService;
+        private readonly IProvideSeriesInfo _gameInfo;
         private readonly IBuildFileNames _fileNameBuilder;
         private readonly IAddGameValidator _addGameValidator;
         private readonly IDiskProvider _diskProvider;
@@ -37,8 +37,8 @@ namespace Playarr.Core.Games
                                 IDiskProvider diskProvider,
                                 Logger logger)
         {
-            _seriesService = seriesService;
-            _seriesInfo = seriesInfo;
+            _gameService = seriesService;
+            _gameInfo = seriesInfo;
             _fileNameBuilder = fileNameBuilder;
             _addGameValidator = addGameValidator;
             _diskProvider = diskProvider;
@@ -53,7 +53,7 @@ namespace Playarr.Core.Games
             newGame = SetPropertiesAndValidate(newGame);
 
             _logger.Info("Adding Game {0} Path: [{1}]", newGame, newGame.Path);
-            _seriesService.AddGame(newGame);
+            _gameService.AddGame(newGame);
 
             EnsureGameFolder(newGame);
 
@@ -64,7 +64,7 @@ namespace Playarr.Core.Games
         {
             var added = DateTime.UtcNow;
             var gamesToAdd = new List<Game>();
-            var existingGameIgdbIds = _seriesService.AllSeriesIgdbIds();
+            var existingGameIgdbIds = _gameService.AllGameIgdbIds();
 
             foreach (var s in newGame)
             {
@@ -114,7 +114,7 @@ namespace Playarr.Core.Games
                 }
             }
 
-            return _seriesService.AddGame(gamesToAdd);
+            return _gameService.AddGame(gamesToAdd);
         }
 
         private Game AddSkyhookData(Game newGame)
@@ -123,7 +123,7 @@ namespace Playarr.Core.Games
 
             try
             {
-                tuple = _seriesInfo.GetSeriesInfo(newGame.IgdbId);
+                tuple = _gameInfo.GetGameInfo(newGame.IgdbId);
             }
             catch (SeriesNotFoundException)
             {

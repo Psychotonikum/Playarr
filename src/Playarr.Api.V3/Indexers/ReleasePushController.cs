@@ -78,13 +78,13 @@ namespace Playarr.Api.V3.Indexers
                 decision = decisions.FirstOrDefault();
 
                 // If parsing failed or game was not matched, but manual game/episode targeting was provided, create a manual decision
-                var parsingFailed = decision?.RemoteEpisode?.ParsedRomInfo == null;
+                var parsingFailed = decision?.RemoteRom?.ParsedRomInfo == null;
                 var gameNotMatched = decision != null && decision.Rejections.Any();
                 if ((parsingFailed || gameNotMatched) && release.GameId.HasValue)
                 {
                     _logger.Info("Title parse failed, using manual game/episode targeting for push");
 
-                    var game = _gameService.GetSeries(release.GameId.Value);
+                    var game = _gameService.GetGame(release.GameId.Value);
                     var roms = new List<Rom>();
 
                     if (release.EpisodeId.HasValue)
@@ -93,7 +93,7 @@ namespace Playarr.Api.V3.Indexers
                     }
                     else if (release.RomIds != null && release.RomIds.Any())
                     {
-                        roms.AddRange(_romService.GetEpisodes(release.RomIds));
+                        roms.AddRange(_romService.GetRoms(release.RomIds));
                     }
 
                     if (game != null && roms.Any())
@@ -111,7 +111,7 @@ namespace Playarr.Api.V3.Indexers
 
                         parsedInfo.Languages = Core.Parser.LanguageParser.ParseLanguages(release.Title);
 
-                        var remoteRom = new RemoteEpisode
+                        var remoteRom = new RemoteRom
                         {
                             Release = info,
                             ParsedRomInfo = parsedInfo,
@@ -131,7 +131,7 @@ namespace Playarr.Api.V3.Indexers
                 }
             }
 
-            if (decision?.RemoteEpisode.ParsedRomInfo == null)
+            if (decision?.RemoteRom.ParsedRomInfo == null)
             {
                 throw new ValidationException(new List<ValidationFailure> { new("Title", "Unable to parse", release.Title) });
             }
