@@ -145,7 +145,7 @@ const GAME_SYSTEM_PRESETS: GameSystemPreset[] = [
   {
     generation: '6th Generation',
     name: 'Nintendo GameCube',
-    folderName: 'gc',
+    folderName: 'gamecube',
     systemType: 0,
     fileExtensions: ['.iso', '.gcz', '.rvz', '.nkit.iso'],
     namingFormat: '{Game Title} {Region}.{Extension}',
