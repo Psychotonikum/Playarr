@@ -35,9 +35,9 @@ namespace Playarr.Core.Indexers.Newznab
         {
             RuleFor(c => c).Custom((c, context) =>
             {
-                if (c.Categories.Empty() && c.AnimeCategories.Empty())
+                if (c.Categories.Empty())
                 {
-                    context.AddFailure("Either 'Categories' or 'Anime Categories' must be provided");
+                    context.AddFailure("'Categories' must be provided");
                 }
             });
 
@@ -56,8 +56,7 @@ namespace Playarr.Core.Indexers.Newznab
         public NewznabSettings()
         {
             ApiPath = "/api";
-            Categories = new[] { 5030, 5040 };
-            AnimeCategories = Enumerable.Empty<int>();
+            Categories = new[] { 1000 };
             MultiLanguages = Array.Empty<int>();
             FailDownloads = Array.Empty<int>();
         }
@@ -75,22 +74,22 @@ namespace Playarr.Core.Indexers.Newznab
         [FieldDefinition(3, Label = "IndexerSettingsCategories", Type = FieldType.Select, SelectOptionsProviderAction = "newznabCategories", HelpText = "IndexerSettingsCategoriesHelpText")]
         public IEnumerable<int> Categories { get; set; }
 
-        [FieldDefinition(4, Label = "IndexerSettingsAnimeCategories", Type = FieldType.Select, SelectOptionsProviderAction = "newznabCategories", HelpText = "IndexerSettingsAnimeCategoriesHelpText")]
-        public IEnumerable<int> AnimeCategories { get; set; }
+        // Kept for backward compatibility with existing DB entries (no UI field)
+        public IEnumerable<int> AnimeCategories { get; set; } = Enumerable.Empty<int>();
 
-        [FieldDefinition(5, Label = "IndexerSettingsAnimeStandardFormatSearch", Type = FieldType.Checkbox, HelpText = "IndexerSettingsAnimeStandardFormatSearchHelpText")]
+        // Legacy property for backward compatibility
         public bool AnimeStandardFormatSearch { get; set; }
 
-        [FieldDefinition(6, Label = "IndexerSettingsAdditionalParameters", HelpText = "IndexerSettingsAdditionalNewznabParametersHelpText", Advanced = true)]
+        [FieldDefinition(4, Label = "IndexerSettingsAdditionalParameters", HelpText = "IndexerSettingsAdditionalNewznabParametersHelpText", Advanced = true)]
         public string AdditionalParameters { get; set; }
 
-        [FieldDefinition(7, Type = FieldType.Select, SelectOptions = typeof(RealLanguageFieldConverter), Label = "IndexerSettingsMultiLanguageRelease", HelpText = "IndexerSettingsMultiLanguageReleaseHelpText", Advanced = true)]
+        [FieldDefinition(5, Type = FieldType.Select, SelectOptions = typeof(RealLanguageFieldConverter), Label = "IndexerSettingsMultiLanguageRelease", HelpText = "IndexerSettingsMultiLanguageReleaseHelpText", Advanced = true)]
         public IEnumerable<int> MultiLanguages { get; set; }
 
-        [FieldDefinition(8, Type = FieldType.Select, SelectOptions = typeof(FailDownloads), Label = "IndexerSettingsFailDownloads", HelpText = "IndexerSettingsFailDownloadsHelpText", Advanced = true)]
+        [FieldDefinition(6, Type = FieldType.Select, SelectOptions = typeof(FailDownloads), Label = "IndexerSettingsFailDownloads", HelpText = "IndexerSettingsFailDownloadsHelpText", Advanced = true)]
         public IEnumerable<int> FailDownloads { get; set; }
 
-        // Field 8 is used by TorznabSettings MinimumSeeders
+        // Field 6 is used by TorznabSettings MinimumSeeders
         // If you need to add another field here, update TorznabSettings as well and this comment
 
         public virtual PlayarrValidationResult Validate()

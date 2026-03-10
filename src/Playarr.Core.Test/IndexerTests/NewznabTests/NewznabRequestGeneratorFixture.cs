@@ -14,8 +14,8 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
     {
         private SingleEpisodeSearchCriteria _singleEpisodeSearchCriteria;
         private SeasonSearchCriteria _seasonSearchCriteria;
-        private AnimeEpisodeSearchCriteria _animeSearchCriteria;
-        private AnimeSeasonSearchCriteria _animeSeasonSearchCriteria;
+        private SingleEpisodeSearchCriteria _animeSearchCriteria;
+        private SeasonSearchCriteria _animeSeasonSearchCriteria;
         private NewznabCapabilities _capabilities;
 
         [SetUp]
@@ -49,16 +49,15 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
                 PlatformNumber = 1,
             };
 
-            _animeSearchCriteria = new AnimeEpisodeSearchCriteria()
+            _animeSearchCriteria = new SingleEpisodeSearchCriteria()
             {
                 Game = new Games.Game { MobyGamesId = 10, IgdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
                 SceneTitles = new List<string>() { "Monkey+Island" },
-                AbsoluteEpisodeNumber = 100,
                 PlatformNumber = 5,
                 EpisodeNumber = 4
             };
 
-            _animeSeasonSearchCriteria = new AnimeSeasonSearchCriteria()
+            _animeSeasonSearchCriteria = new SeasonSearchCriteria()
             {
                 Game = new Games.Game { MobyGamesId = 10, IgdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
                 SceneTitles = new List<string> { "Monkey Island" },

@@ -25,9 +25,9 @@ namespace Playarr.Core.Indexers.Torznab
         {
             RuleFor(c => c).Custom((c, context) =>
             {
-                if (c.Categories.Empty() && c.AnimeCategories.Empty())
+                if (c.Categories.Empty())
                 {
-                    context.AddFailure("Either 'Categories' or 'Anime Categories' must be provided");
+                    context.AddFailure("'Categories' must be provided");
                 }
             });
 
@@ -52,13 +52,13 @@ namespace Playarr.Core.Indexers.Torznab
             MinimumSeeders = IndexerDefaults.MINIMUM_SEEDERS;
         }
 
-        [FieldDefinition(9, Type = FieldType.Number, Label = "IndexerSettingsMinimumSeeders", HelpText = "IndexerSettingsMinimumSeedersHelpText", Advanced = true)]
+        [FieldDefinition(7, Type = FieldType.Number, Label = "IndexerSettingsMinimumSeeders", HelpText = "IndexerSettingsMinimumSeedersHelpText", Advanced = true)]
         public int MinimumSeeders { get; set; }
 
-        [FieldDefinition(10)]
+        [FieldDefinition(8)]
         public SeedCriteriaSettings SeedCriteria { get; set; } = new();
 
-        [FieldDefinition(11, Type = FieldType.Checkbox, Label = "IndexerSettingsRejectBlocklistedTorrentHashes", HelpText = "IndexerSettingsRejectBlocklistedTorrentHashesHelpText", Advanced = true)]
+        [FieldDefinition(9, Type = FieldType.Checkbox, Label = "IndexerSettingsRejectBlocklistedTorrentHashes", HelpText = "IndexerSettingsRejectBlocklistedTorrentHashesHelpText", Advanced = true)]
         public bool RejectBlocklistedTorrentHashesWhileGrabbing { get; set; }
 
         public override PlayarrValidationResult Validate()

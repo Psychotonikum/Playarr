@@ -60,18 +60,13 @@ namespace Playarr.Core.Indexers.Torznab
             };
         }
 
-        private TorznabSettings GetSettings(string url, string apiPath = null, int[] categories = null, int[] animeCategories = null)
+        private TorznabSettings GetSettings(string url, string apiPath = null, int[] categories = null)
         {
             var settings = new TorznabSettings { BaseUrl = url };
 
             if (categories != null)
             {
                 settings.Categories = categories;
-            }
-
-            if (animeCategories != null)
-            {
-                settings.AnimeCategories = animeCategories;
             }
 
             if (apiPath.IsNotNullOrWhiteSpace())
