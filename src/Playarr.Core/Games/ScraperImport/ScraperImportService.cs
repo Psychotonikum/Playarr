@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using NLog;
 using Playarr.Common.Disk;
+using Playarr.Common.Extensions;
 using Playarr.Core.MediaFiles;
+using Playarr.Core.Parser;
 using Playarr.Core.RootFolders;
 
 namespace Playarr.Core.Games.ScraperImport
@@ -17,21 +19,20 @@ namespace Playarr.Core.Games.ScraperImport
 
     public class ScraperImportService : IScraperImportService
     {
+        private static readonly object _idLock = new object();
+        private static int _nextLocalId = -1;
         private readonly IDiskProvider _diskProvider;
-        private readonly IAddGameService _addGameService;
         private readonly IGameService _gameService;
         private readonly IRootFolderService _rootFolderService;
         private readonly Logger _logger;
 
         public ScraperImportService(
             IDiskProvider diskProvider,
-            IAddGameService addGameService,
             IGameService gameService,
             IRootFolderService rootFolderService,
             Logger logger)
         {
             _diskProvider = diskProvider;
-            _addGameService = addGameService;
             _gameService = gameService;
             _rootFolderService = rootFolderService;
             _logger = logger;
@@ -290,31 +291,50 @@ namespace Playarr.Core.Games.ScraperImport
 
             if (existingGame == null)
             {
-                // Create new game
+                existingGame = _gameService.FindByTitle(request.GameName);
+            }
+
+            if (existingGame == null)
+            {
+                // Generate unique negative IgdbId for games without a real IGDB ID
+                var igdbId = request.IgdbId;
+                if (igdbId <= 0)
+                {
+                    lock (_idLock)
+                    {
+                        igdbId = _nextLocalId--;
+                    }
+                }
+
+                // Create new game directly without SkyHook lookup
                 var newGame = new Game
                 {
-                    IgdbId = request.IgdbId,
+                    IgdbId = igdbId,
                     Title = request.GameName,
-                    TitleSlug = request.GameName.ToLower().Replace(" ", "-").Replace(":", "").Replace("'", ""),
+                    CleanTitle = request.GameName.CleanGameTitle(),
+                    SortTitle = GameTitleNormalizer.Normalize(request.GameName, igdbId),
+                    TitleSlug = request.GameName.ToLower().Replace(" ", "-").Replace(":", "").Replace("'", "") + "-" + Math.Abs(igdbId),
                     QualityProfileId = request.QualityProfileId > 0 ? request.QualityProfileId : 1,
                     Path = Path.Combine(rootPath, request.GameName),
                     Monitored = true,
                     PlatformFolder = true,
-                    AddOptions = new AddGameOptions
-                    {
-                        SearchForMissingEpisodes = false
-                    }
+                    Added = DateTime.UtcNow,
+                    OriginalLanguage = Languages.Language.English,
                 };
 
                 try
                 {
-                    var addedGames = _addGameService.AddGame(new List<Game> { newGame }, true);
-                    existingGame = addedGames.FirstOrDefault();
+                    existingGame = _gameService.AddGame(newGame);
+                    _logger.Info("Added game {0} (Id: {1})", existingGame.Title, existingGame.Id);
+
+                    if (!_diskProvider.FolderExists(existingGame.Path))
+                    {
+                        _diskProvider.CreateFolder(existingGame.Path);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    _logger.Warn(ex, "Failed to add game {0}, trying to find existing", request.GameName);
-                    existingGame = _gameService.FindByTitle(request.GameName);
+                    _logger.Warn(ex, "Failed to add game {0}", request.GameName);
                 }
             }
 
