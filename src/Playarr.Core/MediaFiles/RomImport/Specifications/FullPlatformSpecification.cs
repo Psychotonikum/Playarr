@@ -1,3 +1,4 @@
+using System.Linq;
 using NLog;
 using Playarr.Core.Download;
 using Playarr.Core.Parser.Model;
@@ -22,6 +23,13 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Specifications
 
             if (localRom.FileRomInfo.FullSeason)
             {
+                // Accept ROM files in game folders that were matched to roms by platform folder name
+                if (localRom.ExistingFile && localRom.Roms.Any())
+                {
+                    _logger.Debug("ROM file matched to platform via folder name, accepting.");
+                    return ImportSpecDecision.Accept();
+                }
+
                 _logger.Debug("Single rom file detected as containing all roms in the platform due to no rom parsed from the file name.");
                 return ImportSpecDecision.Reject(ImportRejectionReason.FullSeason, "Single rom file contains all roms in platforms. Review file name or manually import");
             }

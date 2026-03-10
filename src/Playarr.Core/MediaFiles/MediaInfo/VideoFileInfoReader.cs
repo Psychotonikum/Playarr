@@ -50,6 +50,11 @@ namespace Playarr.Core.MediaFiles.MediaInfo
                 return null;
             }
 
+            if (MediaFileExtensions.RomExtensions.Contains(Path.GetExtension(filename)))
+            {
+                return null;
+            }
+
             // TODO: Cache media info by path, mtime and length so we don't need to read files multiple times
 
             try

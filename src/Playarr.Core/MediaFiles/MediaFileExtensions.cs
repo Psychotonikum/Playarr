@@ -12,66 +12,85 @@ namespace Playarr.Core.MediaFiles
         {
             _fileExtensions = new Dictionary<string, Quality>(StringComparer.OrdinalIgnoreCase)
             {
-                // Unknown
-                { ".webm", Quality.Unknown },
+                // Nintendo
+                { ".nes", Quality.Unknown },
+                { ".smc", Quality.Unknown },
+                { ".sfc", Quality.Unknown },
+                { ".gb", Quality.Unknown },
+                { ".gbc", Quality.Unknown },
+                { ".gba", Quality.Unknown },
+                { ".n64", Quality.Unknown },
+                { ".z64", Quality.Unknown },
+                { ".v64", Quality.Unknown },
+                { ".nds", Quality.Unknown },
+                { ".3ds", Quality.Unknown },
+                { ".cia", Quality.Unknown },
+                { ".nsp", Quality.Unknown },
+                { ".xci", Quality.Unknown },
+                { ".nro", Quality.Unknown },
+                { ".wad", Quality.Unknown },
+                { ".wbfs", Quality.Unknown },
+                { ".wia", Quality.Unknown },
+                { ".rvz", Quality.Unknown },
+                { ".gcm", Quality.Unknown },
+                { ".gcz", Quality.Unknown },
+                { ".dol", Quality.Unknown },
+                { ".wua", Quality.Unknown },
+                { ".rpx", Quality.Unknown },
 
-                // SDTV
-                { ".m4v", Quality.SDTV },
-                { ".3gp", Quality.SDTV },
-                { ".nsv", Quality.SDTV },
-                { ".ty", Quality.SDTV },
-                { ".strm", Quality.SDTV },
-                { ".rm", Quality.SDTV },
-                { ".rmvb", Quality.SDTV },
-                { ".m3u", Quality.SDTV },
-                { ".ifo", Quality.SDTV },
-                { ".mov", Quality.SDTV },
-                { ".qt", Quality.SDTV },
-                { ".divx", Quality.SDTV },
-                { ".xvid", Quality.SDTV },
-                { ".bivx", Quality.SDTV },
-                { ".nrg", Quality.SDTV },
-                { ".pva", Quality.SDTV },
-                { ".wmv", Quality.SDTV },
-                { ".asf", Quality.SDTV },
-                { ".asx", Quality.SDTV },
-                { ".ogm", Quality.SDTV },
-                { ".ogv", Quality.SDTV },
-                { ".m2v", Quality.SDTV },
-                { ".avi", Quality.SDTV },
-                { ".bin", Quality.SDTV },
-                { ".dat", Quality.SDTV },
-                { ".dvr-ms", Quality.SDTV },
-                { ".mpg", Quality.SDTV },
-                { ".mpeg", Quality.SDTV },
-                { ".mp4", Quality.SDTV },
-                { ".avc", Quality.SDTV },
-                { ".vp3", Quality.SDTV },
-                { ".svq3", Quality.SDTV },
-                { ".nuv", Quality.SDTV },
-                { ".viv", Quality.SDTV },
-                { ".dv", Quality.SDTV },
-                { ".fli", Quality.SDTV },
-                { ".flv", Quality.SDTV },
-                { ".wpl", Quality.SDTV },
+                // Sony
+                { ".pbp", Quality.Unknown },
+                { ".pkg", Quality.Unknown },
+                { ".vpk", Quality.Unknown },
 
-                // DVD
-                { ".img", Quality.DVD },
-                { ".iso", Quality.DVD },
-                { ".vob", Quality.DVD },
+                // Sega
+                { ".sms", Quality.Unknown },
+                { ".gg", Quality.Unknown },
+                { ".md", Quality.Unknown },
+                { ".gen", Quality.Unknown },
+                { ".32x", Quality.Unknown },
+                { ".cdi", Quality.Unknown },
+                { ".gdi", Quality.Unknown },
+                { ".cue", Quality.Unknown },
 
-                // HD
-                { ".mkv", Quality.HDTV720p },
-                { ".ts", Quality.HDTV720p },
-                { ".wtv", Quality.HDTV720p },
+                // Atari
+                { ".a26", Quality.Unknown },
+                { ".a52", Quality.Unknown },
+                { ".a78", Quality.Unknown },
+                { ".lnx", Quality.Unknown },
+                { ".jag", Quality.Unknown },
 
-                // Bluray
-                { ".m2ts", Quality.Bluray720p }
+                // General ROM/Disc Formats
+                { ".iso", Quality.Unknown },
+                { ".bin", Quality.Unknown },
+                { ".img", Quality.Unknown },
+                { ".chd", Quality.Unknown },
+                { ".cso", Quality.Unknown },
+                { ".ecm", Quality.Unknown },
+                { ".mdf", Quality.Unknown },
+                { ".mds", Quality.Unknown },
+                { ".7z", Quality.Unknown },
+                { ".zip", Quality.Unknown },
+                { ".rar", Quality.Unknown }
             };
         }
 
         public static HashSet<string> Extensions => new HashSet<string>(_fileExtensions.Keys, StringComparer.OrdinalIgnoreCase);
-        public static HashSet<string> DiskExtensions => new HashSet<string>(new[] { ".img", ".iso", ".vob" }, StringComparer.OrdinalIgnoreCase);
+        public static HashSet<string> DiskExtensions => new HashSet<string>(new[] { ".img", ".iso", ".chd", ".cso", ".mdf", ".gdi", ".cdi", ".cue", ".wbfs", ".wia", ".rvz", ".gcm", ".gcz" }, StringComparer.OrdinalIgnoreCase);
+
+        // ROM extensions that should not be analyzed by ffprobe
+        public static HashSet<string> RomExtensions => new HashSet<string>(
+            new[]
+            {
+                ".nes", ".smc", ".sfc", ".gb", ".gbc", ".gba", ".n64", ".z64", ".v64",
+                ".nds", ".3ds", ".cia", ".nsp", ".xci", ".nro", ".wad", ".wbfs", ".wia",
+                ".rvz", ".gcm", ".gcz", ".dol", ".wua", ".rpx", ".pbp", ".pkg", ".vpk",
+                ".sms", ".gg", ".md", ".gen", ".32x", ".cdi", ".gdi", ".cue",
+                ".a26", ".a52", ".a78", ".lnx", ".jag",
+                ".img", ".iso", ".bin", ".chd", ".cso", ".ecm", ".mdf", ".mds",
+                ".7z", ".zip", ".rar"
+            },
+            StringComparer.OrdinalIgnoreCase);
 
         public static Quality GetQualityForExtension(string extension)
         {

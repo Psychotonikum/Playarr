@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Playarr.Common.Extensions;
 using Playarr.Core.Download;
 using Playarr.Core.Parser;
@@ -13,15 +14,17 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Aggregation.Aggregators
         public int Order => 1;
 
         private readonly IParsingService _parsingService;
+        private readonly IRomService _romService;
 
-        public AggregateEpisodes(IParsingService parsingService)
+        public AggregateEpisodes(IParsingService parsingService, IRomService romService)
         {
             _parsingService = parsingService;
+            _romService = romService;
         }
 
         public LocalEpisode Aggregate(LocalEpisode localRom, DownloadClientItem downloadClientItem)
         {
-            localRom.Roms = GetEpisodes(localRom);
+            localRom.Roms = GetRoms(localRom);
 
             return localRom;
         }
@@ -64,19 +67,20 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Aggregation.Aggregators
             return specialRomInfo;
         }
 
-        private List<Rom> GetEpisodes(LocalEpisode localRom)
+        private List<Rom> GetRoms(LocalEpisode localRom)
         {
             var bestRomInfoForEpisodes = GetBestRomInfo(localRom);
             var isMediaFile = MediaFileExtensions.Extensions.Contains(Path.GetExtension(localRom.Path));
 
             if (bestRomInfoForEpisodes == null)
             {
-                return new List<Rom>();
+                // Fallback: match ROM files by platform folder name
+                return GetRomsByPlatformFolder(localRom);
             }
 
             if (ValidateParsedRomInfo.ValidateForGameType(bestRomInfoForEpisodes, localRom.Game, isMediaFile))
             {
-                var roms = _parsingService.GetEpisodes(bestRomInfoForEpisodes, localRom.Game, localRom.SceneSource);
+                var roms = _parsingService.GetRoms(bestRomInfoForEpisodes, localRom.Game, localRom.SceneSource);
 
                 if (roms.Empty() && bestRomInfoForEpisodes.IsPossibleSpecialEpisode)
                 {
@@ -84,14 +88,49 @@ namespace Playarr.Core.MediaFiles.EpisodeImport.Aggregation.Aggregators
 
                     if (parsedSpecialRomInfo != null)
                     {
-                        roms = _parsingService.GetEpisodes(parsedSpecialRomInfo, localRom.Game, localRom.SceneSource);
+                        roms = _parsingService.GetRoms(parsedSpecialRomInfo, localRom.Game, localRom.SceneSource);
                     }
+                }
+
+                // Fallback: if parsing found info but couldn't map to roms, try platform folder
+                if (roms.Empty())
+                {
+                    roms = GetRomsByPlatformFolder(localRom);
                 }
 
                 return roms;
             }
 
             return new List<Rom>();
+        }
+
+        private List<Rom> GetRomsByPlatformFolder(LocalEpisode localRom)
+        {
+            var game = localRom.Game;
+
+            if (game?.Platforms == null || !game.Platforms.Any())
+            {
+                return new List<Rom>();
+            }
+
+            var parentFolder = Path.GetDirectoryName(localRom.Path);
+            var folderName = Path.GetFileName(parentFolder);
+
+            if (folderName.IsNullOrWhiteSpace())
+            {
+                return new List<Rom>();
+            }
+
+            var matchedPlatform = game.Platforms
+                .FirstOrDefault(p => p.Title != null &&
+                    p.Title.Equals(folderName, System.StringComparison.OrdinalIgnoreCase));
+
+            if (matchedPlatform == null)
+            {
+                return new List<Rom>();
+            }
+
+            return _romService.GetRomsByPlatform(game.Id, matchedPlatform.PlatformNumber);
         }
 
         private bool PreferOtherRomInfo(ParsedRomInfo fileRomInfo, ParsedRomInfo otherRomInfo)
