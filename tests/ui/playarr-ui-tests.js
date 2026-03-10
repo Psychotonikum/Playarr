@@ -85,11 +85,23 @@ async function newPage() {
 }
 
 async function cleanup() {
-  // Remove all games via API
+  // Only remove games created by tests (tracked via testGames + known test igdbIds)
+  const testIgdbIds = new Set([1001, 1002, 2001, 2002, 2003]);
   const { body: games } = await httpRequest('GET', apiUrl('game'));
   if (Array.isArray(games)) {
     for (const g of games) {
-      await httpRequest('DELETE', apiUrl(`game/${g.id}`));
+      if (testIgdbIds.has(g.igdbId) || (testGames.game1 && g.id === testGames.game1.id) || (testGames.game2 && g.id === testGames.game2.id)) {
+        await httpRequest('DELETE', apiUrl(`game/${g.id}`));
+      }
+    }
+  }
+  // Also clean up scraper import test games by title
+  const { body: games2 } = await httpRequest('GET', apiUrl('game'));
+  if (Array.isArray(games2)) {
+    for (const g of games2) {
+      if (g.title === 'E2E Test Game') {
+        await httpRequest('DELETE', apiUrl(`game/${g.id}`));
+      }
     }
   }
 }
