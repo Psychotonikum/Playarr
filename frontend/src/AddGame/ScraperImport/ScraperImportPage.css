@@ -1,0 +1,115 @@
+.header {
+  margin: 10px 0 30px;
+  text-align: center;
+}
+
+.scanSection {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.pathInput {
+  flex: 1 1 auto;
+}
+
+.table {
+  width: 100%;
+}
+
+.headerCell {
+  padding: 8px 16px;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 1px solid var(--tableBorderColor);
+}
+
+.row {
+  &:hover {
+    background-color: var(--tableRowHoverBackgroundColor);
+  }
+}
+
+.cell {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--tableBorderColor);
+}
+
+.nameCell {
+  composes: cell;
+  font-weight: bold;
+}
+
+.systemCell {
+  composes: cell;
+}
+
+.typeCell {
+  composes: cell;
+}
+
+.filesCell {
+  composes: cell;
+  text-align: right;
+}
+
+.sizeCell {
+  composes: cell;
+  text-align: right;
+}
+
+.checkboxCell {
+  composes: cell;
+  width: 40px;
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  border-top: 1px solid var(--borderColor);
+  background-color: var(--pageFooterBackgroundColor);
+}
+
+.footerLeft {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.selectedCount {
+  font-weight: bold;
+}
+
+.importingSpinner {
+  margin-right: 10px;
+}
+
+.resultsSection {
+  margin-top: 20px;
+}
+
+.resultSuccess {
+  color: var(--successColor);
+}
+
+.resultError {
+  color: var(--dangerColor);
+}
+
+.fileDetails {
+  padding: 4px 16px 4px 40px;
+  font-size: 12px;
+  color: var(--textMutedColor);
+}
+
+.systemBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background-color: var(--labelBackgroundColor);
+  font-size: 12px;
+}

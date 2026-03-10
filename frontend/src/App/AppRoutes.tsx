@@ -5,6 +5,7 @@ import History from 'Activity/History/History';
 import Queue from 'Activity/Queue/Queue';
 import AddNewGame from 'AddGame/AddNewGame/AddNewGame';
 import ImportGamePage from 'AddGame/ImportGame/ImportGamePage';
+import ScraperImportPage from 'AddGame/ScraperImport/ScraperImportPage';
 import CalendarPage from 'Calendar/CalendarPage';
 import NotFound from 'Components/NotFound';
 import Switch from 'Components/Router/Switch';
@@ -59,6 +60,8 @@ function AppRoutes() {
       <Route path="/add/new" component={AddNewGame} />
 
       <Route path="/add/import" component={ImportGamePage} />
+
+      <Route path="/add/scrape" component={ScraperImportPage} />
 
       <Route path="/serieseditor" exact={true} render={RedirectWithUrlBase} />
 
