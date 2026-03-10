@@ -150,31 +150,9 @@ namespace Playarr.Core.Organizer
                 throw new NamingFormatException("Standard rom format cannot be empty");
             }
 
-            if (namingConfig.DailyEpisodeFormat.IsNullOrWhiteSpace() && game.SeriesType == GameTypes.Daily)
-            {
-                throw new NamingFormatException("Daily rom format cannot be empty");
-            }
-
-            if (namingConfig.AnimeEpisodeFormat.IsNullOrWhiteSpace() && game.SeriesType == GameTypes.Anime)
-            {
-                throw new NamingFormatException("Anime rom format cannot be empty");
-            }
-
             var pattern = namingConfig.StandardEpisodeFormat;
 
             roms = roms.OrderBy(e => e.PlatformNumber).ThenBy(e => e.EpisodeNumber).ToList();
-
-            if (game.SeriesType == GameTypes.Daily && roms.First().PlatformNumber > 0)
-            {
-                pattern = namingConfig.DailyEpisodeFormat;
-            }
-
-            if (game.SeriesType == GameTypes.Anime &&
-                (roms.All(e => e.AbsoluteEpisodeNumber.HasValue) ||
-                !RequiresAbsoluteRomNumber()))
-            {
-                pattern = namingConfig.AnimeEpisodeFormat;
-            }
 
             var splitPatterns = pattern.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
             var components = new List<string>();
@@ -406,16 +384,6 @@ namespace Playarr.Core.Organizer
                 return false;
             }
 
-            if (game.SeriesType == GameTypes.Daily)
-            {
-                pattern = namingConfig.DailyEpisodeFormat;
-            }
-
-            if (game.SeriesType == GameTypes.Anime && roms.All(e => e.AbsoluteEpisodeNumber.HasValue))
-            {
-                pattern = namingConfig.AnimeEpisodeFormat;
-            }
-
             return _requiresRomTitleCache.Get(pattern, () =>
             {
                 var matches = TitleRegex.Matches(pattern);
@@ -533,60 +501,10 @@ namespace Playarr.Core.Organizer
         {
             var absoluteEpisodeFormats = GetAbsoluteFormat(pattern).DistinctBy(v => v.AbsoluteEpisodePattern).ToList();
 
-            var index = 1;
             foreach (var absoluteEpisodeFormat in absoluteEpisodeFormats)
             {
-                if (game.SeriesType != GameTypes.Anime || roms.Any(e => !e.AbsoluteEpisodeNumber.HasValue))
-                {
-                    pattern = pattern.Replace(absoluteEpisodeFormat.AbsoluteEpisodePattern, "");
-                    continue;
-                }
-
-                var absoluteEpisodePattern = absoluteEpisodeFormat.AbsoluteEpisodePattern;
-                string formatPattern;
-
-                switch ((MultiEpisodeStyle)namingConfig.MultiEpisodeStyle)
-                {
-                    case MultiEpisodeStyle.Duplicate:
-                        formatPattern = absoluteEpisodeFormat.Separator + absoluteEpisodeFormat.AbsoluteEpisodePattern;
-                        absoluteEpisodePattern = FormatAbsoluteNumberTokens(absoluteEpisodePattern, formatPattern, roms);
-                        break;
-
-                    case MultiEpisodeStyle.Repeat:
-                        var repeatSeparator = absoluteEpisodeFormat.Separator.Trim().IsNullOrWhiteSpace() ? " " : absoluteEpisodeFormat.Separator.Trim();
-
-                        formatPattern = repeatSeparator + absoluteEpisodeFormat.AbsoluteEpisodePattern;
-                        absoluteEpisodePattern = FormatAbsoluteNumberTokens(absoluteEpisodePattern, formatPattern, roms);
-                        break;
-
-                    case MultiEpisodeStyle.Scene:
-                        formatPattern = "-" + absoluteEpisodeFormat.AbsoluteEpisodePattern;
-                        absoluteEpisodePattern = FormatAbsoluteNumberTokens(absoluteEpisodePattern, formatPattern, roms);
-                        break;
-
-                    case MultiEpisodeStyle.Range:
-                    case MultiEpisodeStyle.PrefixedRange:
-                        formatPattern = "-" + absoluteEpisodeFormat.AbsoluteEpisodePattern;
-                        var eps = new List<Rom> { roms.First() };
-
-                        if (roms.Count > 1)
-                        {
-                            eps.Add(roms.Last());
-                        }
-
-                        absoluteEpisodePattern = FormatAbsoluteNumberTokens(absoluteEpisodePattern, formatPattern, eps);
-                        break;
-
-                        // MultiEpisodeStyle.Extend
-                    default:
-                        formatPattern = "-" + absoluteEpisodeFormat.AbsoluteEpisodePattern;
-                        absoluteEpisodePattern = FormatAbsoluteNumberTokens(absoluteEpisodePattern, formatPattern, roms);
-                        break;
-                }
-
-                var token = string.Format("{{Absolute Pattern{0}}}", index++);
-                pattern = pattern.Replace(absoluteEpisodeFormat.AbsoluteEpisodePattern, token);
-                tokenHandlers[token] = m => absoluteEpisodePattern;
+                // Absolute numbering not used for games - strip tokens
+                pattern = pattern.Replace(absoluteEpisodeFormat.AbsoluteEpisodePattern, "");
             }
 
             return pattern;
@@ -1092,11 +1010,6 @@ namespace Playarr.Core.Organizer
         {
             if (quality.Revision.Version > 1)
             {
-                if (game.SeriesType == GameTypes.Anime)
-                {
-                    return "v" + quality.Revision.Version;
-                }
-
                 return "Proper";
             }
 

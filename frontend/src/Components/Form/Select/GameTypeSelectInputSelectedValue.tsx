@@ -1,6 +1,6 @@
 import React from 'react';
-import HintedSelectInputSelectedValue from './HintedSelectInputSelectedValue';
 import { IGameTypeOption } from './GameTypeSelectInput';
+import HintedSelectInputSelectedValue from './HintedSelectInputSelectedValue';
 
 interface GameTypeSelectInputOptionProps {
   selectedValue: string;

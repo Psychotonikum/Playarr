@@ -33,20 +33,6 @@ const gameTypeOptions: IGameTypeOption[] = [
       return translate('StandardEpisodeTypeFormat', { format: 'S01E05' });
     },
   },
-  {
-    key: gameTypes.DAILY,
-    value: 'Daily / Date',
-    get format() {
-      return translate('DailyEpisodeTypeFormat', { format: '2020-05-25' });
-    },
-  },
-  {
-    key: gameTypes.ANIME,
-    value: 'Anime / Absolute',
-    get format() {
-      return translate('AnimeEpisodeTypeFormat', { format: '005' });
-    },
-  },
 ];
 
 function GameTypeSelectInput(props: GameTypeSelectInputProps) {
