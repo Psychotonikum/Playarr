@@ -20,10 +20,8 @@ import GameBanner from 'Game/GameBanner';
 import { useGameTableOptions } from 'Game/gameOptionsStore';
 import GameTitleLink from 'Game/GameTitleLink';
 import { icons } from 'Helpers/Props';
-import useCountryName from 'Internationalization/useCountryName';
 import { SelectStateInputProps } from 'typings/props';
 import formatBytes from 'Utilities/Number/formatBytes';
-import titleCase from 'Utilities/String/titleCase';
 import translate from 'Utilities/String/translate';
 import GameIndexProgressBar from '../ProgressBar/GameIndexProgressBar';
 import useGameIndexItem from '../useGameIndexItem';
@@ -45,7 +43,6 @@ function GameIndexRow(props: GameIndexRowProps) {
   const {
     game,
     qualityProfile,
-    latestPlatform,
     isRefreshingSeries,
     isSearchingSeries,
   } = useGameIndexItem(gameId);
@@ -57,7 +54,6 @@ function GameIndexRow(props: GameIndexRowProps) {
   const [isEditGameModalOpen, setIsEditGameModalOpen] = useState(false);
   const [isDeleteGameModalOpen, setIsDeleteGameModalOpen] = useState(false);
   const { getIsSelected, toggleSelected } = useSelect();
-  const originalCountryName = useCountryName(game?.originalCountry);
 
   const onRefreshPress = useCallback(() => {
     executeCommand({
@@ -120,20 +116,14 @@ function GameIndexRow(props: GameIndexRowProps) {
   const {
     title,
     monitored,
-    monitorNewItems,
     status,
     path,
     titleSlug,
-    nextAiring,
-    previousAiring,
     added,
     statistics = {} as Statistics,
     platformFolder,
     images,
-    gameType,
-    network,
     originalLanguage,
-    certification,
     year,
     genres = [],
     ratings,
@@ -215,34 +205,12 @@ function GameIndexRow(props: GameIndexRowProps) {
           );
         }
 
-        if (name === 'gameType') {
-          return (
-            <VirtualTableRowCell key={name} className={styles[name]}>
-              {titleCase(gameType)}
-            </VirtualTableRowCell>
-          );
-        }
 
-        if (name === 'network') {
-          return (
-            <VirtualTableRowCell key={name} className={styles[name]}>
-              {network}
-            </VirtualTableRowCell>
-          );
-        }
-
-        if (name === 'originalCountry') {
-          return (
-            <VirtualTableRowCell key={name} className={styles[name]}>
-              {originalCountryName}
-            </VirtualTableRowCell>
-          );
-        }
 
         if (name === 'originalLanguage') {
           return (
             <VirtualTableRowCell key={name} className={styles[name]}>
-              {originalLanguage.name}
+              {originalLanguage?.name ?? ''}
             </VirtualTableRowCell>
           );
         }
@@ -255,31 +223,7 @@ function GameIndexRow(props: GameIndexRowProps) {
           );
         }
 
-        if (name === 'nextAiring') {
-          return (
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore ts(2739)
-            <RelativeDateCell
-              key={name}
-              className={styles[name]}
-              date={nextAiring}
-              component={VirtualTableRowCell}
-            />
-          );
-        }
 
-        if (name === 'previousAiring') {
-          return (
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore ts(2739)
-            <RelativeDateCell
-              key={name}
-              className={styles[name]}
-              date={previousAiring}
-              component={VirtualTableRowCell}
-            />
-          );
-        }
 
         if (name === 'added') {
           return (
@@ -338,30 +282,7 @@ function GameIndexRow(props: GameIndexRowProps) {
           );
         }
 
-        if (name === 'latestPlatform') {
-          if (!latestPlatform) {
-            return <VirtualTableRowCell key={name} className={styles[name]} />;
-          }
 
-          const platformStatistics = latestPlatform.statistics || {};
-
-          return (
-            <VirtualTableRowCell key={name} className={styles[name]}>
-              <GameIndexProgressBar
-                gameId={gameId}
-                platformNumber={latestPlatform.platformNumber}
-                monitored={monitored}
-                status={status}
-                romCount={platformStatistics.romCount}
-                romFileCount={platformStatistics.romFileCount}
-                totalRomCount={platformStatistics.totalRomCount}
-                width={125}
-                detailedProgressBar={true}
-                isStandalone={true}
-              />
-            </VirtualTableRowCell>
-          );
-        }
 
         if (name === 'romCount') {
           return (
@@ -408,18 +329,12 @@ function GameIndexRow(props: GameIndexRowProps) {
         if (name === 'ratings') {
           return (
             <VirtualTableRowCell key={name} className={styles[name]}>
-              <HeartRating rating={ratings.value} votes={ratings.votes} />
+              <HeartRating rating={ratings?.value ?? 0} votes={ratings?.votes ?? 0} />
             </VirtualTableRowCell>
           );
         }
 
-        if (name === 'certification') {
-          return (
-            <VirtualTableRowCell key={name} className={styles[name]}>
-              {certification}
-            </VirtualTableRowCell>
-          );
-        }
+
 
         if (name === 'releaseGroups') {
           const joinedReleaseGroups = releaseGroups.join(', ');
@@ -443,15 +358,7 @@ function GameIndexRow(props: GameIndexRowProps) {
           );
         }
 
-        if (name === 'monitorNewItems') {
-          return (
-            <VirtualTableRowCell key={name} className={styles[name]}>
-              {monitorNewItems === 'all'
-                ? translate('SeasonsMonitoredAll')
-                : translate('SeasonsMonitoredNone')}
-            </VirtualTableRowCell>
-          );
-        }
+
 
         if (name === 'actions') {
           return (

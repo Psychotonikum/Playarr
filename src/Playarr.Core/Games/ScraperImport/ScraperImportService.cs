@@ -6,6 +6,7 @@ using NLog;
 using Playarr.Common.Disk;
 using Playarr.Common.Extensions;
 using Playarr.Core.MediaFiles;
+using Playarr.Core.MetadataSource;
 using Playarr.Core.Parser;
 using Playarr.Core.RootFolders;
 
@@ -24,17 +25,20 @@ namespace Playarr.Core.Games.ScraperImport
         private readonly IDiskProvider _diskProvider;
         private readonly IGameService _gameService;
         private readonly IRootFolderService _rootFolderService;
+        private readonly IProvideSeriesInfo _seriesInfo;
         private readonly Logger _logger;
 
         public ScraperImportService(
             IDiskProvider diskProvider,
             IGameService gameService,
             IRootFolderService rootFolderService,
+            IProvideSeriesInfo seriesInfo,
             Logger logger)
         {
             _diskProvider = diskProvider;
             _gameService = gameService;
             _rootFolderService = rootFolderService;
+            _seriesInfo = seriesInfo;
             _logger = logger;
         }
 
@@ -298,6 +302,23 @@ namespace Playarr.Core.Games.ScraperImport
             {
                 // Generate unique negative IgdbId for games without a real IGDB ID
                 var igdbId = request.IgdbId;
+                Game igdbGame = null;
+
+                // If we have a positive IGDB ID, fetch full metadata from IGDB
+                if (igdbId > 0)
+                {
+                    try
+                    {
+                        var result = _seriesInfo.GetGameInfo(igdbId);
+                        igdbGame = result.Item1;
+                        _logger.Info("Fetched IGDB metadata for {0} (IgdbId: {1})", igdbGame.Title, igdbId);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Warn(ex, "Failed to fetch IGDB metadata for IgdbId {0}, creating with local data", igdbId);
+                    }
+                }
+
                 if (igdbId <= 0)
                 {
                     lock (_idLock)
@@ -306,24 +327,37 @@ namespace Playarr.Core.Games.ScraperImport
                     }
                 }
 
-                // Create new game directly without SkyHook lookup
+                // Create new game - use IGDB data if available, otherwise use local data
                 var gamePath = Path.Combine(rootPath, system.FolderName);
 
-                var newGame = new Game
+                Game newGame;
+                if (igdbGame != null)
                 {
-                    IgdbId = igdbId,
-                    Title = request.GameName,
-                    CleanTitle = request.GameName.CleanGameTitle(),
-                    SortTitle = GameTitleNormalizer.Normalize(request.GameName, igdbId),
-                    TitleSlug = request.GameName.ToLower().Replace(" ", "-").Replace(":", "").Replace("'", "") + "-" + Math.Abs(igdbId),
-                    QualityProfileId = request.QualityProfileId > 0 ? request.QualityProfileId : 1,
-                    Path = gamePath,
-                    Monitored = true,
-                    PlatformFolder = true,
-                    Added = DateTime.UtcNow,
-                    OriginalLanguage = Languages.Language.English,
-                    Status = GameStatusType.Ended,
-                };
+                    newGame = igdbGame;
+                    newGame.Path = gamePath;
+                    newGame.QualityProfileId = request.QualityProfileId > 0 ? request.QualityProfileId : 1;
+                    newGame.Monitored = true;
+                    newGame.PlatformFolder = true;
+                    newGame.Added = DateTime.UtcNow;
+                }
+                else
+                {
+                    newGame = new Game
+                    {
+                        IgdbId = igdbId,
+                        Title = request.GameName,
+                        CleanTitle = request.GameName.CleanGameTitle(),
+                        SortTitle = GameTitleNormalizer.Normalize(request.GameName, igdbId),
+                        TitleSlug = request.GameName.ToLower().Replace(" ", "-").Replace(":", "").Replace("'", "") + "-" + Math.Abs(igdbId),
+                        QualityProfileId = request.QualityProfileId > 0 ? request.QualityProfileId : 1,
+                        Path = gamePath,
+                        Monitored = true,
+                        PlatformFolder = true,
+                        Added = DateTime.UtcNow,
+                        OriginalLanguage = Languages.Language.English,
+                        Status = GameStatusType.Ended,
+                    };
+                }
 
                 try
                 {

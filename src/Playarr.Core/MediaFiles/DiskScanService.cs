@@ -176,15 +176,7 @@ namespace Playarr.Core.MediaFiles
 
             RemoveEmptyGameFolder(game.Path);
 
-            var possibleExtraFiles = new List<string>();
-
-            if (_diskProvider.FolderExists(game.Path))
-            {
-                var extraFiles = GetNonVideoFiles(game.Path);
-                possibleExtraFiles = FilterPaths(game.Path, extraFiles);
-            }
-
-            CompletedScanning(game, possibleExtraFiles);
+            CompletedScanning(game, new List<string>());
         }
 
         private void CleanMediaFiles(Game game, List<string> mediaFileList)

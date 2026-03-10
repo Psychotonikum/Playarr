@@ -113,13 +113,11 @@ function GameIndexOverview(props: GameIndexOverviewProps) {
     path,
     titleSlug,
     nextAiring,
-    previousAiring,
     added,
     overview,
     statistics = {} as Statistics,
     images,
     tags,
-    network,
   } = game;
 
   const {
@@ -237,9 +235,7 @@ function GameIndexOverview(props: GameIndexOverviewProps) {
             <GameIndexOverviewInfo
               height={overviewHeight}
               monitored={monitored}
-              network={network}
               nextAiring={nextAiring}
-              previousAiring={previousAiring}
               added={added}
               platformCount={platformCount}
               qualityProfile={qualityProfile}

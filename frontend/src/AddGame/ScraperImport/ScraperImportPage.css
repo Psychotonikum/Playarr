@@ -113,3 +113,140 @@
   background-color: var(--labelBackgroundColor);
   font-size: 12px;
 }
+
+.matchToolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px 16px;
+  border: 1px solid var(--borderColor);
+  border-radius: 4px;
+  background-color: var(--tableHeaderBackgroundColor);
+}
+
+.matchCount {
+  font-weight: bold;
+}
+
+.autoMatchProgress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.matchCell {
+  composes: cell;
+}
+
+.matchedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--successColor);
+  font-size: 13px;
+}
+
+.clearMatchButton {
+  margin-left: 6px;
+  padding: 0 4px;
+  border: none;
+  background: none;
+  color: var(--dangerColor);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.unmatchedBadge {
+  color: var(--textMutedColor);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.actionCell {
+  composes: cell;
+  text-align: right;
+}
+
+.identifySearch {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.identifyInput {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--inputBorderColor);
+  border-radius: 4px;
+  background-color: var(--inputBackgroundColor);
+  color: var(--textColor);
+  font-size: 14px;
+}
+
+.identifyResults {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.identifyResultRow {
+  display: flex;
+  gap: 15px;
+  padding: 10px;
+  border-bottom: 1px solid var(--borderColor);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--tableRowHoverBackgroundColor);
+  }
+}
+
+.identifyPoster {
+  flex: 0 0 60px;
+}
+
+.identifyPosterImage {
+  width: 60px;
+  height: 80px;
+  border-radius: 3px;
+  object-fit: cover;
+}
+
+.identifyPosterPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 80px;
+  border-radius: 3px;
+  background-color: var(--labelBackgroundColor);
+  font-size: 24px;
+}
+
+.identifyInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.identifyTitle {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.identifyYear {
+  color: var(--textMutedColor);
+  font-weight: normal;
+}
+
+.identifyOverview {
+  margin-top: 4px;
+  color: var(--textMutedColor);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.identifyIgdbId {
+  margin-top: 4px;
+  color: var(--textMutedColor);
+  font-size: 11px;
+}

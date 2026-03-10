@@ -6,7 +6,6 @@ interface CssExports {
   'content': string;
   'controls': string;
   'deleted': string;
-  'ended': string;
   'link': string;
   'nextAiring': string;
   'overlayTitle': string;

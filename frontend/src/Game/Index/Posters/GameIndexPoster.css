@@ -82,10 +82,6 @@ $hoverScale: 1.05;
   border-style: solid;
   color: var(--white);
 
-  &.ended {
-    border-color: transparent var(--dangerColor) transparent transparent;
-  }
-
   &.deleted {
     border-color: transparent var(--gray) transparent transparent;
   }

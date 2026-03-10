@@ -28,19 +28,15 @@ interface RowInfoProps {
 
 interface GameIndexOverviewInfoProps {
   height: number;
-  showNetwork: boolean;
   showMonitored: boolean;
   showQualityProfile: boolean;
-  showPreviousAiring: boolean;
   showAdded: boolean;
   showPlatformCount: boolean;
   showPath: boolean;
   showSizeOnDisk: boolean;
   monitored: boolean;
   nextAiring?: string;
-  network?: string;
   qualityProfile?: QualityProfileModel;
-  previousAiring?: string;
   added?: string;
   platformCount: number;
   path: string;
@@ -57,19 +53,9 @@ const rows = [
     valueProp: 'monitored',
   },
   {
-    name: 'network',
-    showProp: 'showNetwork',
-    valueProp: 'network',
-  },
-  {
     name: 'qualityProfileId',
     showProp: 'showQualityProfile',
     valueProp: 'qualityProfile',
-  },
-  {
-    name: 'previousAiring',
-    showProp: 'showPreviousAiring',
-    valueProp: 'previousAiring',
   },
   {
     name: 'added',
@@ -112,39 +98,11 @@ function getInfoRowProps(
     };
   }
 
-  if (name === 'network') {
-    return {
-      title: translate('Network'),
-      iconName: icons.NETWORK,
-      label: props.network ?? '',
-    };
-  }
-
   if (name === 'qualityProfileId' && !!props.qualityProfile?.name) {
     return {
       title: translate('QualityProfile'),
       iconName: icons.PROFILE,
       label: props.qualityProfile.name,
-    };
-  }
-
-  if (name === 'previousAiring') {
-    const previousAiring = props.previousAiring;
-    const { showRelativeDates, shortDateFormat, longDateFormat, timeFormat } =
-      uiSettings;
-
-    return {
-      title: translate('PreviousAiringDate', {
-        date: formatDateTime(previousAiring, longDateFormat, timeFormat),
-      }),
-      iconName: icons.CALENDAR,
-      label: getRelativeDate({
-        date: previousAiring,
-        shortDateFormat,
-        showRelativeDates,
-        timeFormat,
-        timeForToday: true,
-      }),
     };
   }
 

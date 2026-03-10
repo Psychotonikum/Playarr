@@ -167,13 +167,6 @@ function GameIndexPoster(props: GameIndexPosterProps) {
           />
         </Label>
 
-        {status === 'ended' ? (
-          <div
-            className={classNames(styles.status, styles.ended)}
-            title={translate('Ended')}
-          />
-        ) : null}
-
         {status === 'deleted' ? (
           <div
             className={classNames(styles.status, styles.deleted)}

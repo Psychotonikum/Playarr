@@ -21,9 +21,7 @@ export interface SeriesOptions {
     detailedProgressBar: boolean;
     size: 'small' | 'medium' | 'large';
     showMonitored: boolean;
-    showNetwork: boolean;
     showQualityProfile: boolean;
-    showPreviousAiring: boolean;
     showAdded: boolean;
     showPlatformCount: boolean;
     showPath: boolean;
@@ -62,9 +60,7 @@ const { useOptions, useOption, setOptions, setOption, setSort, getOptions } =
         detailedProgressBar: false,
         size: 'medium',
         showMonitored: true,
-        showNetwork: true,
         showQualityProfile: true,
-        showPreviousAiring: false,
         showAdded: false,
         showPlatformCount: true,
         showPath: false,
@@ -96,40 +92,10 @@ const { useOptions, useOption, setOptions, setOption, setSort, getOptions } =
           isModifiable: false,
         },
         {
-          name: 'gameType',
-          label: () => translate('Type'),
-          isSortable: true,
-          isVisible: false,
-        },
-        {
-          name: 'network',
-          label: () => translate('Network'),
-          isSortable: true,
-          isVisible: true,
-        },
-        {
           name: 'qualityProfileId',
           label: () => translate('QualityProfile'),
           isSortable: true,
           isVisible: true,
-        },
-        {
-          name: 'nextAiring',
-          label: () => translate('NextAiring'),
-          isSortable: true,
-          isVisible: true,
-        },
-        {
-          name: 'previousAiring',
-          label: () => translate('PreviousAiring'),
-          isSortable: true,
-          isVisible: false,
-        },
-        {
-          name: 'originalCountry',
-          label: () => translate('OriginalCountry'),
-          isSortable: true,
-          isVisible: false,
         },
         {
           name: 'originalLanguage',
@@ -141,7 +107,7 @@ const { useOptions, useOption, setOptions, setOption, setSort, getOptions } =
           name: 'added',
           label: () => translate('Added'),
           isSortable: true,
-          isVisible: false,
+          isVisible: true,
         },
         {
           name: 'platformCount',
@@ -168,16 +134,10 @@ const { useOptions, useOption, setOptions, setOption, setSort, getOptions } =
           isVisible: false,
         },
         {
-          name: 'latestSeason',
-          label: () => translate('LatestSeason'),
-          isSortable: true,
-          isVisible: false,
-        },
-        {
           name: 'year',
           label: () => translate('Year'),
           isSortable: true,
-          isVisible: false,
+          isVisible: true,
         },
         {
           name: 'path',
@@ -189,7 +149,7 @@ const { useOptions, useOption, setOptions, setOption, setSort, getOptions } =
           name: 'sizeOnDisk',
           label: () => translate('SizeOnDisk'),
           isSortable: true,
-          isVisible: false,
+          isVisible: true,
         },
         {
           name: 'genres',
@@ -204,12 +164,6 @@ const { useOptions, useOption, setOptions, setOption, setSort, getOptions } =
           isVisible: false,
         },
         {
-          name: 'certification',
-          label: () => translate('Certification'),
-          isSortable: false,
-          isVisible: false,
-        },
-        {
           name: 'releaseGroups',
           label: () => translate('ReleaseGroups'),
           isSortable: false,
@@ -218,12 +172,6 @@ const { useOptions, useOption, setOptions, setOption, setSort, getOptions } =
         {
           name: 'tags',
           label: () => translate('Tags'),
-          isSortable: true,
-          isVisible: false,
-        },
-        {
-          name: 'monitorNewItems',
-          label: () => translate('MonitorNewSeasons'),
           isSortable: true,
           isVisible: false,
         },

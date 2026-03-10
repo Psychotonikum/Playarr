@@ -48,9 +48,7 @@ function GameIndexOverviewOptionsModalContent({
     detailedProgressBar,
     size,
     showMonitored,
-    showNetwork,
     showQualityProfile,
-    showPreviousAiring,
     showAdded,
     showPlatformCount,
     showPath,
@@ -108,34 +106,12 @@ function GameIndexOverviewOptionsModalContent({
           </FormGroup>
 
           <FormGroup>
-            <FormLabel>{translate('ShowNetwork')}</FormLabel>
-
-            <FormInputGroup
-              type={inputTypes.CHECK}
-              name="showNetwork"
-              value={showNetwork}
-              onChange={onOverviewOptionChange}
-            />
-          </FormGroup>
-
-          <FormGroup>
             <FormLabel>{translate('ShowQualityProfile')}</FormLabel>
 
             <FormInputGroup
               type={inputTypes.CHECK}
               name="showQualityProfile"
               value={showQualityProfile}
-              onChange={onOverviewOptionChange}
-            />
-          </FormGroup>
-
-          <FormGroup>
-            <FormLabel>{translate('ShowPreviousAiring')}</FormLabel>
-
-            <FormInputGroup
-              type={inputTypes.CHECK}
-              name="showPreviousAiring"
-              value={showPreviousAiring}
               onChange={onOverviewOptionChange}
             />
           </FormGroup>
