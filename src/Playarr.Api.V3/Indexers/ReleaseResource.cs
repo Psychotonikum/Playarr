@@ -206,7 +206,7 @@ namespace Playarr.Api.V3.Indexers
     {
         public int Id { get; set; }
         public int PlatformNumber { get; set; }
-        public int EpisodeNumber { get; set; }
+        public int RomNumber { get; set; }
         public int? AbsoluteEpisodeNumber { get; set; }
         public string Title { get; set; }
 
@@ -218,7 +218,7 @@ namespace Playarr.Api.V3.Indexers
         {
             Id = rom.Id;
             PlatformNumber = rom.PlatformNumber;
-            EpisodeNumber = rom.EpisodeNumber;
+            RomNumber = rom.EpisodeNumber;
             AbsoluteEpisodeNumber = rom.AbsoluteEpisodeNumber;
             Title = rom.Title;
         }

@@ -15,9 +15,9 @@ namespace Playarr.Api.V3.Roms
     {
         public int GameId { get; set; }
         public int IgdbId { get; set; }
-        public int EpisodeFileId { get; set; }
+        public int RomFileId { get; set; }
         public int PlatformNumber { get; set; }
-        public int EpisodeNumber { get; set; }
+        public int RomNumber { get; set; }
         public string Title { get; set; }
         public string AirDate { get; set; }
         public DateTime? AirDateUtc { get; set; }
@@ -57,9 +57,9 @@ namespace Playarr.Api.V3.Roms
 
                 GameId = model.GameId,
                 IgdbId = model.IgdbId,
-                EpisodeFileId = model.EpisodeFileId,
+                RomFileId = model.EpisodeFileId,
                 PlatformNumber = model.PlatformNumber,
-                EpisodeNumber = model.EpisodeNumber,
+                RomNumber = model.EpisodeNumber,
                 Title = model.Title,
                 AirDate = model.AirDate,
                 AirDateUtc = model.AirDateUtc,

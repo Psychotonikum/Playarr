@@ -298,7 +298,7 @@ namespace Playarr.Integration.Test
 
         public RomFileResource EnsureRomFile(GameResource game, int platform, int rom, Quality quality)
         {
-            var result = Roms.GetEpisodesInSeries(game.Id).Single(v => v.PlatformNumber == platform && v.EpisodeNumber == rom);
+            var result = Roms.GetEpisodesInSeries(game.Id).Single(v => v.PlatformNumber == platform && v.RomNumber == rom);
 
             if (result.RomFile == null)
             {
@@ -311,9 +311,9 @@ namespace Playarr.Integration.Test
 
                 Commands.WaitAll();
 
-                result = Roms.GetEpisodesInSeries(game.Id).Single(v => v.PlatformNumber == platform && v.EpisodeNumber == rom);
+                result = Roms.GetEpisodesInSeries(game.Id).Single(v => v.PlatformNumber == platform && v.RomNumber == rom);
 
-                result.EpisodeFileId.Should().NotBe(0);
+                result.RomFileId.Should().NotBe(0);
             }
 
             return result.RomFile;

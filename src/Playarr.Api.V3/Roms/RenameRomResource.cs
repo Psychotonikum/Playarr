@@ -9,7 +9,7 @@ namespace Playarr.Api.V3.Roms
         public int GameId { get; set; }
         public int PlatformNumber { get; set; }
         public List<int> RomNumbers { get; set; }
-        public int EpisodeFileId { get; set; }
+        public int RomFileId { get; set; }
         public string ExistingPath { get; set; }
         public string NewPath { get; set; }
     }
@@ -29,7 +29,7 @@ namespace Playarr.Api.V3.Roms
                 GameId = model.GameId,
                 PlatformNumber = model.PlatformNumber,
                 RomNumbers = model.RomNumbers.ToList(),
-                EpisodeFileId = model.EpisodeFileId,
+                RomFileId = model.EpisodeFileId,
                 ExistingPath = model.ExistingPath,
                 NewPath = model.NewPath
             };

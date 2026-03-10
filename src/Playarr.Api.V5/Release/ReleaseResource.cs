@@ -82,7 +82,7 @@ public class ReleaseRomResource
 {
     public int Id { get; set; }
     public int PlatformNumber { get; set; }
-    public int EpisodeNumber { get; set; }
+    public int RomNumber { get; set; }
     public int? AbsoluteEpisodeNumber { get; set; }
     public string? Title { get; set; }
 
@@ -94,7 +94,7 @@ public class ReleaseRomResource
     {
         Id = rom.Id;
         PlatformNumber = rom.PlatformNumber;
-        EpisodeNumber = rom.EpisodeNumber;
+        RomNumber = rom.EpisodeNumber;
         AbsoluteEpisodeNumber = rom.AbsoluteEpisodeNumber;
         Title = rom.Title;
     }

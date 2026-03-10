@@ -22,7 +22,7 @@ public class ManualImportResource : RestResource
     public GameResource? Game { get; set; }
     public int? PlatformNumber { get; set; }
     public List<RomResource> Roms { get; set; } = [];
-    public int? EpisodeFileId { get; set; }
+    public int? RomFileId { get; set; }
     public string? ReleaseGroup { get; set; }
     public QualityModel? Quality { get; set; }
     public List<Language> Languages { get; set; } = [];
@@ -53,7 +53,7 @@ public static class ManualImportResourceMapper
             Game = model.Game?.ToResource(),
             PlatformNumber = model.PlatformNumber,
             Roms = model.Roms?.ToResource() ?? [],
-            EpisodeFileId = model.EpisodeFileId,
+            RomFileId = model.EpisodeFileId,
             ReleaseGroup = model.ReleaseGroup,
             Quality = model.Quality,
             Languages = model.Languages,
