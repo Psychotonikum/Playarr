@@ -75,7 +75,7 @@
     <Copyright>Copyright 2024-$([System.DateTime]::Now.ToString('yyyy')) Playarr (GNU General Public v3)</Copyright>
     
     <!-- Should be replaced by CI -->
-    <AssemblyVersion>4.1.0.0</AssemblyVersion>
+    <AssemblyVersion>4.2.0.0</AssemblyVersion>
     <AssemblyConfiguration>$(Configuration)-alpha</AssemblyConfiguration>
     <NeutralLanguage>en</NeutralLanguage>
 

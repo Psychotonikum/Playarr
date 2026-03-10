@@ -1,6 +1,6 @@
 {
   "name": "playarr",
-  "version": "4.0.0-alpha",
+  "version": "4.2.0.0",
   "description": "Playarr is a ROM management system for video game collections",
   "scripts": {
     "build": "webpack --config ./frontend/build/webpack.config.js",
