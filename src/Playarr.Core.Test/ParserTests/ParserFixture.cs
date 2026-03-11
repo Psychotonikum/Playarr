@@ -2,7 +2,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using Playarr.Core.Languages;
 using Playarr.Core.Parser;
-using Playarr.Core.Qualities;
 using Playarr.Core.Test.Framework;
 
 namespace Playarr.Core.Test.ParserTests
@@ -78,16 +77,7 @@ namespace Playarr.Core.Test.ParserTests
             Parser.Parser.ParseTitle(postTitle).GameTitle.Should().Be(title);
         }
 
-        [TestCase("Game.S01E02.Chained.Title.mkv")]
-        [TestCase("Show - S01E01 - Title.avi")]
-        public void should_parse_quality_from_extension(string title)
-        {
-            Parser.Parser.ParseTitle(title).Quality.Quality.Should().NotBe(Quality.Unknown);
-            Parser.Parser.ParseTitle(title).Quality.SourceDetectionSource.Should().Be(QualityDetectionSource.Extension);
-            Parser.Parser.ParseTitle(title).Quality.ResolutionDetectionSource.Should().Be(QualityDetectionSource.Extension);
-        }
-
-        [TestCase("Game.S01E02.Chained.Title.mkv", "Game.S01E02.Chained.Title")]
+        [TestCase("Game.S01E02.Chained.Title.nsp", "Game.S01E02.Chained.Title")]
         public void should_parse_releasetitle(string path, string releaseTitle)
         {
             var result = Parser.Parser.ParseTitle(path);

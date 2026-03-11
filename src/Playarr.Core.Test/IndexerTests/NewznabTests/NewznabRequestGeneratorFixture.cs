@@ -14,8 +14,6 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
     {
         private SingleEpisodeSearchCriteria _singleEpisodeSearchCriteria;
         private SeasonSearchCriteria _seasonSearchCriteria;
-        private SingleEpisodeSearchCriteria _animeSearchCriteria;
-        private SeasonSearchCriteria _animeSeasonSearchCriteria;
         private NewznabCapabilities _capabilities;
 
         [SetUp]
@@ -30,7 +28,6 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
             {
                 BaseUrl = "http://127.0.0.1:1234/",
                 Categories = new[] { 1, 2 },
-                AnimeCategories = new[] { 3, 4 },
                 ApiKey = "abcd",
             };
 
@@ -49,21 +46,6 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
                 PlatformNumber = 1,
             };
 
-            _animeSearchCriteria = new SingleEpisodeSearchCriteria()
-            {
-                Game = new Games.Game { MobyGamesId = 10, IgdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
-                SceneTitles = new List<string>() { "Monkey+Island" },
-                PlatformNumber = 5,
-                EpisodeNumber = 4
-            };
-
-            _animeSeasonSearchCriteria = new SeasonSearchCriteria()
-            {
-                Game = new Games.Game { MobyGamesId = 10, IgdbId = 20, RawgId = 30, ImdbId = "t40", TmdbId = 50 },
-                SceneTitles = new List<string> { "Monkey Island" },
-                PlatformNumber = 3,
-            };
-
             _capabilities = new NewznabCapabilities();
 
             Mocker.GetMock<INewznabCapabilitiesProvider>()
@@ -80,7 +62,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
 
             var page = results.GetAllTiers().First().First();
 
-            page.Url.Query.Should().Contain("&cat=1,2,3,4&");
+            page.Url.Query.Should().Contain("&cat=1,2&");
         }
 
         [Test]
@@ -94,98 +76,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
 
             var page = results.GetAllTiers().First().First();
 
-            page.Url.FullUri.Should().Contain("&cat=1,2,3,4&");
-        }
-
-        [Test]
-        public void should_use_only_anime_categories_for_anime_search()
-        {
-            var results = Subject.GetSearchRequests(_animeSearchCriteria);
-
-            results.GetAllTiers().Should().HaveCount(2);
-
-            var pages = results.GetTier(0).Select(t => t.First()).ToList();
-
-            pages[0].Url.FullUri.Should().Contain("&cat=3,4&");
-            pages[1].Url.FullUri.Should().Contain("&cat=3,4&");
-        }
-
-        [Test]
-        public void should_use_mode_search_for_anime()
-        {
-            var results = Subject.GetSearchRequests(_animeSearchCriteria);
-
-            results.GetAllTiers().Should().HaveCount(2);
-
-            results.GetAllTiers().First().First().Url.FullUri.Should().Contain("?t=tvsearch&");
-            results.GetAllTiers().Last().First().Url.FullUri.Should().Contain("?t=search&");
-        }
-
-        [Test]
-        public void should_return_subsequent_pages()
-        {
-            var results = Subject.GetSearchRequests(_animeSearchCriteria);
-
-            results.GetAllTiers().Should().HaveCount(2);
-
-            var pages = results.GetAllTiers().First().Take(3).ToList();
-
-            pages[0].Url.FullUri.Should().Contain("&offset=0&");
-            pages[1].Url.FullUri.Should().Contain("&offset=100&");
-            pages[2].Url.FullUri.Should().Contain("&offset=200&");
-        }
-
-        [Test]
-        public void should_not_get_unlimited_pages()
-        {
-            var results = Subject.GetSearchRequests(_animeSearchCriteria);
-
-            results.GetAllTiers().Should().HaveCount(2);
-
-            var pages = results.GetAllTiers().First().Take(500).ToList();
-
-            pages.Count.Should().BeLessThan(500);
-        }
-
-        [Test]
-        public void should_use_only_absolute_numbering_for_anime_search()
-        {
-            var results = Subject.GetSearchRequests(_animeSearchCriteria);
-
-            results.GetAllTiers().Should().HaveCount(2);
-
-            var pages = results.GetTier(0).Select(t => t.First()).ToList();
-
-            pages[0].Url.FullUri.Should().Contain("rid=10&q=100");
-            pages[1].Url.FullUri.Should().Contain("q=Monkey%20Island+100");
-        }
-
-        [Test]
-        public void should_also_use_standard_numbering_for_anime_search()
-        {
-            Subject.Settings.AnimeStandardFormatSearch = true;
-            var results = Subject.GetSearchRequests(_animeSearchCriteria);
-
-            results.GetTier(0).Should().HaveCount(4);
-            var pages = results.GetTier(0).Select(t => t.First()).ToList();
-
-            pages[0].Url.FullUri.Should().Contain("rid=10&q=100");
-            pages[1].Url.FullUri.Should().Contain("rid=10&platform=5&ep=4");
-            pages[2].Url.FullUri.Should().Contain("q=Monkey%20Island+100");
-            pages[3].Url.FullUri.Should().Contain("q=Monkey%20Island&platform=5&ep=4");
-        }
-
-        [Test]
-        public void should_search_by_standard_season_number()
-        {
-            Subject.Settings.AnimeStandardFormatSearch = true;
-            var results = Subject.GetSearchRequests(_animeSeasonSearchCriteria);
-
-            results.GetTier(0).Should().HaveCount(2);
-            var pages = results.GetTier(0).Select(t => t.First()).ToList();
-
-            pages[0].Url.FullUri.Should().Contain("rid=10&platform=3");
-            pages[1].Url.FullUri.Should().Contain("q=Monkey%20Island&platform=3");
+            page.Url.FullUri.Should().Contain("&cat=1,2,3&");
         }
 
         [Test]
@@ -195,7 +86,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
 
-            results.GetAllTiers().Should().HaveCount(1);
+            results.GetAllTiers().Should().HaveCount(2);
 
             var page = results.GetAllTiers().First().First();
 
@@ -316,7 +207,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
             _capabilities.SupportsAggregateIdSearch = true; // Turns true if indexer supplies supportedParams.
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
-            results.Tiers.Should().Be(1);
+            results.Tiers.Should().Be(2);
             results.GetTier(0).Should().HaveCount(1);
 
             var page = results.GetTier(0).First().First();
@@ -346,7 +237,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
             _capabilities.SupportsAggregateIdSearch = true;
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
-            results.Tiers.Should().Be(2);
+            results.Tiers.Should().Be(3);
 
             var pageTier2 = results.GetTier(1).First().First();
 
@@ -365,7 +256,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
             _singleEpisodeSearchCriteria.SceneTitles[0] = "Elith & Little";
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
-            results.Tiers.Should().Be(2);
+            results.Tiers.Should().Be(3);
 
             var pageTier2 = results.GetTier(1).First().First();
 
@@ -382,7 +273,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
             _capabilities.SupportsAggregateIdSearch = true;
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
-            results.Tiers.Should().Be(2);
+            results.Tiers.Should().Be(3);
 
             var pageTier2 = results.GetTier(1).First().First();
 
@@ -399,7 +290,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
             _singleEpisodeSearchCriteria.SceneTitles[0] = "Edith & Little";
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
-            results.Tiers.Should().Be(1);
+            results.Tiers.Should().Be(2);
 
             var pageTier = results.GetTier(0).First().First();
 
@@ -416,7 +307,7 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
             _singleEpisodeSearchCriteria.SceneTitles[0] = "Edith & Little";
 
             var results = Subject.GetSearchRequests(_singleEpisodeSearchCriteria);
-            results.Tiers.Should().Be(1);
+            results.Tiers.Should().Be(2);
 
             var pageTier = results.GetTier(0).First().First();
 
@@ -440,12 +331,15 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
         }
 
         [Test]
-        public void should_not_allow_season_search_if_season_param_is_not_allowed()
+        public void should_search_even_without_season_param()
         {
             _capabilities.SupportedTvSearchParameters = new[] { "q", "igdbid" };
 
             var results = Subject.GetSearchRequests(_seasonSearchCriteria);
-            results.GetTier(0).Should().HaveCount(0);
+            results.GetTier(0).Should().HaveCount(1);
+
+            var page = results.GetTier(0).First().First();
+            page.Url.Query.Should().Contain("igdbid=20");
         }
     }
 }

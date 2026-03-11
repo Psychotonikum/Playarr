@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using NLog;
@@ -70,6 +71,52 @@ namespace Playarr.Integration.Test
             var config = HostConfig.Get(1);
             config.ConsoleLogLevel = "Debug";
             HostConfig.Put(config);
+
+            // Configure IGDB/Twitch credentials from environment or .env.local
+            var twitchClientId = Environment.GetEnvironmentVariable("TWITCH_CLIENT_ID") ?? string.Empty;
+            var twitchClientSecret = Environment.GetEnvironmentVariable("TWITCH_CLIENT_SECRET") ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(twitchClientId) || string.IsNullOrWhiteSpace(twitchClientSecret))
+            {
+                // Try loading from .env.local file in workspace root
+                var envFile = Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", ".env.local");
+
+                if (File.Exists(envFile))
+                {
+                    foreach (var line in File.ReadAllLines(envFile))
+                    {
+                        var trimmed = line.Trim();
+                        if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith("#"))
+                        {
+                            continue;
+                        }
+
+                        var eqIndex = trimmed.IndexOf('=');
+                        if (eqIndex > 0)
+                        {
+                            var key = trimmed.Substring(0, eqIndex).Trim();
+                            var value = trimmed.Substring(eqIndex + 1).Trim();
+
+                            if (key == "TWITCH_CLIENT_ID")
+                            {
+                                twitchClientId = value;
+                            }
+                            else if (key == "TWITCH_CLIENT_SECRET")
+                            {
+                                twitchClientSecret = value;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(twitchClientId) && !string.IsNullOrWhiteSpace(twitchClientSecret))
+            {
+                var metadataConfig = MetadataSourceConfig.Get(1);
+                metadataConfig.TwitchClientId = twitchClientId;
+                metadataConfig.TwitchClientSecret = twitchClientSecret;
+                MetadataSourceConfig.Put(metadataConfig);
+            }
         }
 
         protected override void StopTestTarget()

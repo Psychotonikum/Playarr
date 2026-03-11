@@ -41,12 +41,12 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
             _profile = new QualityProfile
                        {
                            Name = "Test",
-                           Cutoff = Quality.HDTV720p.Id,
+                           Cutoff = Quality.Bad.Id,
                            Items = new List<QualityProfileQualityItem>
                                    {
-                                       new QualityProfileQualityItem { Allowed = true, Quality = Quality.HDTV720p },
-                                       new QualityProfileQualityItem { Allowed = true, Quality = Quality.WEBDL720p },
-                                       new QualityProfileQualityItem { Allowed = true, Quality = Quality.Bluray720p }
+                                       new QualityProfileQualityItem { Allowed = true, Quality = Quality.Unknown },
+                                       new QualityProfileQualityItem { Allowed = true, Quality = Quality.Bad },
+                                       new QualityProfileQualityItem { Allowed = true, Quality = Quality.Verified }
                                    },
                        };
 
@@ -55,7 +55,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
             _release = Builder<ReleaseInfo>.CreateNew().Build();
 
             _parsedRomInfo = Builder<ParsedRomInfo>.CreateNew()
-                                                           .With(h => h.Quality = new QualityModel(Quality.HDTV720p))
+                                                           .With(h => h.Quality = new QualityModel(Quality.Bad))
                                                            .With(h => h.AirDate = null)
                                                            .Build();
 
@@ -132,7 +132,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
         [Test]
         public void should_delete_if_the_grabbed_quality_is_the_higher()
         {
-            GivenHeldRelease(new QualityModel(Quality.SDTV));
+            GivenHeldRelease(new QualityModel(Quality.Unknown));
 
             InitializeReleases();
             Subject.Handle(new EpisodeGrabbedEvent(_remoteRom));
@@ -143,7 +143,7 @@ namespace Playarr.Core.Test.Download.Pending.PendingReleaseServiceTests
         [Test]
         public void should_not_delete_if_the_grabbed_quality_is_the_lower()
         {
-            GivenHeldRelease(new QualityModel(Quality.Bluray720p));
+            GivenHeldRelease(new QualityModel(Quality.Verified));
 
             InitializeReleases();
             Subject.Handle(new EpisodeGrabbedEvent(_remoteRom));

@@ -44,7 +44,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
                                {
                                    FileRomInfo = fileRomInfo,
                                    FolderRomInfo = folderRomInfo,
-                                   Path = @"C:\Test\Unsorted TV\Game.Title.S01\Game.Title.S01E01.mkv".AsOsAgnostic(),
+                                   Path = @"C:\Test\Unsorted TV\Game.Title.S01\Game.Title.S01E01.nsp".AsOsAgnostic(),
                                    Game = _series
                                };
 
@@ -63,7 +63,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
             {
                 FileRomInfo = fileRomInfo,
                 FolderRomInfo = folderRomInfo,
-                Path = @"C:\Test\Unsorted TV\Game.Title.S01\Game.Title.S01E01.mkv".AsOsAgnostic(),
+                Path = @"C:\Test\Unsorted TV\Game.Title.S01\Game.Title.S01E01.nsp".AsOsAgnostic(),
                 Game = _series,
                 OtherVideoFiles = true
             };
@@ -83,7 +83,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
             {
                 FileRomInfo = fileRomInfo,
                 FolderRomInfo = folderRomInfo,
-                Path = @"C:\Test\Unsorted TV\Game.Title.S01E01\Game.Title.S01E01.720p.HDTV-Playarr.mkv".AsOsAgnostic(),
+                Path = @"C:\Test\Unsorted TV\Game.Title.S01E01\Game.Title.S01E01.720p.HDTV-Playarr.nsp".AsOsAgnostic(),
                 Game = _series
             };
 
@@ -102,7 +102,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
             {
                 FileRomInfo = fileRomInfo,
                 FolderRomInfo = folderRomInfo,
-                Path = @"C:\Test\Unsorted TV\Game.Title.S01E01\Game.Title.S01E01.mkv".AsOsAgnostic(),
+                Path = @"C:\Test\Unsorted TV\Game.Title.S01E01\Game.Title.S01E01.nsp".AsOsAgnostic(),
                 Game = _series
             };
 
@@ -121,7 +121,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport.Aggregation.Aggregators
                                {
                                    FileRomInfo = fileRomInfo,
                                    FolderRomInfo = folderRomInfo,
-                                   Path = @"C:\Test\Unsorted TV\Game.Title.101\Game.Title.S01E01.mkv".AsOsAgnostic(),
+                                   Path = @"C:\Test\Unsorted TV\Game.Title.101\Game.Title.S01E01.nsp".AsOsAgnostic(),
                                    Game = _series
                                };
 

@@ -53,12 +53,11 @@ namespace Playarr.Core.Test.ParserTests
         }
 
         [Test]
-        public void should_return_false_if_episode_info_is_daily_for_standard_series()
+        public void should_return_true_if_episode_info_is_daily_for_standard_series()
         {
             GivenDailyParsedRomInfo();
 
-            ValidateParsedRomInfo.ValidateForGameType(_parsedRomInfo, _series).Should().BeFalse();
-            ExceptionVerification.ExpectedWarns(1);
+            ValidateParsedRomInfo.ValidateForGameType(_parsedRomInfo, _series).Should().BeTrue();
         }
 
         [Test]

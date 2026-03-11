@@ -77,7 +77,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = "{Rom Title} {Quality Full}";
 
             Subject.BuildFileName(new List<Rom> { _episode1, _episode2 }, _series, _romFile)
-                   .Should().Be("Rom Title HDTV-720p");
+                   .Should().Be("Rom Title Unknown");
         }
     }
 }

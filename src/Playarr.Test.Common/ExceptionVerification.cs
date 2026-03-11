@@ -10,29 +10,35 @@ namespace Playarr.Test.Common
 {
     public class ExceptionVerification : Target
     {
-        private static List<LogEventInfo> _logs = new List<LogEventInfo>();
+        private static readonly AsyncLocal<List<LogEventInfo>> _asyncLogs = new AsyncLocal<List<LogEventInfo>>();
 
-        private static ManualResetEventSlim _waitEvent = new ManualResetEventSlim();
+        private static readonly AsyncLocal<ManualResetEventSlim> _asyncWaitEvent = new AsyncLocal<ManualResetEventSlim>();
+
+        private static List<LogEventInfo> Logs => _asyncLogs.Value ??= new List<LogEventInfo>();
+        private static ManualResetEventSlim WaitEvent => _asyncWaitEvent.Value ??= new ManualResetEventSlim();
 
         protected override void Write(LogEventInfo logEvent)
         {
-            lock (_logs)
+            var logs = _asyncLogs.Value;
+            if (logs == null)
+            {
+                return;
+            }
+
+            lock (logs)
             {
                 if (logEvent.Level >= LogLevel.Warn)
                 {
-                    _logs.Add(logEvent);
-                    _waitEvent.Set();
+                    logs.Add(logEvent);
+                    WaitEvent.Set();
                 }
             }
         }
 
         public static void Reset()
         {
-            lock (_logs)
-            {
-                _logs.Clear();
-                _waitEvent.Reset();
-            }
+            _asyncLogs.Value = new List<LogEventInfo>();
+            _asyncWaitEvent.Value = new ManualResetEventSlim();
         }
 
         public static void AssertNoUnexpectedLogs()
@@ -61,21 +67,24 @@ namespace Playarr.Test.Common
 
         public static void WaitForErrors(int count, int msec)
         {
+            var logs = Logs;
+            var waitEvent = WaitEvent;
+
             while (true)
             {
-                lock (_logs)
+                lock (logs)
                 {
-                    var levelLogs = _logs.Where(l => l.Level == LogLevel.Error).ToList();
+                    var levelLogs = logs.Where(l => l.Level == LogLevel.Error).ToList();
 
                     if (levelLogs.Count >= count)
                     {
                         break;
                     }
 
-                    _waitEvent.Reset();
+                    waitEvent.Reset();
                 }
 
-                if (!_waitEvent.Wait(msec))
+                if (!waitEvent.Wait(msec))
                 {
                     break;
                 }
@@ -111,13 +120,15 @@ namespace Playarr.Test.Common
 
         public static void MarkInconclusive(Type exception)
         {
-            lock (_logs)
+            var logs = Logs;
+
+            lock (logs)
             {
-                var inconclusiveLogs = _logs.Where(l => l.Exception != null && l.Exception.GetType() == exception).ToList();
+                var inconclusiveLogs = logs.Where(l => l.Exception != null && l.Exception.GetType() == exception).ToList();
 
                 if (inconclusiveLogs.Any())
                 {
-                    inconclusiveLogs.ForEach(c => _logs.Remove(c));
+                    inconclusiveLogs.ForEach(c => logs.Remove(c));
                     Assert.Inconclusive(GetLogsString(inconclusiveLogs));
                 }
             }
@@ -125,13 +136,15 @@ namespace Playarr.Test.Common
 
         public static void MarkInconclusive(string text)
         {
-            lock (_logs)
+            var logs = Logs;
+
+            lock (logs)
             {
-                var inconclusiveLogs = _logs.Where(l => l.FormattedMessage.ToLower().Contains(text.ToLower())).ToList();
+                var inconclusiveLogs = logs.Where(l => l.FormattedMessage.ToLower().Contains(text.ToLower())).ToList();
 
                 if (inconclusiveLogs.Any())
                 {
-                    inconclusiveLogs.ForEach(c => _logs.Remove(c));
+                    inconclusiveLogs.ForEach(c => logs.Remove(c));
                     Assert.Inconclusive(GetLogsString(inconclusiveLogs));
                 }
             }
@@ -139,9 +152,11 @@ namespace Playarr.Test.Common
 
         private static void Expected(LogLevel level, int count)
         {
-            lock (_logs)
+            var logs = Logs;
+
+            lock (logs)
             {
-                var levelLogs = _logs.Where(l => l.Level == level).ToList();
+                var levelLogs = logs.Where(l => l.Level == level).ToList();
 
                 if (levelLogs.Count != count)
                 {
@@ -158,16 +173,18 @@ namespace Playarr.Test.Common
                     Assert.Fail(message);
                 }
 
-                levelLogs.ForEach(c => _logs.Remove(c));
+                levelLogs.ForEach(c => logs.Remove(c));
             }
         }
 
         private static void Ignore(LogLevel level)
         {
-            lock (_logs)
+            var logs = Logs;
+
+            lock (logs)
             {
-                var levelLogs = _logs.Where(l => l.Level == level).ToList();
-                levelLogs.ForEach(c => _logs.Remove(c));
+                var levelLogs = logs.Where(l => l.Level == level).ToList();
+                levelLogs.ForEach(c => logs.Remove(c));
             }
         }
     }

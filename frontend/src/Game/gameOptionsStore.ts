@@ -2,7 +2,7 @@ import Column from 'Components/Table/Column';
 import { createOptionsStore } from 'Helpers/Hooks/useOptionsStore';
 import translate from 'Utilities/String/translate';
 
-export interface SeriesOptions {
+export interface GameOptions {
   selectedFilterKey: string | number;
   sortKey: string;
   sortDirection: 'ascending' | 'descending';
@@ -39,7 +39,7 @@ export interface SeriesOptions {
 }
 
 const { useOptions, useOption, setOptions, setOption, setSort, getOptions } =
-  createOptionsStore<SeriesOptions>('series_options', () => {
+  createOptionsStore<GameOptions>('series_options', () => {
     return {
       selectedFilterKey: 'all',
       sortKey: 'sortTitle',
@@ -194,7 +194,7 @@ export const setGameSort = setSort;
 
 export const useGamePosterOptions = () => useOption('posterOptions');
 export const setGamePosterOptions = (
-  options: Partial<SeriesOptions['posterOptions']>
+  options: Partial<GameOptions['posterOptions']>
 ) => {
   const currentOptions = getOptions().posterOptions;
   setGameOption('posterOptions', { ...currentOptions, ...options });
@@ -202,7 +202,7 @@ export const setGamePosterOptions = (
 
 export const useGameOverviewOptions = () => useOption('overviewOptions');
 export const setGameOverviewOptions = (
-  options: Partial<SeriesOptions['overviewOptions']>
+  options: Partial<GameOptions['overviewOptions']>
 ) => {
   const currentOptions = getOptions().overviewOptions;
   setGameOption('overviewOptions', { ...currentOptions, ...options });
@@ -210,7 +210,7 @@ export const setGameOverviewOptions = (
 
 export const useGameTableOptions = () => useOption('tableOptions');
 export const setGameTableOptions = (
-  options: Partial<SeriesOptions['tableOptions']>
+  options: Partial<GameOptions['tableOptions']>
 ) => {
   const currentOptions = getOptions().tableOptions;
   setGameOption('tableOptions', { ...currentOptions, ...options });
@@ -218,7 +218,7 @@ export const setGameTableOptions = (
 
 export const useGameDeleteOptions = () => useOption('deleteOptions');
 export const setGameDeleteOptions = (
-  options: Partial<SeriesOptions['deleteOptions']>
+  options: Partial<GameOptions['deleteOptions']>
 ) => {
   const currentOptions = getOptions().deleteOptions;
   setGameOption('deleteOptions', { ...currentOptions, ...options });

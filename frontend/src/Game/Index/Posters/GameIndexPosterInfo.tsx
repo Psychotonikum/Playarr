@@ -2,7 +2,6 @@ import React from 'react';
 import GameTagList from 'Components/GameTagList';
 import HeartRating from 'Components/HeartRating';
 import { Ratings } from 'Game/Game';
-import useCountryName from 'Internationalization/useCountryName';
 import Language from 'Language/Language';
 import { QualityProfileModel } from 'Settings/Profiles/Quality/useQualityProfiles';
 import formatDateTime from 'Utilities/Date/formatDateTime';
@@ -12,12 +11,9 @@ import translate from 'Utilities/String/translate';
 import styles from './GameIndexPosterInfo.css';
 
 interface GameIndexPosterInfoProps {
-  originalCountry?: string;
   originalLanguage?: Language;
-  network?: string;
   showQualityProfile: boolean;
   qualityProfile?: QualityProfileModel;
-  previousAiring?: string;
   added?: string;
   platformCount: number;
   path: string;
@@ -34,12 +30,9 @@ interface GameIndexPosterInfoProps {
 
 function GameIndexPosterInfo(props: GameIndexPosterInfoProps) {
   const {
-    originalCountry,
     originalLanguage,
-    network,
     qualityProfile,
     showQualityProfile,
-    previousAiring,
     added,
     platformCount,
     path,
@@ -53,24 +46,6 @@ function GameIndexPosterInfo(props: GameIndexPosterInfoProps) {
     timeFormat,
     showTags,
   } = props;
-
-  const originalCountryName = useCountryName(originalCountry);
-
-  if (sortKey === 'network' && network) {
-    return (
-      <div className={styles.info} title={translate('Network')}>
-        {network}
-      </div>
-    );
-  }
-
-  if (sortKey === 'originalCountry' && !!originalCountryName) {
-    return (
-      <div className={styles.info} title={translate('OriginalCountry')}>
-        {originalCountryName}
-      </div>
-    );
-  }
 
   if (sortKey === 'originalLanguage' && !!originalLanguage?.name) {
     return (
@@ -88,27 +63,6 @@ function GameIndexPosterInfo(props: GameIndexPosterInfoProps) {
     return (
       <div className={styles.info} title={translate('QualityProfile')}>
         {qualityProfile.name}
-      </div>
-    );
-  }
-
-  if (sortKey === 'previousAiring' && previousAiring) {
-    return (
-      <div
-        className={styles.info}
-        title={`${translate('PreviousAiring')}: ${formatDateTime(
-          previousAiring,
-          longDateFormat,
-          timeFormat
-        )}`}
-      >
-        {getRelativeDate({
-          date: previousAiring,
-          shortDateFormat,
-          showRelativeDates,
-          timeFormat,
-          timeForToday: true,
-        })}
       </div>
     );
   }

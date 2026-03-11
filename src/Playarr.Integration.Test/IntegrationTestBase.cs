@@ -47,6 +47,7 @@ namespace Playarr.Integration.Test
         public IndexerClient Indexers;
         public IndexerClient Indexersv3;
         public LogsClient Logs;
+        public ClientBase<MetadataSourceConfigResource> MetadataSourceConfig;
         public ClientBase<NamingConfigResource> NamingConfig;
         public NotificationClient Notifications;
         public ClientBase<QualityProfileResource> QualityProfiles;
@@ -112,6 +113,7 @@ namespace Playarr.Integration.Test
             HostConfig = new ClientBase<HostConfigResource>(RestClient, ApiKey, "config/host");
             Indexers = new IndexerClient(RestClient, ApiKey);
             Logs = new LogsClient(RestClient, ApiKey);
+            MetadataSourceConfig = new ClientBase<MetadataSourceConfigResource>(RestClient, ApiKey, "config/metadatasource");
             NamingConfig = new ClientBase<NamingConfigResource>(RestClient, ApiKey, "config/naming");
             Notifications = new NotificationClient(RestClient, ApiKey);
             QualityProfiles = new ClientBase<QualityProfileResource>(RestClient, ApiKey);
@@ -254,7 +256,6 @@ namespace Playarr.Integration.Test
 
                 result = Game.Post(game);
                 Commands.WaitAll();
-                WaitForCompletion(() => Roms.GetEpisodesInSeries(result.Id).Count > 0);
             }
 
             if (monitored.HasValue)

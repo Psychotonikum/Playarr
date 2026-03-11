@@ -16,8 +16,6 @@ import GameIndexProgressBar from 'Game/Index/ProgressBar/GameIndexProgressBar';
 import GameIndexPosterSelect from 'Game/Index/Select/GameIndexPosterSelect';
 import { icons } from 'Helpers/Props';
 import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
-import formatDateTime from 'Utilities/Date/formatDateTime';
-import getRelativeDate from 'Utilities/Date/getRelativeDate';
 import translate from 'Utilities/String/translate';
 import useGameIndexItem from '../useGameIndexItem';
 import GameIndexPosterInfo from './GameIndexPosterInfo';
@@ -103,11 +101,7 @@ function GameIndexPoster(props: GameIndexPosterProps) {
     status,
     path,
     titleSlug,
-    originalCountry,
     originalLanguage,
-    network,
-    nextAiring,
-    previousAiring,
     added,
     statistics = {} as Statistics,
     images,
@@ -222,25 +216,6 @@ function GameIndexPoster(props: GameIndexPosterProps) {
         </div>
       ) : null}
 
-      {nextAiring ? (
-        <div
-          className={styles.nextAiring}
-          title={`${translate('NextAiring')}: ${formatDateTime(
-            nextAiring,
-            longDateFormat,
-            timeFormat
-          )}`}
-        >
-          {getRelativeDate({
-            date: nextAiring,
-            shortDateFormat,
-            showRelativeDates,
-            timeFormat,
-            timeForToday: true,
-          })}
-        </div>
-      ) : null}
-
       {showTags && tags.length ? (
         <div className={styles.tags}>
           <div className={styles.tagsList}>
@@ -250,10 +225,7 @@ function GameIndexPoster(props: GameIndexPosterProps) {
       ) : null}
 
       <GameIndexPosterInfo
-        originalCountry={originalCountry}
         originalLanguage={originalLanguage}
-        network={network}
-        previousAiring={previousAiring}
         added={added}
         platformCount={platformCount}
         sizeOnDisk={sizeOnDisk}

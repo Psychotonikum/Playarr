@@ -80,7 +80,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = "{Original Title} {Quality Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode }, _series, _romFile)
-                   .Should().Be("My Game - S15E06 - City Sushi HDTV-720p");
+                   .Should().Be("My Game - S15E06 - City Sushi Unknown");
         }
 
         [Test]
@@ -89,22 +89,21 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _series.SeriesType = GameTypes.Standard;
             _episode.AirDate = "2022-04-28";
             _romFile.RelativePath = "My Game - 2022-04-28 - City Sushi";
-            _namingConfig.DailyEpisodeFormat = "{Original Title} {Quality Title}";
+            _namingConfig.StandardEpisodeFormat = "{Original Title} {Quality Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode }, _series, _romFile)
-                   .Should().Be("My Game - 2022-04-28 - City Sushi HDTV-720p");
+                   .Should().Be("My Game - 2022-04-28 - City Sushi Unknown");
         }
 
         [Test]
-        public void should_include_current_filename_if_not_including_absolute_episode_number_token_for_anime_series()
+        public void should_include_current_filename_if_not_including_absolute_episode_number_token_for_standard_series()
         {
             _series.SeriesType = GameTypes.Standard;
-            _episode.AbsoluteEpisodeNumber = 123;
-            _romFile.RelativePath = "My Game - 123 - City Sushi";
-            _namingConfig.AnimeEpisodeFormat = "{Original Title} {Quality Title}";
+            _romFile.RelativePath = "My Game - S15E06 - City Sushi";
+            _namingConfig.StandardEpisodeFormat = "{Original Title} {Quality Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode }, _series, _romFile)
-                   .Should().Be("My Game - 123 - City Sushi HDTV-720p");
+                   .Should().Be("My Game - S15E06 - City Sushi Unknown");
         }
 
         [Test]
@@ -123,22 +122,21 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _series.SeriesType = GameTypes.Standard;
             _episode.AirDate = "2022-04-28";
             _romFile.RelativePath = "My Game - 2022-04-28 - City Sushi";
-            _namingConfig.DailyEpisodeFormat = "{Game Title} - {Air-Date} {[Original Title]}";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} - {Air-Date} {[Original Title]}";
 
             Subject.BuildFileName(new List<Rom> { _episode }, _series, _romFile)
                    .Should().Be("My Game - 2022-04-28");
         }
 
         [Test]
-        public void should_not_include_current_filename_if_including_absolute_episode_number_token_for_anime_series()
+        public void should_not_include_current_filename_if_including_episode_tokens_for_standard_series()
         {
             _series.SeriesType = GameTypes.Standard;
-            _episode.AbsoluteEpisodeNumber = 123;
-            _romFile.RelativePath = "My Game - 123 - City Sushi";
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:00} {[Original Title]}";
+            _romFile.RelativePath = "My Game - S15E06 - City Sushi";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} {[Original Title]}";
 
             Subject.BuildFileName(new List<Rom> { _episode }, _series, _romFile)
-                   .Should().Be("My Game - 123");
+                   .Should().Be("My Game - S15E06");
         }
 
         [Test]
@@ -159,23 +157,22 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _episode.AirDate = "2022-04-28";
             _romFile.Id = 0;
             _romFile.RelativePath = "My Game - 2022-04-28 - City Sushi";
-            _namingConfig.DailyEpisodeFormat = "{Game Title} - {Air-Date} {[Original Title]}";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} - {Air-Date} {[Original Title]}";
 
             Subject.BuildFileName(new List<Rom> { _episode }, _series, _romFile)
                    .Should().Be("My Game - 2022-04-28 [My Game - 2022-04-28 - City Sushi]");
         }
 
         [Test]
-        public void should_include_current_filename_for_new_file_if_including_absolute_episode_number_token_for_anime_series()
+        public void should_include_current_filename_for_new_file_if_including_episode_tokens_for_standard_series()
         {
             _series.SeriesType = GameTypes.Standard;
-            _episode.AbsoluteEpisodeNumber = 123;
             _romFile.Id = 0;
-            _romFile.RelativePath = "My Game - 123 - City Sushi";
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:00} {[Original Title]}";
+            _romFile.RelativePath = "My Game - S15E06 - City Sushi";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} {[Original Title]}";
 
             Subject.BuildFileName(new List<Rom> { _episode }, _series, _romFile)
-                   .Should().Be("My Game - 123 [My Game - 123 - City Sushi]");
+                   .Should().Be("My Game - S15E06 [My Game - S15E06 - City Sushi]");
         }
     }
 }

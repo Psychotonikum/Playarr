@@ -61,7 +61,7 @@ namespace Playarr.Integration.Test.ApiTests
             var client = EnsureDownloadClient();
             var directory = client.Fields.First(v => v.Name == "watchFolder").Value as string;
 
-            File.WriteAllText(Path.Combine(directory, "Game.Title.S01E01.mkv"), "Test Download");
+            File.WriteAllText(Path.Combine(directory, "Game.Title.S01E01.nsp"), "Test Download");
             RefreshQueue();
 
             var queue = GetFirstPage();

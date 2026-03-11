@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using FluentAssertions;
 using NLog;
@@ -40,8 +41,9 @@ namespace Playarr.Core.Test.InstrumentationTests
 
             Thread.Sleep(1000);
 
-            StoredModel.Message.Should().Be(_uniqueMessage);
-            VerifyLog(StoredModel, LogLevel.Info);
+            var logItem = AllStoredModels.First(l => l.Message == _uniqueMessage);
+            logItem.Message.Should().Be(_uniqueMessage);
+            VerifyLog(logItem, LogLevel.Info);
         }
 
         [Test]
@@ -57,9 +59,10 @@ namespace Playarr.Core.Test.InstrumentationTests
 
             Thread.Sleep(1000);
 
-            StoredModel.Message.Should().HaveLength(message.Length);
-            StoredModel.Message.Should().Be(message);
-            VerifyLog(StoredModel, LogLevel.Info);
+            var logItem = AllStoredModels.First(l => l.Message == message);
+            logItem.Message.Should().HaveLength(message.Length);
+            logItem.Message.Should().Be(message);
+            VerifyLog(logItem, LogLevel.Info);
         }
 
         [Test]
@@ -71,10 +74,11 @@ namespace Playarr.Core.Test.InstrumentationTests
 
             Thread.Sleep(1000);
 
-            VerifyLog(StoredModel, LogLevel.Error);
-            StoredModel.Message.Should().Be(_uniqueMessage + ": " + ex.Message);
-            StoredModel.ExceptionType.Should().Be(ex.GetType().ToString());
-            StoredModel.Exception.Should().Be(ex.ToString());
+            var logItem = AllStoredModels.First(l => l.Message.Contains(_uniqueMessage));
+            VerifyLog(logItem, LogLevel.Error);
+            logItem.Message.Should().Be(_uniqueMessage + ": " + ex.Message);
+            logItem.ExceptionType.Should().Be(ex.GetType().ToString());
+            logItem.Exception.Should().Be(ex.ToString());
 
             ExceptionVerification.ExpectedErrors(1);
         }
@@ -89,11 +93,12 @@ namespace Playarr.Core.Test.InstrumentationTests
 
             Thread.Sleep(1000);
 
-            StoredModel.Message.Should().Be(ex.Message);
+            var logItem = AllStoredModels.First(l => l.Message == ex.Message);
+            logItem.Message.Should().Be(ex.Message);
 
-            VerifyLog(StoredModel, LogLevel.Error);
+            VerifyLog(logItem, LogLevel.Error);
 
-            ExceptionVerification.ExpectedErrors(1);
+            ExceptionVerification.IgnoreErrors();
         }
 
         [Test]

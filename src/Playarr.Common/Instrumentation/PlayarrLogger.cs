@@ -22,7 +22,7 @@ namespace Playarr.Common.Instrumentation
 
         static PlayarrLogger()
         {
-            LogManager.Configuration = new LoggingConfiguration();
+            LogManager.Configuration ??= new LoggingConfiguration();
         }
 
         public static void Register(IStartupContext startupContext, bool updateApp, bool inConsole)

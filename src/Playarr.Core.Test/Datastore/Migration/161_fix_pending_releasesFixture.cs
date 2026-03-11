@@ -8,7 +8,6 @@ using Playarr.Core.Datastore.Converters;
 using Playarr.Core.Datastore.Migration;
 using Playarr.Core.Download.Pending;
 using Playarr.Core.Languages;
-using Playarr.Core.Qualities;
 using Playarr.Core.Test.Framework;
 
 namespace Playarr.Core.Test.Datastore.Migration
@@ -81,7 +80,7 @@ namespace Playarr.Core.Test.Datastore.Migration
             var json = db.Query<string>("SELECT \"ParsedRomInfo\" FROM \"PendingReleases\"").First();
 
             var pending = db.Query<ParsedRomInfo162>("SELECT \"ParsedRomInfo\" FROM \"PendingReleases\"").First();
-            pending.Quality.Quality.Should().Be(Quality.HDTV720p.Id);
+            pending.Quality.Quality.Should().Be(4); // Raw stored ID for HDTV-720p
             pending.Language.Should().Be(Language.English.Id);
         }
 

@@ -50,7 +50,7 @@ function getPlatformStatistics(roms: Rom[]) {
   let romFileCount = 0;
   let totalRomCount = 0;
   let monitoredRomCount = 0;
-  let hasMonitoredEpisodes = false;
+  let hasMonitoredRoms = false;
   const sizeOnDisk = 0;
 
   roms.forEach((rom) => {
@@ -64,7 +64,7 @@ function getPlatformStatistics(roms: Rom[]) {
 
     if (rom.monitored) {
       monitoredRomCount++;
-      hasMonitoredEpisodes = true;
+      hasMonitoredRoms = true;
     }
 
     totalRomCount++;
@@ -75,7 +75,7 @@ function getPlatformStatistics(roms: Rom[]) {
     romFileCount,
     totalRomCount,
     monitoredRomCount,
-    hasMonitoredEpisodes,
+    hasMonitoredRoms,
     sizeOnDisk,
   };
 }
@@ -124,7 +124,7 @@ function GameDetailsPlatform({
     romFileCount,
     totalRomCount,
     monitoredRomCount,
-    hasMonitoredEpisodes,
+    hasMonitoredRoms,
   } = getPlatformStatistics(items);
 
   const previousRomFileCount = usePrevious(romFileCount);
@@ -350,7 +350,7 @@ function GameDetailsPlatform({
             <MenuContent className={styles.actionsMenuContent}>
               <MenuItem
                 isDisabled={
-                  isSearching || !hasMonitoredEpisodes || !seriesMonitored
+                  isSearching || !hasMonitoredRoms || !seriesMonitored
                 }
                 onPress={handleSearchPress}
               >
@@ -409,14 +409,14 @@ function GameDetailsPlatform({
               className={styles.actionButton}
               name={icons.SEARCH}
               title={
-                hasMonitoredEpisodes && seriesMonitored
+                hasMonitoredRoms && seriesMonitored
                   ? translate('SearchForMonitoredEpisodesSeason')
                   : translate('NoMonitoredEpisodesSeason')
               }
               size={24}
               isSpinning={isSearching}
               isDisabled={
-                isSearching || !hasMonitoredEpisodes || !seriesMonitored
+                isSearching || !hasMonitoredRoms || !seriesMonitored
               }
               onPress={handleSearchPress}
             />

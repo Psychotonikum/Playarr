@@ -19,29 +19,26 @@ namespace Playarr.Core.Test.DecisionEngineTests
 
         public static object[] AllowedTestCases =
         {
-            new object[] { Quality.DVD },
-            new object[] { Quality.HDTV720p },
-            new object[] { Quality.Bluray1080p }
+            new object[] { Quality.Bad },
+            new object[] { Quality.Verified }
         };
 
         public static object[] DeniedTestCases =
         {
-            new object[] { Quality.SDTV },
-            new object[] { Quality.WEBDL720p },
-            new object[] { Quality.Bluray720p }
+            new object[] { Quality.Unknown }
         };
 
         [SetUp]
         public void Setup()
         {
             var fakeSeries = Builder<Game>.CreateNew()
-                         .With(c => c.QualityProfile = (LazyLoaded<QualityProfile>)new QualityProfile { Cutoff = Quality.Bluray1080p.Id })
+                         .With(c => c.QualityProfile = (LazyLoaded<QualityProfile>)new QualityProfile { Cutoff = Quality.Verified.Id })
                          .Build();
 
             _remoteRom = new RemoteRom
             {
                 Game = fakeSeries,
-                ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)) },
+                ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.Bad, new Revision(version: 2)) },
             };
         }
 
@@ -50,7 +47,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         public void should_allow_if_quality_is_defined_in_profile(Quality qualityType)
         {
             _remoteRom.ParsedRomInfo.Quality.Quality = qualityType;
-            _remoteRom.Game.QualityProfile.Value.Items = Qualities.QualityFixture.GetDefaultQualities(Quality.DVD, Quality.HDTV720p, Quality.Bluray1080p);
+            _remoteRom.Game.QualityProfile.Value.Items = Qualities.QualityFixture.GetDefaultQualities(Quality.Bad, Quality.Verified);
 
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeTrue();
         }
@@ -60,7 +57,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
         public void should_not_allow_if_quality_is_not_defined_in_profile(Quality qualityType)
         {
             _remoteRom.ParsedRomInfo.Quality.Quality = qualityType;
-            _remoteRom.Game.QualityProfile.Value.Items = Qualities.QualityFixture.GetDefaultQualities(Quality.DVD, Quality.HDTV720p, Quality.Bluray1080p);
+            _remoteRom.Game.QualityProfile.Value.Items = Qualities.QualityFixture.GetDefaultQualities(Quality.Bad, Quality.Verified);
 
             Subject.IsSatisfiedBy(_remoteRom, new()).Accepted.Should().BeFalse();
         }

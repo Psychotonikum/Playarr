@@ -135,27 +135,37 @@ namespace Playarr.Core.Test.Framework
             PostgresDatabase.Drop(options, MigrationType);
         }
 
+        private static readonly object _cacheLock = new object();
+
         private IDatabase CreateSqliteDatabase(IDbFactory factory, MigrationContext migrationContext)
         {
             // Otherwise try to use a cached migrated db
             var cachedDb = SqliteDatabase.GetCachedDb(migrationContext.MigrationType);
             var testDb = GetTestSqliteDb(migrationContext.MigrationType);
-            if (File.Exists(cachedDb))
-            {
-                TestLogger.Info($"Using cached initial database {cachedDb}");
-                File.Copy(cachedDb, testDb);
-                return factory.Create(migrationContext);
-            }
-            else
-            {
-                var db = factory.Create(migrationContext);
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                SQLiteConnection.ClearAllPools();
 
-                TestLogger.Info("Caching database");
-                File.Copy(testDb, cachedDb);
-                return db;
+            lock (_cacheLock)
+            {
+                if (File.Exists(cachedDb))
+                {
+                    TestLogger.Info($"Using cached initial database {cachedDb}");
+                    File.Copy(cachedDb, testDb);
+                    return factory.Create(migrationContext);
+                }
+                else
+                {
+                    var db = factory.Create(migrationContext);
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    SQLiteConnection.ClearAllPools();
+
+                    TestLogger.Info("Caching database");
+                    if (!File.Exists(cachedDb))
+                    {
+                        File.Copy(testDb, cachedDb);
+                    }
+
+                    return db;
+                }
             }
         }
 

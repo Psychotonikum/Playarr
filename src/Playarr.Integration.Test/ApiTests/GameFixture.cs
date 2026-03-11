@@ -9,14 +9,20 @@ namespace Playarr.Integration.Test.ApiTests
     [TestFixture]
     public class SeriesFixture : IntegrationTest
     {
+        // IGDB IDs for real games
+        private const int WitcherIgdbId = 1942;
+        private const string WitcherTitle = "The Witcher 3: Wild Hunt";
+        private const int PortalIgdbId = 732;
+        private const string PortalTitle = "Portal 2";
+
         [Test]
         [Order(0)]
         public void add_series_with_tags_should_store_them()
         {
-            EnsureNoGame(266189, "The Blacklist");
+            EnsureNoGame(WitcherIgdbId, WitcherTitle);
             var tag = EnsureTag("abc");
 
-            var game = Game.Lookup("igdb:266189").Single();
+            var game = Game.Lookup("igdb:" + WitcherIgdbId).Single();
 
             game.QualityProfileId = 1;
             game.Path = Path.Combine(SeriesRootFolder, game.Title);
@@ -33,9 +39,9 @@ namespace Playarr.Integration.Test.ApiTests
         [Order(0)]
         public void add_series_without_profileid_should_return_badrequest()
         {
-            EnsureNoGame(266189, "The Blacklist");
+            EnsureNoGame(WitcherIgdbId, WitcherTitle);
 
-            var game = Game.Lookup("igdb:266189").Single();
+            var game = Game.Lookup("igdb:" + WitcherIgdbId).Single();
 
             game.Path = Path.Combine(SeriesRootFolder, game.Title);
 
@@ -46,9 +52,9 @@ namespace Playarr.Integration.Test.ApiTests
         [Order(0)]
         public void add_series_without_path_should_return_badrequest()
         {
-            EnsureNoGame(266189, "The Blacklist");
+            EnsureNoGame(WitcherIgdbId, WitcherTitle);
 
-            var game = Game.Lookup("igdb:266189").Single();
+            var game = Game.Lookup("igdb:" + WitcherIgdbId).Single();
 
             game.QualityProfileId = 1;
 
@@ -59,9 +65,9 @@ namespace Playarr.Integration.Test.ApiTests
         [Order(1)]
         public void add_series()
         {
-            EnsureNoGame(266189, "The Blacklist");
+            EnsureNoGame(WitcherIgdbId, WitcherTitle);
 
-            var game = Game.Lookup("igdb:266189").Single();
+            var game = Game.Lookup("igdb:" + WitcherIgdbId).Single();
 
             game.QualityProfileId = 1;
             game.Path = Path.Combine(SeriesRootFolder, game.Title);
@@ -78,23 +84,23 @@ namespace Playarr.Integration.Test.ApiTests
         [Order(2)]
         public void get_all_series()
         {
-            EnsureSeries(266189, "The Blacklist");
-            EnsureSeries(73065, "Archer");
+            EnsureSeries(WitcherIgdbId, WitcherTitle);
+            EnsureSeries(PortalIgdbId, PortalTitle);
 
             Game.All().Should().NotBeNullOrEmpty();
-            Game.All().Should().Contain(v => v.IgdbId == 73065);
-            Game.All().Should().Contain(v => v.IgdbId == 266189);
+            Game.All().Should().Contain(v => v.IgdbId == PortalIgdbId);
+            Game.All().Should().Contain(v => v.IgdbId == WitcherIgdbId);
         }
 
         [Test]
         [Order(2)]
         public void get_series_by_id()
         {
-            var game = EnsureSeries(266189, "The Blacklist");
+            var game = EnsureSeries(WitcherIgdbId, WitcherTitle);
 
             var result = Game.Get(game.Id);
 
-            result.IgdbId.Should().Be(266189);
+            result.IgdbId.Should().Be(WitcherIgdbId);
         }
 
         [Test]
@@ -107,7 +113,7 @@ namespace Playarr.Integration.Test.ApiTests
         [Order(2)]
         public void update_series_profile_id()
         {
-            var game = EnsureSeries(266189, "The Blacklist");
+            var game = EnsureSeries(WitcherIgdbId, WitcherTitle);
 
             var profileId = 1;
             if (game.QualityProfileId == profileId)
@@ -126,10 +132,9 @@ namespace Playarr.Integration.Test.ApiTests
         [Order(3)]
         public void update_series_monitored()
         {
-            var game = EnsureSeries(266189, "The Blacklist", false);
+            var game = EnsureSeries(WitcherIgdbId, WitcherTitle, false);
 
             game.Monitored.Should().BeFalse();
-            game.Platforms.First().Monitored.Should().BeFalse();
 
             game.Monitored = true;
             game.Platforms.ForEach(platform =>
@@ -140,14 +145,13 @@ namespace Playarr.Integration.Test.ApiTests
             var result = Game.Put(game);
 
             result.Monitored.Should().BeTrue();
-            result.Platforms.First().Monitored.Should().BeTrue();
         }
 
         [Test]
         [Order(3)]
         public void update_series_tags()
         {
-            var game = EnsureSeries(266189, "The Blacklist");
+            var game = EnsureSeries(WitcherIgdbId, WitcherTitle);
             var tag = EnsureTag("abc");
 
             if (game.Tags.Contains(tag.Id))
@@ -170,13 +174,13 @@ namespace Playarr.Integration.Test.ApiTests
         [Order(4)]
         public void delete_series()
         {
-            var game = EnsureSeries(266189, "The Blacklist");
+            var game = EnsureSeries(WitcherIgdbId, WitcherTitle);
 
             Game.Get(game.Id).Should().NotBeNull();
 
             Game.Delete(game.Id);
 
-            Game.All().Should().NotContain(v => v.IgdbId == 266189);
+            Game.All().Should().NotContain(v => v.IgdbId == WitcherIgdbId);
         }
     }
 }

@@ -20,18 +20,13 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
             UseRealHttp();
         }
 
-        [TestCase("The Simpsons", "The Simpsons")]
-        [TestCase("South Park", "South Park")]
-        [TestCase("Franklin & Bash", "Franklin & Bash")]
-        [TestCase("House", "House")]
-        [TestCase("Mr. D", "Mr. D")]
-        [TestCase("Rob & Big", "Rob & Big")]
-        [TestCase("M*A*S*H", "M*A*S*H")]
-
-        // [TestCase("imdb:tt0436992", "Doctor Who (2005)")]
-        [TestCase("igdb:78804", "Doctor Who (2005)")]
-        [TestCase("igdbid:78804", "Doctor Who (2005)")]
-        [TestCase("igdbid: 78804 ", "Doctor Who (2005)")]
+        [TestCase("The Witcher 3", "The Witcher 3: Wild Hunt")]
+        [TestCase("Portal 2", "Portal 2")]
+        [TestCase("Grand Theft Auto V", "Grand Theft Auto V")]
+        [TestCase("Final Fantasy VII", "Final Fantasy VII")]
+        [TestCase("igdb:1942", "The Witcher 3: Wild Hunt")]
+        [TestCase("igdbid:1942", "The Witcher 3: Wild Hunt")]
+        [TestCase("igdbid: 1942 ", "The Witcher 3: Wild Hunt")]
         public void successful_search(string title, string expected)
         {
             var result = Subject.SearchForNewSeries(title);
@@ -43,7 +38,8 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
             ExceptionVerification.IgnoreWarns();
         }
 
-        [TestCase("tt0496424", "30 Rock")]
+        [TestCase("tt0496424")]
+        [Ignore("IMDB search not supported for games")]
         public void should_search_by_imdb(string title, string expected)
         {
             var result = Subject.SearchForNewSeriesByImdbId(title);
@@ -71,7 +67,6 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
         [TestCase("igdbid: 99999999999999999999")]
         [TestCase("igdbid: 0")]
         [TestCase("igdbid: -12")]
-        [TestCase("igdbid:289578")]
         [TestCase("adjalkwdjkalwdjklawjdlKAJD")]
         public void no_search_result(string term)
         {
@@ -81,11 +76,11 @@ namespace Playarr.Core.Test.MetadataSource.SkyHook
             ExceptionVerification.IgnoreWarns();
         }
 
-        [TestCase("igdbid:78804")]
-        [TestCase("Doctor Who")]
+        [TestCase("igdbid:1942")]
+        [TestCase("The Witcher 3")]
         public void should_return_existing_series_if_found(string term)
         {
-            const int igdbId = 78804;
+            const int igdbId = 1942;
             var existingGame = new Game
             {
                 IgdbId = igdbId

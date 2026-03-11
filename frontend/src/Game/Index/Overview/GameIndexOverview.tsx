@@ -112,7 +112,6 @@ function GameIndexOverview(props: GameIndexOverviewProps) {
     status,
     path,
     titleSlug,
-    nextAiring,
     added,
     overview,
     statistics = {} as Statistics,
@@ -235,7 +234,6 @@ function GameIndexOverview(props: GameIndexOverviewProps) {
             <GameIndexOverviewInfo
               height={overviewHeight}
               monitored={monitored}
-              nextAiring={nextAiring}
               added={added}
               platformCount={platformCount}
               qualityProfile={qualityProfile}

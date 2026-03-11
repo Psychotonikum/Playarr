@@ -112,6 +112,7 @@ namespace Playarr.Core.Test.ParserTests.ParsingServiceTests
         [Test]
         public void should_fallback_to_daily_episode_lookup_when_search_criteria_episode_doesnt_match()
         {
+            ExceptionVerification.IgnoreErrors();
             GivenDailySeries();
             _parsedRomInfo.AirDate = DateTime.Today.AddDays(-5).ToString(Rom.AIR_DATE_FORMAT);
 

@@ -126,12 +126,9 @@ export default function GameIndexPosters({
   const posterHeight = Math.ceil((250 / 170) * posterWidth);
 
   const rowHeight = useMemo(() => {
-    const nextAiringHeight = 19;
-
     const heights = [
       posterHeight,
       detailedProgressBar ? detailedProgressBarHeight : progressBarHeight,
-      nextAiringHeight,
       isSmallScreen ? columnPaddingSmallScreen : columnPadding,
     ];
 

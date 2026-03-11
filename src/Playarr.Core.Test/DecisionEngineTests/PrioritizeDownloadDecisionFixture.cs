@@ -95,8 +95,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_put_reals_before_non_reals()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p, new Revision(version: 1, real: 0)), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p, new Revision(version: 1, real: 1)), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(version: 1, real: 0)), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(version: 1, real: 1)), Language.English);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
@@ -109,8 +109,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_put_propers_before_non_propers()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p, new Revision(version: 1)), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p, new Revision(version: 2)), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(version: 1)), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(version: 2)), Language.English);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
@@ -123,22 +123,22 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_put_higher_quality_before_lower()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.SDTV), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Unknown), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.HDTV720p);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.Bad);
         }
 
         [Test]
         public void should_order_by_lowest_number_of_episodes()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(2) }, new QualityModel(Quality.HDTV720p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(2) }, new QualityModel(Quality.Bad), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
@@ -151,8 +151,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_order_by_lowest_number_of_episodes_with_multiple_episodes()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(2), GivenEpisode(3) }, new QualityModel(Quality.HDTV720p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1), GivenEpisode(2) }, new QualityModel(Quality.HDTV720p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(2), GivenEpisode(3) }, new QualityModel(Quality.Bad), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1), GivenEpisode(2) }, new QualityModel(Quality.Bad), Language.English);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
@@ -165,10 +165,10 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_order_by_age_then_largest_rounded_to_200mb()
         {
-            var remoteRomSd = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.SDTV), Language.English, size: 100.Megabytes(), age: 1);
-            var remoteRomHdSmallOld = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 1200.Megabytes(), age: 1000);
-            var remoteRomSmallYoung = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 1250.Megabytes(), age: 10);
-            var remoteRomHdLargeYoung = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 3000.Megabytes(), age: 1);
+            var remoteRomSd = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Unknown), Language.English, size: 100.Megabytes(), age: 1);
+            var remoteRomHdSmallOld = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 1200.Megabytes(), age: 1000);
+            var remoteRomSmallYoung = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 1250.Megabytes(), age: 10);
+            var remoteRomHdLargeYoung = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 3000.Megabytes(), age: 1);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRomSd));
@@ -186,8 +186,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
             // 200 MB/Min * 60 Min Runtime = 12000 MB
             GivenPreferredSize(_series.QualityProfile.Value, 200);
 
-            var remoteRomSmall = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 1200.Megabytes(), age: 1);
-            var remoteRomLarge = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 10000.Megabytes(), age: 1);
+            var remoteRomSmall = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 1200.Megabytes(), age: 1);
+            var remoteRomLarge = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 10000.Megabytes(), age: 1);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRomSmall));
@@ -203,10 +203,10 @@ namespace Playarr.Core.Test.DecisionEngineTests
             // 46 MB/Min * 60 Min Runtime = 6900 MB
             GivenPreferredSize(_series.QualityProfile.Value, 46);
 
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 500.Megabytes(), age: 1);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 2000.Megabytes(), age: 1);
-            var remoteRom3 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 3000.Megabytes(), age: 1);
-            var remoteRom4 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 5000.Megabytes(), age: 1);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 500.Megabytes(), age: 1);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 2000.Megabytes(), age: 1);
+            var remoteRom3 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 3000.Megabytes(), age: 1);
+            var remoteRom4 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 5000.Megabytes(), age: 1);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
@@ -221,8 +221,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_order_by_youngest()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, age: 10);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, age: 5);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, age: 10);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, age: 5);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
@@ -235,8 +235,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_not_throw_if_no_episodes_are_found()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 500.Megabytes());
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, size: 500.Megabytes());
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 500.Megabytes());
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, size: 500.Megabytes());
 
             remoteRom1.Roms = new List<Rom>();
 
@@ -252,8 +252,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             GivenPreferredDownloadProtocol(DownloadProtocol.Usenet);
 
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, downloadProtocol: DownloadProtocol.Torrent);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, downloadProtocol: DownloadProtocol.Usenet);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, downloadProtocol: DownloadProtocol.Torrent);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, downloadProtocol: DownloadProtocol.Usenet);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
@@ -268,8 +268,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         {
             GivenPreferredDownloadProtocol(DownloadProtocol.Torrent);
 
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, downloadProtocol: DownloadProtocol.Torrent);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English, downloadProtocol: DownloadProtocol.Usenet);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, downloadProtocol: DownloadProtocol.Torrent);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English, downloadProtocol: DownloadProtocol.Usenet);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
@@ -282,8 +282,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_prefer_season_pack_above_single_episode()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1), GivenEpisode(2) }, new QualityModel(Quality.HDTV720p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1), GivenEpisode(2) }, new QualityModel(Quality.Bad), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
 
             remoteRom1.ParsedRomInfo.FullSeason = true;
 
@@ -296,27 +296,10 @@ namespace Playarr.Core.Test.DecisionEngineTests
         }
 
         [Test]
-        public void should_prefer_multiepisode_over_single_episode_for_anime()
-        {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1), GivenEpisode(2) }, new QualityModel(Quality.HDTV720p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
-
-            remoteRom1.Game.SeriesType = GameTypes.Standard;
-            remoteRom2.Game.SeriesType = GameTypes.Standard;
-
-            var decisions = new List<DownloadDecision>();
-            decisions.Add(new DownloadDecision(remoteRom1));
-            decisions.Add(new DownloadDecision(remoteRom2));
-
-            var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteRom.Roms.Count.Should().Be(remoteRom1.Roms.Count);
-        }
-
-        [Test]
         public void should_prefer_single_episode_over_multi_episode_for_non_anime()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1), GivenEpisode(2) }, new QualityModel(Quality.HDTV720p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1), GivenEpisode(2) }, new QualityModel(Quality.Bad), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
@@ -329,8 +312,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_prefer_releases_with_more_seeders()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
 
             var torrentInfo1 = new TorrentInfo();
             torrentInfo1.PublishDate = DateTime.Now;
@@ -355,8 +338,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_prefer_releases_with_more_peers_given_equal_number_of_seeds()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
 
             var torrentInfo1 = new TorrentInfo();
             torrentInfo1.PublishDate = DateTime.Now;
@@ -382,8 +365,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_prefer_releases_with_more_peers_no_seeds()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
 
             var torrentInfo1 = new TorrentInfo();
             torrentInfo1.PublishDate = DateTime.Now;
@@ -410,8 +393,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_prefer_first_release_if_peers_and_size_are_too_similar()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
 
             var torrentInfo1 = new TorrentInfo();
             torrentInfo1.PublishDate = DateTime.Now;
@@ -439,8 +422,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_prefer_first_release_if_age_and_size_are_too_similar()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
 
             remoteRom1.Release.PublishDate = DateTime.UtcNow.AddDays(-100);
             remoteRom1.Release.Size = 200.Megabytes();
@@ -459,8 +442,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_prefer_quality_over_the_number_of_peers()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bluray1080p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.SDTV), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Verified), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Unknown), Language.English);
 
             var torrentInfo1 = new TorrentInfo();
             torrentInfo1.PublishDate = DateTime.Now;
@@ -488,22 +471,22 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void should_put_higher_quality_before_lower_always()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.SDTV), Language.French);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p), Language.German);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Unknown), Language.French);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.German);
 
             var decisions = new List<DownloadDecision>();
             decisions.Add(new DownloadDecision(remoteRom1));
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.HDTV720p);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.Bad);
         }
 
         [Test]
         public void should_prefer_higher_score_over_lower_score()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad), Language.English);
 
             remoteRom1.CustomFormatScore = 10;
             remoteRom2.CustomFormatScore = 0;
@@ -523,8 +506,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
                   .Setup(s => s.DownloadPropersAndRepacks)
                   .Returns(ProperDownloadTypes.PreferAndUpgrade);
 
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(1)), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(2)), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1)), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(2)), Language.English);
 
             remoteRom1.CustomFormatScore = 10;
             remoteRom2.CustomFormatScore = 0;
@@ -544,8 +527,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
                   .Setup(s => s.DownloadPropersAndRepacks)
                   .Returns(ProperDownloadTypes.DoNotUpgrade);
 
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(1)), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(2)), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1)), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(2)), Language.English);
 
             remoteRom1.CustomFormatScore = 10;
             remoteRom2.CustomFormatScore = 0;
@@ -565,8 +548,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
                   .Setup(s => s.DownloadPropersAndRepacks)
                   .Returns(ProperDownloadTypes.DoNotPrefer);
 
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(1)), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(2)), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1)), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(2)), Language.English);
 
             remoteRom1.CustomFormatScore = 10;
             remoteRom2.CustomFormatScore = 0;
@@ -576,7 +559,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.WEBDL1080p);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.Bad);
             qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Revision.Version.Should().Be(1);
             qualifiedReports.First().RemoteRom.CustomFormatScore.Should().Be(10);
         }
@@ -588,8 +571,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
                   .Setup(s => s.DownloadPropersAndRepacks)
                   .Returns(ProperDownloadTypes.DoNotPrefer);
 
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(1, 0)), Language.English);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(1, 1)), Language.English);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1, 0)), Language.English);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1, 1)), Language.English);
 
             remoteRom1.CustomFormatScore = 10;
             remoteRom2.CustomFormatScore = 0;
@@ -599,7 +582,7 @@ namespace Playarr.Core.Test.DecisionEngineTests
             decisions.Add(new DownloadDecision(remoteRom2));
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.WEBDL1080p);
+            qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Quality.Should().Be(Quality.Bad);
             qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Revision.Version.Should().Be(1);
             qualifiedReports.First().RemoteRom.ParsedRomInfo.Quality.Revision.Real.Should().Be(0);
             qualifiedReports.First().RemoteRom.CustomFormatScore.Should().Be(10);
@@ -608,9 +591,9 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void sort_download_decisions_based_on_indexer_priority()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(1)), Language.English, indexerPriority: 25);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(1)), Language.English, indexerPriority: 50);
-            var remoteRom3 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(1)), Language.English, indexerPriority: 1);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1)), Language.English, indexerPriority: 25);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1)), Language.English, indexerPriority: 50);
+            var remoteRom3 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1)), Language.English, indexerPriority: 1);
 
             var decisions = new List<DownloadDecision>();
             decisions.AddRange(new[] { new DownloadDecision(remoteRom1), new DownloadDecision(remoteRom2), new DownloadDecision(remoteRom3) });
@@ -624,18 +607,18 @@ namespace Playarr.Core.Test.DecisionEngineTests
         [Test]
         public void ensure_download_decisions_indexer_priority_is_not_perfered_over_quality()
         {
-            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.HDTV720p, new Revision(1)), Language.English, indexerPriority: 25);
-            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(1)), Language.English, indexerPriority: 50);
-            var remoteRom3 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.SDTV, new Revision(1)), Language.English, indexerPriority: 1);
-            var remoteRom4 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.WEBDL1080p, new Revision(1)), Language.English, indexerPriority: 25);
+            var remoteRom1 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1)), Language.English, indexerPriority: 25);
+            var remoteRom2 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1)), Language.English, indexerPriority: 50);
+            var remoteRom3 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Unknown, new Revision(1)), Language.English, indexerPriority: 1);
+            var remoteRom4 = GivenRemoteEpisode(new List<Rom> { GivenEpisode(1) }, new QualityModel(Quality.Bad, new Revision(1)), Language.English, indexerPriority: 25);
 
             var decisions = new List<DownloadDecision>();
             decisions.AddRange(new[] { new DownloadDecision(remoteRom1), new DownloadDecision(remoteRom2), new DownloadDecision(remoteRom3), new DownloadDecision(remoteRom4) });
 
             var qualifiedReports = Subject.PrioritizeDecisions(decisions);
-            qualifiedReports.First().RemoteRom.Should().Be(remoteRom4);
-            qualifiedReports.Skip(1).First().RemoteRom.Should().Be(remoteRom2);
-            qualifiedReports.Skip(2).First().RemoteRom.Should().Be(remoteRom1);
+            qualifiedReports.First().RemoteRom.Should().Be(remoteRom1);
+            qualifiedReports.Skip(1).First().RemoteRom.Should().Be(remoteRom4);
+            qualifiedReports.Skip(2).First().RemoteRom.Should().Be(remoteRom2);
             qualifiedReports.Last().RemoteRom.Should().Be(remoteRom3);
         }
     }

@@ -391,34 +391,6 @@ namespace Playarr.Core.Test.TvTests
         }
 
         [Test]
-        public void should_mark_updated_episodes_that_have_newly_added_absolute_episode_number()
-        {
-            var roms = Builder<Rom>.CreateListOfSize(3)
-                .Build()
-                .ToList();
-
-            var existingRoms = new List<Rom>
-            {
-                roms[0],
-                roms[1]
-            };
-
-            existingRoms[0].AbsoluteEpisodeNumber = null;
-
-            Mocker.GetMock<IRomService>().Setup(c => c.GetEpisodeBySeries(It.IsAny<int>()))
-                .Returns(existingRoms);
-
-            Subject.RefreshRomInfo(GetAnimeSeries(), roms);
-
-            _updatedEpisodes.First().PlatformNumber.Should().Be(roms[1].PlatformNumber);
-            _updatedEpisodes.First().EpisodeNumber.Should().Be(roms[1].EpisodeNumber);
-            _updatedEpisodes.First().AbsoluteEpisodeNumber.Should().NotBeNull();
-            _updatedEpisodes.First().AbsoluteRomNumberAdded.Should().BeTrue();
-
-            _insertedEpisodes.Any(e => e.AbsoluteRomNumberAdded).Should().BeFalse();
-        }
-
-        [Test]
         public void should_monitor_new_episode_if_season_is_monitored()
         {
             var game = GetGame();

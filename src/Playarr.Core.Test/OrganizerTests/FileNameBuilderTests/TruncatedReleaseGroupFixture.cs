@@ -66,14 +66,14 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         {
             _series.Title = "The Fantastic Life of Mr. Sisko";
 
-            _romFile.Quality.Quality = Quality.Bluray1080p;
+            _romFile.Quality.Quality = Quality.Unknown;
             _romFile.ReleaseGroup = "IWishIWasALittleBitTallerIWishIWasABallerIWishIHadAGirlWhoLookedGoodIWouldCallHerIWishIHadARabbitInAHatWithABatAndASixFourImpala";
             _episodes = _episodes.Take(1).ToList();
             _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} - {Rom Title} {Quality Full}-{ReleaseGroup:12}";
 
             var result = Subject.BuildFileName(_episodes, _series, _romFile, ".mkv");
             result.Length.Should().BeLessOrEqualTo(255);
-            result.Should().Be("The Fantastic Life of Mr. Sisko - S01E01 - Rom Title 1 Bluray-1080p-IWishIWas....mkv");
+            result.Should().Be("The Fantastic Life of Mr. Sisko - S01E01 - Rom Title 1 Unknown-IWishIWas....mkv");
         }
 
         [Test]
@@ -81,14 +81,14 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         {
             _series.Title = "The Fantastic Life of Mr. Sisko";
 
-            _romFile.Quality.Quality = Quality.Bluray1080p;
+            _romFile.Quality.Quality = Quality.Unknown;
             _romFile.ReleaseGroup = "IWishIWasALittleBitTallerIWishIWasABallerIWishIHadAGirlWhoLookedGoodIWouldCallHerIWishIHadARabbitInAHatWithABatAndASixFourImpala";
             _episodes = _episodes.Take(1).ToList();
             _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} - {Rom Title} {Quality Full}-{ReleaseGroup:-17}";
 
             var result = Subject.BuildFileName(_episodes, _series, _romFile, ".mkv");
             result.Length.Should().BeLessOrEqualTo(255);
-            result.Should().Be("The Fantastic Life of Mr. Sisko - S01E01 - Rom Title 1 Bluray-1080p-...ASixFourImpala.mkv");
+            result.Should().Be("The Fantastic Life of Mr. Sisko - S01E01 - Rom Title 1 Unknown-...ASixFourImpala.mkv");
         }
     }
 }

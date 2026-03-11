@@ -205,7 +205,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = "{Quality Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("HDTV-720p");
+                   .Should().Be("Unknown");
         }
 
         [Test]
@@ -234,7 +234,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} - {Rom Title} [{Quality Title}]";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South Park - S15E06 - City Sushi [HDTV-720p]");
+                   .Should().Be("South Park - S15E06 - City Sushi [Unknown]");
         }
 
         [TestCase("Some Escaped {{ String", "Some Escaped { String")]
@@ -308,7 +308,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_use_airDate_if_series_isDaily_and_not_a_special()
         {
-            _namingConfig.DailyEpisodeFormat = "{Game Title} - {air-date} - {Rom Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} - {Air-Date} - {Rom Title}";
 
             _series.Title = "The Daily Show with Jon Stewart";
             _series.SeriesType = GameTypes.Standard;
@@ -346,7 +346,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         [Test]
         public void should_set_airdate_to_unknown_if_not_available()
         {
-            _namingConfig.DailyEpisodeFormat = "{Game Title} - {Air-Date} - {Rom Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} - {Air-Date} - {Rom Title}";
 
             _series.Title = "The Daily Show with Jon Stewart";
             _series.SeriesType = GameTypes.Standard;
@@ -468,53 +468,53 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         }
 
         [Test]
-        public void should_replace_standard_and_absolute_numbering_when_series_is_anime()
+        public void should_strip_absolute_numbering_tokens_for_games()
         {
             _series.SeriesType = GameTypes.Standard;
-            _namingConfig.AnimeEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}.{absolute:00}.{Rom.Title}";
-
-            Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South.Park.S15E06.100.City.Sushi");
-        }
-
-        [Test]
-        public void should_replace_standard_numbering_when_series_is_anime()
-        {
-            _series.SeriesType = GameTypes.Standard;
-            _namingConfig.AnimeEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}.{Rom.Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}.{absolute:00}.{Rom.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
                    .Should().Be("South.Park.S15E06.City.Sushi");
         }
 
         [Test]
-        public void should_replace_absolute_numbering_when_series_is_anime()
+        public void should_replace_standard_numbering_when_series_is_anime()
         {
             _series.SeriesType = GameTypes.Standard;
-            _namingConfig.AnimeEpisodeFormat = "{Game.Title}.{absolute:00}.{Rom.Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}.{Rom.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South.Park.100.City.Sushi");
+                   .Should().Be("South.Park.S15E06.City.Sushi");
+        }
+
+        [Test]
+        public void should_strip_absolute_numbering_when_used_in_standard_format()
+        {
+            _series.SeriesType = GameTypes.Standard;
+            _namingConfig.StandardEpisodeFormat = "{Game.Title}.{absolute:00}.{Rom.Title}";
+
+            Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
+                   .Should().Be("South.Park.City.Sushi");
         }
 
         [Test]
         public void should_replace_duplicate_numbering_individually()
         {
             _series.SeriesType = GameTypes.Standard;
-            _namingConfig.AnimeEpisodeFormat = "{Game.Title}.{platform}x{rom:00}.{absolute:000}\\{Game.Title}.S{platform:00}E{rom:00}.{absolute:00}.{Rom.Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game.Title}.{platform}x{rom:00}.{absolute:000}\\{Game.Title}.S{platform:00}E{rom:00}.{absolute:00}.{Rom.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South.Park.15x06.100\\South.Park.S15E06.100.City.Sushi".AsOsAgnostic());
+                   .Should().Be("South.Park.15x06\\South.Park.S15E06.City.Sushi".AsOsAgnostic());
         }
 
         [Test]
         public void should_replace_individual_season_episode_tokens()
         {
             _series.SeriesType = GameTypes.Standard;
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} Platform {platform:0000} Rom {rom:0000}\\{Game.Title}.S{platform:00}E{rom:00}.{absolute:00}.{Rom.Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} Platform {platform:0000} Rom {rom:0000}\\{Game.Title}.S{platform:00}E{rom:00}.{absolute:00}.{Rom.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South Park Platform 0015 Rom 0006\\South.Park.S15E06.100.City.Sushi".AsOsAgnostic());
+                   .Should().Be("South Park Platform 0015 Rom 0006\\South.Park.S15E06.City.Sushi".AsOsAgnostic());
         }
 
         [Test]
@@ -524,7 +524,6 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _episode1.AbsoluteEpisodeNumber = null;
 
             _namingConfig.StandardEpisodeFormat = "{Game Title} - {platform:0}x{rom:00} - {Rom Title}";
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:000} - {Rom Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1, }, _series, _romFile)
                    .Should().Be("South Park - 15x06 - City Sushi");
@@ -536,7 +535,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = "{Game.Title}.S{platform:00}E{rom:00}{_Rom.Title_}{Quality.Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South.Park.S15E06_City.Sushi_HDTV-720p");
+                   .Should().Be("South.Park.S15E06_City.Sushi_Unknown");
         }
 
         [Test]
@@ -709,15 +708,14 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         }
 
         [Test]
-        public void should_replace_quality_proper_with_v2_for_anime_v2()
+        public void should_replace_quality_proper_with_proper_when_proper()
         {
-            _series.SeriesType = GameTypes.Standard;
-            _namingConfig.AnimeEpisodeFormat = "{Quality Proper}";
+            _namingConfig.StandardEpisodeFormat = "{Quality Proper}";
 
             GivenProper();
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("v2");
+                   .Should().Be("Proper");
         }
 
         [Test]
@@ -726,7 +724,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = "{Quality Title} {Quality Proper}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("HDTV-720p");
+                   .Should().Be("Unknown");
         }
 
         [Test]
@@ -737,7 +735,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             GivenProper();
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South Park - S15E06 [HDTV-720p] [Proper]");
+                   .Should().Be("South Park - S15E06 [Unknown] [Proper]");
         }
 
         [Test]
@@ -746,7 +744,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} [{Quality Title}] {[Quality Proper]}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South Park - S15E06 [HDTV-720p]");
+                   .Should().Be("South Park - S15E06 [Unknown]");
         }
 
         [Test]
@@ -755,7 +753,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} [{Quality Full}]";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South Park - S15E06 [HDTV-720p]");
+                   .Should().Be("South Park - S15E06 [Unknown]");
         }
 
         [Test]
@@ -766,7 +764,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             GivenProper();
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South Park - S15E06 [HDTV-720p Proper]");
+                   .Should().Be("South Park - S15E06 [Unknown Proper]");
         }
 
         [Test]
@@ -776,7 +774,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             GivenReal();
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South Park - S15E06 [HDTV-720p REAL]");
+                   .Should().Be("South Park - S15E06 [Unknown REAL]");
         }
 
         [TestCase(' ')]
@@ -788,7 +786,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = string.Format("{{Quality{0}Title}}{0}{{Quality{0}Proper}}", separator);
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("HDTV-720p");
+                   .Should().Be("Unknown");
         }
 
         [TestCase(' ')]
@@ -800,17 +798,17 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.StandardEpisodeFormat = string.Format("{{Quality{0}Title}}{0}{{Quality{0}Proper}}{0}{{Rom{0}Title}}", separator);
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be(string.Format("HDTV-720p{0}City{0}Sushi", separator));
+                   .Should().Be(string.Format("Unknown{0}City{0}Sushi", separator));
         }
 
         [Test]
         public void should_not_require_a_separator_between_tokens()
         {
             _series.SeriesType = GameTypes.Standard;
-            _namingConfig.AnimeEpisodeFormat = "[{Release Group}]{Game.CleanTitle}.{absolute:000}";
+            _namingConfig.StandardEpisodeFormat = "[{Release Group}]{Game.CleanTitle}.{absolute:000}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("[PlayarrTest]South.Park.100");
+                   .Should().Be("[PlayarrTest]South.Park");
         }
 
         [Test]

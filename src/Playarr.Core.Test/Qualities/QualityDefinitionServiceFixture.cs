@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Playarr.Core.Lifecycle;
 using Playarr.Core.Qualities;
 using Playarr.Core.Test.Framework;
+using Playarr.Test.Common;
 
 namespace Playarr.Core.Test.Qualities
 {
@@ -13,6 +14,8 @@ namespace Playarr.Core.Test.Qualities
         [Test]
         public void init_should_add_all_definitions()
         {
+            ExceptionVerification.IgnoreWarns();
+
             Subject.Handle(new ApplicationStartedEvent());
 
             Mocker.GetMock<IQualityDefinitionRepository>()

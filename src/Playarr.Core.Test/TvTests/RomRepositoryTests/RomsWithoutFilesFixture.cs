@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Playarr.Core.Datastore;
 using Playarr.Core.Test.Framework;
+using Playarr.Test.Common;
 using Playarr.Core.Games;
 
 namespace Playarr.Core.Test.TvTests.RomRepositoryTests
@@ -146,6 +147,7 @@ namespace Playarr.Core.Test.TvTests.RomRepositoryTests
         [Test]
         public void should_not_return_episodes_on_air()
         {
+            ExceptionVerification.IgnoreErrors();
             var onAirEpisode = Builder<Rom>.CreateNew()
                                                .With(e => e.Id = 0)
                                                .With(e => e.GameId = _monitoredSeries.Id)

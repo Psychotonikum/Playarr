@@ -81,6 +81,8 @@ namespace Playarr.Core.Test.IndexerTests.NewznabTests
         [Test]
         public void should_throw_if_xml_invalid()
         {
+            ExceptionVerification.IgnoreWarns();
+
             GivenCapsResponse(_caps.Replace("<limits", "<>"));
 
             Assert.Throws<XmlException>(() => Subject.GetCapabilities(_settings));

@@ -14,7 +14,6 @@ import { useRomFile } from 'RomFile/RomFileProvider';
 import { useDeleteRomFile } from 'RomFile/useRomFiles';
 import QualityProfileName from 'Settings/Profiles/Quality/QualityProfileName';
 import translate from 'Utilities/String/translate';
-import RomAiring from './RomAiring';
 import RomFileRow from './RomFileRow';
 import styles from './RomSummary.css';
 
@@ -75,9 +74,9 @@ interface RomSummaryProps {
 
 function RomSummary({ gameId, romId, romEntity, romFileId }: RomSummaryProps) {
   const queryClient = useQueryClient();
-  const { qualityProfileId, network } = useSingleGame(gameId) as Game;
+  const { qualityProfileId } = useSingleGame(gameId) as Game;
 
-  const { airDateUtc, overview } = useRom(romId, romEntity) as Rom;
+  const { overview } = useRom(romId, romEntity) as Rom;
 
   const {
     path,
@@ -106,12 +105,6 @@ function RomSummary({ gameId, romId, romEntity, romFileId }: RomSummaryProps) {
 
   return (
     <div>
-      <div>
-        <span className={styles.infoTitle}>{translate('Airs')}</span>
-
-        <RomAiring airDateUtc={airDateUtc} network={network} />
-      </div>
-
       <div>
         <span className={styles.infoTitle}>{translate('QualityProfile')}</span>
 

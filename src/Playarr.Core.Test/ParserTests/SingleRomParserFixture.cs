@@ -158,7 +158,7 @@ namespace Playarr.Core.Test.ParserTests
         [TestCase("[Anime Chap] Anime Title! S01E09 [WEB 1080p] {OP & ED Lyrics} - Rom 9 (The Eminence in Shadow)", "Anime Title!", 1, 9)]
         [TestCase("[Anime Chap] Anime Title! S01E12 [WEB 1080p] {OP & ED Lyrics} - Rom 12 (The Eminence in Shadow)", "Anime Title!", 1, 12)]
         [TestCase("GameTitle-S16E08-10426008-0.mkv", "GameTitle", 16, 8)]
-        [TestCase("Game-S07E12-31st_Century_Fox-[Bluray-1080p].mkv", "Game", 7, 12)]
+        [TestCase("Game-S07E12-Another_Title-[Bluray-1080p].nsp", "Game", 7, 12)]
         [TestCase("TheTitle-S12E13-3_Acts_of_God.mkv", "TheTitle", 12, 13)]
         [TestCase("Game Title - Temporada 2 [HDTV 720p][Cap.408]", "Game Title", 4, 8)]
         [TestCase("Game Title [HDTV][Cap.104](website.com).avi", "Game Title", 1, 4)]

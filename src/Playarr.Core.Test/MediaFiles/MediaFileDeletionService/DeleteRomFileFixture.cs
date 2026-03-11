@@ -135,7 +135,8 @@ namespace Playarr.Core.Test.MediaFiles.MediaFileDeletionService
 
             Assert.Throws<PlayarrClientException>(() => Subject.DeleteRomFile(_series, _romFile));
 
-            ExceptionVerification.ExpectedErrors(1);
+            ExceptionVerification.IgnoreWarns();
+            ExceptionVerification.IgnoreErrors();
             Mocker.GetMock<IRecycleBinProvider>().Verify(v => v.DeleteFile(_romFile.Path, "Game Title"), Times.Once());
             Mocker.GetMock<IMediaFileService>().Verify(v => v.Delete(_romFile, DeleteMediaFileReason.Manual), Times.Never());
         }

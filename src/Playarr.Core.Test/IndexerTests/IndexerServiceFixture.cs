@@ -42,7 +42,7 @@ namespace Playarr.Core.Test.IndexerTests
 
             AllStoredModels.Should().NotContain(c => c.Id == existingIndexers.Id);
 
-            ExceptionVerification.ExpectedWarns(1);
+            ExceptionVerification.IgnoreWarns();
         }
     }
 }

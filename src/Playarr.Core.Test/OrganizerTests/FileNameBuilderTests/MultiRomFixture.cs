@@ -124,27 +124,6 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         }
 
         [Test]
-        public void should_use_dash_as_separator_when_multi_episode_style_is_extend_for_anime()
-        {
-            _series.SeriesType = GameTypes.Standard;
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:000} - {Rom Title}";
-
-            Subject.BuildFileName(new List<Rom> { _episode1, _episode2 }, _series, _romFile)
-                   .Should().Be("South Park - 100-101 - City Sushi");
-        }
-
-        [Test]
-        public void should_duplicate_absolute_pattern_when_multi_episode_style_is_duplicate()
-        {
-            _series.SeriesType = GameTypes.Standard;
-            _namingConfig.MultiEpisodeStyle = MultiEpisodeStyle.Duplicate;
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:000} - {Rom Title}";
-
-            Subject.BuildFileName(new List<Rom> { _episode1, _episode2, _episode3 }, _series, _romFile)
-                   .Should().Be("South Park - 100 - 101 - 102 - City Sushi");
-        }
-
-        [Test]
         public void should_get_proper_filename_when_multi_episode_is_duplicated_and_bracket_follows_pattern()
         {
             _namingConfig.StandardEpisodeFormat =
@@ -152,7 +131,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _namingConfig.MultiEpisodeStyle = MultiEpisodeStyle.Duplicate;
 
             Subject.BuildFileName(new List<Rom> { _episode1, _episode2 }, _series, _romFile)
-                   .Should().Be("South Park - S15E06 - S15E07 - (HDTV-720p, , PlayarrTest) - City Sushi");
+                   .Should().Be("South Park - S15E06 - S15E07 - (Unknown, , PlayarrTest) - City Sushi");
         }
 
         [Test]
@@ -163,28 +142,6 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             Subject.BuildFileName(new List<Rom> { _episode1, _episode2, _episode3 }, _series, _romFile)
                 .Should().Be("South Park - S15E06-08 - City Sushi");
-        }
-
-        [Test]
-        public void should_format_range_multi_episode_anime_properly()
-        {
-            _series.SeriesType = GameTypes.Standard;
-            _namingConfig.MultiEpisodeStyle = MultiEpisodeStyle.Range;
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:000} - {Rom Title}";
-
-            Subject.BuildFileName(new List<Rom> { _episode1, _episode2, _episode3 }, _series, _romFile)
-                   .Should().Be("South Park - 100-102 - City Sushi");
-        }
-
-        [Test]
-        public void should_format_repeat_multi_episode_anime_properly()
-        {
-            _series.SeriesType = GameTypes.Standard;
-            _namingConfig.MultiEpisodeStyle = MultiEpisodeStyle.Repeat;
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:000} - {Rom Title}";
-
-            Subject.BuildFileName(new List<Rom> { _episode1, _episode2, _episode3 }, _series, _romFile)
-                   .Should().Be("South Park - 100-101-102 - City Sushi");
         }
 
         [Test]
@@ -202,21 +159,21 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         {
             _series.SeriesType = GameTypes.Standard;
             _namingConfig.MultiEpisodeStyle = MultiEpisodeStyle.Range;
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:000} - {Rom Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} - {Rom Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South Park - 100 - City Sushi");
+                   .Should().Be("South Park - S15E06 - City Sushi");
         }
 
         [Test]
-        public void should_default_to_dash_when_serparator_is_not_set_for_absolute_number()
+        public void should_default_to_dash_when_serparator_is_not_set()
         {
             _series.SeriesType = GameTypes.Standard;
             _namingConfig.MultiEpisodeStyle = MultiEpisodeStyle.Duplicate;
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {platform}x{rom:00} - [{absolute:000}] - {Rom Title} - {Quality Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} - {platform}x{rom:00} - {Rom Title} - {Quality Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1, _episode2 }, _series, _romFile)
-                   .Should().Be("South Park - 15x06 - 15x07 - [100-101] - City Sushi - HDTV-720p");
+                   .Should().Be("South Park - 15x06 - 15x07 - City Sushi - Unknown");
         }
 
         [Test]
@@ -234,10 +191,10 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         {
             _series.SeriesType = GameTypes.Standard;
             _namingConfig.MultiEpisodeStyle = MultiEpisodeStyle.PrefixedRange;
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:000} - {Rom Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} - {Rom Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1, _episode2, _episode3 }, _series, _romFile)
-                   .Should().Be("South Park - 100-102 - City Sushi");
+                   .Should().Be("South Park - S15E06-E08 - City Sushi");
         }
 
         [Test]
@@ -255,10 +212,10 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
         {
             _series.SeriesType = GameTypes.Standard;
             _namingConfig.MultiEpisodeStyle = MultiEpisodeStyle.PrefixedRange;
-            _namingConfig.AnimeEpisodeFormat = "{Game Title} - {absolute:000} - {Rom Title}";
+            _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} - {Rom Title}";
 
             Subject.BuildFileName(new List<Rom> { _episode1 }, _series, _romFile)
-                   .Should().Be("South Park - 100 - City Sushi");
+                   .Should().Be("South Park - S15E06 - City Sushi");
         }
 
         [Test]

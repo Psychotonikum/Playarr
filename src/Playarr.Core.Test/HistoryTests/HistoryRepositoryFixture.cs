@@ -50,14 +50,14 @@ namespace Playarr.Core.Test.HistoryTests
         {
             var historyBluray = Builder<EpisodeHistory>.CreateNew()
                 .With(c => c.Languages = new List<Language> { Language.English })
-                .With(c => c.Quality = new QualityModel(Quality.Bluray1080p))
+                .With(c => c.Quality = new QualityModel(Quality.Verified))
                 .With(c => c.GameId = 12)
                 .With(c => c.EventType = EpisodeHistoryEventType.Grabbed)
                 .BuildNew();
 
             var historyDvd = Builder<EpisodeHistory>.CreateNew()
                 .With(c => c.Languages = new List<Language> { Language.English })
-                .With(c => c.Quality = new QualityModel(Quality.DVD))
+                .With(c => c.Quality = new QualityModel(Quality.Bad))
                 .With(c => c.GameId = 12)
                 .With(c => c.EventType = EpisodeHistoryEventType.Grabbed)
              .BuildNew();
@@ -65,7 +65,7 @@ namespace Playarr.Core.Test.HistoryTests
             Subject.Insert(historyBluray);
             Subject.Insert(historyDvd);
 
-            var downloadHistory = Subject.FindDownloadHistory(12, new QualityModel(Quality.Bluray1080p));
+            var downloadHistory = Subject.FindDownloadHistory(12, new QualityModel(Quality.Verified));
 
             downloadHistory.Should().HaveCount(1);
         }

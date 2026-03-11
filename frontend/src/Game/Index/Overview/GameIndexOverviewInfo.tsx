@@ -35,7 +35,6 @@ interface GameIndexOverviewInfoProps {
   showPath: boolean;
   showSizeOnDisk: boolean;
   monitored: boolean;
-  nextAiring?: string;
   qualityProfile?: QualityProfileModel;
   added?: string;
   platformCount: number;
@@ -166,11 +165,9 @@ function getInfoRowProps(
 }
 
 function GameIndexOverviewInfo(props: GameIndexOverviewInfoProps) {
-  const { height, nextAiring } = props;
+  const { height } = props;
 
   const uiSettings = useUiSettingsValues();
-  const { shortDateFormat, showRelativeDates, longDateFormat, timeFormat } =
-    uiSettings;
 
   let shownRows = 1;
   const maxRows = Math.floor(height / (infoRowHeight + 4));
@@ -193,22 +190,6 @@ function GameIndexOverviewInfo(props: GameIndexOverviewInfoProps) {
 
   return (
     <div className={styles.infos}>
-      {!!nextAiring && (
-        <GameIndexOverviewInfoRow
-          title={translate('NextAiringDate', {
-            date: formatDateTime(nextAiring, longDateFormat, timeFormat),
-          })}
-          iconName={icons.SCHEDULED}
-          label={getRelativeDate({
-            date: nextAiring,
-            shortDateFormat,
-            showRelativeDates,
-            timeFormat,
-            timeForToday: true,
-          })}
-        />
-      )}
-
       {rowInfo.map((row) => {
         if (!row.isVisible) {
           return null;

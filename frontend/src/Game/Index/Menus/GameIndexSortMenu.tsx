@@ -38,24 +38,6 @@ function GameIndexSortMenu(props: GameIndexSortMenuProps) {
         </SortMenuItem>
 
         <SortMenuItem
-          name="network"
-          sortKey={sortKey}
-          sortDirection={sortDirection}
-          onPress={onSortSelect}
-        >
-          {translate('Network')}
-        </SortMenuItem>
-
-        <SortMenuItem
-          name="originalCountry"
-          sortKey={sortKey}
-          sortDirection={sortDirection}
-          onPress={onSortSelect}
-        >
-          {translate('OriginalCountry')}
-        </SortMenuItem>
-
-        <SortMenuItem
           name="originalLanguage"
           sortKey={sortKey}
           sortDirection={sortDirection}
@@ -71,24 +53,6 @@ function GameIndexSortMenu(props: GameIndexSortMenuProps) {
           onPress={onSortSelect}
         >
           {translate('QualityProfile')}
-        </SortMenuItem>
-
-        <SortMenuItem
-          name="nextAiring"
-          sortKey={sortKey}
-          sortDirection={sortDirection}
-          onPress={onSortSelect}
-        >
-          {translate('NextAiring')}
-        </SortMenuItem>
-
-        <SortMenuItem
-          name="previousAiring"
-          sortKey={sortKey}
-          sortDirection={sortDirection}
-          onPress={onSortSelect}
-        >
-          {translate('PreviousAiring')}
         </SortMenuItem>
 
         <SortMenuItem
@@ -125,15 +89,6 @@ function GameIndexSortMenu(props: GameIndexSortMenuProps) {
           onPress={onSortSelect}
         >
           {translate('RomCount')}
-        </SortMenuItem>
-
-        <SortMenuItem
-          name="latestSeason"
-          sortKey={sortKey}
-          sortDirection={sortDirection}
-          onPress={onSortSelect}
-        >
-          {translate('LatestSeason')}
         </SortMenuItem>
 
         <SortMenuItem

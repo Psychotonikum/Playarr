@@ -13,12 +13,12 @@ namespace Playarr.Integration.Test.ApiTests
         {
             WaitForCompletion(() => QualityProfiles.All().Count > 0);
 
-            foreach (var title in new[] { "90210", "Dexter" })
+            foreach (var igdbId in new[] { 1942, 732 })
             {
-                var newGame = Game.Lookup(title).First();
+                var newGame = Game.Lookup("igdb:" + igdbId).First();
 
                 newGame.QualityProfileId = 1;
-                newGame.Path = string.Format(@"C:\Test\{0}", title).AsOsAgnostic();
+                newGame.Path = string.Format(@"C:\Test\{0}", newGame.Title).AsOsAgnostic();
 
                 Game.Post(newGame);
             }

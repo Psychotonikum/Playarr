@@ -5,11 +5,18 @@ using NUnit.Framework;
 using Playarr.Common.Http;
 using Playarr.Core.Indexers;
 using Playarr.Core.Test.Framework;
+using Playarr.Test.Common;
 
 namespace Playarr.Core.Test.IndexerTests
 {
     public class BasicRssParserFixture : CoreTest<RssParser>
     {
+        [SetUp]
+        public void Setup()
+        {
+            ExceptionVerification.IgnoreWarns();
+        }
+
         [TestCase("5.64 GB", 6055903887)]
         [TestCase("5.54 GiB", 5948529705)]
         [TestCase("398.62 MiB", 417983365)]

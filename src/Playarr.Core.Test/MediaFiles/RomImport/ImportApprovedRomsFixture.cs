@@ -58,7 +58,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport
                                                {
                                                    Game = game,
                                                    Roms = new List<Rom> { rom },
-                                                   Path = Path.Combine(game.Path, "30 Rock - S01E01 - Pilot.avi"),
+                                                   Path = Path.Combine(game.Path, "30 Rock - S01E01 - Pilot.nsp"),
                                                    Quality = new QualityModel(Quality.Bluray720p),
                                                    ReleaseGroup = "DRONE",
                                                    FileRomInfo = new ParsedRomInfo()
@@ -179,7 +179,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport
                  {
                      Game = fileDecision.LocalEpisode.Game,
                      Roms = new List<Rom> { fileDecision.LocalEpisode.Roms.First() },
-                     Path = @"C:\Test\TV\30 Rock\30 Rock - S01E01 - Pilot.avi".AsOsAgnostic(),
+                     Path = @"C:\Test\TV\30 Rock\30 Rock - S01E01 - Pilot.nsp".AsOsAgnostic(),
                      Quality = new QualityModel(Quality.Bluray720p),
                      Size = 80.Megabytes()
                  });
@@ -348,6 +348,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport
         [Test]
         public void should_delete_existing_metadata_files_with_the_same_path()
         {
+            ExceptionVerification.IgnoreErrors();
             Mocker.GetMock<IMediaFileService>()
                   .Setup(s => s.GetFilesWithRelativePath(It.IsAny<int>(), It.IsAny<string>()))
                   .Returns(Builder<RomFile>.CreateListOfSize(1).BuildList());

@@ -31,40 +31,40 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
         {
             Mocker.Resolve<UpgradableSpecification>();
 
-            _firstFile = new RomFile { Quality = new QualityModel(Quality.Bluray1080p, new Revision(version: 1)), DateAdded = DateTime.Now };
-            _secondFile = new RomFile { Quality = new QualityModel(Quality.Bluray1080p, new Revision(version: 1)), DateAdded = DateTime.Now };
+            _firstFile = new RomFile { Quality = new QualityModel(Quality.Verified, new Revision(version: 1)), DateAdded = DateTime.Now };
+            _secondFile = new RomFile { Quality = new QualityModel(Quality.Verified, new Revision(version: 1)), DateAdded = DateTime.Now };
 
             var singleEpisodeList = new List<Rom> { new Rom { RomFile = _firstFile, EpisodeFileId = 1 }, new Rom { RomFile = null } };
             var doubleEpisodeList = new List<Rom> { new Rom { RomFile = _firstFile, EpisodeFileId = 1 }, new Rom { RomFile = _secondFile, EpisodeFileId = 1 }, new Rom { RomFile = null } };
 
             var fakeSeries = Builder<Game>.CreateNew()
-                         .With(c => c.QualityProfile = new QualityProfile { Cutoff = Quality.Bluray1080p.Id })
+                         .With(c => c.QualityProfile = new QualityProfile { Cutoff = Quality.Verified.Id })
                          .Build();
 
             _parseResultMulti = new RemoteRom
             {
                 Game = fakeSeries,
-                ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)) },
+                ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.Bad, new Revision(version: 2)) },
                 Roms = doubleEpisodeList
             };
 
             _parseResultSingle = new RemoteRom
             {
                 Game = fakeSeries,
-                ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.DVD, new Revision(version: 2)) },
+                ParsedRomInfo = new ParsedRomInfo { Quality = new QualityModel(Quality.Bad, new Revision(version: 2)) },
                 Roms = singleEpisodeList
             };
         }
 
         private void WithFirstFileUpgradable()
         {
-            _firstFile.Quality = new QualityModel(Quality.SDTV);
+            _firstFile.Quality = new QualityModel(Quality.Unknown);
         }
 
         [Test]
         public void should_return_false_when_romFile_was_added_more_than_7_days_ago()
         {
-            _firstFile.Quality.Quality = Quality.DVD;
+            _firstFile.Quality.Quality = Quality.Bad;
 
             _firstFile.DateAdded = DateTime.Today.AddDays(-30);
             Subject.IsSatisfiedBy(_parseResultSingle, new()).Accepted.Should().BeFalse();
@@ -73,8 +73,8 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
         [Test]
         public void should_return_false_when_first_romFile_was_added_more_than_7_days_ago()
         {
-            _firstFile.Quality.Quality = Quality.DVD;
-            _secondFile.Quality.Quality = Quality.DVD;
+            _firstFile.Quality.Quality = Quality.Bad;
+            _secondFile.Quality.Quality = Quality.Bad;
 
             _firstFile.DateAdded = DateTime.Today.AddDays(-30);
             Subject.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeFalse();
@@ -83,8 +83,8 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
         [Test]
         public void should_return_false_when_second_romFile_was_added_more_than_7_days_ago()
         {
-            _firstFile.Quality.Quality = Quality.DVD;
-            _secondFile.Quality.Quality = Quality.DVD;
+            _firstFile.Quality.Quality = Quality.Bad;
+            _secondFile.Quality.Quality = Quality.Bad;
 
             _secondFile.DateAdded = DateTime.Today.AddDays(-30);
             Subject.IsSatisfiedBy(_parseResultMulti, new()).Accepted.Should().BeFalse();
@@ -115,7 +115,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                   .Setup(s => s.DownloadPropersAndRepacks)
                   .Returns(ProperDownloadTypes.DoNotUpgrade);
 
-            _firstFile.Quality.Quality = Quality.DVD;
+            _firstFile.Quality.Quality = Quality.Bad;
 
             _firstFile.DateAdded = DateTime.Today;
             Subject.IsSatisfiedBy(_parseResultSingle, new()).Accepted.Should().BeFalse();
@@ -128,7 +128,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                   .Setup(s => s.DownloadPropersAndRepacks)
                   .Returns(ProperDownloadTypes.PreferAndUpgrade);
 
-            _firstFile.Quality.Quality = Quality.DVD;
+            _firstFile.Quality.Quality = Quality.Bad;
 
             _firstFile.DateAdded = DateTime.Today;
             Subject.IsSatisfiedBy(_parseResultSingle, new()).Accepted.Should().BeTrue();
@@ -141,7 +141,7 @@ namespace Playarr.Core.Test.DecisionEngineTests.RssSync
                   .Setup(s => s.DownloadPropersAndRepacks)
                   .Returns(ProperDownloadTypes.DoNotPrefer);
 
-            _firstFile.Quality.Quality = Quality.DVD;
+            _firstFile.Quality.Quality = Quality.Bad;
 
             _firstFile.DateAdded = DateTime.Today;
             Subject.IsSatisfiedBy(_parseResultSingle, new()).Accepted.Should().BeTrue();

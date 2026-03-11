@@ -38,7 +38,6 @@ import {
   tooltipPositions,
 } from 'Helpers/Props';
 import InteractiveImportModal from 'InteractiveImport/InteractiveImportModal';
-import useCountryName from 'Internationalization/useCountryName';
 import OrganizePreviewModal from 'Organize/OrganizePreviewModal';
 import useRoms from 'Rom/useRoms';
 import useRomFiles from 'RomFile/useRomFiles';
@@ -98,10 +97,10 @@ function GameDetails({ gameId }: GameDetailsProps) {
     refetch: refetchEpisodes,
   } = useRoms({ gameId });
 
-  const { hasRoms, hasMonitoredEpisodes } = useMemo(() => {
+  const { hasRoms, hasMonitoredRoms } = useMemo(() => {
     return {
       hasRoms: data.length > 0,
-      hasMonitoredEpisodes: data.some((e) => e.monitored),
+      hasMonitoredRoms: data.some((e) => e.monitored),
     };
   }, [data]);
 
@@ -358,8 +357,6 @@ function GameDetails({ gameId }: GameDetailsProps) {
     refetchRomFiles();
   }, [refetchEpisodes, refetchRomFiles]);
 
-  const originalCountryName = useCountryName(game?.originalCountry);
-
   useEffect(() => {
     populate();
   }, [populate]);
@@ -394,7 +391,6 @@ function GameDetails({ gameId }: GameDetailsProps) {
     qualityProfileId,
     monitored,
     status,
-    network,
     originalLanguage,
     overview,
     images,
@@ -454,10 +450,10 @@ function GameDetails({ gameId }: GameDetailsProps) {
             <PageToolbarButton
               label={translate('SearchMonitored')}
               iconName={icons.SEARCH}
-              isDisabled={!monitored || !hasMonitoredEpisodes || !hasRoms}
+              isDisabled={!monitored || !hasMonitoredRoms || !hasRoms}
               isSpinning={isSearching}
               title={
-                hasMonitoredEpisodes
+                hasMonitoredRoms
                   ? undefined
                   : translate('NoMonitoredEpisodes')
               }
@@ -701,34 +697,6 @@ function GameDetails({ gameId }: GameDetailsProps) {
                         <span className={styles.originalLanguageName}>
                           {originalLanguage.name}
                         </span>
-                      </div>
-                    </Label>
-                  ) : null}
-
-                  {originalCountryName ? (
-                    <Label
-                      className={styles.detailsLabel}
-                      title={translate('OriginalCountry')}
-                      size={sizes.LARGE}
-                    >
-                      <div>
-                        <Icon name={icons.GLOBE} size={17} />
-                        <span className={styles.originalCountry}>
-                          {originalCountryName}
-                        </span>
-                      </div>
-                    </Label>
-                  ) : null}
-
-                  {network ? (
-                    <Label
-                      className={styles.detailsLabel}
-                      title={translate('Network')}
-                      size={sizes.LARGE}
-                    >
-                      <div>
-                        <Icon name={icons.NETWORK} size={17} />
-                        <span className={styles.network}>{network}</span>
                       </div>
                     </Label>
                   ) : null}

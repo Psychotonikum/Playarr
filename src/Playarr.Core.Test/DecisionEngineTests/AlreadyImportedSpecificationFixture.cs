@@ -45,8 +45,8 @@ namespace Playarr.Core.Test.DecisionEngineTests
             _series = Builder<Game>.CreateNew()
                                      .Build();
 
-            _hdtv720p = new QualityModel(Quality.HDTV720p, new Revision(version: 1));
-            _hdtv1080p = new QualityModel(Quality.HDTV1080p, new Revision(version: 1));
+            _hdtv720p = new QualityModel(Quality.Bad, new Revision(version: 1));
+            _hdtv1080p = new QualityModel(Quality.Verified, new Revision(version: 1));
 
             _remoteRom = new RemoteRom
             {

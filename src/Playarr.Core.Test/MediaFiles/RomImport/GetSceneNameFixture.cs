@@ -201,7 +201,7 @@ namespace Playarr.Core.Test.MediaFiles.EpisodeImport
                                .BeNull();
         }
 
-        [TestCase(".mkv")]
+        [TestCase(".nsp")]
         [TestCase(".par2")]
         [TestCase(".nzb")]
         public void should_remove_extension_from_nzb_title_for_scene_name(string extension)

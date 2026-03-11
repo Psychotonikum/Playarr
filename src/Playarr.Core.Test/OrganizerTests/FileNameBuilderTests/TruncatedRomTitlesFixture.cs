@@ -105,7 +105,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             _episodes[0].PlatformNumber = 2;
             _episodes[0].EpisodeNumber = 18;
             _episodes[0].Title = "This title has to be exactly the right number of characters in length, combined with the game title, quality and rom number it becomes close to 255 and the extension puts it right above the 255 limit and triggers the truncation logic";
-            _romFile.Quality.Quality = Quality.Bluray1080p;
+            _romFile.Quality.Quality = Quality.Unknown;
             _episodes = _episodes.Take(1).ToList();
             _namingConfig.StandardEpisodeFormat = "{Game Title} - S{platform:00}E{rom:00} - {Rom Title} {Quality Full}";
 
@@ -113,7 +113,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             result.Length.Should().BeLessOrEqualTo(255);
 
             result.Should().StartWith("The Fantastic Life of Mr. Sisko - S02E18 - This title has to be");
-            result.Should().EndWith("Bluray-1080p.mkv");
+            result.Should().EndWith("Unknown.mkv");
             result.Length.Should().BeLessOrEqualTo(255);
         }
 
@@ -125,7 +125,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             var result = Subject.BuildFileName(_episodes, _series, _romFile);
             result.Length.Should().BeLessOrEqualTo(255);
-            result.Should().Be("A Somewhat Long Game Title Name - S01E01-02-03-04-05-06-07 - Rom Title 1...A Really Really Really Really Long Rom Title HDTV-720p");
+            result.Should().Be("A Somewhat Long Game Title Name - S01E01-02-03-04-05-06-07 - Rom Title 1...A Really Really Really Really Long Rom Title Unknown");
         }
 
         [Test]
@@ -136,7 +136,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
 
             var result = Subject.BuildFileName(_episodes, _series, _romFile);
             result.Length.Should().BeLessOrEqualTo(255);
-            result.Should().Be("Lorem ipsum dolor sit amet, consectetur adipiscing elit Maecenas et magna sem Morbi vitae volutpat quam, id porta arcu Orci varius natoque penatibus et magnis dis parturient montes - S01E01-02-03-04-05-06-07 - Rom Title 1... HDTV-720p");
+            result.Should().Be("Lorem ipsum dolor sit amet, consectetur adipiscing elit Maecenas et magna sem Morbi vitae volutpat quam, id porta arcu Orci varius natoque penatibus et magnis dis parturient montes - S01E01-02-03-04-05-06-07 - Rom Title 1... Unknown");
         }
 
         [Test]
@@ -148,7 +148,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             var result = Subject.BuildFileName(new List<Rom> { _episodes.First() }, _series, _romFile);
             result.Length.Should().BeLessOrEqualTo(255);
             result.Should().StartWith("Lorem ipsum dolor sit amet");
-            result.Should().EndWith("HDTV-720p");
+            result.Should().EndWith("Unknown");
             result.Should().Contain("...");
         }
 
@@ -162,7 +162,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             result.GetByteCount().Should().BeLessOrEqualTo(255);
 
             result.Should().StartWith("Lor\u00E9m ipsum dolor sit amet");
-            result.Should().EndWith("HDTV-720p");
+            result.Should().EndWith("Unknown");
             result.Should().Contain("...");
         }
 
@@ -177,7 +177,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             var result = Subject.BuildFileName(new List<Rom> { _episodes.First() }, _series, _romFile);
             result.GetByteCount().Should().BeLessOrEqualTo(255);
 
-            result.Should().Be("Lorem ipsum dolor sit amet, consectetur adipiscing elit Maecenas et magna sem Morbi vitae volutpat quam, id porta arcu Orci varius natoque penatibus et magnis dis parturient montes nascetur ridiculus musu Cras vestibulum - S01E01 - Episod\u00E9 T... HDTV-720p");
+            result.Should().Be("Lorem ipsum dolor sit amet, consectetur adipiscing elit Maecenas et magna sem Morbi vitae volutpat quam, id porta arcu Orci varius natoque penatibus et magnis dis parturient montes nascetur ridiculus musu Cras vestibulum - S01E01 - Episod\u00E9 Title Unknown");
         }
 
         [Test]
@@ -192,7 +192,7 @@ namespace Playarr.Core.Test.OrganizerTests.FileNameBuilderTests
             result.GetByteCount().Should().BeLessOrEqualTo(255);
 
             result.Should().StartWith("Lorem ipsum dolor sit amet");
-            result.Should().EndWith("HDTV-720p");
+            result.Should().EndWith("Unknown");
             result.Should().Contain("...");
         }
     }

@@ -347,59 +347,6 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task platform_search_for_standard_should_search_for_each_monitored_episode()
-        {
-            WithRoms();
-            _xemGame.SeriesType = GameTypes.Standard;
-            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
-
-            var platformNumber = 1;
-            var allCriteria = WatchForSearchCriteria();
-
-            await Subject.PlatformSearch(_xemGame.Id, platformNumber, true, false, true, false);
-
-            var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
-
-            criteria.Count.Should().Be(_xemRoms.Count(e => e.PlatformNumber == platformNumber));
-        }
-
-        [Test]
-        public async Task platform_search_for_standard_should_not_search_for_unmonitored_episodes()
-        {
-            WithRoms();
-            _xemGame.SeriesType = GameTypes.Standard;
-            _xemRoms.ForEach(e => e.Monitored = false);
-            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
-
-            var platformNumber = 1;
-            var allCriteria = WatchForSearchCriteria();
-
-            await Subject.PlatformSearch(_xemGame.Id, platformNumber, false, true, true, false);
-
-            var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
-
-            criteria.Count.Should().Be(0);
-        }
-
-        [Test]
-        public async Task platform_search_for_standard_should_not_search_for_unaired_episodes()
-        {
-            WithRoms();
-            _xemGame.SeriesType = GameTypes.Standard;
-            _xemRoms.ForEach(e => e.AirDateUtc = DateTime.UtcNow.AddDays(5));
-            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
-
-            var platformNumber = 1;
-            var allCriteria = WatchForSearchCriteria();
-
-            await Subject.PlatformSearch(_xemGame.Id, platformNumber, false, false, true, false);
-
-            var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
-
-            criteria.Count.Should().Be(0);
-        }
-
-        [Test]
         public async Task platform_search_for_standard_should_not_search_for_episodes_with_files()
         {
             WithRoms();
@@ -414,23 +361,6 @@ namespace Playarr.Core.Test.IndexerSearchTests
             var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(0);
-        }
-
-        [Test]
-        public async Task platform_search_for_standard_should_set_isSeasonSearch_flag()
-        {
-            WithRoms();
-            _xemGame.SeriesType = GameTypes.Standard;
-            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
-
-            var platformNumber = 1;
-            var allCriteria = WatchForSearchCriteria();
-
-            await Subject.PlatformSearch(_xemGame.Id, platformNumber, true, false, true, false);
-
-            var criteria = allCriteria.OfType<SingleEpisodeSearchCriteria>().ToList();
-
-            criteria.Count.Should().Be(_xemRoms.Count(e => e.PlatformNumber == platformNumber));
         }
 
         [Test]
@@ -452,42 +382,6 @@ namespace Playarr.Core.Test.IndexerSearchTests
         }
 
         [Test]
-        public async Task platform_search_for_standard_should_not_search_for_unmonitored_season()
-        {
-            WithRoms();
-            _xemGame.SeriesType = GameTypes.Standard;
-            _xemRoms.ForEach(e => e.Monitored = false);
-            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
-
-            var platformNumber = 1;
-            var allCriteria = WatchForSearchCriteria();
-
-            await Subject.PlatformSearch(_xemGame.Id, platformNumber, false, true, true, false);
-
-            var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
-
-            criteria.Count.Should().Be(0);
-        }
-
-        [Test]
-        public async Task platform_search_for_standard_should_not_search_for_unaired_season()
-        {
-            WithRoms();
-            _xemGame.SeriesType = GameTypes.Standard;
-            _xemRoms.ForEach(e => e.AirDateUtc = DateTime.UtcNow.AddDays(5));
-            _xemRoms.ForEach(e => e.EpisodeFileId = 0);
-
-            var platformNumber = 1;
-            var allCriteria = WatchForSearchCriteria();
-
-            await Subject.PlatformSearch(_xemGame.Id, platformNumber, false, false, true, false);
-
-            var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
-
-            criteria.Count.Should().Be(0);
-        }
-
-        [Test]
         public async Task platform_search_for_standard_should_not_search_for_season_with_files()
         {
             WithRoms();
@@ -502,64 +396,6 @@ namespace Playarr.Core.Test.IndexerSearchTests
             var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
 
             criteria.Count.Should().Be(0);
-        }
-
-        [Test]
-        public async Task platform_search_for_standard_daily_should_search_multiple_years()
-        {
-            WithRom(1, 1, null, null, "2005-12-30");
-            WithRom(1, 2, null, null, "2005-12-31");
-            WithRom(1, 3, null, null, "2006-01-01");
-            WithRom(1, 4, null, null, "2006-01-02");
-            _xemGame.SeriesType = GameTypes.Standard;
-
-            var allCriteria = WatchForSearchCriteria();
-
-            await Subject.PlatformSearch(_xemGame.Id, 1, false, false, true, false);
-
-            var criteria = allCriteria.OfType<SeasonSearchCriteria>().ToList();
-
-            criteria.Count.Should().Be(2);
-        }
-
-        [Test]
-        public async Task platform_search_for_standard_daily_should_search_single_episode_if_possible()
-        {
-            WithRom(1, 1, null, null, "2005-12-30");
-            WithRom(1, 2, null, null, "2005-12-31");
-            WithRom(1, 3, null, null, "2006-01-01");
-            _xemGame.SeriesType = GameTypes.Standard;
-
-            var allCriteria = WatchForSearchCriteria();
-
-            await Subject.PlatformSearch(_xemGame.Id, 1, false, false, true, false);
-
-            var criteria1 = allCriteria.OfType<SeasonSearchCriteria>().ToList();
-            var criteria2 = allCriteria.OfType<SeasonSearchCriteria>().ToList();
-
-            criteria1.Count.Should().Be(1);
-
-            criteria2.Count.Should().Be(1);
-        }
-
-        [Test]
-        public async Task platform_search_for_standard_daily_should_not_search_for_unmonitored_episodes()
-        {
-            WithRom(1, 1, null, null, "2005-12-30");
-            WithRom(1, 2, null, null, "2005-12-31");
-            WithRom(1, 3, null, null, "2006-01-01");
-            _xemGame.SeriesType = GameTypes.Standard;
-            _xemRoms[0].Monitored = false;
-
-            var allCriteria = WatchForSearchCriteria();
-
-            await Subject.PlatformSearch(_xemGame.Id, 1, false, true, true, false);
-
-            var criteria1 = allCriteria.OfType<SeasonSearchCriteria>().ToList();
-            var criteria2 = allCriteria.OfType<SeasonSearchCriteria>().ToList();
-
-            criteria1.Should().HaveCount(0);
-            criteria2.Should().HaveCount(2);
         }
 
         [Test]

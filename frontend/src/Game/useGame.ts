@@ -1,5 +1,4 @@
 import { useQueryClient } from '@tanstack/react-query';
-import moment from 'moment';
 import { useCallback, useMemo } from 'react';
 import { FilterBuilderTag } from 'Components/Filter/Builder/FilterBuilderRowValue';
 import { Filter, FilterBuilderProp } from 'Filters/Filter';
@@ -9,7 +8,6 @@ import useApiQuery from 'Helpers/Hooks/useApiQuery';
 import {
   filterBuilderTypes,
   filterBuilderValueTypes,
-  sortDirections,
 } from 'Helpers/Props';
 import { FilterType } from 'Helpers/Props/filterTypes';
 import getFilterTypePredicate from 'Helpers/Props/getFilterTypePredicate';
@@ -113,40 +111,6 @@ const SORT_PREDICATES = {
     return item.statistics?.sizeOnDisk ?? 0;
   },
 
-  network: (item: Game, _direction: SortDirection) => {
-    const network = item.network;
-
-    return network ? network.toLowerCase() : '';
-  },
-
-  nextAiring: (item: Game, direction: SortDirection) => {
-    const nextAiring = item.nextAiring;
-
-    if (nextAiring) {
-      return moment(nextAiring).unix();
-    }
-
-    if (direction === sortDirections.DESCENDING) {
-      return 0;
-    }
-
-    return Number.MAX_VALUE;
-  },
-
-  previousAiring: (item: Game, direction: SortDirection) => {
-    const previousAiring = item.previousAiring;
-
-    if (previousAiring) {
-      return moment(previousAiring).unix();
-    }
-
-    if (direction === sortDirections.DESCENDING) {
-      return -Number.MAX_VALUE;
-    }
-
-    return Number.MAX_VALUE;
-  },
-
   romProgress: (item: Game, _direction: SortDirection) => {
     const statistics = item.statistics;
 
@@ -177,10 +141,6 @@ const SORT_PREDICATES = {
 
     return ratings.value ?? 0;
   },
-
-  monitorNewItems: (item: Game, _direction: SortDirection) => {
-    return item.monitorNewItems === 'all' ? 1 : 0;
-  },
 } as const;
 
 const FILTER_PREDICATES = {
@@ -200,18 +160,6 @@ const FILTER_PREDICATES = {
     const romCount = statistics?.romCount ?? 0;
     const romFileCount = statistics?.romFileCount ?? 0;
     return romCount - romFileCount > 0;
-  },
-
-  nextAiring: (item: Game, filterValue: string | Date, type: FilterType) => {
-    return dateFilterPredicate(item.nextAiring, filterValue, type);
-  },
-
-  previousAiring: (
-    item: Game,
-    filterValue: string | Date,
-    type: FilterType
-  ) => {
-    return dateFilterPredicate(item.previousAiring, filterValue, type);
   },
 
   added: (item: Game, filterValue: string | Date, type: FilterType) => {
@@ -357,55 +305,15 @@ export const FILTER_BUILDER: FilterBuilderProp<Game>[] = [
     valueType: filterBuilderValueTypes.SERIES_STATUS,
   },
   {
-    name: 'gameType',
-    label: () => translate('Type'),
-    type: filterBuilderTypes.EXACT,
-    valueType: filterBuilderValueTypes.SERIES_TYPES,
-  },
-  {
     name: 'title',
     label: () => translate('Title'),
     type: filterBuilderTypes.STRING,
-  },
-  {
-    name: 'network',
-    label: () => translate('Network'),
-    type: filterBuilderTypes.ARRAY,
-    optionsSelector: function (items: Game[]) {
-      const tagList = items.reduce<FilterBuilderTag<string, string>[]>(
-        (acc, game) => {
-          if (game.network) {
-            acc.push({
-              id: game.network,
-              name: game.network,
-            });
-          }
-
-          return acc;
-        },
-        []
-      );
-
-      return tagList.sort(sortByProp('name'));
-    },
   },
   {
     name: 'qualityProfileId',
     label: () => translate('QualityProfile'),
     type: filterBuilderTypes.EXACT,
     valueType: filterBuilderValueTypes.QUALITY_PROFILE,
-  },
-  {
-    name: 'nextAiring',
-    label: () => translate('NextAiring'),
-    type: filterBuilderTypes.DATE,
-    valueType: filterBuilderValueTypes.DATE,
-  },
-  {
-    name: 'previousAiring',
-    label: () => translate('PreviousAiring'),
-    type: filterBuilderTypes.DATE,
-    valueType: filterBuilderValueTypes.DATE,
   },
   {
     name: 'added',
@@ -497,11 +405,6 @@ export const FILTER_BUILDER: FilterBuilderProp<Game>[] = [
     name: 'ratingVotes',
     label: () => translate('RatingVotes'),
     type: filterBuilderTypes.NUMBER,
-  },
-  {
-    name: 'certification',
-    label: () => translate('Certification'),
-    type: filterBuilderTypes.EXACT,
   },
   {
     name: 'tags',
