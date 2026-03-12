@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelect } from 'App/Select/SelectContext';
+import CheckInput from 'Components/Form/CheckInput';
 import FormInputGroup from 'Components/Form/FormInputGroup';
 import VirtualTableRowCell from 'Components/Table/Cells/VirtualTableRowCell';
 import VirtualTableSelectCell from 'Components/Table/Cells/VirtualTableSelectCell';
@@ -77,6 +78,32 @@ function ImportGameRow({ unmappedFolder }: ImportGameRowProps) {
           type={inputTypes.MONITOR_EPISODES_SELECT}
           name="monitor"
           value={monitor}
+          onChange={handleInputChange}
+        />
+      </VirtualTableRowCell>
+
+      <VirtualTableRowCell className={styles.qualityProfile}>
+        <FormInputGroup
+          type={inputTypes.QUALITY_PROFILE_SELECT}
+          name="qualityProfileId"
+          value={selectedSeries?.qualityProfileId ?? 0}
+          onChange={handleInputChange}
+        />
+      </VirtualTableRowCell>
+
+      <VirtualTableRowCell className={styles.gameType}>
+        <FormInputGroup
+          type={inputTypes.SERIES_TYPE_SELECT}
+          name="gameType"
+          value={selectedSeries?.gameType ?? 'standard'}
+          onChange={handleInputChange}
+        />
+      </VirtualTableRowCell>
+
+      <VirtualTableRowCell className={styles.platformFolder}>
+        <CheckInput
+          name="platformFolder"
+          value={true}
           onChange={handleInputChange}
         />
       </VirtualTableRowCell>
