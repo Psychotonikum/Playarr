@@ -116,12 +116,6 @@ const { useOptions, useOption, setOptions, setOption, setSort, getOptions } =
           isVisible: true,
         },
         {
-          name: 'platformFolder',
-          label: () => translate('PlatformFolder'),
-          isSortable: true,
-          isVisible: false,
-        },
-        {
           name: 'romProgress',
           label: () => translate('Roms'),
           isSortable: true,

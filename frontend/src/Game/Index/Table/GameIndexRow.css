@@ -91,12 +91,6 @@
   flex: 0 0 100px;
 }
 
-.platformFolder {
-  composes: cell;
-
-  flex: 0 0 150px;
-}
-
 .romProgress,
 .latestPlatform {
   composes: cell;

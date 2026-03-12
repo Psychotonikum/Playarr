@@ -21,7 +21,6 @@ interface CssExports {
   'overlayTitle': string;
   'path': string;
   'platformCount': string;
-  'platformFolder': string;
   'previousAiring': string;
   'qualityProfileId': string;
   'ratings': string;

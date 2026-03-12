@@ -3,7 +3,6 @@ import React, { useCallback, useState } from 'react';
 import { useSelect } from 'App/Select/SelectContext';
 import CommandNames from 'Commands/CommandNames';
 import { useExecuteCommand } from 'Commands/useCommands';
-import CheckInput from 'Components/Form/CheckInput';
 import GameTagList from 'Components/GameTagList';
 import HeartRating from 'Components/HeartRating';
 import IconButton from 'Components/Link/IconButton';
@@ -94,10 +93,6 @@ function GameIndexRow(props: GameIndexRowProps) {
     setIsDeleteGameModalOpen(false);
   }, [setIsDeleteGameModalOpen]);
 
-  const checkInputCallback = useCallback(() => {
-    // Mock handler to satisfy `onChange` being required for `CheckInput`.
-  }, []);
-
   const onSelectedChange = useCallback(
     ({ id, value, shiftKey }: SelectStateInputProps) => {
       toggleSelected({
@@ -121,7 +116,6 @@ function GameIndexRow(props: GameIndexRowProps) {
     titleSlug,
     added,
     statistics = {} as Statistics,
-    platformFolder,
     images,
     originalLanguage,
     year,
@@ -248,19 +242,6 @@ function GameIndexRow(props: GameIndexRowProps) {
               platforms={platforms}
               isSelectMode={isSelectMode}
             />
-          );
-        }
-
-        if (name === 'platformFolder') {
-          return (
-            <VirtualTableRowCell key={name} className={styles[name]}>
-              <CheckInput
-                name="platformFolder"
-                value={platformFolder}
-                isDisabled={true}
-                onChange={checkInputCallback}
-              />
-            </VirtualTableRowCell>
           );
         }
 
