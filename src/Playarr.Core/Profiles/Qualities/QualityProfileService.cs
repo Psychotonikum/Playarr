@@ -98,62 +98,19 @@ namespace Playarr.Core.Profiles.Qualities
             _logger.Info("Setting up default quality profiles");
 
             AddDefaultProfile("Any",
-                Quality.SDTV,
-                Quality.SDTV,
-                Quality.WEBRip480p,
-                Quality.WEBDL480p,
-                Quality.DVD,
-                Quality.Bluray480p,
-                Quality.Bluray576p,
-                Quality.HDTV720p,
-                Quality.HDTV1080p,
-                Quality.WEBRip720p,
-                Quality.WEBDL720p,
-                Quality.WEBRip1080p,
-                Quality.WEBDL1080p,
-                Quality.Bluray720p,
-                Quality.Bluray1080p);
+                Quality.Verified,
+                Quality.Unknown,
+                Quality.Bad,
+                Quality.Verified);
 
-            AddDefaultProfile("SD",
-                Quality.SDTV,
-                Quality.SDTV,
-                Quality.WEBRip480p,
-                Quality.WEBDL480p,
-                Quality.DVD,
-                Quality.Bluray480p,
-                Quality.Bluray576p);
+            AddDefaultProfile("Verified Only",
+                Quality.Verified,
+                Quality.Verified);
 
-            AddDefaultProfile("HD-720p",
-                Quality.HDTV720p,
-                Quality.HDTV720p,
-                Quality.WEBRip720p,
-                Quality.WEBDL720p,
-                Quality.Bluray720p);
-
-            AddDefaultProfile("HD-1080p",
-                Quality.HDTV1080p,
-                Quality.HDTV1080p,
-                Quality.WEBRip1080p,
-                Quality.WEBDL1080p,
-                Quality.Bluray1080p);
-
-            AddDefaultProfile("Ultra-HD",
-                Quality.HDTV2160p,
-                Quality.HDTV2160p,
-                Quality.WEBRip2160p,
-                Quality.WEBDL2160p,
-                Quality.Bluray2160p);
-
-            AddDefaultProfile("HD - 720p/1080p",
-                Quality.HDTV720p,
-                Quality.HDTV720p,
-                Quality.HDTV1080p,
-                Quality.WEBRip720p,
-                Quality.WEBDL720p,
-                Quality.WEBRip1080p,
-                Quality.WEBDL1080p,
-                Quality.Bluray720p,
-                Quality.Bluray1080p);
+            AddDefaultProfile("Standard",
+                Quality.Verified,
+                Quality.Unknown,
+                Quality.Verified);
         }
 
         public void Handle(CustomFormatAddedEvent message)

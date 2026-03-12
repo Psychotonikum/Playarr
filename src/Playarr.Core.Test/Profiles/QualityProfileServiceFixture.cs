@@ -33,7 +33,7 @@ namespace Playarr.Core.Test.Profiles
             Subject.Handle(new ApplicationStartedEvent());
 
             Mocker.GetMock<IQualityProfileRepository>()
-                .Verify(v => v.Insert(It.IsAny<QualityProfile>()), Times.Exactly(6));
+                .Verify(v => v.Insert(It.IsAny<QualityProfile>()), Times.Exactly(3));
         }
 
         [Test]
