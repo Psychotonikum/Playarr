@@ -247,7 +247,9 @@ function GameDetails({ gameId }: GameDetailsProps) {
 
   const handleManageEpisodesModalClose = useCallback(() => {
     setIsManageEpisodesOpen(false);
-  }, []);
+    refetchEpisodes();
+    refetchRomFiles();
+  }, [refetchEpisodes, refetchRomFiles]);
 
   const handleEditGamePress = useCallback(() => {
     setIsEditGameModalOpen(true);
