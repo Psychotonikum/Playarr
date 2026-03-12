@@ -7,6 +7,7 @@ import useApiQuery from 'Helpers/Hooks/useApiQuery';
 interface AddGamePayload extends AddGame {
   rootFolderPath: string;
   qualityProfileId: number;
+  platformFolder: boolean;
   addOptions: {
     monitor: import('Game/Game').GameMonitor;
     searchForMissingRoms: boolean;

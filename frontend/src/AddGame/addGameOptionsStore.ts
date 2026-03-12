@@ -6,6 +6,7 @@ export interface AddGameOptions {
   monitor: GameMonitor;
   qualityProfileId: number;
   languageProfileId: number;
+  platformFolder: boolean;
   searchForMissingRoms: boolean;
   tags: number[];
   preferredRegions: string[];
@@ -22,6 +23,7 @@ const { useOptions, useOption, setOption } = createOptionsStore<AddGameOptions>(
       monitor: 'all',
       qualityProfileId: 0,
       languageProfileId: 0,
+      platformFolder: true,
       searchForMissingRoms: false,
       tags: [],
       preferredRegions: [],

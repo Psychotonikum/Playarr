@@ -56,6 +56,7 @@ function AddNewGameModalContent({
     monitor,
     qualityProfileId,
     rootFolderPath,
+    platformFolder,
     searchForMissingRoms,
     tags,
     preferredRegions,
@@ -76,6 +77,7 @@ function AddNewGameModalContent({
       ...game,
       rootFolderPath: rootFolderPath.value,
       qualityProfileId: qualityProfileId.value,
+      platformFolder: platformFolder.value,
       addOptions: {
         monitor: monitor.value,
         searchForMissingRoms: searchForMissingRoms.value,
@@ -90,6 +92,7 @@ function AddNewGameModalContent({
     game,
     rootFolderPath,
     qualityProfileId,
+    platformFolder,
     monitor,
     searchForMissingRoms,
     tags,
@@ -193,7 +196,7 @@ function AddNewGameModalContent({
                 <FormInputGroup
                   type={inputTypes.LANGUAGE_SELECT}
                   name="language"
-                  value={0}
+                  value={-2}
                   helpText={translate('LanguageHelpText')}
                   onChange={handleInputChange as any}
                 />
@@ -289,6 +292,18 @@ function AddNewGameModalContent({
                   name="tags"
                   onChange={handleInputChange}
                   {...tags}
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <FormLabel>{translate('PlatformFolder')}</FormLabel>
+
+                <FormInputGroup
+                  type={inputTypes.CHECK}
+                  name="platformFolder"
+                  helpText={translate('UsePlatformFolderHelpText')}
+                  onChange={handleInputChange}
+                  {...platformFolder}
                 />
               </FormGroup>
             </Form>

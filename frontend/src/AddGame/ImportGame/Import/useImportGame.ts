@@ -49,6 +49,7 @@ export const useImportGame = () => {
             ...selectedSeries,
             monitored: true,
             monitorNewItems: 'all',
+            platformFolder: true,
             path: item.path,
             addOptions: {
               monitor: item.monitor,
