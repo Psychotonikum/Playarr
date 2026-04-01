@@ -4,7 +4,7 @@ import Provider from './Provider';
 interface ImportList extends Provider {
   enable: boolean;
   enableAutomaticAdd: boolean;
-  searchForMissingRoms: boolean;
+  searchForMissingGameFiles: boolean;
   qualityProfileId: number;
   rootFolderPath: string;
   shouldMonitor: GameMonitor;

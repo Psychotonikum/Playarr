@@ -72,7 +72,7 @@ function EditImportListModalContent({
     implementationName,
     name,
     enableAutomaticAdd,
-    searchForMissingRoms,
+    searchForMissingGameFiles,
     minRefreshInterval,
     shouldMonitor,
     rootFolderPath,
@@ -170,11 +170,11 @@ function EditImportListModalContent({
 
               <FormInputGroup
                 type={inputTypes.CHECK}
-                name="searchForMissingRoms"
+                name="searchForMissingGameFiles"
                 helpText={translate(
                   'ImportListSearchForMissingFilesHelpText'
                 )}
-                {...searchForMissingRoms}
+                {...searchForMissingGameFiles}
                 onChange={handleInputChange}
               />
             </FormGroup>

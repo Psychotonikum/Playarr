@@ -8,8 +8,8 @@ interface NewSeriesPayload {
   gameType: GameType;
   platformFolder: boolean;
   tags: number[];
-  searchForMissingRoms?: boolean;
-  searchForCutoffUnmetRoms?: boolean;
+  searchForMissingGameFiles?: boolean;
+  searchForCutoffUnmetGameFiles?: boolean;
 }
 
 function getNewGame(game: Game, payload: NewSeriesPayload) {
@@ -21,14 +21,14 @@ function getNewGame(game: Game, payload: NewSeriesPayload) {
     gameType,
     platformFolder,
     tags,
-    searchForMissingRoms = false,
-    searchForCutoffUnmetRoms = false,
+    searchForMissingGameFiles = false,
+    searchForCutoffUnmetGameFiles = false,
   } = payload;
 
   const addOptions = {
     monitor,
-    searchForMissingRoms,
-    searchForCutoffUnmetRoms,
+    searchForMissingGameFiles,
+    searchForCutoffUnmetGameFiles,
   };
 
   game.addOptions = addOptions;

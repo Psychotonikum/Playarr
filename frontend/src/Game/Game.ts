@@ -62,8 +62,8 @@ export interface AlternateTitle {
 
 export interface GameAddOptions {
   monitor: GameMonitor;
-  searchForMissingRoms: boolean;
-  searchForCutoffUnmetRoms?: boolean;
+  searchForMissingGameFiles: boolean;
+  searchForCutoffUnmetGameFiles?: boolean;
 }
 
 interface Game extends ModelBase {

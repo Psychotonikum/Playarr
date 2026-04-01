@@ -114,7 +114,7 @@ function AddNewGameModalContent({
       qualityProfileId: qualityProfileId.value,
       addOptions: {
         monitor: monitor.value,
-        searchForMissingRoms: searchForMissingRoms.value,
+        searchForMissingGameFiles: searchForMissingRoms.value,
       },
       tags: tags.value,
       preferredRegions: preferredRegions.value,

@@ -9,7 +9,7 @@ interface AddGamePayload extends AddGame {
   qualityProfileId: number;
   addOptions: {
     monitor: import('Game/Game').GameMonitor;
-    searchForMissingRoms: boolean;
+    searchForMissingGameFiles: boolean;
   };
   tags: number[];
 }

@@ -53,7 +53,7 @@ export const useImportGame = () => {
             path: item.path,
             addOptions: {
               monitor: item.monitor,
-              searchForMissingRoms: false,
+              searchForMissingGameFiles: false,
             },
             tags: [],
           };

@@ -24,7 +24,7 @@ const { useOptions, useOption, setOption } = createOptionsStore<AddGameOptions>(
       languageProfileId: 0,
       searchForMissingRoms: false,
       tags: [],
-      preferredRegions: [],
+      preferredRegions: ['Europe'],
       preferredLanguageIds: [],
       preferredReleaseTypes: ['Retail'],
       preferredModifications: ['Original'],
